@@ -41,11 +41,3 @@ CREATE TABLE tx_fed_domain_model_datasource (
 	KEY t3ver_oid (t3ver_oid,t3ver_wsid)
 );
 ## KICKSTARTER DEFAULTS END TOKEN - Everything BEFORE this line is overwritten with the defaults of the kickstarter
-
-#
-# Table structure for table 'tt_address'
-#
-CREATE TABLE tt_address (
-    lat double(11,2) DEFAULT '0.00' NOT NULL,
-	lng double(11,2) DEFAULT '0.00' NOT NULL
-);
