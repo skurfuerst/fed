@@ -1,0 +1,48 @@
+FedFrameworkBridge = PAGE
+FedFrameworkBridge {
+    typeNum = 4815162342
+    config {
+    	no_cache = 1
+        disableAllHeaderCode = 1
+    }
+    headerData >
+    10 = USER_INT
+    10 {
+		userFunc = tx_fed_core_bootstrap->run
+        extensionName = Fed
+        pluginName = API
+    }
+}
+
+FedPDFBridge = PAGE
+FedPDFBridge {
+    typeNum = 48151623420
+    config {
+    	no_cache = 1
+        disableAllHeaderCode = 1
+    }
+    headerData >
+    10 = USER_INT
+    10 {
+		userFunc = tx_fed_utility_pdf->run
+        extensionName = Fed
+        pluginName = API
+    }
+}
+
+config.tx_extbase {
+	persistence {
+		classes {
+			Tx_Fed_Address {
+				mapping {
+					tableName = tt_address
+					recordType = Tx_Fed_Address
+					columns {
+						lockToDomain.mapOnProperty = lockToDomain
+					}
+				}
+			}
+
+		}
+	}
+}

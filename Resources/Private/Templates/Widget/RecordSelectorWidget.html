@@ -1,0 +1,35 @@
+{namespace fed=Tx_Fed_ViewHelpers}
+<div class='record-selector'>
+	<fed:comment>
+	Add options to fold/unfold the selector, searcher and list, or each one by itself.
+	</fed:comment>
+	
+	<div class="record-selector-search">
+		<fed:field.input name="q" />
+	</div>
+	<div class="record-selector-select">
+		<fed:widget widget="dk.wildside.display.widget.ListWidget" name="results">
+			<div class='list-container'>
+				<f:for each="{available}" as="name" key="uid">
+					<fed:sprite name="{name}" value="{uid}">
+						<div class='list-item'>{name}</div>
+					</fed:sprite>
+				</f:for>
+			</div>
+		</fed:widget>
+	</div>
+	<div class="record-selector-list">
+		<ws:comment>
+			<div class='record-selector-header'>SELECTION</div>
+		</ws:comment>
+		<fed:widget widget="dk.wildside.display.widget.ListWidget" name="selections">
+			<div class='list-container'>
+				<f:for each="{selected}" as="item">
+					<fed:sprite name="{item.name}" value="{item.uid}">
+						<div class='list-item'>{item.name}</div>
+					</fed:sprite>
+				</f:for>
+			</div>
+		</fed:widget>
+	</div>
+</div>

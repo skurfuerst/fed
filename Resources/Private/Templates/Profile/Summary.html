@@ -1,0 +1,53 @@
+{namespace fed=Tx_Fed_ViewHelpers}
+
+<fed:style>
+.profile-bar { width: 100%; clear: both; border: 1px solid silver; }
+.profile-bar td {
+	vertical-align: top;
+}
+.profile-bar td.bar {
+	font-size: 15px;
+	font-weight: bold;
+	text-align: center;
+	color: black;
+}
+.profile-bar td.bar span {
+	display: block;
+	padding: 4px;
+}
+.profile-bar td.label span {
+    display: none;
+    width: 400px;
+    text-align: left;
+    border-top: 1px dashed silver;
+    margin-top: 4px;
+    padding-top: 4px;
+}
+.profile-bar td.label:hover span {
+    display: block;
+}
+.profile-bar td.label {
+    background-color: #EFEFEF;
+    text-align: center;
+    padding: 4px;
+    border-right: 1px solid silver;
+}
+.profile-bar td.label:last-child {
+	border-right: none;
+}
+</fed:style>
+
+<table class="profile-bar" cellspacing="0" cellpadding="0">
+<tr>
+<f:for each="{profile.ticks}" as="tick" iteration="iteration">
+	<f:cycle values="{0: '87AED2', 1: '6D8DAB', 2: '556E85', 3: 'D1C386', 4: 'AB956D', 5: '857455'}" as="color">
+	<td class="bar" style="width: {tick.percentage}%; background-color: #{color};"><span>{iteration.cycle}</span></td>
+	</f:cycle>
+</f:for>
+</tr>
+<tr>
+<f:for each="{profile.ticks}" as="tick">
+	<td style="width: {tick.percentage}%;" class="label">{tick.duration}ms<br /><span>{tick.content}</span></td>
+</f:for>
+</tr>
+</table>

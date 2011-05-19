@@ -1,0 +1,30 @@
+plugin.tx_fed {
+	view {
+		templateRootPath = {$plugin.tx_fed.view.templateRootPath}
+		partialRootPath = {$plugin.tx_fed.view.partialRootPath}
+		layoutRootPath = {$plugin.tx_fed.view.layoutRootPath}
+	}
+	persistence {
+		storagePid = {$plugin.tx_fed.persistence.storagePid}
+	}
+}
+
+plugin.tx_fed._CSS_DEFAULT_STYLE (
+	input.f3-form-error {
+		background-color:#FF9F9F;
+		border: 1px #FF0000 solid;
+	}
+
+	.tx-fed table {
+		border-collapse:separate;
+		border-spacing:10px;
+	}
+
+	.tx-fed table th {
+		font-weight:bold;
+	}
+
+	.tx-fed table td {
+		vertical-align:top;
+	}
+)

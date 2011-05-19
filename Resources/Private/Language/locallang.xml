@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<T3locallang>
+	<meta type="array">
+		<type>module</type>
+		<description>Language labels for the Fluid Extbase Development Framework extension in the FRONTEND</description>
+	</meta>
+	<data type="array">
+		<languageKey index="default" type="array">
+			<label index="tx_fed_domain_model_datasource">Data Source for Fluid Display</label>
+			<label index="tx_fed_domain_model_datasource.name">Name of this data source</label>
+			<label index="tx_fed_domain_model_datasource.description">Description of this data source</label>
+			<label index="tx_fed_domain_model_datasource.query">If specified, SQL Query is used to collect data</label>
+			<label index="tx_fed_domain_model_datasource.func">If specified, func is called to collect data</label>
+			<label index="tx_fed_domain_model_datasource.url">If specified, data is read from this url - remember to specify method</label>
+			<label index="tx_fed_domain_model_datasource.url_method">Method used to read url data</label>
+			<label index="tx_fed_domain_model_datasource.template_file">Fluid template file to use when rendering this DataSource</label>
+			<label index="tx_fed_domain_model_datasource.template_source">Optional Fluid template source code to use for rendering</label>
+		</languageKey>
+	</data>
+</T3locallang>
