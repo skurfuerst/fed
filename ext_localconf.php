@@ -11,13 +11,13 @@ Tx_Extbase_Utility_Extension::configurePlugin(
 		'FileuploadWidget' => 'upload',
 		'RecordSelectorWidget' => 'search',
 		'Hash' => 'request',
-		'Cache' => 'clear',
+		'Tool' => 'clearCache,inspectCookie,removeCookie,setCookie,inspectSession,setSession,removeSession',
 	),
 	array(
 		'FileuploadWidget' => 'upload',
 		'RecordSelectorWidget' => 'search',
 		'Hash' => 'request',
-		'Cache' => 'clear',
+		'Tool' => 'clearCache,inspectCookie,removeCookie,setCookie,inspectSession,setSession,removeSession',
 	)
 );
 

@@ -32,7 +32,7 @@
  * @package Fed
  * @subpackage Controller
  */
-class Tx_Fed_Controller_CacheController extends Tx_Fed_Core_AbstractController {
+class Tx_Fed_Controller_ToolController extends Tx_Fed_Core_AbstractController {
 	
 	/**
 	 * @var Tx_Extbase_Service_CacheService
@@ -51,15 +51,66 @@ class Tx_Fed_Controller_CacheController extends Tx_Fed_Core_AbstractController {
 	 * @return string
 	 * @dontverifyrequesthash
 	 */
-	public function clearAction($target) {
+	public function clearCacheAction($target) {
 		if ($target === 'page') {
 			$this->clearPageCache();
 		} else if ($target === 'extbase') {
 			$this->clearExtbaseCache();
 		} else if ($target === 'pages') {
 			$this->clearAllCaches();
+		} else if ($target === 'files') {
+			$this->clearCachedFiles();
 		}
 		return '1';
+	}
+	
+	/**
+	 * @param string $target Dotted target path of session variable to inspect
+	 * @return string
+	 * @dontverifyrequesthash
+	 */
+	public function inspectSessionAction($target) {
+		return $target;
+	}
+	
+	/**
+	 * @param string $target Name of cookie to inspect
+	 * @return string
+	 * @dontverifyrequesthash
+	 */
+	public function inspectCookieAction($target) {
+		return $_COOKIE[$target];
+	}
+	
+	/**
+	 * 
+	 * @param string $target
+	 * @param string $value
+	 */
+	public function setCookieAction($target, $value) {
+		$_COOKIE[$target] = $value;
+		return '1';
+	}
+	
+	/**
+	 * 
+	 * @param string $target
+	 */
+	public function removeCookieAction($target) {
+		setcookie($target, '', time()-1);
+		return '1';
+	}
+	
+	
+	protected function clearCachedFiles() {
+		$mask = "temp_CACHED_";
+		$folder = new DirectoryIterator(PATH_site . "typo3conf/");
+		foreach ($folder as $file) {
+			$name = $file->getFileName();
+			if (substr($name, 0, strlen($mask)) === $mask) {
+				unlink(PATH_site . "typo3conf/" . $name);
+			}
+		}
 	}
 	
 	protected function clearPageCache($pages=NULL) {
@@ -89,6 +140,7 @@ class Tx_Fed_Controller_CacheController extends Tx_Fed_Core_AbstractController {
 	protected function clearAllCaches() {
 		$this->clearExtbaseCache();
 		$this->clearAllPageCaches();
+		$this->clearCachedFiles();
 	}
 	
 }

@@ -23,7 +23,7 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
-class Tx_Fed_ViewHelpers_Tools_CacheControlViewHelper extends Tx_Fed_Core_ViewHelper_AbstractViewHelper {
+class Tx_Fed_ViewHelpers_Tools_SessionControlViewHelper extends Tx_Fed_Core_ViewHelper_AbstractViewHelper {
 	
 	
 	/**
@@ -32,6 +32,7 @@ class Tx_Fed_ViewHelpers_Tools_CacheControlViewHelper extends Tx_Fed_Core_ViewHe
 	 * @return string
 	 */
 	public function render() {
+		session_start();
 		$this->addScript();
 		return $this->renderControls();
 	}
@@ -41,18 +42,33 @@ class Tx_Fed_ViewHelpers_Tools_CacheControlViewHelper extends Tx_Fed_Core_ViewHe
 	 * @return string
 	 */
 	private function renderControls() {
+		$sessionOptions = '';
+		$this->getSessionOptions($_SESSION, $sessionOptions);
 		$html = <<< HTML
-<select class="fedCacheController">
-<option value="-1">(select cache to clear)</option>
-<option value="all">All TYPO3 + Extbase caches</option>
-<option value="extbase">Extbase reflection+object caches</option>
-<option value="pages">All TYPO3 page cache</option>
-<option value="page">TYPO3 page cache, this page</option>
-<option value="files">Cached configuration files</option>
+<select class="fedSessionController">
+<option value="-1">(select session variable to manage)</option>
+{$sessionOptions}
 </select>
 HTML;
 		return $html;
 	}
+	
+	/**
+	 * Get HTML options for all currnetly stored session variables
+	 */
+	private function getSessionOptions($var, &$html, $path='') {
+		$indent = substr_count($path, '.');
+		$pad = str_repeat('  ', $indent);
+		foreach ($var as $name=>$value) {
+			if (is_array($value)) {
+				$html .= $this->getSessionOptions($value, $html, $path != '' ? $path.'.'.$name : $name);
+			} else {
+				$html .= "<option value='{$path}'>{$pad}{$name}</option>" . chr(10);
+			}
+		}
+	}
+	
+	
 	
 	/**
 	 * Add script for communication
@@ -62,18 +78,21 @@ HTML;
 		$script = <<< SCRIPT
 
 jQuery(document).ready(function() { 
-	jQuery('.fedCacheController').each(function() { 
+	jQuery('.fedSessionController').each(function() { 
 		jQuery(this).change(function() {
 			var cid = jQuery(this).val();
-				if (parseInt(cid) < 0) {
+			if (parseInt(cid) < 0) {
 				return;
 			};
 			var response = jQuery.ajax('?type=4815162342', {method: 'post', async: false, 
-				data: {tx_fed_api: {controller: 'Tool', action: 'clearCache', target: cid}}});
+				data: {tx_fed_api: {controller: 'Tool', action: 'inspectSession', target: cid}}});
 			var json = jQuery.parseJSON(response.responseText);
-			if (typeof json == 'object' && json.payload == '1') {
-				jQuery(this).val(-1);
-				document.location.reload();
+			if (typeof json == 'object' && parseInt(json.payload) > 0) {
+				
+				
+				
+				
+				
 			} else {
 				alert('There was an error clearing the cache. The response was: ' + response);
 			};
@@ -81,7 +100,7 @@ jQuery(document).ready(function() {
 	})
 });
 SCRIPT;
-		$this->includeHeader($script, 'js', 'fedCacheControl');
+		$this->includeHeader($script, 'js', 'fedSessionControl');
 	}
 	
 	

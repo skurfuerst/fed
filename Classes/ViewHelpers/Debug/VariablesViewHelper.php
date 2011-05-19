@@ -32,7 +32,7 @@
  * @subpackage ViewHelpers\Debug
  *
  */
-class Tx_WildsideExtbase_ViewHelpers_Debug_VariablesViewHelper extends Tx_WildsideExtbase_Core_ViewHelper_AbstractViewHelper {
+class Tx_Fed_ViewHelpers_Debug_VariablesViewHelper extends Tx_Fed_Core_ViewHelper_AbstractViewHelper {
 	
 	
 	/**
