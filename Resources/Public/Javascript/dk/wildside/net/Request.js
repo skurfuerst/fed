@@ -4,6 +4,7 @@ dk.wildside.net.Request = function(widget, action) {
 	this.controller = false;
 	this.data = false;
 	this.action = action;
+	this.extension = 'tx_fed_api';
 	this.widget = widget;
 	this.base = false;
 	if (typeof widget == 'string') {
@@ -55,6 +56,19 @@ dk.wildside.net.Request.prototype.setAction = function(action) {
 	return this;
 };
 
+dk.wildside.net.Request.prototype.getExtension = function() {
+	if (this.action) {
+		return this.extension;
+	} else {
+		return this.widget.config.extension;
+	};
+};
+
+dk.wildside.net.Request.prototype.setExtension = function(extension) {
+	this.extension = extension;
+	return this;
+};
+
 dk.wildside.net.Request.prototype.setData = function(data) {
 	this.data = data;
 	return this;
@@ -96,9 +110,11 @@ dk.wildside.net.Request.prototype.getUrl = function() {
 	var base = this.getBase();
 	var scope = this.getScope();
 	var action = this.getAction();
+	var extension = this.getExtension();
 	var controller = this.getController();
 	var urlParameters = new Array();
 	urlParameters.push(scope + '[controller]=' + controller);
+	urlParameters.push(scope + '[extensionName]=' + extension);
 	urlParameters.push(scope + '[action]=' + action);
 	return base + '&' + urlParameters.join('&');
 };

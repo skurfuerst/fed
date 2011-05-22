@@ -1,9 +1,9 @@
-<?php 
+<?php
 /***************************************************************
 *  Copyright notice
 *
 *  (c) 2010 Claus Due <claus@wildside.dk>, Wildside A/S
-*  			
+*
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -24,7 +24,7 @@
 ***************************************************************/
 
 /**
- * 
+ *
  * @author Claus Due, Wildside A/S
  * @version $Id$
  * @copyright Copyright belongs to the respective authors
@@ -33,25 +33,25 @@
  * @subpackage Utility
  */
 class Tx_Fed_Utility_JSON implements t3lib_Singleton {
-	
-	
+
+
 	/**
 	 * Detect the PHP version being used
-	 * 
+	 *
 	 * @return float
 	 */
 	private function getPHPVersion() {
 		$segments = explode('.', phpversion());
 		$major = array_shift($segments);
 		$minor = array_shift($segments);
-		$num = "{$major}.{$minor}"; 
+		$num = "{$major}.{$minor}";
 		$num = (float) $num;
 		return $num;
 	}
-	
+
 	/**
 	 * Get encoding options depending on PHP version
-	 * 
+	 *
 	 * @return int
 	 */
 	private function getEncodeOptions() {
@@ -61,11 +61,11 @@ class Tx_Fed_Utility_JSON implements t3lib_Singleton {
 			return 0;
 		}
 	}
-	
-	
+
+
 	/**
 	 * Encode to working JSON depending on PHP version
-	 *  
+	 *
 	 * @param mixed $source
 	 * @param int $options
 	 */
@@ -74,19 +74,19 @@ class Tx_Fed_Utility_JSON implements t3lib_Singleton {
 		$str = json_encode($source, $options);
 		return $str;
 	}
-	
-	
+
+
 	/**
 	 * Decode to working JSON depending on PHP version
-	 * 
+	 *
 	 * @param string $str
 	 */
 	public function decode($str) {
 		$decoded = json_decode($str);
 		return $decoded;
 	}
-	
-	
+
+
 }
 
 ?>

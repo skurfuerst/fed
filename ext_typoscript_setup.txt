@@ -6,8 +6,8 @@ FedFrameworkBridge {
         disableAllHeaderCode = 1
     }
     headerData >
-    10 = USER_INT
-    10 {
+    4815162342 = USER_INT
+    4815162342 {
 		userFunc = tx_fed_core_bootstrap->run
         extensionName = Fed
         pluginName = API
@@ -22,8 +22,8 @@ FedPDFBridge {
         disableAllHeaderCode = 1
     }
     headerData >
-    10 = USER_INT
-    10 {
+    4815162342 = USER_INT
+    4815162342 {
 		userFunc = tx_fed_utility_pdf->run
         extensionName = Fed
         pluginName = API

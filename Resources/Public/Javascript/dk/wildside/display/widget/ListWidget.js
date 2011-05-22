@@ -1,14 +1,14 @@
 // Widget to render list-style displays by calling various input control methods.
-// Dispatches events from clicked members which can be listened to by outside 
+// Dispatches events from clicked members which can be listened to by outside
 // Widgets/Components.
-// Should be named using setName(myUniqueName) or through a ViewHelper; can then be referenced 
+// Should be named using setName(myUniqueName) or through a ViewHelper; can then be referenced
 // by any parent Widget/Component by calling this.children.find(myUniqueName);
 
 dk.wildside.display.widget.ListWidget = function(jQueryElement) {
 	if (typeof jQueryElement == 'undefined') {
 		return this;
 	};
-	dk.wildside.display.widget.Widget.call(this, jQueryElement);
+	dk.wildside.display.Widget.call(this, jQueryElement);
 	this.id = parseInt(Math.random()*100);
 	var widget = this;
 	this.addEventListener(dk.wildside.event.MouseEvent.CLICK, this.onClick);
@@ -21,7 +21,7 @@ dk.wildside.display.widget.ListWidget = function(jQueryElement) {
 
 
 
-dk.wildside.display.widget.ListWidget.prototype = new dk.wildside.display.widget.Widget();
+dk.wildside.display.widget.ListWidget.prototype = new dk.wildside.display.Widget();
 
 dk.wildside.display.widget.ListWidget.prototype.getValue = function() {
 	//console.log('Asked for value');
@@ -107,7 +107,7 @@ dk.wildside.display.widget.ListWidget.prototype.removeMembers = function(members
 };
 
 dk.wildside.display.widget.ListWidget.prototype.removeAllMembers = function() {
-	
+
 };
 
 dk.wildside.display.widget.ListWidget.prototype.onClick = function(event) {

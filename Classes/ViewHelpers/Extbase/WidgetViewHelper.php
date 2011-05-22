@@ -3,7 +3,7 @@
 *  Copyright notice
 *
 *  (c) 2010 Claus Due <claus@wildside.dk>, Wildside A/S
-*  			
+*
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -34,41 +34,42 @@
  * @subpackage ViewHelpers\Extbase
  */
 class Tx_Fed_ViewHelpers_Extbase_WidgetViewHelper extends Tx_Fed_Core_ViewHelper_AbstractExtbaseViewHelper {
-	
+
 	/**
 	 * Register arguments for this ViewHelper
-	 * 
+	 *
 	 * @author Claus Due, Wildside A/S
 	 * @return void
 	 */
 	public function initializeArguments() {
+		parent::initializeArguments();
 		$this->registerArgument('object', 'Tx_Extbase_DomainObject_AbstractEntity', 'Optional object to bind to this AJAX Widget', FALSE);
 	}
-	
+
 	/**
 	 * @author Claus Due, Wildside A/S
 	 * @return string
 	 */
 	public function render() {
 		$this->setAction($this->arguments['action']);
-		if ($this->hasArgument('object')) {
+		if ($this->arguments->hasArgument('object')) {
 			$this->setObject($this->arguments['object']);
 		}
-		if ($this->hasArgument('controllerName')) {
+		if ($this->arguments->hasArgument('controllerName')) {
 			$this->setControllerName($this->arguments['controllerName']);
 		}
-		if ($this->hasArgument('extensionName')) {
+		if ($this->arguments->hasArgument('extensionName')) {
 			$this->setExtensionName($this->arguments['extensionName']);
 		}
-		if ($this->hasArgument('pluginName')) {
+		if ($this->arguments->hasArgument('pluginName')) {
 			$this->setPluginName($this->arguments['pluginName']);
 		}
 		return $this->renderChildren();
 	}
-	
+
 	/**
 	 * Render tag content
-	 * 
+	 *
 	 * @author Claus Due, Wildside A/S
 	 * @return string
 	 */
@@ -76,16 +77,17 @@ class Tx_Fed_ViewHelpers_Extbase_WidgetViewHelper extends Tx_Fed_Core_ViewHelper
 		$this->setAction($this->arguments['action']);
 		if ($this->arguments->hasArgument('object')) {
 			$this->setObject($this->arguments['object']);
-			$data = $this->propertyMapper->getValuesByAnnotation($data, 'json', TRUE);
+			$data = $this->propertyMapper->getValuesByAnnotation($this->getObject(), 'json', TRUE);
 		} else {
 			$this->setControllerName($this->arguments['controllerName']);
 			$this->setExtensionName($this->arguments['extensionName']);
 			$data = new stdClass();
 		}
-		$json = $this->jsonService->encode(array_merge($this->arguments['config'], array(
+		$json = $this->jsonService->encode(array_merge((array) $this->arguments['config'], array(
 			'api' => "?type={$this->arguments['typeNum']}",
 			'displayType' => $this->arguments->hasArgument('displayType') ? $this->arguments['displayType'] : $this->getDisplayType(),
 			'controller' => $this->getControllerName(),
+			'extension' => $this->getExtensionName(),
 			'page' => $this->arguments['pageUid'],
 			'action' => $this->getAction(),
 			'name' => $this->arguments['name'],
@@ -99,9 +101,9 @@ class Tx_Fed_ViewHelpers_Extbase_WidgetViewHelper extends Tx_Fed_Core_ViewHelper
 		</div>";
 		return $html;
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * @author Claus Due, Wildside A/S
 	 * @param string $templateFile
 	 * @param string $default
@@ -113,7 +115,7 @@ class Tx_Fed_ViewHelpers_Extbase_WidgetViewHelper extends Tx_Fed_Core_ViewHelper
 		}
 		return parent::getTemplate($templateFile);
 	}
-	
+
 }
 
 ?>

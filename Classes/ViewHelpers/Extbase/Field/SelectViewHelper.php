@@ -1,9 +1,9 @@
-<?php 
+<?php
 /***************************************************************
 *  Copyright notice
 *
 *  (c) 2010 Claus Due <claus@wildside.dk>, Wildside A/S
-*  			
+*
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -24,7 +24,7 @@
 ***************************************************************/
 
 /**
- * 
+ *
  * @author Claus Due, Wildside A/S
  * @version $Id$
  * @copyright Copyright belongs to the respective authors
@@ -33,29 +33,25 @@
  * @subpackage ViewHelpers\Extbase\Field
  */
 class Tx_Fed_ViewHelpers_Extbase_Field_SelectViewHelper extends Tx_Fed_ViewHelpers_Extbase_FieldViewHelper {
-	
+
 	/**
 	 * Render the Field
-	 * 
-	 * @param string $displayType Type (FED JS domain style) of Field 
-	 * @param string $name Name property of the Field
-	 * @param string $value Value property of the Field
-	 * @param string $class Class property of the Field
+	 *
+	 * @param string $displayType Type (FED JS domain style) of Field
 	 * @param array $options If multiple options, specify them here as value => label array
 	 * @param string $selectedValue The pre-selected value among $options
 	 * @param boolean $multi Whether or not this element allows multiple selections
 	 * @param integer $size Size (height) of the selector. If null or 1, it will be a regular dropdown box.
 	 */
 	public function render(
-			$displayType='dk.wildside.display.field.Select', 
-			$name=NULL, 
-			$value=NULL, 
-			$class=NULL, 
-			array $options=array('No', 'Yes'), 
+			$displayType='dk.wildside.display.field.Select',
+			array $options=array('No', 'Yes'),
 			$selectedValue=NULL,
 			$multi=FALSE,
 			$size=NULL) {
-		
+		$name = $this->getFieldName();
+		$value = $this->getFieldValue();
+		$class = $this->getFieldClass();
 		$html = "<select name='{$name}' class='{$class}'" . ($size && $size > 1 ? " size='{$size}'" : "") . ($multi ? " multiple='true'" : "") . ">";
 		foreach ($options as $value=>$label) {
 			if (is_object($label)) {
@@ -71,9 +67,9 @@ class Tx_Fed_ViewHelpers_Extbase_Field_SelectViewHelper extends Tx_Fed_ViewHelpe
 			$html .= $field;
 		}
 		$html .= "</select>";
-		return parent::render($html, $displayType, $name, $value);
+		return $this->renderChildren($html);
 	}
-	
+
 }
 
 

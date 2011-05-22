@@ -1,9 +1,9 @@
-<?php 
+<?php
 /***************************************************************
 *  Copyright notice
 *
 *  (c) 2010 Claus Due <claus@wildside.dk>, Wildside A/S
-*  			
+*
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -24,7 +24,7 @@
 ***************************************************************/
 
 /**
- * 
+ *
  * @author Claus Due, Wildside A/S
  * @version $Id$
  * @copyright Copyright belongs to the respective authors
@@ -32,8 +32,8 @@
  * @package Fed
  * @subpackage ViewHelpers\Extbase
  */
-class Tx_Fed_ViewHelpers_ApiViewHelper extends Tx_Fed_Core_ViewHelper_AbstractViewHelper {
-	
+class Tx_Fed_ViewHelpers_Extbase_ApiViewHelper extends Tx_Fed_Core_ViewHelper_AbstractViewHelper {
+
 	private $cache = FALSE;
 	private $compress = FALSE;
 	private $concat = TRUE;
@@ -41,12 +41,12 @@ class Tx_Fed_ViewHelpers_ApiViewHelper extends Tx_Fed_Core_ViewHelper_AbstractVi
 	private $cacheTTL = 0;
 	private $domain = FALSE;
 	private $extension = NULL;
-	
+
 	protected $type = 'js';
-	
+
 	/**
 	 * Includes all JS API name spaces for the domain $domain
-	 * 
+	 *
 	 * @param string $extension If specified, APIs are read from the default location in this extension
 	 * @param string $domain The domain path of the API to load. Defaults to dk.wildside; if specified along with $extension, only $domain's namespace will be loaded
 	 * @param boolean $cache If TRUE, the file is cached (works best if you also use one of the compress, concat or obfuscate options
@@ -60,9 +60,9 @@ class Tx_Fed_ViewHelpers_ApiViewHelper extends Tx_Fed_Core_ViewHelper_AbstractVi
 		if ($extension === NULL) {
 			$extension = $this->getExtensionName();
 		}
-		
+
 		$concat = FALSE;
-		
+
 		$this->extension = $extension;
 		$this->domain = $domain;
 		$this->cache = $cache;
@@ -71,27 +71,27 @@ class Tx_Fed_ViewHelpers_ApiViewHelper extends Tx_Fed_Core_ViewHelper_AbstractVi
 		$this->obfuscate = $obfuscate;
 		$this->cacheTTL = $cacheTTL;
 		$files = $this->detectNamespaceFiles();
-		
+
 		$commonCSSfile = t3lib_extMgm::siteRelPath($this->extension) . 'Resources/Public/Stylesheet/Common.css';
 		if (file_exists($commonCSSfile)) {
 			$this->includeFile($commonCSSfile);
 		}
-		
+
 		return $this->renderChildren();
 	}
-	
+
 	/**
 	 * @return string
 	 */
 	public function getExtensionName() {
 		return 'fed';
 	}
-	
+
 	/**
 	 * Detect all namespace
 	 * @eturn array Files which were included/detected
 	 */
-	private function detectNamespaceFiles() { 
+	private function detectNamespaceFiles() {
 		$jsBasePath = t3lib_extMgm::siteRelPath($this->extension) . 'Resources/Public/Javascript/';
 		$files = scandir($jsBasePath);
 		foreach ($files as $k=>$file) {
@@ -104,7 +104,7 @@ class Tx_Fed_ViewHelpers_ApiViewHelper extends Tx_Fed_Core_ViewHelper_AbstractVi
 		}
 		return $files;
 	}
-	
+
 	/**
 	 * Process include files for API
 	 * @return boolean
@@ -133,6 +133,11 @@ class Tx_Fed_ViewHelpers_ApiViewHelper extends Tx_Fed_Core_ViewHelper_AbstractVi
 				$this->includeFile($file, $this->cache, $this->compress);
 			}
 		}
+		// ad-hoc CSS
+		$css = <<< CSS
+.fed-json { display: none; }
+CSS;
+		$this->includeHeader($css, 'css');
 		return TRUE;
 	}
 }

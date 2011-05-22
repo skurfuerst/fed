@@ -1,9 +1,9 @@
-<?php 
+<?php
 /***************************************************************
 *  Copyright notice
 *
 *  (c) 2010 Claus Due <claus@wildside.dk>, Wildside A/S
-*  			
+*
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -24,7 +24,7 @@
 ***************************************************************/
 
 /**
- * 
+ *
  * @author Claus Due, Wildside A/S
  * @version $Id$
  * @copyright Copyright belongs to the respective authors
@@ -33,25 +33,25 @@
  * @subpackage ViewHelpers\Extbase\Field
  */
 class Tx_Fed_ViewHelpers_Extbase_Field_CheckboxViewHelper extends Tx_Fed_ViewHelpers_FieldViewHelper {
-	
+
 	/**
 	 * Render the Field
-	 * 
-	 * @param string $displayType Type (FED JS domain style) of Field 
-	 * @param string $name Name property of the Field
-	 * @param string $value Value property of the Field
-	 * @param string $class Class property of the Field
+	 *
+	 * @param string $displayType Type (FED JS domain style) of Field
 	 * @param boolean $checked Wether or not the checkbox is checked
-	 * @param string $sanitizer WS JS Domain style reference to validator method
 	 */
-	public function render($displayType='dk.wildside.display.field.Checkbox', $name=NULL, $value=NULL, $class=NULL, $checked=FALSE, $sanitizer=NULL) {
-		if ($checked == TRUE) {
+	public function render($displayType='dk.wildside.display.field.Checkbox', $checked=FALSE) {
+		$class = $this->getFieldClass();
+		$name = $this->getFieldName();
+		$value = $this->getFieldValue();
+		if ($checked === TRUE || $value == '1' || $value === TRUE) {
 			$checked = " checked='checked'";
 		}
+
 		$field = "<span class='input-checkbox-wrap'><input type='checkbox' name='{$name}' class='checkbox {$class}' value='{$value}' {$checked}/></span>";
-		return parent::render($field, $displayType, $name, $value, NULL, $sanitizer);
+		return $this->renderChildren($field);
 	}
-	
+
 }
 
 

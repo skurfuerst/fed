@@ -36,7 +36,7 @@ jQuery(document).ready(function() {
 // event/FieldEvent.js
 // event/MouseEvent.js
 // event/EventDispatcher.js
-// event/widget/WidgetEvent.js
+// event/WidgetEvent.js
 // event/widget/ListWidgetEvent.js
 // event/widget/FileUploadEvent.js
 // event/widget/RecordSelectorEvent.js
@@ -55,7 +55,7 @@ jQuery(document).ready(function() {
 // display/field/Button.js
 // display/field/Textarea.js
 // display/field/Value.js
-// display/widget/Widget.js
+// display/Widget.js
 // display/widget/ListWidget.js
 // display/widget/DatePickerWidget.js
 // display/widget/FileUploadWidget.js

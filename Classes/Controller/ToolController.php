@@ -33,19 +33,7 @@
  * @subpackage Controller
  */
 class Tx_Fed_Controller_ToolController extends Tx_Fed_Core_AbstractController {
-	
-	/**
-	 * @var Tx_Extbase_Service_CacheService
-	 */
-	protected $cacheService;
-	
-	/**
-	 * @param Tx_Extbase_Service_CacheService $cacheService
-	 */
-	public function injectCacheService(Tx_Extbase_Service_CacheService $cacheService) {
-		$this->cacheService = $cacheService;
-	}
-	
+
 	/**
 	 * @param string $target Keyword target of the cache(s) to clear (all, extbase, page, config)
 	 * @return string

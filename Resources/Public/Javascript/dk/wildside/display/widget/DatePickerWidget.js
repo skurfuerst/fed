@@ -1,24 +1,24 @@
 /***************************************************************
 * DatePickerWidget - Gui Object
-* 
+*
 * WSAPI interface for jQuery date picker
-* 
+*
 ***************************************************************/
 
 dk.wildside.display.widget.DatePickerWidget = function(jQueryElement) {
-	
-	dk.wildside.display.widget.Widget.call(this, jQueryElement);
-	
+
+	dk.wildside.display.Widget.call(this, jQueryElement);
+
 	this.dateFormat = this.config.data.dateFormat;
-	
+
 	var p = this;
-	
+
 	// Bootstrap all date fields found below this widget
 	this.context.find(":input.date-field").not(".hasDatepicker").datepicker({ dateFormat : p.dateFormat });
-	
+
 };
 
-dk.wildside.display.widget.DatePickerWidget.prototype = new dk.wildside.display.widget.Widget();
+dk.wildside.display.widget.DatePickerWidget.prototype = new dk.wildside.display.Widget();
 
 
 /*
@@ -30,12 +30,12 @@ dk.wildside.display.widget.DatePickerWidget.prototype.setValue = function(value)
 
 dk.wildside.display.widget.DatePickerWidget.prototype.onDirtyField = function(event) {
 	event.cancelled = true;
-	this.dispatchEvent(dk.wildside.event.widget.WidgetEvent.DIRTY);
+	this.dispatchEvent(dk.wildside.event.WidgetEvent.DIRTY);
 };
 
 
 dk.wildside.display.widget.DatePickerWidget.prototype.getValue = function() {
-	
+
 	// This function reads the formatted string from the field, and returns a UNIX timestamp instead,
 	// as long as the input format matches dateFormat (as set in the widget's configuration).
 	var tmpVal = this.context.find(":input").val();

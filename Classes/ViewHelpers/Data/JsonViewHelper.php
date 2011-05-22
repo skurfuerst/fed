@@ -32,7 +32,7 @@
  * @package Fed
  * @subpackage ViewHelpers\Data
  */
-class Tx_WildsideExtbase_ViewHelpers_Data_JsonViewHelper extends Tx_WildsideExtbase_Core_ViewHelper_AbstractViewHelper {
+class Tx_Fed_ViewHelpers_Data_JsonViewHelper extends Tx_Fed_Core_ViewHelper_AbstractViewHelper {
 	
 	
 	/**
@@ -41,7 +41,7 @@ class Tx_WildsideExtbase_ViewHelpers_Data_JsonViewHelper extends Tx_WildsideExtb
 	 * @return string
 	 */
 	public function render($data) {
-		$jsonHandler = $this->objectManager->get('Tx_WildsideExtbase_Utility_JSON');
+		$jsonHandler = $this->objectManager->get('Tx_Fed_Utility_JSON');
 		$string = $jsonHandler->encode($data);
 		return (string) $string;
 	}

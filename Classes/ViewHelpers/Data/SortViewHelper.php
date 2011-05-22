@@ -32,7 +32,7 @@
  * @package Fed
  * @subpackage ViewHelpers\Data
  */
-class Tx_WildsideExtbase_ViewHelpers_Data_SortViewHelper extends Tx_Fluid_Core_ViewHelper_AbstractTagBasedViewHelper {
+class Tx_Fed_ViewHelpers_Data_SortViewHelper extends Tx_Fluid_Core_ViewHelper_AbstractTagBasedViewHelper {
 	
 	public function initializeArguments() {
 		$this->registerArgument('sortBy', 'string', 'Which property/field to sort by - leave out for numeric sorting based on indexes(keys)', FALSE, FALSE);

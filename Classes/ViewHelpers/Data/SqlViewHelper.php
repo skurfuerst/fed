@@ -33,7 +33,7 @@
  * @package Fed
  * @subpackage ViewHelpers\Data
  */
-class Tx_WildsideExtbase_ViewHelpers_Data_SqlViewHelper extends Tx_Fluid_Core_ViewHelper_AbstractViewHelper {
+class Tx_Fed_ViewHelpers_Data_SqlViewHelper extends Tx_Fluid_Core_ViewHelper_AbstractViewHelper {
 	/**
 	 * 
 	 * @param string $name

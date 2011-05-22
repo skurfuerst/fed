@@ -93,7 +93,7 @@ dk.wildside.event.EventDispatcher.prototype.dispatchEvent = function(event) {
 		return instance.dispatchEvent.call(instance, event);
 	};
 	//console.info('Dispatching event: '+event.type+' with ID ' + event.id + '. My identity: ' + instance.identity);
-	
+
 	event.setCurrentTarget(instance);
 	if (typeof instance.listeners[event.type] != 'undefined') {
 		instance.listeners[event.type].each(function(func) {
@@ -121,7 +121,7 @@ dk.wildside.event.EventDispatcher.prototype.captureJQueryEvents = function(onlyE
 		events.merge(onlyEvents);
 	} else {
 		events.merge(['change', 'click', 'keydown', 'keyup', 'keypress', 'focus', 'blur',
-		              'mouseover', 'mousemove', 'mouseenter', 'mouseleave', 'mouseup', 
+		              'mouseover', 'mousemove', 'mouseenter', 'mouseleave', 'mouseup',
 		              'mousedown', 'resize', 'select', 'scroll', 'submit']);
 	};
 	events.each(function(eventType) {

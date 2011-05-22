@@ -33,15 +33,15 @@
  * @package Fed
  * @subpackage ViewHelpers\Data
  */
-class Tx_WildsideExtbase_ViewHelpers_Data_SourceViewHelper extends Tx_Fluid_Core_ViewHelper_AbstractViewHelper {
+class Tx_Fed_ViewHelpers_Data_SourceViewHelper extends Tx_Fluid_Core_ViewHelper_AbstractViewHelper {
 	/**
 	 * 
 	 * @param string $name
 	 * @param mixed $source
 	 */
 	public function render($name=NULL, $source) {
-		$repository = $this->objectManager->get('Tx_WildsideExtbase_Domain_Repository_DataSourceRepository');
-		$parser = $this->objectManager->get('Tx_WildsideExtbase_Utility_DataSourceParser');
+		$repository = $this->objectManager->get('Tx_Fed_Domain_Repository_DataSourceRepository');
+		$parser = $this->objectManager->get('Tx_Fed_Utility_DataSourceParser');
 		if (is_array($source)) {
 			$sources = $respository->findByUids($source);
 		} else {

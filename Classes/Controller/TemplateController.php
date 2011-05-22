@@ -33,17 +33,17 @@
  * @package Fed
  * @subpackage Controller
  */
- class Tx_Fed_Controller_TemplateController extends Tx_Fed_Core_AbstractController {
- 	
- 	/**
- 	 * Show template as defined in flexform
- 	 * @return string
- 	 */
- 	public function showAction() {
- 		$json = $this->objectManager->get('Tx_Fed_Utility_JSON');
- 		$flexform = $this->getFlexForm();
+class Tx_Fed_Controller_TemplateController extends Tx_Fed_Core_AbstractController {
+
+	/**
+	 * Show template as defined in flexform
+	 * @return string
+	 */
+	public function showAction() {
+		$json = $this->objectManager->get('Tx_Fed_Utility_JSON');
+		$flexform = $this->getFlexForm();
 		$this->view = $this->objectManager->get('Tx_Fluid_View_StandaloneView');
- 		if ($flexform['templateFile']) {
+		if ($flexform['templateFile']) {
 			$this->view->setTemplateSource(file_get_contents(PATH_site . $flexform['templateFile']));
 		} else if ($flexform['templateSource']) {
 			$source = $flexform['templateSource'];
@@ -56,9 +56,8 @@
 			}
 		}
 		return $this->view->render();
- 	}
- 	
- }
+	}
+
+}
  
- 
- ?>
+?>

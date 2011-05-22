@@ -1,25 +1,25 @@
 /***************************************************************
 * RecordSelectorWidget - Gui Object
-* 
+*
 * Highly configurable Record Selector - acts as a regular Widget
-* but allows you to manipulate the value of a field (or more fields 
-* if you subclass this class) by selecting records from the 
+* but allows you to manipulate the value of a field (or more fields
+* if you subclass this class) by selecting records from the
 * database through a list/search/order/add/remove-type interface
-* 
+*
 ***************************************************************/
 
 dk.wildside.display.widget.RecordSelectorWidget = function(jQueryElement) {
 	if (typeof jQueryElement == 'undefined') {
 		return this;
 	};
-	dk.wildside.display.widget.Widget.call(this, jQueryElement);
-	
+	dk.wildside.display.Widget.call(this, jQueryElement);
+
 	this.identity = 'recordselector-widget';
 	this.searchTimer = false;
 	this.hasSearched = false;
 	this.resultList = this.children.find('results');
 	this.memberList = this.children.find('selections');
-	
+
 	// use the DIRTYFIELD listener to determine which action was requested (by which Field triggered the event)
 	this.addEventListener(dk.wildside.event.FieldEvent.KEYPRESS, this.onDirtyField);
 	// make the widget itself listen for requests to start searching - these can come from the outside too
@@ -30,24 +30,24 @@ dk.wildside.display.widget.RecordSelectorWidget = function(jQueryElement) {
 	this.addEventListener(dk.wildside.event.widget.ListWidgetEvent.MEMBER_ADDED, this.onAdd);
 	// listen to own Events of type 'selection removed' (will fire when an entry is removed; the Event will contain a reference to what was removed)
 	this.addEventListener(dk.wildside.event.widget.ListWidgetEvent.MEMBER_REMOVED, this.onRemove);
-	
+
 	this.resultList.hide();
-	
+
 	//console.info(this.context);
 };
 
 
-dk.wildside.display.widget.RecordSelectorWidget.prototype = new dk.wildside.display.widget.Widget();
+dk.wildside.display.widget.RecordSelectorWidget.prototype = new dk.wildside.display.Widget();
 
 
 
 // DATA MANIPULATION METHODS
 /*
 dk.wildside.display.widget.RecordSelectorWidget.setValue = function() {
-	// setting the value should analyze the current list of values, ignore existing, 
-	// remove entries not in the new value and finally call selectResult(resultUid) on 
-	// each new entry - to allow onAdd events to fire, in case a subclasser wants to 
-	// perform custom actions such as resolving additional information or setting a 
+	// setting the value should analyze the current list of values, ignore existing,
+	// remove entries not in the new value and finally call selectResult(resultUid) on
+	// each new entry - to allow onAdd events to fire, in case a subclasser wants to
+	// perform custom actions such as resolving additional information or setting a
 	// special class on selected new additions
 };
 */
@@ -134,14 +134,14 @@ dk.wildside.display.widget.RecordSelectorWidget.prototype.onSearch = function(ev
 };
 
 dk.wildside.display.widget.RecordSelectorWidget.prototype.onResult = function(event) {
-	
-	
+
+
 	this.hasSearched = false;
 	event.cancelled = true;
 };
 
 dk.wildside.display.widget.RecordSelectorWidget.prototype.onSelect = function(event) {
-	
+
 };
 
 dk.wildside.display.widget.RecordSelectorWidget.prototype.onAdd = function(event) {
@@ -188,5 +188,5 @@ dk.wildside.display.widget.RecordSelectorWidget.prototype.onRemove = function(ev
 };
 
 dk.wildside.display.widget.RecordSelectorWidget.prototype.onSort = function(event) {
-	
+
 };

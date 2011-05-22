@@ -32,7 +32,7 @@
  * @package Fed
  * @subpackage ViewHelpers\Data
  */
-class Tx_WildsideExtbase_ViewHelpers_Data_VarViewHelper extends Tx_WildsideExtbase_Core_ViewHelper_AbstractViewHelper {
+class Tx_Fed_ViewHelpers_Data_VarViewHelper extends Tx_Fed_Core_ViewHelper_AbstractViewHelper {
 	
 	/**
 	 * Get or set a variable

@@ -1,9 +1,9 @@
-<?php 
+<?php
 /***************************************************************
 *  Copyright notice
 *
 *  (c) 2010 Claus Due <claus@wildside.dk>, Wildside A/S
-*  			
+*
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -24,7 +24,7 @@
 ***************************************************************/
 
 /**
- * 
+ *
  * @author Claus Due, Wildside A/S
  * @version $Id$
  * @copyright Copyright belongs to the respective authors
@@ -33,28 +33,23 @@
  * @subpackage ViewHelpers\Extbase\Field
  */
 class Tx_Fed_ViewHelpers_Extbase_Field_RadioViewHelper extends Tx_Fed_ViewHelpers_Extbase_FieldViewHelper {
-	
+
 	/**
 	 * Render the Field
-	 * 
-	 * @param string $displayType Type (FED JS domain style) of Field 
-	 * @param string $name Name property of the Field
-	 * @param string $value Value property of the Field
-	 * @param string $class Class property of the Field
+	 *
+	 * @param string $displayType Type (FED JS domain style) of Field
 	 * @param mixed $options If multiple options, specify them here as value => label array
 	 * @param string $selectedValue The pre-selected value among $options
 	 * @param boolean $labels If FALSE, no labels are echoed
-	 * @param string $sanitizer FED JS Domain style reference to validator method
 	 */
 	public function render(
-			$displayType='dk.wildside.display.field.Radio', 
-			$name=NULL, 
-			$value=NULL, 
-			$class=NULL, 
-			$options=array('No', 'Yes'), 
+			$displayType='dk.wildside.display.field.Radio',
+			$options=array('No', 'Yes'),
 			$selectedValue=NULL,
-			$labels=TRUE,
-			$sanitizer=NULL) {
+			$labels=TRUE) {
+		$name = $this->getFieldName();
+		$value = $this->getFieldValue();
+		$class = $this->getFieldClass();
 		if (is_string($options)) {
 			$options = explode(',', $options);
 			foreach ($options as $k=>$v) {
@@ -69,18 +64,18 @@ class Tx_Fed_ViewHelpers_Extbase_Field_RadioViewHelper extends Tx_Fed_ViewHelper
 			} else {
 				$checked = '';
 			}
-			
+
 			if ($labels === FALSE) {
 				$label = '';
 			}
-			
+
 			$field = "<label class='input-field-label'><span class='input-field-label-text'>{$label}</span> <input type='radio' name='{$name}_{$uniqID}' class='input-radio {$class}' onclick='this.blur();' value='{$value}' {$checked} /></label>";
 			$html .= $field;
 		}
 		$html .= "</span>";
-		return parent::render($html, $displayType, $name, $value, NULL, $sanitizer);
+		return $this->renderChildren($html);
 	}
-	
+
 }
 
 

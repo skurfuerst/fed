@@ -1,9 +1,9 @@
-<?php 
+<?php
 /***************************************************************
 *  Copyright notice
 *
 *  (c) 2010 Claus Due <claus@wildside.dk>, Wildside A/S
-*  			
+*
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -24,7 +24,7 @@
 ***************************************************************/
 
 /**
- * 
+ *
  * @author Claus Due, Wildside A/S
  * @version $Id$
  * @copyright Copyright belongs to the respective authors
@@ -32,34 +32,28 @@
  * @package Fed
  * @subpackage ViewHelpers\Extbase\Field
  */
-class Tx_Fed_ViewHelpers_Extbase_Field_AlohaViewHelper extends Tx_Fed_ViewHelpers_FieldViewHelper {
-	
+class Tx_Fed_ViewHelpers_Extbase_Field_AlohaViewHelper extends Tx_Fed_ViewHelpers_Extbase_FieldViewHelper {
+
 	/**
 	 * Render the Field
-	 * 
-	 * @param string $displayType Type (WS JS domain style) of Field 
-	 * @param string $name Name property of the Field
-	 * @param string $value Value property of the Field
-	 * @param string $class Class property of the Field
+	 *
+	 * @param string $displayType Type (WS JS domain style) of Field
 	 * @param string $type Type (input, hidden, radio, checkbox) of the <input> field
-	 * @param string $sanitizer WS JS Domain style reference to validator method
 	 * @param string $tag Tagname to use for rendered container
 	 * @param string $ruleSelector CSS selector for rule. If specified, needs rule parameter too
 	 * @param array $rule Array of rules for elements matching ruleSelector CSS selector parameter
 	 * @param string $placeholder Placeholder text if length of current text is zero
 	 */
 	public function render(
-			$displayType='dk.wildside.display.field.Aloha', 
-			$name=NULL, 
-			$value=NULL, 
-			$class=NULL, 
-			$type='input', 
-			$sanitizer=NULL, 
+			$displayType='dk.wildside.display.field.Aloha',
+			$type='input',
 			$tag='p',
 			$ruleSelector=NULL,
 			$rule=NULL,
 			$placeholder=NULL) {
 		$this->includes();
+		$value = $this->getFieldValue();
+		$class = $this->getFieldClass();
 		if (strlen($value) == 0 && $placeholder) {
 			$inner = $placeholder;
 		} else {
@@ -69,9 +63,9 @@ class Tx_Fed_ViewHelpers_Extbase_Field_AlohaViewHelper extends Tx_Fed_ViewHelper
 		if ($ruleSelector && $rule) {
 			$field .= $this->getRule($ruleSelector, $rule);
 		}
-		return parent::render($field, $displayType, $name, $value, NULL, $sanitizer);
+		return $this->renderChildren($field);
 	}
-	
+
 	private function getRule($selector, array $rule=NULL) {
 		$json = json_encode($rule);
 		if ($GLOBALS['fedAlohaRules'][$selector] == $json) {
@@ -80,7 +74,7 @@ class Tx_Fed_ViewHelpers_Extbase_Field_AlohaViewHelper extends Tx_Fed_ViewHelper
 		$GLOBALS['fedAlohaRules'][$selector] = $json;
 		return "<div class='fed-aloha-rule' title='{$selector}'>{$json}</div>";
 	}
-	
+
 	private function includes() {
 		$jsBasePath = t3lib_extMgm::siteRelPath('fed') . 'Resources/Public/Javascript/com/gentics/aloha/';
 		$files = array(
@@ -101,7 +95,7 @@ GENTICS.Aloha.settings = {
 	//logLevels: {'error': true, 'warn': true, 'info': false, 'debug': false},
 	logLevels : false,
 	errorhandling : false,
-	ribbon: false,	
+	ribbon: false,
 	"i18n": { "current": "en" },
 	"plugins": {
 		"com.gentics.aloha.plugins.Format": {
@@ -124,7 +118,7 @@ GENTICS.Aloha.settings = {
 			/*,
 			onHrefChange: function( obj, href, item ) {
 				// Make sure that links are not allowed inside Aloha-objects instantiated
-				// on headers. Sadly, the above configuration is not enough to keep the 
+				// on headers. Sadly, the above configuration is not enough to keep the
 				// link button hidden at all times.
 				// ... and this code doesn't work. Sigh.
 				var p = jQuery(obj).parents('.GENTICS_editable:first').filter(':header');
@@ -147,13 +141,11 @@ GENTICS.Aloha.EventRegistry.subscribe(GENTICS.Aloha, "editableDeactivated", func
 	};
 });
 SCRIPT;
-		#$includer = t3lib_div::makeInstance('Tx_Fed_ViewHelpers_Inject_JsViewHelper');
-		#$includer->type = Tx_Fed_ViewHelpers_InjectViewHelper::TYPE_JAVASCRIPT;
-		$includer->includeFiles($files);
-		$includer->render($init);
+		$this->includeFiles($files);
+		$this->includeHeader($init, 'js');
 		return TRUE;
 	}
-	
+
 }
 
 

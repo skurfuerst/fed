@@ -1,8 +1,8 @@
-<?php 
+<?php
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2010 
+*  (c) 2010
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -24,7 +24,7 @@
 
 /**
  * Bootstrap wrapper for special JSON-only communication between AJAX Widgets and Extbase Controllers
- * 
+ *
  * @author Claus Due, Wildside A/S
  * @version $Id$
  * @copyright Copyright belongs to the respective authors
@@ -34,20 +34,20 @@
  */
 
 class Tx_Fed_Core_Bootstrap extends Tx_Extbase_Core_Bootstrap {
-	
+
 	private $mapper;
 	private $jsonService;
-	
+
 	/**
 	 * @param Tx_Fed_Object_ObjectManager $objectManager
 	 */
 	public function injectWildsideObjectManager(Tx_Fed_Object_ObjectManager $objectManager) {
 		$this->injectObjectManager($objectManager);
 	}
-	
+
 	/**
 	 * Runs the request
-	 * 
+	 *
 	 * @param string $content
 	 * @param array $configuration
 	 */
@@ -62,11 +62,12 @@ class Tx_Fed_Core_Bootstrap extends Tx_Extbase_Core_Bootstrap {
 		if ($response === NULL) {
 			return;
 		}
+		$this->resetSingletons();
 		try {
 			$content = $response->getContent();
 			$testJSON = $this->jsonService->decode($content);
 			$object = $this->detectModelObject($content);
-			if (is_object($object) && !$testJSON) {
+			if (is_array($object) && !$testJSON) {
 				$data = $object;
 			} else if (is_array($testJSON)) {
 				foreach ($testJSON as $k=>$v) {
@@ -99,16 +100,15 @@ class Tx_Fed_Core_Bootstrap extends Tx_Extbase_Core_Bootstrap {
 			$err->message = $e->getMessage();
 			array_push($data->errors, $err);
 		}
-		$this->resetSingletons();
 		$output = $this->jsonService->encode($data);
 		return $output;
 	}
-	
+
 	private function getErrorMessage(Exception $e) {
 		$message = $e->getMessage();
 		return $message;
 	}
-	
+
 	private function wrapResponse($responseData) {
 		$data = new stdClass();
 		$data->payload = $responseData;
@@ -117,18 +117,20 @@ class Tx_Fed_Core_Bootstrap extends Tx_Extbase_Core_Bootstrap {
 		$data->info = array();
 		return $data;
 	}
-	
+
 	private function detectModelObject($content) {
 		list ($dataType, $uid) = explode(':', $content);
-		if (class_exists($dataType) && intval($uid) > 0) {
-			$object = $this->objectManager->get($content);
+		if (class_exists($dataType) && intval($uid) > 0) {;
+			$repositoryClass = str_replace('_Model_', '_Repository_', $dataType) . 'Repository';
+			$repository = $this->objectManager->get($repositoryClass);
+			$object = $repository->findOneByUid($uid);
 			$data = $this->mapper->getValuesByAnnotation($object, 'json', TRUE);
 		} else {
 			$data = $content;
 		}
 		return $data;
 	}
-	
+
 }
 
 ?>

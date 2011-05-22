@@ -2,7 +2,7 @@
 
 
 dk.wildside.core.Spawner = function() {
-	
+
 };
 
 dk.wildside.core.Spawner.prototype.get = function(jQueryElement) {

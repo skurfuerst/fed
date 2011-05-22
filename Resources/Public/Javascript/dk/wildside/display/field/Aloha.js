@@ -25,7 +25,7 @@ dk.wildside.display.field.Aloha.prototype.getValue = function() {
 	if (this.fieldContext.hasClass(this.selectors.alohaConfigBasic)) {
 		// If this field matches the basic configuration, use the prototype'd strip_tags() to
 		// remove all HTML from the value. Hopefully there should be nothing in there, but
-		// in rare cases, Aloha can mess up and send some along anyway. This would break the 
+		// in rare cases, Aloha can mess up and send some along anyway. This would break the
 		// JSON return, and we can't have that.
 		value = value.strip_tags();
 	};
@@ -50,6 +50,6 @@ dk.wildside.display.field.Aloha.prototype.onTimer = function() {
 		var issuer = this;
 		this.timer = setTimeout(function() {
 			issuer.onTimer.call(issuer);
-		}, 1000);
+		}, 1200);
 	};
 };

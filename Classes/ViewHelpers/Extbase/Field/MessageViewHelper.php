@@ -1,9 +1,9 @@
-<?php 
+<?php
 /***************************************************************
 *  Copyright notice
 *
 *  (c) 2010 Claus Due <claus@wildside.dk>, Wildside A/S
-*  			
+*
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -24,7 +24,7 @@
 ***************************************************************/
 
 /**
- * 
+ *
  * @author Claus Due, Wildside A/S
  * @version $Id$
  * @copyright Copyright belongs to the respective authors
@@ -33,19 +33,19 @@
  * @subpackage ViewHelpers\Extbase\Field
  */
 class Tx_Fed_ViewHelpers_Extbase_Field_MessageViewHelper extends Tx_Fed_ViewHelpers_Extbase_FieldViewHelper {
-	
+
 	/**
 	 * Render the Field
-	 * 
+	 *
 	 * @param string $displayType Type (FED JS domain style) of Field
-	 * @param string $tag The tagName to use as wrapper 
-	 * @param string $name Name property of the Field
-	 * @param string $value Value property of the Field
-	 * @param string $class Class property of the Field
+	 * @param string $tag The tagName to use as wrapper
 	 * @param boolean $hidden If TRUE, start the Field as hidden (is hidden by Field constructor in JS)
 	 * @param int $timeout Number of seconds this message stays visible. Zero for permanent visibility (in case you close the message in another way)
 	 */
-	public function render($displayType='dk.wildside.display.field.Message', $tag='div', $name=NULL, $value=NULL, $class=NULL, $hidden=FALSE, $timeout=10) {
+	public function render($displayType='dk.wildside.display.field.Message', $tag='div', $hidden=FALSE, $timeout=10) {
+		$value = $this->getFieldValue();
+		$name = $this->getFieldName();
+		$class = $this->getFieldClass();
 		if ($value === NULL) {
 			$value = $this->renderChildren();
 		}
@@ -54,10 +54,9 @@ class Tx_Fed_ViewHelpers_Extbase_Field_MessageViewHelper extends Tx_Fed_ViewHelp
 		$config = new stdClass();
 		$config->hidden = $hidden ? 1 : 0;
 		$config->timeout = $timeout;
-		$sanitizer = NULL;
-		return parent::render($field, $displayType, $name, $value, $class, $sanitizer, $config);
+		return $this->renderChildren($value);
 	}
-	
+
 }
 
 

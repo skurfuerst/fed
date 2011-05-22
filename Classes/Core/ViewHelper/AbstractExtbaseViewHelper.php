@@ -1,9 +1,9 @@
-<?php 
+<?php
 /***************************************************************
 *  Copyright notice
 *
 *  (c) 2010 Claus Due <claus@wildside.dk>, Wildside A/S
-*  			
+*
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -24,7 +24,7 @@
 ***************************************************************/
 
 /**
- * 
+ *
  * @author Claus Due, Wildside A/S
  * @version $Id$
  * @copyright Copyright belongs to the respective authors
@@ -33,43 +33,43 @@
  * @subpackage ViewHelpers\Extbase
  */
 class Tx_Fed_Core_ViewHelper_AbstractExtbaseViewHelper extends Tx_Fed_Core_ViewHelper_AbstractViewHelper {
-	
+
 	/**
 	 * Arguments which are added to template variable container for tag content rendering
 	 * @var array $transferArguments
 	 */
 	protected $transferArguments = array('object', 'controllerName', 'extensionName', 'pluginName', 'action', 'pageUid');
-	
+
 	/**
 	 * @var Tx_Fed_Utility_PropertyMapper
 	 */
 	protected $propertyMapper;
-	
+
 	/**
 	 * @var string $action
 	 */
 	protected $action;
-	
+
 	/**
 	 * @var string
 	 */
 	protected $controllerName;
-	
+
 	/**
 	 * @var string
 	 */
 	protected $extensionName;
-	
+
 	/**
 	 * @var string
 	 */
 	protected $pluginName;
-	
+
 	/**
 	 * @var Tx_Extbase_DomainObject_AbstractEntity
 	 */
 	protected $object;
-	
+
 	/**
 	 * Register arguments for this ViewHelper
 	 *
@@ -77,6 +77,7 @@ class Tx_Fed_Core_ViewHelper_AbstractExtbaseViewHelper extends Tx_Fed_Core_ViewH
 	 * @return void
 	 */
 	public function initializeArguments() {
+		#parent::initializeArguments();
 		$this->registerArgument('class', 'string', 'Classname (CSS) for rendered container');
 		$this->registerArgument('extensionName', 'string', 'Name of the extension which contains a handling Controller', FALSE, $this->getControllerName());
 		$this->registerArgument('pluginName', 'string', 'Plugin name - overrides detection from specified object(s)', FALSE, $this->getPluginName());
@@ -88,7 +89,7 @@ class Tx_Fed_Core_ViewHelper_AbstractExtbaseViewHelper extends Tx_Fed_Core_ViewH
 		$this->registerArgument('name', 'string', 'Optional name of the instance', FALSE);
 		$this->registerArgument('config', 'array', 'Optional base configuration - each value willl be overridden by other parameters if specified', FALSE, array());
 	}
-	
+
 	/**
 	 * @author Claus Due, Wildside A/S
 	 * @param Tx_Fed_Utility_PropertyMapper $propertyMapper
@@ -96,10 +97,10 @@ class Tx_Fed_Core_ViewHelper_AbstractExtbaseViewHelper extends Tx_Fed_Core_ViewH
 	public function injectPropertyMapper(Tx_Fed_Utility_PropertyMapper $propertyMapper) {
 		$this->propertyMapper = $propertyMapper;
 	}
-	
+
 	/**
 	 * Get name of (the current) Controller
-	 * 
+	 *
 	 * @author Claus Due, Wildside A/S
 	 * @return string
 	 * @api
@@ -107,17 +108,17 @@ class Tx_Fed_Core_ViewHelper_AbstractExtbaseViewHelper extends Tx_Fed_Core_ViewH
 	public function getControllerName() {
 		return $this->controllerName;
 	}
-	
+
 	/**
 	 * @param string $controllerName
 	 */
 	public function setControllerName($controllerName) {
 		$this->controllerName = $controllerName;
 	}
-	
+
 	/**
 	 * Get name of (the current) Extension
-	 * 
+	 *
 	 * @author Claus Due, Wildside A/S
 	 * @return string
 	 * @api
@@ -125,89 +126,101 @@ class Tx_Fed_Core_ViewHelper_AbstractExtbaseViewHelper extends Tx_Fed_Core_ViewH
 	public function getExtensionName() {
 		return $this->extensionName;
 	}
-	
+
 	/**
 	 * @param string $extensionName
 	 */
 	public function setExtensionName($extensionName) {
 		$this->extensionName = $extensionName;
 	}
-	
+
 	/**
 	 * Get name of (the current) Plugin
-	 * 
+	 *
 	 * @author Claus Due, Wildside A/S
 	 * @return string
 	 * @api
 	 */
 	public function getPluginName() {
-		return $this->pluginName();
+		return $this->pluginName;
 	}
-	
+
 	/**
 	 * @param string $pluginName
 	 */
 	public function setPluginName($pluginName) {
 		$this->pluginName = $pluginName;
 	}
-	
+
 	/**
 	 * Get the currently selected controller action
-	 * 
+	 *
 	 * @return string
 	 */
 	public function getAction() {
 		return $this->action;
 	}
-	
+
 	/**
 	 * Set the current controller action
-	 * 
+	 *
 	 * @param string $action
 	 * @return void
 	 */
 	public function setAction($action) {
 		$this->action = $action;
 	}
-	
+
 	/**
 	 * @param Tx_Extbase_DomainObject_AbstractEntity $object
 	 * @return void
 	 */
 	public function setObject(Tx_Extbase_DomainObject_AbstractEntity $object) {
-		list ($prefix, $extensionName, $subPackage, $controllerName) = explode('_', get_class($object));;
+		list ($prefix, $extensionName, $subPackageDomain, $subPackageModel, $controllerName) = explode('_', get_class($object));;
 		$controllerName = str_replace('Controller', '', $controllerName);
 		$pluginName = Tx_Extbase_Utility_Extension::getPluginNameByAction($extensionName, $controllerName, $this->getAction());
 		$this->setPluginName($pluginName);
 		$this->setControllerName($controllerName);
-		$this->setExtensionName($extensionName); 
+		$this->setExtensionName($extensionName);
 		$this->object = $object;
 	}
-	
+
 	/**
 	 * @return Tx_Extbase_DomainObject_AbstractEntity
 	 */
 	public function getObject() {
 		return $this->object;
 	}
-	
+
 	/**
-	 * Get type of display as derived from instance class names - or the value 
+	 * Get type of display as derived from instance class names - or the value
 	 * used as ViewHelper argument.
-	 * 
+	 *
 	 * @author Claus Due, Wildside A/S
 	 * @return string
 	 * @api
 	 */
 	public function getDisplayType() {
 		$thisClass = get_class($this);
-		$jsClass = str_replace('Tx_Fed_ViewHelpers_Extbase_', str_replace('ViewHelper', '', $thisClass));
+		$isComponent = strpos($thisClass, 'Component');
+		$isWidget = strpos($thisClass, 'Widget');
+		$isField = strpos($thisClass, 'Field');
+		$jsClass = str_replace('ViewHelper', '', str_replace('Tx_Fed_ViewHelpers_Extbase_', '', $thisClass));
 		$jsClass = str_replace('Widget_', 'widget.', $jsClass);
 		$jsClass = str_replace('Component_', 'component.', $jsClass);
+		if ($jsClass === '') {
+			if ($isField) {
+				$jsClass = 'Field';
+			} else if ($isWidget) {
+				$jsClass = 'Widget';
+			} else if ($isComponent) {
+				$jsClass = 'Component';
+			}
+		}
 		$jsClass = "dk.wildside.display.{$jsClass}";
 		return $jsClass;
 	}
-	
+
 	/**
 	 * Renders tag content with managed template variables
 	 * @return string
@@ -222,14 +235,14 @@ class Tx_Fed_Core_ViewHelper_AbstractExtbaseViewHelper extends Tx_Fed_Core_ViewH
 		}
 		$content = parent::renderChildren();
 		foreach ($defined as $argument) {
-			$this->templteVariableContainer->remove($argument);
+			$this->templateVariableContainer->remove($argument);
 		}
 		return $content;
 	}
-	
+
 	/**
 	 * Get a prefix for a HTTP GET/POST request maching configuration
-	 * 
+	 *
 	 * @return string
 	 */
 	public function getRequestPrefix() {
@@ -240,7 +253,7 @@ class Tx_Fed_Core_ViewHelper_AbstractExtbaseViewHelper extends Tx_Fed_Core_ViewH
 		$prefix = "tx_{$ext}_{$pi}";
 		return $prefix;
 	}
-	
+
 }
 
 ?>
