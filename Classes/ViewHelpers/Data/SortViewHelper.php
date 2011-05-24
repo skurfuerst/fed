@@ -1,9 +1,9 @@
-<?php 
+<?php
 /***************************************************************
 *  Copyright notice
 *
 *  (c) 2010 Claus Due <claus@wildside.dk>, Wildside A/S
-*  			
+*
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -24,7 +24,7 @@
 ***************************************************************/
 
 /**
- * 
+ *
  * @author Claus Due, Wildside A/S
  * @version $Id$
  * @copyright Copyright belongs to the respective authors
@@ -32,18 +32,18 @@
  * @package Fed
  * @subpackage ViewHelpers\Data
  */
-class Tx_Fed_ViewHelpers_Data_SortViewHelper extends Tx_Fluid_Core_ViewHelper_AbstractTagBasedViewHelper {
-	
+class Tx_WildsideExtbase_ViewHelpers_Data_SortViewHelper extends Tx_Fluid_Core_ViewHelper_AbstractTagBasedViewHelper {
+
 	public function initializeArguments() {
 		$this->registerArgument('sortBy', 'string', 'Which property/field to sort by - leave out for numeric sorting based on indexes(keys)', FALSE, FALSE);
 		$this->registerArgument('order', 'string', 'ASC or DESC', FALSE, 'ASC');
 		$this->registerArgument('reference', 'boolean', 'TRUE to change variable and return it, FALSE to only return it', FALSE, TRUE);
 	}
-	
+
 	/**
 	 * "Render" method - sorts a target list-type target. Either $array or $objectStorage must be specified. If both are,
 	 * ObjectStorage takes precedence.
-	 * 
+	 *
 	 * @param array $array Optional; use to sort an array
 	 * @param Tx_Extbase_Persistence_ObjectStorage $objectStorage Optional; use to sort an ObjectStorage
 	 * @return mixed
@@ -61,22 +61,61 @@ class Tx_Fed_ViewHelpers_Data_SortViewHelper extends Tx_Fluid_Core_ViewHelper_Ab
 				$workArray =& $array;
 			} else {
 				$workArray = array_combine(array_keys($array), array_values($array));
-				
 			}
 			return $this->sortArray($workArray);
 		} else {
 			throw new Exception('Nothing to sort, SortViewHelper has no purpose in life, performing LATE term self-abortion');
 		}
 	}
-	
+
 	protected function sortArray(&$array) {
-		
+		$sorted = array();
+		while ($object = array_shift($array)) {
+			$index = $this->getSortValue($object);
+			$sorted[$index] = $object;
+		}
+		if ($this->arguments['order'] === 'ASC') {
+			ksort($sorted);
+		} else {
+			krsort($sorted);
+		}
+		foreach ($sorted as $item) {
+			array_push($array, $item);
+		}
 		return $array;
 	}
-	
+
 	protected function sortObjectStorage(&$storage) {
-		
+		$temp = $this->objectManager->get('Tx_Extbase_Persistence_ObjectStorage');
+		$temp->attachAll($storage);
+		$sorted = array();
+		foreach ($storage as $item) {
+			$index = $this->getSortValue($item);
+			$sorted[$index] = $item;
+		}
+		if ($this->arguments['order'] === 'ASC') {
+			ksort($sorted);
+		} else {
+			krsort($sorted);
+		}
+		$storage->detachAll($storage);
+		foreach ($sorted as $item) {
+			$storage->attach($item);
+		}
 		return $storage;
+	}
+
+	protected function getSortValue($object) {
+		if ($this->arguments->hasArgument('sortBy')) {
+			$getter = 'get' . ucfirst($this->arguments['sortBy']);
+		} else {
+			$getter = "getUid";
+		}
+		$value = $object->$getter();
+		if ($value instanceof DateTime) {
+			$value = $value->getTimestamp();
+		}
+		return $value;
 	}
 }
 
