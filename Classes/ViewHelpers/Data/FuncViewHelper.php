@@ -1,9 +1,9 @@
-<?php 
+<?php
 /***************************************************************
 *  Copyright notice
 *
 *  (c) 2010 Claus Due <claus@wildside.dk>, Wildside A/S
-*  			
+*
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -24,7 +24,7 @@
 ***************************************************************/
 
 /**
- * 
+ *
  * @author Claus Due, Wildside A/S
  * @version $Id$
  * @copyright Copyright belongs to the respective authors
@@ -33,9 +33,9 @@
  * @subpackage ViewHelpers\Data
  */
 class Tx_Fed_ViewHelpers_Data_FuncViewHelper extends Tx_Fed_Core_ViewHelper_AbstractViewHelper {
-	
+
 	/**
-	 * 
+	 *
 	 * @param string $func Function name to be called; can be an absolute reference (leave out $instance) or a method name for $instance
 	 * @param object $instance If specified, runs $func on $instance
 	 * @param array $arguments Array of arguments, in order, to pass to the function
@@ -46,17 +46,16 @@ class Tx_Fed_ViewHelpers_Data_FuncViewHelper extends Tx_Fed_Core_ViewHelper_Abst
 			// innerHTML is assumed to be the only parameter to pass to $func
 			array_push($arguments, $content);
 		}
-		
+
 		if ($instance) {
 			$method = array($instance, $func);
 		} else {
 			$method = $func;
 		}
-		
-		$output = call_user_func($method, $arguments);
+		$output = call_user_func_array($method, $arguments);
 		return $output;
 	}
-	
+
 }
 
 ?>
