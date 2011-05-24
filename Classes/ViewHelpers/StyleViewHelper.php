@@ -3,7 +3,7 @@
 *  Copyright notice
 *
 *  (c) 2010 Claus Due <claus@wildside.dk>, Wildside A/S
-*  			
+*
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -31,11 +31,11 @@
  * @version
  */
 class Tx_Fed_ViewHelpers_StyleViewHelper extends Tx_Fed_Core_ViewHelper_AbstractViewHelper {
-	
+
 	/**
 	 * Inject CSS file in header or code. See examples in ScriptViewHelper
 	 * the pragma is identical - only the output wrapper tags are different.
-	 * 
+	 *
 	 * @param string $href
 	 * @return string
 	 */
@@ -44,10 +44,10 @@ class Tx_Fed_ViewHelpers_StyleViewHelper extends Tx_Fed_Core_ViewHelper_Abstract
 			$this->includeFile($href);
 		} else if ($href === NULL) {
 			$css = $this->renderChildren();
-			$this->process($css, 'css');
+			$this->includeHeader($css, 'css');
 		}
 	}
 }
-	
+
 
 ?>
