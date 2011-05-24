@@ -10,7 +10,7 @@
 				<label>Data Sources</label>
 				<config>
 					<type>select</type>
-					<foreign_table>tx_wildsideextbase_domain_model_datasource</foreign_table>
+					<foreign_table>tx_fed_domain_model_datasource</foreign_table>
 	            <minitems>1</minitems>
 	            <maxitems>100</maxitems>
 	            <multiple>1</multiple>

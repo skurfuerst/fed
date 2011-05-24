@@ -75,5 +75,23 @@ t3lib_extMgm::addTCAcolumns("tt_address", Array (
 t3lib_extMgm::addToAllTCAtypes("tt_address",";;;;1-1-1,lat,lng");
 
 
+## KICKSTARTER DEFAULTS END TOKEN - Everything BEFORE this line is overwritten with the defaults of the kickstarter
+
+$TCA['tt_content']['types']['list']['subtypes_addlist']['fed_datasource'] = 'pi_flexform';
+t3lib_extMgm::addPiFlexFormValue('fed_datasource', 'FILE:EXT:'.$_EXTKEY.'/Configuration/FlexForms/DataSource.xml');
+
+if (TYPO3_MODE == 'BE') {
+	$TBE_MODULES_EXT['xMOD_db_new_content_el']['addElClasses']['tx_fed_configuration_wizard_datasource'] = t3lib_extMgm::extPath($_EXTKEY, 'Configuration/Wizard/DataSource.php');
+}
+
+
+$TCA['tt_content']['types']['list']['subtypes_addlist']['fed_template'] = 'pi_flexform';
+t3lib_extMgm::addPiFlexFormValue('fed_template', 'FILE:EXT:'.$_EXTKEY.'/Configuration/FlexForms/Template.xml');
+
+if (TYPO3_MODE == 'BE') {
+	$TBE_MODULES_EXT['xMOD_db_new_content_el']['addElClasses']['tx_fed_configuration_wizard_template'] = t3lib_extMgm::extPath($_EXTKEY, 'Configuration/Wizard/Template.php');
+}
+
+
 
 ?>
