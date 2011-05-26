@@ -52,30 +52,32 @@ $TCA['tx_fed_domain_model_datasource'] = array(
 		'iconfile' 			=> t3lib_extMgm::extRelPath($_EXTKEY) . 'Resources/Public/Icons/tx_fed_domain_model_datasource.gif'
 	),
 );
-
+/*
 t3lib_div::loadTCA("tt_address");
 t3lib_extMgm::addTCAcolumns("tt_address", Array (
-    "lat" => Array (        
-        "exclude" => 0,        
-        "label" => "LLL:EXT:fed/Resources/Private/Language/locallang_db.xml:tt_address.lat",        
+    "lat" => Array (
+        "exclude" => 0,
+        "label" => "LLL:EXT:fed/Resources/Private/Language/locallang_db.xml:tt_address.lat",
         "config" => Array (
-            "type" => "input",    
+            "type" => "input",
             #"eval" => "number"
         )
     ),
-    "lng" => Array (        
-        "exclude" => 0,        
-        "label" => "LLL:EXT:fed/Resources/Private/Language/locallang_db.xml:tt_address.lng",        
+    "lng" => Array (
+        "exclude" => 0,
+        "label" => "LLL:EXT:fed/Resources/Private/Language/locallang_db.xml:tt_address.lng",
         "config" => Array (
-            "type" => "input",    
+            "type" => "input",
             #"eval" => "number"
         )
     ),
 ), 1);
 t3lib_extMgm::addToAllTCAtypes("tt_address",";;;;1-1-1,lat,lng");
-
+*/
 
 ## KICKSTARTER DEFAULTS END TOKEN - Everything BEFORE this line is overwritten with the defaults of the kickstarter
+
+require_once t3lib_extMgm::extPath($_EXTKEY , 'Configuration/Wizard/FlexFormCodeEditor.php');
 
 $TCA['tt_content']['types']['list']['subtypes_addlist']['fed_datasource'] = 'pi_flexform';
 t3lib_extMgm::addPiFlexFormValue('fed_datasource', 'FILE:EXT:'.$_EXTKEY.'/Configuration/FlexForms/DataSource.xml');
@@ -91,7 +93,6 @@ t3lib_extMgm::addPiFlexFormValue('fed_template', 'FILE:EXT:'.$_EXTKEY.'/Configur
 if (TYPO3_MODE == 'BE') {
 	$TBE_MODULES_EXT['xMOD_db_new_content_el']['addElClasses']['tx_fed_configuration_wizard_template'] = t3lib_extMgm::extPath($_EXTKEY, 'Configuration/Wizard/Template.php');
 }
-
 
 
 ?>

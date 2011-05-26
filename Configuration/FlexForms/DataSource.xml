@@ -20,7 +20,7 @@
 				</config>
 			</TCEforms>
 	      </sources>
-	      <templateFile>
+		  <templateFile>
 	      <TCEforms>
 	      	<label>Fluid Template File</label>
 	      	<config>
@@ -35,13 +35,12 @@
 	      	</config>
 	      </TCEforms>
 	      </templateFile>
-	      <templateSource>
+		  <templateSource>
 	      	<TCEforms>
 	      	<label>Fluid Template Source Code</label>
 	      	<config>
-		      	<type>text</type>
-		      	<rows>120</rows>
-		      	<cols>100</cols>
+		      	<type>user</type>
+		      	<userFunc>Tx_Fed_Configuration_Wizard_FlexFormCodeEditor->renderField</userFunc>
 	      	</config>
 	      	</TCEforms>
 	      </templateSource>

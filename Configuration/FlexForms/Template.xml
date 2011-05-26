@@ -18,17 +18,7 @@
 	      	</config>
 	      </TCEforms>
 	      </templateFile>
-	      <templateSource>
-	      	<TCEforms>
-	      	<label>Fluid Template Source Code</label>
-	      	<config>
-		      	<type>text</type>
-		      	<rows>120</rows>
-		      	<cols>100</cols>
-	      	</config>
-	      	</TCEforms>
-	      </templateSource>
-	      <fluidVars>
+		  <fluidVars>
 	      	<TCEforms>
 	      	<label>Custom Fluid Variables (in proper JSON format!)</label>
 	      	<config>
@@ -38,6 +28,15 @@
 	      	</config>
 	      	</TCEforms>
 	      </fluidVars>
+	      <templateSource>
+	      	<TCEforms>
+	      	<label>Fluid Template Source Code</label>
+	      	<config>
+		      	<type>user</type>
+		      	<userFunc>Tx_Fed_Configuration_Wizard_FlexFormCodeEditor->renderField</userFunc>
+	      	</config>
+	      	</TCEforms>
+	      </templateSource>
 	    </el>
 	  </ROOT>
 </T3DataStructure>
