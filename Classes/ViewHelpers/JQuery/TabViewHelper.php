@@ -66,12 +66,12 @@ class Tx_Fed_ViewHelpers_JQuery_TabViewHelper extends Tx_Fed_Core_ViewHelper_Abs
 	public function initializeArguments() {
 		$this->registerUniversalTagAttributes();
 		$this->registerArgument('tagName', 'string', 'Tag name to use, default "div"');
-		$this->registerArgument('animated', 'boolean', 'Boolean, wether or not to animate tab changes', FALSE, FALSE);
-		$this->registerArgument('active', 'boolean', 'Set this to TRUE to indicate which tab should be active - use only on a single tab', FALSE, FALSE);
+		$this->registerArgument('animated', 'boolean', 'Boolean, wether or not to animate tab changes');
+		$this->registerArgument('active', 'boolean', 'Set this to TRUE to indicate which tab should be active - use only on a single tab');
 		$this->registerArgument('disabled', 'boolean', 'Set this to true to deactivate entire tab sets or individual tabs');
-		$this->registerArgument('deselectable', 'boolean', 'Tabs are deselectable	', FALSE, FALSE);
-		$this->registerArgument('collapsible', 'bololean', 'Tabs are collapsible', FALSE, FALSE);
-		$this->registerArgument('cookie', 'bololean', 'Set a cookie to remember the active tab', FALSE, FALSE);
+		$this->registerArgument('deselectable', 'boolean', 'Tabs are deselectable	');
+		$this->registerArgument('collapsible', 'boolean', 'Tabs are collapsible');
+		$this->registerArgument('cookie', 'boolean', 'Set a cookie to remember the active tab');
 		parent::initializeArguments();
 	}
 
@@ -83,10 +83,10 @@ class Tx_Fed_ViewHelpers_JQuery_TabViewHelper extends Tx_Fed_Core_ViewHelper_Abs
 			// render one tab
 			$index = $this->getCurrentIndex();
 			$this->tag->addAttribute('class', 'fed-tab');
-			if ($this->arguments->hasArgument('active')) {
+			if ($this->arguments['active'] === TRUE) {
 				$this->setSelectedIndex($index);
 			}
-			if ($this->arguments->hasArgument('disabled')) {
+			if ($this->arguments['disabled'] === TRUE) {
 				$this->addDisabledIndex($index);
 			}
 			$this->addTab($this->arguments['title'], $this->renderChildren());
@@ -101,10 +101,10 @@ class Tx_Fed_ViewHelpers_JQuery_TabViewHelper extends Tx_Fed_Core_ViewHelper_Abs
 		$this->templateVariableContainer->add('currentIndex', 0);
 		$content = $this->renderChildren();
 
-		$this->addScript();
 		$tabSelector = $this->renderTabSelector();
 		$tabs = $this->renderTabs();
 		$html = ($tabSelector . chr(10) . $tabs . chr(10) . $content . chr(10));
+		$this->addScript();
 		$this->tag->setContent($html);
 		$this->tag->addAttribute('class', 'fed-tab-group');
 		$this->templateVariableContainer->remove('tabs');

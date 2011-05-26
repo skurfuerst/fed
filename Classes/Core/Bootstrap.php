@@ -124,7 +124,11 @@ class Tx_Fed_Core_Bootstrap extends Tx_Extbase_Core_Bootstrap {
 			$repositoryClass = str_replace('_Model_', '_Repository_', $dataType) . 'Repository';
 			$repository = $this->objectManager->get($repositoryClass);
 			$object = $repository->findOneByUid($uid);
-			$data = $this->mapper->getValuesByAnnotation($object, 'json', TRUE);
+			if ($object) {
+				$data = $this->mapper->getValuesByAnnotation($object, 'json', TRUE);
+			} else {
+				$data = NULL;
+			}
 		} else {
 			$data = $content;
 		}

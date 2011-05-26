@@ -84,7 +84,7 @@ class Tx_Fed_ViewHelpers_Extbase_WidgetViewHelper extends Tx_Fed_Core_ViewHelper
 			$data = new stdClass();
 		}
 		$json = $this->jsonService->encode(array_merge((array) $this->arguments['config'], array(
-			'api' => "?type={$this->arguments['typeNum']}",
+			'api' => "?type={$this->arguments['typeNum']}&id={$GLOBALS['TSFE']->id}",
 			'displayType' => $this->arguments->hasArgument('displayType') ? $this->arguments['displayType'] : $this->getDisplayType(),
 			'controller' => $this->getControllerName(),
 			'extension' => $this->getExtensionName(),
