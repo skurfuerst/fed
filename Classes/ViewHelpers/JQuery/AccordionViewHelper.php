@@ -1,9 +1,9 @@
-<?php 
+<?php
 /***************************************************************
 *  Copyright notice
 *
 *  (c) 2010 Claus Due <claus@wildside.dk>, Wildside A/S
-*  			
+*
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -26,7 +26,7 @@
 /**
  * Accordion integration for jQuery UI - remember to load jQueryUI yourself
  * For example through <ws:script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.12/jquery-ui.min.js" />
- * 
+ *
  * @author Claus Due, Wildside A/S
  * @version $Id$
  * @copyright Copyright belongs to the respective authors
@@ -38,17 +38,17 @@
 class Tx_Fed_ViewHelpers_JQuery_AccordionViewHelper extends Tx_Fed_Core_ViewHelper_AbstractViewHelper {
 
 	protected $tagName = 'div';
-	
+
 	/**
 	 * Initialization
-	 * 
+	 *
 	 * @return void
 	 */
 	public function initializeArguments() {
 		$this->registerUniversalTagAttributes();
 		parent::initializeArguments();
 	}
-	
+
 	/**
 	 * Render method
 	 * @param string $tagName Tagname to use - default DIV
@@ -61,12 +61,12 @@ class Tx_Fed_ViewHelpers_JQuery_AccordionViewHelper extends Tx_Fed_Core_ViewHelp
 	 * @return string
 	 */
 	public function render($tagName='div', $animated='slide', $active='> :first-child', $disabled=FALSE, $autoHeight=FALSE, $clearStyle=FALSE, $fillSpace=FALSE) {
-		
-		$this->addScripts();
+
+		$this->addScript();
 		$this->addClassAttribute();
-		
+
 		$content = $this->renderChildren();
-		
+
 		$this->tag->setContent($content);
 
 		return $this->tag->render();
@@ -86,13 +86,13 @@ class Tx_Fed_ViewHelpers_JQuery_AccordionViewHelper extends Tx_Fed_Core_ViewHelp
 		$classNames = implode(' ', $classes);
 		$this->tag->addAttribute('class', $classNames);
 	}
-	
+
 	/**
 	 * Attach scripts to header
-	 * 
+	 *
 	 * @return void
 	 */
-	private function addScripts() {
+	private function addScript() {
 		$scriptFile = t3lib_extMgm::siteRelPath('fed') . 'Resources/Public/Javascript/com/jquery/plugins/jquery.accordion.js';
 		$disabled = ($this->arguments['disabled'] === TRUE ? 'true' : 'false');
 		$autoHeight = ($this->arguments['autoHeight'] === TRUE ? 'true' : 'false');
@@ -117,7 +117,7 @@ INITSCRIPT;
 		$this->includeFile($scriptFile);
 		$this->includeHeader($init, 'js');
 	}
-	
+
 }
 
 
