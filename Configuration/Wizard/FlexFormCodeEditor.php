@@ -51,15 +51,15 @@ class Tx_Fed_Configuration_Wizard_FlexFormCodeEditor {
 		$attributes = 'rows="40" ' .
 				'cols="" ' .
 				'wrap="off" ' .
-				'style="width:98%; height: 600px;" ' .
+				'style="width:98%; height: 500px;" ' .
 				'onchange="' . $parameters['fieldChangeFunc']['TBE_EDITOR_fieldChanged'] . '" ';
 
 		$editor = $t3editor->getCodeEditor(
-				$parameters['itemFormElName'],
+				$parameters['itemFormElName'], //name of field
 				'fixed-font enable-tab',
-				$parameters['itemFormElValue'],
+				$parameters['itemFormElValue'], //value of field
 				$attributes,
-				'HTML > Fluid' ,
+				'HTML > Fluid' , // text in footer of editor
 				array(
 						'target' => intval($pObj->target)
 				)
