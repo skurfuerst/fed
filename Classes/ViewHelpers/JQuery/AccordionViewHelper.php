@@ -25,7 +25,29 @@
 
 /**
  * Accordion integration for jQuery UI - remember to load jQueryUI yourself
- * For example through <ws:script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.12/jquery-ui.min.js" />
+ * For example through <fed:script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js" />
+ *
+ * Usage example:
+ *
+ * <fed:jQuery.accordion animated="bounceslide" collapsed="TRUE" collapsible="TRUE">
+ *     <fed:jQuery.accordion title="Tab no. 1">
+ *         <p>Tab 1 content. If no other tabs are declared active and collapsed=FALSE,
+ *		   then this tab is initially active.</p>
+ *     </fed:jQuery.accordion>
+ *     <fed:jQuery.accordion title="Tab no. 2">
+ *         <p>Tab 2 content</p>
+ *     </fed:jQuery.accordion>
+ *     <fed:jQuery.accordion active="TRUE" title="Tab no. 3">
+ *         <p>This tab is active due to active=TRUE and this overrides collapsed=TRUE</p>
+ *     </fed:jQuery.accordion>
+ * </fed:jQuery.accordion>
+ *
+ * Title is required for each tab but is not a required property since it is
+ * not needed for the parent element - you must add the title manually for tabs.
+ *
+ * Note that the same ViewHelpers acts as accordion group and tab renderer. The
+ * top-level tag is considered group and the following tabs are considered
+ * inidividual tabs. At this time nested accordions are not supported.
  *
  * @author Claus Due, Wildside A/S
  * @version $Id$
@@ -35,6 +57,7 @@
  * @subpackage ViewHelpers\JQuery
  * @uses jQuery
  */
+
 class Tx_Fed_ViewHelpers_JQuery_AccordionViewHelper extends Tx_Fed_Core_ViewHelper_AbstractViewHelper {
 
 	protected $tagName = 'div';
@@ -46,60 +69,132 @@ class Tx_Fed_ViewHelpers_JQuery_AccordionViewHelper extends Tx_Fed_Core_ViewHelp
 	 */
 	public function initializeArguments() {
 		$this->registerUniversalTagAttributes();
+		$this->registerArgument('tagName', 'string', 'Tag name to use, default "div"');
+		$this->registerArgument('animated', 'string', 'String name of optional jQuery animation to use', FALSE, 'slide');
+		$this->registerArgument('active', 'boolean', 'Set this to TRUE to indicate which tab should be active - use only on a single tab');
+		$this->registerArgument('disabled', 'boolean', 'Set this to true to deactivate entire tab sets or individual tabs');
+		$this->registerArgument('autoHeight', 'boolean', 'Automatically adjust height of tabs');
+		$this->registerArgument('fillSpace', 'boolean', 'Fill space to match max tab height');
+		$this->registerArgument('clearStyle', 'boolean', 'Clear styles of touched elements');
+		$this->registerArgument('collapsible', 'boolean', 'Tabs are collapsible');
+		$this->registerArgument('collapsed', 'boolean', 'Tabs are collapsed by default (if no active tab is set)');
 		parent::initializeArguments();
 	}
 
 	/**
 	 * Render method
-	 * @param string $tagName Tagname to use - default DIV
-	 * @param string $animated String name of animation effect to use; FALSE to disable
-	 * @param string $active The initially active accordion tag (jQuery selector)
-	 * @param boolean $disabled If TRUE, deactivates the accordion
-	 * @param boolean $autoHeight If TRUE, automatically adjusts the height of the Accordion
-	 * @param boolean $clearStyle If TRUE, clears style of elements touched
-	 * @param boolean $fillSpace If TRUE, fills space inside accordion tabs to match height
-	 * @return string
 	 */
-	public function render($tagName='div', $animated='slide', $active='> :first-child', $disabled=FALSE, $autoHeight=FALSE, $clearStyle=FALSE, $fillSpace=FALSE) {
+	public function render() {
+		if ($this->templateVariableContainer->exists('tabs') === TRUE) {
+			// render one tab
+			$index = $this->getCurrentIndex();
+			$this->tag->addAttribute('class', 'fed-accordion');
+			if ($this->arguments['active'] === TRUE) {
+				$this->setSelectedIndex($index);
+			}
+			if ($this->arguments['disabled'] === TRUE) {
+				$this->addDisabledIndex($index);
+			}
+			$this->addTab($this->arguments['title'], $this->renderChildren());
+			$this->setCurrentIndex($index + 1);
+			return;
+		}
 
-		$this->addScript();
-		$this->addClassAttribute();
-
+		// render tab group
+		$this->templateVariableContainer->add('tabs', array());
+		$this->templateVariableContainer->add('selectedIndex', 0);
+		$this->templateVariableContainer->add('disabledIndices', array());
+		$this->templateVariableContainer->add('currentIndex', 0);
 		$content = $this->renderChildren();
 
-		$this->tag->setContent($content);
-
+		$tabs = $this->renderTabs();
+		$html = ($tabs . chr(10) . $content . chr(10));
+		$this->addScript();
+		$this->tag->setContent($html);
+		$this->tag->addAttribute('class', 'fed-accordion-group');
+		$this->templateVariableContainer->remove('tabs');
+		$this->templateVariableContainer->remove('selectedIndex');
+		$this->templateVariableContainer->remove('disabledIndices');
+		$this->templateVariableContainer->remove('currentIndex');
 		return $this->tag->render();
 	}
 
-	/**
-	 * Inject an additional classname in tag attributes
-	 * @return void
-	 */
-	private function addClassAttribute() {
-		if ($this->arguments['class']) {
-			$classes = explode(' ', $this->arguments['class']);
-		} else {
-			$classes = array();
+	protected function renderTabs() {
+		$html = "";
+		foreach ($this->templateVariableContainer->get('tabs') as $tab) {
+			$html .= '<h3><a href="#">' . $tab['title'] . '</a></h3>' . chr(10);
+			$html .= '<div>' . $tab['content'] . '</div>' . chr(10);
 		}
-		array_push($classes, 'fed-accordion');
-		$classNames = implode(' ', $classes);
-		$this->tag->addAttribute('class', $classNames);
+		return $html;
+	}
+
+	protected function addTab($title, $content) {
+		$tab = array(
+			'title' => $title,
+			'content' => $content
+		);
+		$tabs = $this->templateVariableContainer->get('tabs');
+		array_push($tabs, $tab);
+		$this->templateVariableContainer->remove('tabs');
+		$this->templateVariableContainer->add('tabs', $tabs);
+	}
+
+	protected function setSelectedIndex($index) {
+		$this->templateVariableContainer->remove('selectedIndex');
+		$this->templateVariableContainer->add('selectedIndex', $index);
+	}
+
+	protected function addDisabledIndex($index) {
+		$disabled = $this->templateVariableContainer->get('disabledIndices');
+		array_push($disabled, $index);
+		$this->templateVariableContainer->remove('disabledIndices');
+		$this->templateVariableContainer->add('disabledIndices', $disabled);
+	}
+
+	protected function getCurrentIndex() {
+		return $this->templateVariableContainer->get('currentIndex');
+	}
+
+	protected function setCurrentIndex($index) {
+		$this->templateVariableContainer->remove('currentIndex');
+		$this->templateVariableContainer->add('currentIndex', $index);
 	}
 
 	/**
-	 * Attach scripts to header
-	 *
-	 * @return void
+	 * Attach necessary scripting
 	 */
-	private function addScript() {
-		$scriptFile = t3lib_extMgm::siteRelPath('fed') . 'Resources/Public/Javascript/com/jquery/plugins/jquery.accordion.js';
-		$disabled = ($this->arguments['disabled'] === TRUE ? 'true' : 'false');
-		$autoHeight = ($this->arguments['autoHeight'] === TRUE ? 'true' : 'false');
-		$clearStyle = ($this->arguments['clearStyle'] === TRUE ? 'true' : 'false');
-		$collapsible = ($this->arguments['collapsible'] === TRUE ? 'true' : 'false');
-		$fillSpace = ($this->arguments['fillSpace'] === TRUE ? 'true' : 'false');
-		$init = <<< INITSCRIPT
+	protected function addScript() {
+		$selectedIndex = $this->templateVariableContainer->get('selectedIndex');
+		if ($selectedIndex === 0 && $this->arguments['collapsed'] === TRUE && $this->arguments['collapsible'] === TRUE) {
+			$selectedIndex = 'false';
+		}
+		$cookie = $this->getBooleanForJavascript('cookie');
+		$collapsible = $this->getBooleanForJavascript('collapsible');
+		$disabled = $this->getBooleanForJavascript('disabled');
+		$autoHeight = $this->getBooleanForJavascript('autoHeight');
+		$clearStyle = $this->getBooleanForJavascript('clearStyle');
+		$fillSpace = $this->getBooleanForJavascript('fillSpace');
+		$csvOfDisabledTabIndices = implode(',' ,$this->templateVariableContainer->get('disabledIndices'));
+		$script = <<< SCRIPT
+jQuery(document).ready(function() {
+	var options = {
+		"animated" : "{$this->arguments['animated']}",
+		"collapsible" : {$collapsible},
+		"active" : {$selectedIndex},
+		"disabled" : {$disabled},
+		"autoHeight" : {$autoHeight},
+		"clearStyle" : {$clearStyle},
+		"fillSpace" : {$fillSpace}
+	};
+	jQuery(".fed-accordion-group").each(function() {
+		jQuery(this).accordion(options);
+	});
+});
+SCRIPT;
+		$this->includeHeader($script, 'js', 'fedJQueryAccordion');
+
+
+				$init = <<< INITSCRIPT
 jQuery(document).ready(function() {
 	var options = {
 		disabled : {$disabled},
@@ -114,11 +209,16 @@ jQuery(document).ready(function() {
 	jQuery('.fed-accordion').accordion(options);
 });
 INITSCRIPT;
-		$this->includeFile($scriptFile);
-		$this->includeHeader($init, 'js');
+	}
+
+	protected function getBooleanForJavascript($argument) {
+		if ($this->arguments[$argument] === TRUE) {
+			return 'true';
+		} else {
+			return 'false';
+		}
 	}
 
 }
-
 
 ?>

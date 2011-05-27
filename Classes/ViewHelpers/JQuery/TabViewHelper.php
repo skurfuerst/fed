@@ -25,7 +25,7 @@
 
 /**
  * Tabset integration for jQuery UI - remember to load jQueryUI yourself
- * For example through <ws:script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.12/jquery-ui.min.js" />
+ * For example through <fed:script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js" />
  *
  * Usage example:
  *
