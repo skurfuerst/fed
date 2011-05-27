@@ -54,7 +54,7 @@
  * @uses jQuery
  */
 
-class Tx_Fed_ViewHelpers_JQuery_TabViewHelper extends Tx_Fed_Core_ViewHelper_AbstractViewHelper {
+class Tx_Fed_ViewHelpers_JQuery_TabViewHelper extends Tx_Fed_Core_ViewHelper_AbstractJQueryViewHelper {
 
 	protected $tagName = 'div';
 
@@ -190,14 +190,6 @@ jQuery(document).ready(function() {
 });
 SCRIPT;
 		$this->includeHeader($script, 'js', 'fedJQueryTabs');
-	}
-
-	protected function getBooleanForJavascript($argument) {
-		if ($this->arguments[$argument] === TRUE) {
-			return 'true';
-		} else {
-			return 'false';
-		}
 	}
 
 }
