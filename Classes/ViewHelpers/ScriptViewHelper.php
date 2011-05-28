@@ -3,7 +3,7 @@
 *  Copyright notice
 *
 *  (c) 2010 Claus Due <claus@wildside.dk>, Wildside A/S
-*  			
+*
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -31,15 +31,14 @@
  * @version
  */
 class Tx_Fed_ViewHelpers_ScriptViewHelper extends Tx_Fed_Core_ViewHelper_AbstractViewHelper {
-	
+
 	/**
 	 * Inject JS file in the header code.
-	 * 
+	 *
 	 * @param mixed $src String filename or array of filenames
 	 * @param bool $cache If true, file(s) is cached
 	 * @param bool $concat If true, files are concatenated (makes sense if $file is array)
 	 * @param bool $compress If true, files are compressed using JSPacker
-	 * @param string $key
 	 * @return string
 	 */
 	public function render($src=NULL, $cache=FALSE, $concat=FALSE, $compress=FALSE) {
@@ -54,6 +53,6 @@ class Tx_Fed_ViewHelpers_ScriptViewHelper extends Tx_Fed_Core_ViewHelper_Abstrac
 		return NULL;
 	}
 }
-	
+
 
 ?>

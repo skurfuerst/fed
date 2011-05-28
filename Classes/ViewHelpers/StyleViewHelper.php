@@ -37,9 +37,12 @@ class Tx_Fed_ViewHelpers_StyleViewHelper extends Tx_Fed_Core_ViewHelper_Abstract
 	 * the pragma is identical - only the output wrapper tags are different.
 	 *
 	 * @param string $href
+	 * @param bool $cache If true, file(s) is cached
+	 * @param bool $concat If true, files are concatenated (makes sense if $file is array)
+	 * @param bool $compress If true, files are compressed using JSPacker
 	 * @return string
 	 */
-	public function render($href=NULL) {
+	public function render($href=NULL, $cache=FALSE, $concat=FALSE, $compress=FALSE) {
 		if ($href) {
 			$this->includeFile($href);
 		} else if ($href === NULL) {

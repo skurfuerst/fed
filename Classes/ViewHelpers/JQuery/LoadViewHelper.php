@@ -62,7 +62,7 @@ class Tx_Fed_ViewHelpers_JQuery_LoadViewHelper extends Tx_Fed_Core_ViewHelper_Ab
 	 * Loads necessary resources from Google CDN
 	 */
 	public function render() {
-
+		
 	}
 
 }
