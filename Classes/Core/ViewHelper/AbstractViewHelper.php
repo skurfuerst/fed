@@ -115,6 +115,9 @@ abstract class Tx_Fed_Core_ViewHelper_AbstractViewHelper extends Tx_Fluid_Core_V
 		if ($key === NULL) {
 			$key = md5($code);
 		}
+		if (isset($GLOBALS['TSFE']->additionalHeaderData[$key])) {
+			unset($GLOBALS['TSFE']->additionalHeaderData[$key]);
+		}
 		$GLOBALS['TSFE']->additionalHeaderData[$key] = $code;
 	}
 
