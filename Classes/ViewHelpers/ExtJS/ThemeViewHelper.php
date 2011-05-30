@@ -25,27 +25,20 @@
 ***************************************************************/
 
 /**
- * Injector, Favicon
+ * Theme ViewHelper for ExtJS applications
  *
  * @package TYPO3
  * @subpackage Fluid
  * @version
  */
-class Tx_Fed_ViewHelpers_FaviconViewHelper extends Tx_Fed_Core_ViewHelper_AbstractViewHelper {
+class Tx_Fed_ViewHelpers_ExtJS_ThemeViewHelper extends Tx_Fed_Core_ViewHelper_AbstractViewHelper {
 
 	/**
-	 * Inject JS file in the header code.
+	 * Render
 	 *
-	 * @param string $href String filename of favicon
 	 * @return string
 	 */
-	public function render($href) {
-		$header = '<link rel="shortcut icon" href="' . $href . '" />' . chr(10);
-		$header .= '<link rel="apple-touch-icon-precomposed" sizes="72x72" href="' . $href . '" />' .chr(10);
-		$header .= '<link rel="apple-touch-icon-precomposed" sizes="114x114" href="' . $href . '" />' .chr(10);
-		$header .= '<link rel="apple-touch-icon-precomposed" href="' . $href . '" />' .chr(10);
-		$header .= '<meta name="apple-mobile-web-app-capable" content="yes">' . chr(10);
-		$this->includeHeader($header);
+	public function render() {
 		return NULL;
 	}
 }
