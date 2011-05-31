@@ -119,6 +119,9 @@ class Tx_Fed_Core_Bootstrap extends Tx_Extbase_Core_Bootstrap {
 	}
 
 	private function detectModelObject($content) {
+		if (is_string($content) === FALSE) {
+			return $content;
+		}
 		list ($dataType, $uid) = explode(':', $content);
 		if (class_exists($dataType) && intval($uid) > 0) {;
 			$repositoryClass = str_replace('_Model_', '_Repository_', $dataType) . 'Repository';

@@ -24,6 +24,22 @@
 ***************************************************************/
 
 /**
+ * PDF generator.
+ * 
+ * These keyword values are usable in footers, headers etc:
+ * 
+ * [page]       Replaced by the number of the pages currently being printed
+ * [frompage]   Replaced by the number of the first page to be printed
+ * [topage]     Replaced by the number of the last page to be printed
+ * [webpage]    Replaced by the URL of the page being printed
+ * [section]    Replaced by the name of the current section
+ * [subsection] Replaced by the name of the current subsection
+ * [date]       Replaced by the current date in system local format
+ * [time]       Replaced by the current time in system local format
+ * [title]      Replaced by the title of the of the current page object
+ * [doctitle]   Replaced by the title of the output document
+ * 
+ * 
  * 
  * @author Claus Due, Wildside A/S
  * @version $Id$

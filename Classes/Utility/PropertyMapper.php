@@ -1,9 +1,9 @@
-<?php 
+<?php
 /***************************************************************
 *  Copyright notice
 *
 *  (c) 2010 Claus Due <claus@wildside.dk>, Wildside A/S
-*  			
+*
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -24,73 +24,39 @@
 ***************************************************************/
 
 /**
- * 
+ *
  * @author Claus Due, Wildside A/S
  * @version $Id$
  * @copyright Copyright belongs to the respective authors
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  * @package Fed
  * @subpackage Utility
+ * @deprecated Functionality replaced by Tx_Fed_Utility_DomainObjectReflection
  */
-class Tx_Fed_Utility_PropertyMapper implements t3lib_Singleton {
-	
+class Tx_Fed_Utility_PropertyMapper extends Tx_Fed_Utility_DomainObjectInfo implements t3lib_Singleton {
+
 	/**
-	 * RecursionHandler instance
-	 * @var Tx_Fed_Utility_RecursionHandler
-	 */
-	public $recursionHandler;
-	
-	/**
-	 * ReflectionService instance
-	 * @var Tx_Extbase_Reflection_Service $service
-	 */
-	protected $reflectionService;
-	
-	/**
-	 * ObjectManager instance
-	 * @var Tx_Extbase_Object_ObjectManager
-	 */
-	protected $objectManger;
-	
-	/**
-	 * Inject a RecursionHandler instance
-	 * @param Tx_Fed_Utility_RecursionHandler $handler
-	 */
-	public function injectRecursionHandler(Tx_Fed_Utility_RecursionHandler $handler) {
-		$this->recursionHandler = $handler;
-	}
-	
-	/**
-	 * Inject a Reflection Service instance
-	 * @param Tx_Extbase_Reflection_Server $service
-	 */
-	public function injectReflectionService(Tx_Extbase_Reflection_Service $service) {
-		$this->reflectionService = $service;
-	}
-	
-	/**
-	 * Inject a Reflection Service instance
-	 * @param Tx_Extbase_Object_ObjectManager $manager
-	 */
-	public function injectObjectManager(Tx_Extbase_Object_ObjectManager $manager) {
-		$this->objectManager = $manager;
-	}
-	
-	/**
-	 * Returns an array of property names by searching the $object for annotations
-	 * based on $annotation and $value. If $annotation is provided but $value is not,
-	 * all properties which simply have the annotation present. Relational values
-	 * which have the annotation are parsed through the same function - sub-elements'
-	 * properties are exported based on the same annotation and value
-	 * 
-	 * @param Tx_Extbase_DomainObject_DomainObjectInterface $object The object to read
+	 * Returns an array of property names and values by searching the $object
+	 * for annotations based on $annotation and $value. If $annotation is provided
+	 * but $value is not, All properties which simply have the annotation present.
+	 * Relational values which have the annotation are parsed through the same
+	 * function - sub-elements' properties are exported based on the same
+	 * annotation and value
+	 *
+	 * @param mixed $object The object or classname to read
 	 * @param string $annotation The annotation on which to base output
 	 * @param string $value The value to search for; multiple values may be used in the annotation; $value must be present among them. If TRUE, all properties which have the annotation are returned
 	 * @param boolean $addUid If TRUE, the UID of the DomainObject will be force-added to the output regardless of annotation
 	 * @return array
+	 * @deprecated Remains as legacy but related functionality moved to Tx_Fed_Utility_DomainObjectReflection
 	 */
-	public function getValuesByAnnotation(Tx_Extbase_DomainObject_DomainObjectInterface $object, $annotation='json', $value=TRUE, $addUid=TRUE) {
-		$className = get_class($object);
+	public function getValuesByAnnotation($object, $annotation='json', $value=TRUE, $addUid=TRUE) {
+		if (is_object($object)) {
+			$className = get_class($object);
+		} else {
+			$className = $object;
+			$object = $this->objectManger->get($className);
+		}
 		$this->recursionHandler->in();
 		$this->recursionHandler->check($className);
 		$properties = $this->reflectionService->getClassPropertyNames($className);
@@ -122,8 +88,8 @@ class Tx_Fed_Utility_PropertyMapper implements t3lib_Singleton {
 		$this->recursionHandler->out();
 		return $return;
 	}
-	
-	
+
+
 }
 
 

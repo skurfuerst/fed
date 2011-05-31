@@ -1,0 +1,15 @@
+{namespace fed=Tx_Fed_ViewHelpers}
+
+Ext.define('{prefix}{className}', {
+    extend: 'Ext.data.Model',
+	fields: [
+	<f:for each="{properties}" as="def" key="name" iteration="iteration">
+        <f:escape>{</f:escape> name: '{def.name}', type: '{def.type}' <f:escape>}</f:escape>
+		<f:if condition="{iteration.isLast}" then="" else="," />
+	</f:for>
+	],
+    proxy: <f:escape>{</f:escape>
+        type: 'rest',
+        url: '<f:format.raw>{uri}</f:format.raw>'
+		<f:escape>}</f:escape>
+});
