@@ -32,7 +32,7 @@
  * @package Fed
  * @subpackage ViewHelpers\Extbase\Widget
  */
-class Tx_Fed_ViewHelpers_Extbase_Widget_PdfViewHelper extends Tx_Fed_ViewHelpers_Extbase_WidgetViewHelper {
+class Tx_Fed_ViewHelpers_Extbase_Widget_PdfViewHelper extends Tx_Fed_Core_ViewHelper_AbstractViewHelper {
 
 	/**
 	 * @var Tx_Fed_Utility_PDF
@@ -90,7 +90,7 @@ class Tx_Fed_ViewHelpers_Extbase_Widget_PdfViewHelper extends Tx_Fed_ViewHelpers
 	 */
 	public function render() {
 		$uniqId = uniqid('fedPDF_');
-		$extension = $this->arguments['extensionName'];
+		$extension = 'tx_fed_pdf';
 		$arguments = $this->jsonService->encode($this->getDefinedArguments());
 		$arguments = base64_encode($arguments);
 		$typeNum = 48151623420;
@@ -109,12 +109,10 @@ function {$uniqId}() {
 	return f.submit();
 }
 SCRIPT;
-
 		$this->includeHeader($script, 'js');
-
-		$html .= $code;
 		$inner = parent::renderChildren();
-		$html = "<a href='javascript:;' class='fed-pdf-link' onclick='{$uniqId}();'>{$inner}</a>";
+		$html .= $code;
+		$html .= "<a href='javascript:;' class='fed-pdf-link' onclick='{$uniqId}();'>{$inner}</a>";
 		return $html;
 	}
 

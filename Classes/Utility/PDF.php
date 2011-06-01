@@ -1,9 +1,9 @@
-<?php 
+<?php
 /***************************************************************
 *  Copyright notice
 *
 *  (c) 2010 Claus Due <claus@wildside.dk>, Wildside A/S
-*  			
+*
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -24,23 +24,7 @@
 ***************************************************************/
 
 /**
- * PDF generator.
- * 
- * These keyword values are usable in footers, headers etc:
- * 
- * [page]       Replaced by the number of the pages currently being printed
- * [frompage]   Replaced by the number of the first page to be printed
- * [topage]     Replaced by the number of the last page to be printed
- * [webpage]    Replaced by the URL of the page being printed
- * [section]    Replaced by the name of the current section
- * [subsection] Replaced by the name of the current subsection
- * [date]       Replaced by the current date in system local format
- * [time]       Replaced by the current time in system local format
- * [title]      Replaced by the title of the of the current page object
- * [doctitle]   Replaced by the title of the output document
- * 
- * 
- * 
+ *
  * @author Claus Due, Wildside A/S
  * @version $Id$
  * @copyright Copyright belongs to the respective authors
@@ -49,34 +33,35 @@
  * @subpackage Utility
  */
 class Tx_Fed_Utility_PDF implements t3lib_Singleton {
-	
+
 	/**
 	 * @var string
 	 */
 	protected $wkhtmltopdf;
-	
+
 	/**
 	 * Designed for Bootstrap usage. Overrides headers and outputs PDF source
 	 * @return void
 	 */
 	public function run() {
-		$post = $_POST['tx_wildsideextbase_pdf'];
+		$post = $_POST['tx_fed_pdf'];
 		$source = $post['html'];
 		$filename = $post['filename'];
 		$this->stylesheet = $post['stylesheet'];
-		$this->wkhtmltopdf = $pdf['wkhtmltopdf'];
+		$this->wkhtmltopdf = $post['wkhtmltopdf'];
 		$pdf = $this->grabPDF($source);
+		#header("Content-type: text/plain");
 		header("Content-type: application/pdf");
 		header("Content-Length: " . strlen($pdf));
 		header("Content-disposition: attachment; filename={$filename}");
 		echo $pdf;
 		exit();
 	}
-	
+
 	public function getArguments() {
 		return $this->arguments;
 	}
-	
+
 	/**
 	 * @return array
 	 */
@@ -84,17 +69,17 @@ class Tx_Fed_Utility_PDF implements t3lib_Singleton {
 		$raw = $this->getArguments();
 		return $raw;
 	}
-	
+
 	private function grabPDF($source) {
 		// place the source code as a temporary file, then request it through HTTP
-		// source contains the computed source as viewed by the browser; the 
+		// source contains the computed source as viewed by the browser; the
 		// most realistic representation possible. When used with the corresponding
 		// widget, this allows injection of a stylesheet into the computed source,
 		// allowing for style overrides when PDF-"printing".
-		// The temp file is necessary because WebKit supports JS and even AJAX - 
+		// The temp file is necessary because WebKit supports JS and even AJAX -
 		// and AJAX requires a security context, meaning an HTTP request.
 		$source = stripslashes($source);
-		$tmp = tempnam(PATH_site . 'typo3temp/', 'wspdfhtml');
+		$tmp = tempnam(PATH_site . 'typo3temp/', 'wspdfhtml') . ".html";
 		file_put_contents($tmp, $source);
 		$cmd = $this->buildCommand('http://' . $_SERVER['HTTP_HOST'] . str_replace(PATH_site, '/', $tmp));
 		#print $cmd; exit();
@@ -102,7 +87,7 @@ class Tx_Fed_Utility_PDF implements t3lib_Singleton {
 		unlink($tmp);
 		return $output;
 	}
-	
+
 	/**
 	 * Generate the command to run.
 	 * @param $url string: the URL to open.
@@ -110,43 +95,24 @@ class Tx_Fed_Utility_PDF implements t3lib_Singleton {
 	 * @return string Command string
 	 */
 	public function buildCommand($url) {
-			
-		if (strlen($this->wkhtmltopdf) > 0 && is_file($this->wkhtmltopdf)) {
+		if ($this->wkhtmltopdf !== 'wkhtmltopdf') {
 			$cmd = $this->wkhtmltopdf;
-		} else {			
-			$cmd = t3lib_extMgm::extPath('wildside_extbase', 'Resources/Shell/wkhtmltopdf');
+		} else {
+			$cmd = t3lib_extMgm::extPath('fed', 'Resources/Shell/wkhtmltopdf');
 		}
-		
-		# Footers
-		if (strlen($this->footerRight)) $cmd .= " --footer-right \"{$this->footerRight}\"";
-		if (strlen($this->footerLeft)) $cmd .= " --footer-left \"{$this->footerLeft}\"";
-
-		# Margins
-		if (strlen($this->marginTop)) $cmd .= " --margin-top {$this->marginTop}";
-		if (strlen($this->marginRight)) $cmd .= " --margin-right {$this->marginRight}";
-		if (strlen($this->marginBottom)) $cmd .= " --margin-bottom {$this->marginBottom}";
-		if (strlen($this->marginLeft)) $cmd .= " --margin-left {$this->marginLeft}";
-		
-		# user style sheet
 		if (strlen($this->stylesheet) > 0) {
-			#$host = "http://" . $_SERVER['HTTP_HOST'] . '/';
-			$host = PATH_site . '/';
-			$cmd .= " --user-style-sheet \"{$host}{$this->stylesheet}\"";
+			$path = PATH_site . '/';
+			$cmd .= " --user-style-sheet \"{$path}{$this->stylesheet}\"";
 		}
-		
-		# Target URL
 		$cmd .= " \"{$url}\"";
-		
-		# Output file
 		$cmd .= " - ";
-		
 		return $cmd;
 	}
-	
+
 	/**
-	 * All possible arguments for the PDF generator. Used by shell script and 
+	 * All possible arguments for the PDF generator. Used by shell script and
 	 * ViewHelper.
-	 * 
+	 *
 	 * @var array
 	 */
 	protected $arguments = array(
@@ -172,13 +138,13 @@ class Tx_Fed_Utility_PDF implements t3lib_Singleton {
 		'noPdfCompression' => array('boolean', 'Do not use lossless compression on pdf objects', FALSE, FALSE),
 		'title' => array('string', 'The title of the generated pdf file (The title of the first document is used if not specified)', FALSE, FALSE),
 		'useXServer' => array('boolean', 'Use the X server (some plugins and other stuff might not work without X11)', FALSE, FALSE),
-		
+
 		// OUTLINE options
 		'dumpOutline' => array('string', 'Dump the outline to a file', FALSE, FALSE),
 		'outline' => array('boolean', 'Put an outline into the pdf (default)', FALSE, TRUE),
 		'noOutline' => array('boolean', 'Do not put an outline into the pdf', FALSE, FALSE),
 		'outlineDepth' => array('int', 'Set the depth of the outline (default 4)', FALSE),
-		
+
 		// PAGE options
 		'allow' => array('array', 'Allow the file or files from the specified folder to be loaded'),
 		'background' => array('boolean', 'Do print the background (default)', FALSE, TRUE),
@@ -230,7 +196,7 @@ class Tx_Fed_Utility_PDF implements t3lib_Singleton {
 		'username' => array('string', 'HTTP Authentication username', FALSE, FALSE),
 		'windowStatus' => array('int', 'Wait until window.status is equal to this string before rendering page', FALSE, FALSE),
 		'zoom' => array('float', 'Use this zoom factor (default 1)', FALSE, 1),
-		
+
 		// HEADER AND FOOTER options
 		'footerCenter' => array('string', 'Centered footer text', FALSE, FALSE),
 		'footerFontName' => array('string', 'Set footer font name (default Arial)', FALSE, 'Arial'),
@@ -251,7 +217,7 @@ class Tx_Fed_Utility_PDF implements t3lib_Singleton {
 		'headerRight' => array('string', 'Right aligned header text', FALSE, FALSE),
 		'hedaerSpacing' => array('string', 'Spacing between header and content in real units', FALSE, '0mm'),
 		'replace' => array('array', 'Array of key=>value replacements for header and footer', FALSE, FALSE),
-		
+
 		// TOC options
 		'disableDottedLine' => array('boolean', 'Do not use dottet lines in the toc', FALSE, FALSE),
 		'tocHeaderText' => array('string', 'The header text of the toc (default Table of Content)', FALSE, 'Table of Content)'),
@@ -260,7 +226,7 @@ class Tx_Fed_Utility_PDF implements t3lib_Singleton {
 		'tocTextSizeShrink' => array('float', 'For each level of headings in the toc the font is scaled by this facter (default 0.8)', FALSE, 0.8),
 		'xslStyleSheet' => array('string', 'Use the supplied xsl style sheet for printing the table of content', FALSE, FALSE),
 	);
-	
+
 }
 
 
