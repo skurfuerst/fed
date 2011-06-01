@@ -60,7 +60,7 @@ class Tx_Fed_ViewHelpers_Extbase_Widget_PdfViewHelper extends Tx_Fed_ViewHelpers
 			list ($type, $description, $required, $default) = $config;
 			$this->registerArgument($name, $type, $description, $required, $default);
 		}
-		$this->registerArgument('filename', 'string', 'Download as filename', TRUE, 'file.pdf');
+		$this->registerArgument('filename', 'string', 'Download as filename', FALSE, 'file.pdf');
 		$this->registerArgument('wkhtmltopdf', 'string', 'Path to executable wkhtmltopdf binary', FALSE, 'wkhtmltopdf');
 	}
 
