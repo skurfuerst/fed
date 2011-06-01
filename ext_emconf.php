@@ -11,8 +11,8 @@
 ########################################################################
 
 $EM_CONF[$_EXTKEY] = array(
-	'title' => 'Fluid Extbase Development Framework',
-	'description' => 'Previously wildside_extbase. Provides ViewHelpers, Services and a few frontend plugins especially useful when developing Extbase/Fluid extensions.',
+	'title' => 'Fluid/Extbase/ExtJS4 Development Framework',
+	'description' => 'Provides a lot of ViewHelpers and Services plus a few frontend plugins especially useful when developing Fluid/Extbase/ExtJS4 extensions.',
 	'category' => 'misc',
 	'author' => 'Claus Due',
 	'author_email' => 'claus@wildside.dk',
@@ -29,7 +29,7 @@ $EM_CONF[$_EXTKEY] = array(
 	'modify_tables' => '',
 	'clearCacheOnLoad' => 0,
 	'lockType' => '',
-	'version' => '1.3.11',
+	'version' => '1.3.12',
 	'constraints' => array(
 		'depends' => array(
 			'cms' => '',

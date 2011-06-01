@@ -1,9 +1,9 @@
-<?php 
+<?php
 /***************************************************************
 *  Copyright notice
 *
 *  (c) 2010 Claus Due <claus@wildside.dk>, Wildside A/S
-*  			
+*
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -24,7 +24,7 @@
 ***************************************************************/
 
 /**
- * 
+ *
  * @author Claus Due, Wildside A/S
  * @version $Id$
  * @copyright Copyright belongs to the respective authors
@@ -33,23 +33,24 @@
  * @subpackage ViewHelpers\Extbase\Widget
  */
 class Tx_Fed_ViewHelpers_Extbase_Widget_PdfViewHelper extends Tx_Fed_ViewHelpers_Extbase_WidgetViewHelper {
-	
+
 	/**
 	 * @var Tx_Fed_Utility_PDF
 	 */
-	protected $pdf;
-	
+	protected $pdfService;
+
 	/**
 	 * @author Claus Due, Wildside A/S
-	 * @param Tx_Fed_Utility_PDF $pdf
+	 * @param Tx_Fed_Utility_PDF $pdfService
+	 * @return void
 	 */
-	public function injectPDF(Tx_Fed_Utility_PDF $pdf) {
-		$this->pdf = $pdf;
+	public function injectPDF(Tx_Fed_Utility_PDF $pdfService) {
+		$this->pdfService = $pdfService;
 	}
-	
+
 	/**
 	 * Initialize arguments for this ViewHelper
-	 * 
+	 *
 	 * @author Claus Due, Wildside A/S
 	 * @return void
 	 */
@@ -62,11 +63,11 @@ class Tx_Fed_ViewHelpers_Extbase_Widget_PdfViewHelper extends Tx_Fed_ViewHelpers
 		$this->registerArgument('filename', 'string', 'Download as filename', TRUE, 'file.pdf');
 		$this->registerArgument('wkhtmltopdf', 'string', 'Path to executable wkhtmltopdf binary', FALSE, 'wkhtmltopdf');
 	}
-	
+
 	/**
-	 * Get an array of the arguments used to implement this instance of the 
+	 * Get an array of the arguments used to implement this instance of the
 	 * ViewHelper.
-	 * 
+	 *
 	 * @author Claus Due, Wildside A/S
 	 * @return array
 	 */
@@ -74,17 +75,18 @@ class Tx_Fed_ViewHelpers_Extbase_Widget_PdfViewHelper extends Tx_Fed_ViewHelpers
 		$arguments = $this->pdfService->getViewHelperArguments();
 		$defined = array();
 		foreach ($arguments as $name=>$config) {
-			if ($this->hasArgument($name)) {
+			if ($this->arguments->hasArgument($name)) {
 				$defined[$name] = $config;
 			}
 		}
 		return $defined;
 	}
-	
+
 	/**
-	 *  
+	 *
 	 * @author Claus Due, Wildside A/S
 	 * @return string
+	 * @api
 	 */
 	public function render() {
 		$uniqId = uniqid('fedPDF_');
@@ -107,17 +109,17 @@ function {$uniqId}() {
 	return f.submit();
 }
 SCRIPT;
-		
+
 		$this->includeHeader($script, 'js');
-		
+
 		$html .= $code;
 		$inner = parent::renderChildren();
 		$html = "<a href='javascript:;' class='fed-pdf-link' onclick='{$uniqId}();'>{$inner}</a>";
-		return $html; 
+		return $html;
 	}
 
-	
-	
+
+
 }
 
 
