@@ -68,6 +68,32 @@ class Tx_Fed_Utility_ExtJS implements t3lib_Singleton {
 		return $this->modelGenerator->generateModelClass($object, $properties);
 	}
 
+	/**
+	 * Maps data from ExtJS unto a DomainObject - recursively. Sets proper types
+	 * of data based on the source code annotations and uses proper setters to
+	 * set values. The result can be updated or added using the corresponding
+	 * Repository
+	 * @param Tx_Extbase_DomainObject_AbstractDomainEntity $object
+	 * @param object $data
+	 * @return Tx_Extbase_DomainObject_AbstractDomainEntity
+	 */
+	public function mapDataFromExtJS($object, $data) {
+		#$getters =
+		return $object;
+	}
+
+	/**
+	 * Maps data onto an stdClass object - recursively - based on the ExtJS source
+	 * annotations.
+	 *
+	 * @param Tx_Extbase_DomainObject_AbstractDomainEntity $object
+	 * @return stdClass
+	 */
+	public function exportDataToExtJS($object) {
+		$data = $this->infoService->getValuesByAnnotation($object, 'ExtJS');
+		return $data;
+	}
+
 }
 
 ?>

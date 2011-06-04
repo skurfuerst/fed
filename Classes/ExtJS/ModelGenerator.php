@@ -114,13 +114,18 @@ class Tx_Fed_ExtJS_ModelGenerator implements t3lib_Singleton {
 		if ($template === NULL) {
 			$template = t3lib_extMgm::extPath('fed', 'Resources/Private/Templates/ExtJS/Model.html');
 		}
-		$uri = $this->getStoreUri($object);
+		$urls = array(
+			'create' => $this->getStoreUri($object, 'create'),
+			'read' => $this->getStoreUri($object, 'read'),
+			'update' => $this->getStoreUri($object, 'update'),
+			'destroy' => $this->getStoreUri($object, 'destroy'),
+		);
 		$view->setTemplatePathAndFilename($template);
 		$view->assign('className', array_pop(explode('_', $className)));
 		$view->assign('properties', $this->getPropertyDefinitions($object, $properties));
 		$view->assign('typeNum', $this->typeNum);
 		$view->assign('prefix', $this->prefix);
-		$view->assign('uri', $uri);
+		$view->assign('urls', $urls);
 		return $view->render();
 	}
 
@@ -149,17 +154,16 @@ class Tx_Fed_ExtJS_ModelGenerator implements t3lib_Singleton {
 		return $data;
 	}
 
-	protected function getStoreUri($object) {
+	protected function getStoreUri($object, $actionName) {
 		$uriBuilder = new Tx_Extbase_MVC_Web_Routing_UriBuilder();
 		$uriBuilder = $this->objectManager->get('Tx_Extbase_MVC_Web_Routing_UriBuilder');
 		$uriBuilder->setTargetPageType($this->typeNum);
 		$uriBuilder->setTargetPageUid($GLOBALS['TSFE']->id);
-		$actionName = 'rest';
-		$controllerArguments = NULL;
+		$controllerArguments = array('crudAction' => $actionName);;
 		$controllerName = $this->infoService->getControllerName($object);
 		$extensionName = $this->infoService->getExtensionName($object);
 		$pluginName = $this->infoService->getPluginName($object);
-		return $uriBuilder->uriFor($actionName, $controllerArguments, $controllerName, $extensionName, $pluginName);
+		return $uriBuilder->uriFor('rest', $controllerArguments, $controllerName, $extensionName, $pluginName);
 	}
 
 	protected function getPropertyDefinitions($object, $properties) {

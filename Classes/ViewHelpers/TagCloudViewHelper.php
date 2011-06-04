@@ -1,9 +1,9 @@
-<?php 
+<?php
 /***************************************************************
 *  Copyright notice
 *
 *  (c) 2010 Claus Due <claus@wildside.dk>, Wildside A/S
-*  			
+*
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -23,14 +23,21 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
-
+/**
+ * @author Claus Due <claus@wildside.dk>, Wildside A/S
+ * @version $Id$
+ * @copyright Copyright belongs to the respective authors
+ * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
+ * @package Fed
+ * @subpackage ViewHelpers
+ */
 class Tx_Fed_ViewHelpers_TagCloudViewHelper extends Tx_Fed_Core_ViewHelper_AbstractViewHelper {
-	
+
 	public $tagName = 'div';
-	
+
 	/**
 	 * Argument initialization
-	 * 
+	 *
 	 * @return void
 	 */
 	public function initializeArguments() {
@@ -46,32 +53,31 @@ class Tx_Fed_ViewHelpers_TagCloudViewHelper extends Tx_Fed_Core_ViewHelper_Abstr
 		$this->registerArgument('distribute', 'boolean', 'Distribute evenly', FALSE, TRUE);
 		$this->registerArgument('fontSizeMin', 'number', 'Minimum allowed size of fonts - tag font size is scaled to match occurrence percentage', FALSE, 9);
 		$this->registerArgument('fontSizeMax', 'number', 'Maximum allowed size of fonts - tag font size is scaled to match occurrence percentage', FALSE, 30);
-		$this->registerArgument('mode', 'string', 'Rendering mode. Currently supported is "flash" and "html"', FALSE, 'flash');
-		$this->registerArgument('useIntervals', 'boolen', 'If TRUE, renders sizes based on 10 intervals between fontSizeMin and fontSizeMax - if FALSE, size is more precise but less distinct', FALSE, TRUE);
-		$this->registerArgument('tags', 'array', 'Optional list of tags. If no supplied the content of the fed:tagCloud tag becomes the tag list. 
+		$this->registerArgument('mode', 'string', 'Rendering mode. Currently supported is "flash", "html" and "custom" (uses tag content instead of creating content)', FALSE, 'flash');
+		$this->registerArgument('useIntervals', 'boolen', 'If TRUE, renders sizes based on 10 intervals between fontSizeMin and fontSizeMax - if FALSE, size
+			is more precise but less distinct', FALSE, TRUE);
+		$this->registerArgument('tags', 'array', 'Optional list of tags. If no supplied the content of the fed:tagCloud tag becomes the tag list.
 			Other ViewHelpers included to register and count tags on-the-fly');
-		$this->registerArgument('merge', 'string', 'If "argument", prevents gathering tags from the contents of the fed:tagCloud template tag ("argument" requires 
-			the $tags argument or cloud will be empty!). If "both", combines $tags with tags rendered via renderChildren(). If "content" only tags rendered 
+		$this->registerArgument('merge', 'string', 'If "argument", prevents gathering tags from the contents of the fed:tagCloud template tag ("argument" requires
+			the $tags argument or cloud will be empty!). If "both", combines $tags with tags rendered via renderChildren(). If "content" only tags rendered
 			defined by other ViewHelpers are counted. You can use this to merge or switch between two tag sets on-the-fly. See manual.', FALSE, 'both');
-		$this->registerArgument('outputContent', 'boolean', 'If TRUE, uses the rendered content as the HTML return value. This lets you process Fluid 
-			var {tags} the way you choose by looping it inside the tag content in your template.', FALSE, FALSE);
-		$this->registerArgument('titleIsTag', 'boolean', 'If TRUE, makes the ViewHelper use the "title" property of each tag you register instead of the 
+		$this->registerArgument('titleIsTag', 'boolean', 'If TRUE, makes the ViewHelper use the "title" property of each tag you register instead of the
 			"tag" attribute or innerHTML. Use this if you are counting lists of model objects or UIDs for instance; and let "tag" be the UID/model object to register', FALSE, FALSE);
 		$this->registerArgument('divider', 'string', 'Piece of HTML to insert between rendered tags, used in HTML mode only');
 	}
-	
+
 	/**
 	 * Render a Cumulus Tag Cloud - thanks to Roy Tanck
-	 * 
+	 *
 	 * @return string
 	 */
 	public function render() {
-		
+
 		$this->setTagStorage(array());
 		$content = $this->renderChildren();
 		$tags = $this->processTags();
-		
-		
+
+
 		if ($this->arguments['tags']) {
 			// tags were supplied as argument, combine with ones rendered in tag content if combine=TRUE, else overwrite
 			if (count($tags) > 0) {
@@ -80,22 +86,22 @@ class Tx_Fed_ViewHelpers_TagCloudViewHelper extends Tx_Fed_Core_ViewHelper_Abstr
 				$tags = $this->arguments['tags'];
 			}
 		}
-		
-		if ($this->arguments['outputContent'] === TRUE) {
+
+		if ($this->arguments['mode'] === 'custom') {
 			return $content;
 		}
-		
+
 		$renderedTagCloud = $this->renderTagCloud($this->arguments['mode'], $tags);
-		
+
 		$classes = explode(' ', $this->arguments['class']);
-		array_push($classes, 'wildside-extbase-tagcloud');
+		array_push($classes, 'fed-extbase-tagcloud');
 		$classes = implode(' ', $classes);
 		$this->tag->addAttribute('class', $classes);
 		$this->tag->setContent($renderedTagCloud);
 		$rendered = $this->tag->render();
 		return $rendered;
 	}
-	
+
 	/**
 	 * Process and merge tags according to settings
 	 * @return array
@@ -117,7 +123,7 @@ class Tx_Fed_ViewHelpers_TagCloudViewHelper extends Tx_Fed_Core_ViewHelper_Abstr
 		}
 		return $tags;
 	}
-	
+
 	/**
 	 * Render the tag cloud HTML to be inserted in DOM. Output depends on settings
 	 * @param string $mode
@@ -136,7 +142,7 @@ class Tx_Fed_ViewHelpers_TagCloudViewHelper extends Tx_Fed_Core_ViewHelper_Abstr
 			if ($this->arguments['useIntervals'] === TRUE) {
 				$tag['size'] = $this->getSize($min, $max, $tag['percentageInterval']);
 			} else {
-				$tag['size'] = $this->getSize($min, $max, $tag['percentage']); 
+				$tag['size'] = $this->getSize($min, $max, $tag['percentage']);
 			}
 			$tags[$name] = $tag;
 		}
@@ -145,7 +151,7 @@ class Tx_Fed_ViewHelpers_TagCloudViewHelper extends Tx_Fed_Core_ViewHelper_Abstr
 			case 'flash': default: return $this->renderFlashTagCloud($tags);
 		}
 	}
-	
+
 	/**
 	 * Get the relative size as a ratio of 0-100% of the distance between $min and $max added to $min.
 	 * @param float $min
@@ -156,7 +162,7 @@ class Tx_Fed_ViewHelpers_TagCloudViewHelper extends Tx_Fed_Core_ViewHelper_Abstr
 	protected function getSize($min, $max, $percentage) {
 		return floatval(number_format(($min + ( ($max - $min) * $percentage)), 2));
 	}
-	
+
 	/**
 	 * Calculate the positional interval of $percentage as rounded off to 0.1 precision
 	 * @param float $percentage
@@ -169,7 +175,7 @@ class Tx_Fed_ViewHelpers_TagCloudViewHelper extends Tx_Fed_Core_ViewHelper_Abstr
 		}
 		return $percentageInterval;
 	}
-	
+
 	/**
 	 * Merge two tag arrays - increase occurrence if tag exists in either array
 	 * @param array $t1
@@ -184,9 +190,9 @@ class Tx_Fed_ViewHelpers_TagCloudViewHelper extends Tx_Fed_Core_ViewHelper_Abstr
 				$t1[$name]['occurrences'] += $tag['occurrences'];
 			}
 		}
-		return $t1; 
+		return $t1;
 	}
-	
+
 	/**
 	 * Convert a simple (stdClass or class with public properties) object to an array
 	 * @param mixed $obj
@@ -198,7 +204,7 @@ class Tx_Fed_ViewHelpers_TagCloudViewHelper extends Tx_Fed_Core_ViewHelper_Abstr
 		}
 		return $arr;
 	}
-	
+
 	/**
 	 * Renders tags as HTML
 	 * @param array $tags
@@ -231,7 +237,7 @@ class Tx_Fed_ViewHelpers_TagCloudViewHelper extends Tx_Fed_Core_ViewHelper_Abstr
 		}
 		return $html;
 	}
-	
+
 	/**
 	 * Render the output necessary for a Flash tag cloud
 	 * @author Roy Tanck
@@ -249,7 +255,7 @@ class Tx_Fed_ViewHelpers_TagCloudViewHelper extends Tx_Fed_Core_ViewHelper_Abstr
 		$expressInstall = "http://www.adobe.com/go/getflashplayer";
 		$distribute = $this->arguments['distribute'] ? 'true' : 'false';
 		$script = <<< SCRIPT
-swfobject.embedSWF("{$movie}", "{$elementId}", "{$this->arguments['width']}", "{$this->arguments['height']}", "9", "{$expressInstall}", 
+swfobject.embedSWF("{$movie}", "{$elementId}", "{$this->arguments['width']}", "{$this->arguments['height']}", "9", "{$expressInstall}",
 {
 	tcolor: '0x{$this->arguments['color']}',
 	hicolor: '0x{$this->arguments['hicolor']}',
@@ -264,7 +270,7 @@ SCRIPT;
 		$this->includeHeader($script, 'js');
 		return "<div id='{$elementId}'></div>";
 	}
-	
+
 	/**
 	 * Render output when no tags are found
 	 * @return string
@@ -272,7 +278,7 @@ SCRIPT;
 	protected function renderNoContent() {
 		return "<a href='' title='no tags'>No tags available</a>";
 	}
-	
+
 	/**
 	 * Renders $tags into proper flashvars format
 	 * @param array $tags
@@ -292,7 +298,7 @@ TAG;
 		}
 		return $cloud;
 	}
-	
+
 	/**
 	 * Register $occurrences occurrences of tag $tagName
 	 * @param string $tagName
@@ -313,7 +319,7 @@ TAG;
 		}
 		$this->setTagStorage($tags);
 	}
-	
+
 	/**
 	 * Add a tag with full configuration (occurrences, href, title etc)
 	 * @param array $config
@@ -328,7 +334,7 @@ TAG;
 		}
 		$this->setTagStorage($tags);
 	}
-	
+
 	/**
 	 * Get the current "working copy" tag storage
 	 * @return array
@@ -340,7 +346,7 @@ TAG;
 			return array();
 		}
 	}
-	
+
 	/**
 	 * Set the current "working copy" tag storage
 	 * @param array $tags
@@ -351,7 +357,7 @@ TAG;
 		}
 		$this->templateVariableContainer->add('tags', $tags);
 	}
-	
+
 }
 
 

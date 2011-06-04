@@ -63,7 +63,7 @@ class Tx_Fed_Core_Bootstrap extends Tx_Extbase_Core_Bootstrap {
 			return;
 		}
 		$this->resetSingletons();
-		try {
+		#try {
 			$content = $response->getContent();
 			$testJSON = $this->jsonService->decode($content);
 			$object = $this->detectModelObject($content);
@@ -82,25 +82,31 @@ class Tx_Fed_Core_Bootstrap extends Tx_Extbase_Core_Bootstrap {
 			} else {
 				$data = $content;
 			}
-			$data = $this->wrapResponse($data);
+			#$data = $this->wrapResponse($data);
 			$messages = $messager->getAllMessagesAndFlush();
-			$data->messages = array();
+			#$data->messages = array();
 			foreach ($messages as $message) {
 				$msg = new stdClass();
 				$msg->severity = $message->getSeverity();
 				$msg->title = $message->getTitle();
 				$msg->message = $message->getMessage();
-				array_push($data->messages, $msg);
+				#array_push($data->messages, $msg);
 			}
-		} catch (Exception $e) {
+		/*
+		}
+		catch (Exception $e) {
 			$data->errors = array();
 			$err = new stdClass();
 			$err->severity = $e->getCode();
 			$err->title = 'Exception';
 			$err->message = $e->getMessage();
 			array_push($data->errors, $err);
+		}*/
+		if (is_array($data) || is_object($data)) {
+			$output = $this->jsonService->encode($data);
+		} else {
+			$output = $data;
 		}
-		$output = $this->jsonService->encode($data);
 		return $output;
 	}
 

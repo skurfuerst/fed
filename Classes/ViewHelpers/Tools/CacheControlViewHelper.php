@@ -1,9 +1,9 @@
-<?php 
+<?php
 /***************************************************************
 *  Copyright notice
 *
 *  (c) 2010 Claus Due <claus@wildside.dk>, Wildside A/S
-*  			
+*
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -24,8 +24,8 @@
 ***************************************************************/
 
 class Tx_Fed_ViewHelpers_Tools_CacheControlViewHelper extends Tx_Fed_Core_ViewHelper_AbstractViewHelper {
-	
-	
+
+
 	/**
 	 * Renders AJAX controls over caching. Perform cache-clearing operations
 	 * then reload the exact URL. Should NATURALLY ONLY BE USED DURING DEVELOPMENT!
@@ -53,7 +53,7 @@ class Tx_Fed_ViewHelpers_Tools_CacheControlViewHelper extends Tx_Fed_Core_ViewHe
 HTML;
 		return $html;
 	}
-	
+
 	/**
 	 * Add script for communication
 	 * @return void
@@ -61,21 +61,20 @@ HTML;
 	private function addScript() {
 		$script = <<< SCRIPT
 
-jQuery(document).ready(function() { 
-	jQuery('.fedCacheController').each(function() { 
+jQuery(document).ready(function() {
+	jQuery('.fedCacheController').each(function() {
 		jQuery(this).change(function() {
 			var cid = jQuery(this).val();
 				if (parseInt(cid) < 0) {
 				return;
 			};
-			var response = jQuery.ajax('?type=4815162342', {method: 'post', async: false, 
+			var response = jQuery.ajax('?type=4815162342', {method: 'post', async: false,
 				data: {tx_fed_api: {controller: 'Tool', action: 'clearCache', target: cid}}});
-			var json = jQuery.parseJSON(response.responseText);
-			if (typeof json == 'object' && json.payload == '1') {
+			if (parseInt(response.responseText) > 0) {
 				jQuery(this).val(-1);
 				document.location.reload();
 			} else {
-				alert('There was an error clearing the cache. The response was: ' + response);
+				alert('There was an error clearing the cache. The response was: ' + response.responseText);
 			};
 		})
 	})
@@ -83,8 +82,8 @@ jQuery(document).ready(function() {
 SCRIPT;
 		$this->includeHeader($script, 'js', 'fedCacheControl');
 	}
-	
-	
+
+
 }
 
 ?>

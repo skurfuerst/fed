@@ -1,9 +1,9 @@
-<?php 
+<?php
 /***************************************************************
 *  Copyright notice
 *
 *  (c) 2010 Claus Due <claus@wildside.dk>, Wildside A/S
-*  			
+*
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -24,8 +24,8 @@
 ***************************************************************/
 
 class Tx_Fed_ViewHelpers_Tools_CookieControlViewHelper extends Tx_Fed_Core_ViewHelper_AbstractViewHelper {
-	
-	
+
+
 	/**
 	 * Renders AJAX controls over caching. Perform cache-clearing operations
 	 * then reload the exact URL. Should NATURALLY ONLY BE USED DURING DEVELOPMENT!
@@ -59,7 +59,7 @@ class Tx_Fed_ViewHelpers_Tools_CookieControlViewHelper extends Tx_Fed_Core_ViewH
 HTML;
 		return $html;
 	}
-	
+
 	private function getCookieOptions() {
 		$html = '';
 		foreach ($_COOKIE as $name=>$value) {
@@ -67,7 +67,7 @@ HTML;
 		}
 		return $html;
 	}
-	
+
 	/**
 	 * Add script for communication
 	 * @return void
@@ -76,10 +76,10 @@ HTML;
 		$script = <<< SCRIPT
 
 jQuery(document).ready(function() {
-	var cid; 
+	var cid;
 	var controls = jQuery('.fedCookieController span').hide();
 	controls.find('button[name="remove"]').click(function() {
-		var response = jQuery.ajax('?type=4815162342', {method: 'post', async: false, 
+		var response = jQuery.ajax('?type=4815162342', {method: 'post', async: false,
 			data: {tx_fed_api: {controller: 'Tool', action: 'removeCookie', target: cid}}});
 		if (parseInt(jQuery.parseJSON(response.responseText).payload) == 1) {
 			jQuery('.fedCookieController select').val(-1);
@@ -88,36 +88,32 @@ jQuery(document).ready(function() {
 		};
 	});
 	controls.find('button[name="set"]').click(function() {
-		var response = jQuery.ajax('?type=4815162342', {method: 'post', async: false, 
+		var response = jQuery.ajax('?type=4815162342', {method: 'post', async: false,
 			data: {tx_fed_api: {controller: 'Tool', action: 'setCookie', target: cid, value: controls.find('input').val()}}});
 	});
 	controls.find('button[name="cancel"]').click(function() {
 		controls.hide();
 		jQuery('.fedCookieController select').val(-1);
 	});
-	jQuery('.fedCookieController select').each(function() { 
+	jQuery('.fedCookieController select').each(function() {
 		jQuery(this).change(function() {
 			cid = jQuery(this).val();
 			if (parseInt(cid) < 0) {
 				return;
 			};
-			var response = jQuery.ajax('?type=4815162342', {method: 'post', async: false, 
+			var response = jQuery.ajax('?type=4815162342', {method: 'post', async: false,
 				data: {tx_fed_api: {controller: 'Tool', action: 'inspectCookie', target: cid}}});
 			var json = jQuery.parseJSON(response.responseText);
-			if (typeof json == 'object' && json.payload) {
-				controls.show();
-				controls.find('input').val(json.payload);
-			} else {
-				alert('There was an error clearing the cache. The response was: ' + response);
-			};
+			controls.show();
+			controls.find('input').val(json);
 		})
 	})
 });
 SCRIPT;
 		$this->includeHeader($script, 'js', 'fedCookieControl');
 	}
-	
-	
+
+
 }
 
 ?>

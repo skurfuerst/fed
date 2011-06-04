@@ -1,9 +1,9 @@
-<?php 
+<?php
 /***************************************************************
 *  Copyright notice
 *
 *  (c) 2010 Claus Due <claus@wildside.dk>, Wildside A/S
-*  			
+*
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -24,21 +24,22 @@
 ***************************************************************/
 
 class Tx_Fed_ViewHelpers_MapViewHelper extends Tx_Fed_Core_ViewHelper_AbstractViewHelper {
-	
+
 	#protected $type = 'js';
-	
+
 	protected $tagName = 'div';
-	
+
 	public function initializeArguments() {
+		$markerIcon = t3lib_extMgm::siteRelPath('fed') . 'Resources/Public/Icons/MapMarker.png';
 		parent::initializeArguments();
 		$this->registerUniversalTagAttributes();
 		$this->registerTagAttribute('lat', 'float', 'Lattitude');
 		$this->registerTagAttribute('lng', 'float', 'Longitude');
-		$this->registerTagAttribute('icon', 'string', 'Icon filename');
+		$this->registerTagAttribute('icon', 'string', 'Icon filename', FALSE, $markerIcon);
 		$this->registerTagAttribute('iconCenterX', 'int', 'Icon pivot coordinate X');
 		$this->registerTagAttribute('iconCenterY', 'int', 'Icon pivot coordinate Y');
 	}
-	
+
 	/**
 	 * @param string $api
 	 * @param string $width
@@ -64,9 +65,9 @@ class Tx_Fed_ViewHelpers_MapViewHelper extends Tx_Fed_Core_ViewHelper_AbstractVi
 	 */
 	public function render(
 			// CUSTOM parameters
-			$api=NULL, 
-			$width="450px", 
-			$height="550px", 
+			$api=NULL,
+			$width="450px",
+			$height="550px",
 			// next is Google Map parameters
 			$backgroundColor=NULL,
 			$disableDefaultUi=FALSE,
@@ -93,48 +94,45 @@ class Tx_Fed_ViewHelpers_MapViewHelper extends Tx_Fed_Core_ViewHelper_AbstractVi
 		$min = 100000;
 		$max = 999999;
 		$elementId = 'gm' . rand($min, $max);
-		
+
 		$this->includeFile($api);
-		
+
 		$this->templateVariableContainer->add('layers', array());
 		$this->templateVariableContainer->add('infoWindows', array());
-		
+
 		$this->inheritArguments();
 		$children = $this->renderChildren();
-		
+
 		$markers = $this->renderMarkers();
-		
+
 		$lat = $this->arguments['lat'] ? $this->arguments['lat'] : 56.25;
 		$lng = $this->arguments['lng'] ? $this->arguments['lng'] : 10.45;
-		
+
 		$options = $this->getMapOptions();
-		
+
 		$js = <<< INIT
 var markers = [];
 var {$instanceName};
 var {$instanceName}timeout;
 var {$instanceName}refreshList = function() {
 	var i;
-
 	var markerlist = jQuery('.fed-maplist');
 	for (i=0; i<markers.length; i++) {
 		var marker = markers[i];
 		var row = markerlist.find('tr.' + marker.get('id'));
-		
 		if (map.getBounds().contains(marker.getPosition())) {
 			row.removeClass('off');
 		} else {
 			row.addClass('off');
 		}
 	};
-
 	if (typeof tableSorter != 'undefined') {
 		tableSorter.fnDraw();
 	};
 };
 var {$instanceName}timer = function() {
 	clearTimeout({$instanceName});
-	{$instanceName}timeout = setTimeout({$instanceName}refreshList, 800);
+	{$instanceName}timeout = setTimeout({$instanceName}refreshList, 400);
 };
 
 jQuery(document).ready(function() {
@@ -143,15 +141,6 @@ jQuery(document).ready(function() {
 	var infoWindow = infoWindow = new google.maps.InfoWindow({maxWidth: 400, maxHeight: 400});
 	{$instanceName} = new google.maps.Map(document.getElementById("{$elementId}"), myOptions);
 {$markers}
-	
-	/*
-	function fedGoogleMapShowInfoWindow(event, content) {
-	    infoWindow.setContent(content);
-	    infoWindow.setPosition(event.latLng);
-	    infoWindow.open(map, markers[event.currentTarget.getAttribute('id')]);
-	};
-	*/
-	
 	// check for a map list instance. If found, hook it up to various map events
 	var listElement = jQuery('.fed-maplist');
 	if (listElement.html() != '') {
@@ -161,8 +150,8 @@ jQuery(document).ready(function() {
 		google.maps.event.addListener(map, 'center_changed', {$instanceName}timer);
 		google.maps.event.addListener(map, 'resize', {$instanceName}timer);
 	}
-	
 });
+
 INIT;
 
 		$css = <<< CSS
@@ -174,15 +163,15 @@ CSS;
 
 		$this->includeHeader($js, 'js');
 		$this->includeHeader($css, 'css');
-		
+
 		$this->tag->addAttribute('id', $elementId);
 		$this->tag->addAttribute('class', $this->arguments['class']);
-		
+
 		$this->tag->setContent($children);
-		
+
 		return $this->tag->render();
 	}
-	
+
 	public function get($name) {
 		if ($this->templateVariableContainer->exists($name)) {
 			return $this->templateVariableContainer->get($name);
@@ -190,14 +179,14 @@ CSS;
 			return FALSE;
 		}
 	}
-	
+
 	public function reassign($name, $value) {
 		if ($this->templateVariableContainer->exists($name)) {
 			$this->templateVariableContainer->remove($name);
 		}
 		$this->templateVariableContainer->add($name, $value);
 	}
-	
+
 	public function inheritArguments() {
 		$config = $this->get('config');
 		if ($config === FALSE) {
@@ -210,7 +199,7 @@ CSS;
 		$this->reassign('config', $config);
 		return $config;
 	}
-	
+
 	public function getArguments() {
 		$args = array();
 		$defs = $this->prepareArguments();
@@ -222,7 +211,7 @@ CSS;
 		}
 		return $args;
 	}
-	
+
 	public function renderMarkers() {
 		$layers = $this->get('layers');
 		$allMarkers = array();
@@ -239,7 +228,7 @@ CSS;
 				}
 				$options = $this->getMarkerOptions($marker);
 				$str = "\tvar {$markerId} = new google.maps.Marker($options); {$markerId}.set('id', '{$markerId}'); markers.push({$markerId}); ";
-				if ($infoWindow) {	
+				if ($infoWindow) {
 					$str .= "    google.maps.event.addListener({$markerId}, 'click', function(event) { infoWindow.close(); infoWindow.setOptions({maxWidth: 600}); infoWindow.open(map, {$markerId}); infoWindow.setContent(\"{$infoWindow}\"); });";
 				}
 				array_push($allMarkers, $str);
@@ -248,7 +237,7 @@ CSS;
 		$this->reassign('layers', $layers);
 		return implode("\n", $allMarkers);
 	}
-	
+
 	public function getOptions($object) {
 		$lines = array();
 		foreach ($object as $name=>$value) {
@@ -265,7 +254,7 @@ CSS;
 		}
 		return $lines;
 	}
-	
+
 	public function getMapOptions() {
 		/*
 		 * MAP OPTIONS OBJECT JS
@@ -282,16 +271,17 @@ CSS;
 		$lines = array(
 			"center: myLatlng",
         	"mapTypeId: google.maps.MapTypeId.ROADMAP",
+			"size: new google.maps.Size(500,500)"
 		);
 		$lines = array_merge($lines, $this->getOptions($this->getArguments()));
 		return $this->objWrap($lines);
 	}
-	
+
 	public function getMarkerOptions($marker) {
 		$removables = array(
-			"width", "height", "disableDefaultUi", "disableDoubleClickZoom", "draggable", 
-			"keyboardShortcuts", "mapTypeControl", "noClear", "panControl", "scaleControl", 
-			"scrollWheel", "streetViewControl", "zoom", "zoomControl", "instanceName", "class", 
+			"width", "height", "disableDefaultUi", "disableDoubleClickZoom", "draggable",
+			"keyboardShortcuts", "mapTypeControl", "noClear", "panControl", "scaleControl",
+			"scrollWheel", "streetViewControl", "zoom", "zoomControl", "instanceName", "class",
 			"data", "properties"
 		);
 		$lines = array(
@@ -309,16 +299,16 @@ CSS;
 			}
 		}
 		// now we need to unset the parameters which are only related to Map:
-		
+
 		return $this->objWrap($lines);
 	}
-	
+
 	public function objWrap($lines) {
 		$str = "{".implode(", ", $lines)."}";
 		return $str;
 	}
-	
-	
-	
+
+
+
 }
 ?>

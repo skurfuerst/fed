@@ -62,6 +62,8 @@ class Tx_Fed_ViewHelpers_JQuery_AccordionViewHelper extends Tx_Fed_Core_ViewHelp
 
 	protected $tagName = 'div';
 
+	protected $uniqId;
+
 	/**
 	 * Initialization
 	 *
@@ -100,6 +102,7 @@ class Tx_Fed_ViewHelpers_JQuery_AccordionViewHelper extends Tx_Fed_Core_ViewHelp
 			return;
 		}
 
+
 		// render tab group
 		$this->templateVariableContainer->add('tabs', array());
 		$this->templateVariableContainer->add('selectedIndex', 0);
@@ -107,11 +110,14 @@ class Tx_Fed_ViewHelpers_JQuery_AccordionViewHelper extends Tx_Fed_Core_ViewHelp
 		$this->templateVariableContainer->add('currentIndex', 0);
 		$content = $this->renderChildren();
 
+		// uniq DOM id for this accordion
+		$this->uniqId = uniqid('fedjqueryaccordion');
 		$tabs = $this->renderTabs();
 		$html = ($tabs . chr(10) . $content . chr(10));
 		$this->addScript();
 		$this->tag->setContent($html);
 		$this->tag->addAttribute('class', 'fed-accordion-group');
+		$this->tag->addAttribute('id', $this->uniqId);
 		$this->templateVariableContainer->remove('tabs');
 		$this->templateVariableContainer->remove('selectedIndex');
 		$this->templateVariableContainer->remove('disabledIndices');
@@ -186,12 +192,19 @@ jQuery(document).ready(function() {
 		"clearStyle" : {$clearStyle},
 		"fillSpace" : {$fillSpace}
 	};
-	jQuery(".fed-accordion-group").each(function() {
-		jQuery(this).accordion(options);
-	});
+	jQuery("#{$this->uniqId}").accordion(options).bind("accordionchange", function(event, Element) {
+		/*
+		if (google.maps) {
+			current=maps[Element.options.active];
+			google.maps.event.trigger(current.map, 'resize');    //resize
+			current.map.setZoom( current.map.getZoom() );        //force redrawn
+			current.map.setCenter(current.marker.getPosition()); //recenter on marker
+		};
+		*/
+    });
 });
 SCRIPT;
-		$this->includeHeader($script, 'js', 'fedJQueryAccordion');
+		$this->includeHeader($script, 'js');
 
 
 				$init = <<< INITSCRIPT
@@ -211,7 +224,7 @@ jQuery(document).ready(function() {
 INITSCRIPT;
 	}
 
-	
+
 }
 
 ?>

@@ -91,7 +91,7 @@ class Tx_Fed_Utility_DomainObjectInfo implements t3lib_Singleton {
 	 * @param boolean $addUid If TRUE, the field "uid" will be force-added to the output regardless of annotation
 	 * @return array
 	 */
-	public function getPropertiesByAnnotation($object, $annotation, $value=TRUE, $addUid=FALSE) {
+	public function getPropertiesByAnnotation($object, $annotation, $value=TRUE, $addUid=TRUE) {
 		$propertyNames = array();
 		$className = is_object($object) ? get_class($object) : $object;
 		$this->recursionHandler->in();
@@ -237,6 +237,13 @@ class Tx_Fed_Utility_DomainObjectInfo implements t3lib_Singleton {
 	 * @return array
 	 */
 	public function getValuesByAnnotation($object, $annotation='json', $value=TRUE, $addUid=TRUE) {
+		if (is_array($object)) {
+			$array = array();
+			foreach ($object as $k=>$v) {
+				$array[$k] = $this->getValuesByAnnotation($v, $annotation, $value, $addUid);
+			}
+			return $array;
+		}
 		if (is_object($object)) {
 			$className = get_class($object);
 		} else {
@@ -265,6 +272,8 @@ class Tx_Fed_Utility_DomainObjectInfo implements t3lib_Singleton {
 					$returnValue = $array;
 				} else if ($returnValue instanceof Tx_Extbase_DomainObject_DomainObjectInterface) {
 					$returnValue = $this->getValuesByAnnotation($returnValue, $annotation, $value, $addUid);
+				} else if ($returnValue instanceof DateTime) {
+					$returnValue = $returnValue->format('r');
 				}
 				$return[$propertyName] = $returnValue;
 			}

@@ -51,43 +51,6 @@ abstract class Tx_Fed_Core_ViewHelper_AbstractViewHelper extends Tx_Fluid_Core_V
 	}
 
 	/**
-	 * Get all values (or values specified in $properties).
-	 * DEPRECATED - functionality now covered by PropertyMapper singleton
-	 *
-	 * @param Tx_Extbase_DomainObject_AbstractDomainObject $object
-	 * @param array $properties
-	 * @return object
-	 * @deprecated
-	 */
-	public function getValues(Tx_Extbase_DomainObject_AbstractDomainObject $object, array $properties=array()) {
-		$className = get_class($object);
-		$reflection = t3lib_div::makeInstance('Tx_Extbase_Reflection_ClassReflection', $className);
-		$methods = $reflection->getMethods();
-		$values = array();
-		foreach ($methods as $method) {
-			$method = $method->name;
-			if (substr($method, 0, 3) != 'get') {
-				continue;
-			} else {
-				$propertyName = substr($method, 3);
-				$propertyName{0} = strtolower($propertyName{0});
-			}
-			$value = $object->$method();
-			if ($value instanceof Tx_Extbase_Persistence_ObjectStorage) {
-				$value = array();
-				foreach ($value as $item) {
-					$itemValue = $this->getValues($item);
-					array_push($value, $itemValue);
-				}
-			} else if ($value instanceof Tx_Extbase_DomainObject_AbstractDomainObject) {
-				$value = $this->getValues($value);
-			}
-			$values[$propertyName] = $value;
-		}
-		return $values;
-	}
-
-	/**
 	 * Get a StandaloneView for $templateFile
 	 *
 	 * @param string $templateFile
@@ -238,7 +201,9 @@ abstract class Tx_Fed_Core_ViewHelper_AbstractViewHelper extends Tx_Fluid_Core_V
 		$type = $pathinfo['extension'];
 		if ($pathinfo['filename'] === '*') {
 			$files = $this->getFilenamesOfType($pathinfo['dirname'], $pathinfo['extension']);
-			$this->includeFiles($files, $cache, $concat, $compress);
+			if ($files) {
+				$this->includeFiles($files, $cache, $concat, $compress);
+			}
 			return;
 		}
 		if ($type !== 'css' && $type !== 'js') {
@@ -266,6 +231,7 @@ abstract class Tx_Fed_Core_ViewHelper_AbstractViewHelper extends Tx_Fluid_Core_V
 	 * Get an array of all with extension $extension in $dir
 	 * @param string $dir
 	 * @param string $type
+	 * @api
 	 */
 	public function getFilenamesOfType($dir, $extension=NULL) {
 		$relative = $dir;

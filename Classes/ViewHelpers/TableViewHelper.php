@@ -1,9 +1,9 @@
-<?php 
+<?php
 /***************************************************************
 *  Copyright notice
 *
 *  (c) 2010 Claus Due <claus@wildside.dk>, Wildside A/S
-*  			
+*
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -25,17 +25,19 @@
 
 
 class Tx_Fed_ViewHelpers_TableViewHelper extends Tx_Fed_Core_ViewHelper_AbstractViewHelper {
-	
+
 	/**
 	 * @var Tx_Fed_Utility_PropertyMapper $propertyMapper
 	 */
 	protected $propertyMapper;
-	
+
 	protected $tagName = 'table';
-	
+
 	protected $objects = array();
-	
+
 	public $rowClassPrefix = 'row';
+
+	public $uniqId;
 
 	/**
 	 * @param Tx_Fed_Utility_PropertyMapper $mapper
@@ -43,10 +45,10 @@ class Tx_Fed_ViewHelpers_TableViewHelper extends Tx_Fed_Core_ViewHelper_Abstract
 	public function injectPropertyMapper(Tx_Fed_Utility_PropertyMapper $mapper) {
 		$this->propertyMapper = $mapper;
 	}
-	
+
 	/**
 	 * Initialization
-	 * 
+	 *
 	 * @return void
 	 */
 	public function initializeArguments() {
@@ -67,8 +69,7 @@ class Tx_Fed_ViewHelpers_TableViewHelper extends Tx_Fed_Core_ViewHelper_Abstract
 			'sProcessing' => "",
 			'sSearch' => "Filter records:",
 			'sUrl' => "",
-			'sZeroRecords' => "Nothing to display - no visible table content" 
-			
+			'sZeroRecords' => "Nothing to display - no visible table content"
 		);
 		$this->registerUniversalTagAttributes();
 		$this->registerArgument('cellspacing', 'int', 'Cell spacing', FALSE, 0);
@@ -99,20 +100,21 @@ class Tx_Fed_ViewHelpers_TableViewHelper extends Tx_Fed_Core_ViewHelper_Abstract
 		$this->registerArgument('aLengthMenu', 'string', 'aLengthMenu-format notation for the "display X items" dropdown. See DataTables jQuery plugin documentation.', FALSE, '[[20, 50, 100, -1], [20, 50, 100, "-"]]');
 		parent::initializeArguments();
 	}
-	
+
 	/**
 	 * Render method
-	 * 
+	 *
 	 * @return string
 	 */
 	public function render() {
-		
+
+		$this->uniqId = uniqid('fedtable_');
 		$this->addClassAttribute();
 		if ($this->arguments['sortable']) {
 			$this->addScripts();
 			$this->addStyles();
 		}
-		
+
 		$headers = $this->arguments['headers'];
 		$properties = count($this->arguments['properties']) > 0 ? $this->arguments['properties'] : array_keys($this->arguments['data']);
 		if ($this->arguments->hasArgument('objects')) {
@@ -121,7 +123,7 @@ class Tx_Fed_ViewHelpers_TableViewHelper extends Tx_Fed_Core_ViewHelper_Abstract
 				$objects = $objects->toArray();
 			}
 		}
-		
+
 		if ($this->arguments['dataSource']) {
 			$source = $this->arguments['dataSource'];
 			$parser = $this->objectManager->get('Tx_Fed_Utility_DataSourceParser');
@@ -151,27 +153,29 @@ class Tx_Fed_ViewHelpers_TableViewHelper extends Tx_Fed_Core_ViewHelper_Abstract
 		} else {
 			$tbody = $this->renderChildren();
 		}
-		
+
 		$thead = $this->renderHeaders($headers);
 		if ($thead) {
 			$content = "{$thead}{$tbody}";
 		} else {
 			$content = "{$tbody}";
 		}
-		
+
 		$this->tag->setContent($content);
-		
+
 		if ($cellspacing !== FALSE) {
 			$this->tag->addAttribute('cellspacing', $this->arguments['cellspacing']);
 		}
-				
+
 		if ($cellpadding !== FALSE) {
 			$this->tag->addAttribute('cellpadding', $this->arguments['cellpadding']);
 		}
-		
+
+		$this->tag->addAttribute('id', $this->uniqId);
+
 		return $this->tag->render();
 	}
-	
+
 	/**
 	 * Render table headers based on supplied arguments
 	 * @param array $headers Optional, render these defined headers
@@ -207,7 +211,7 @@ class Tx_Fed_ViewHelpers_TableViewHelper extends Tx_Fed_Core_ViewHelper_Abstract
 		$html .= "</thead>";
 		return $html;
 	}
-	
+
 	/**
 	 * Render objects - convert to data array then forward to renderData()
 	 * @return string
@@ -221,7 +225,7 @@ class Tx_Fed_ViewHelpers_TableViewHelper extends Tx_Fed_Core_ViewHelper_Abstract
 		}
 		return $this->renderData($objects, $properties);
 	}
-	
+
 	/**
 	 * Render an array of (converted) data nodes based on $properties
 	 * @param array $data
@@ -231,7 +235,7 @@ class Tx_Fed_ViewHelpers_TableViewHelper extends Tx_Fed_Core_ViewHelper_Abstract
 	private function renderData($data, $properties) {
 		$html = "<tbody>";
 		foreach ($data as $item) {
-			if (is_array($item)) {				
+			if (is_array($item)) {
 				$id = $item['id'];
 			} else if (is_object($item) && method_exists($item, 'getUid')) {
 				$id = $item->getUid();
@@ -248,7 +252,7 @@ class Tx_Fed_ViewHelpers_TableViewHelper extends Tx_Fed_Core_ViewHelper_Abstract
 		$html .= "</tbody>";
 		return $html;
 	}
-	
+
 	/**
 	 * Render a single value (a cell's content) based on type and rendering configuration
 	 * @param mixed $value
@@ -258,7 +262,7 @@ class Tx_Fed_ViewHelpers_TableViewHelper extends Tx_Fed_Core_ViewHelper_Abstract
 		$getter = "get" . ucfirst($property);
 		$labelField = $this->arguments['labelField'];
 		$section = $this->arguments['section'];
-		
+
 		// reading value
 		if (is_array($item)) {
 			$value = $item[$property];
@@ -269,14 +273,14 @@ class Tx_Fed_ViewHelpers_TableViewHelper extends Tx_Fed_Core_ViewHelper_Abstract
 		} else {
 			$value = (string) $value;
 		}
-		
+
 		// rendering value
 		if ($value instanceof DateTime) {
 			$value = (string) $value->format($this->arguments['dateFormat']);
 		} else if ($value instanceof Tx_Extbase_Persistence_ObjectStorage) {
 			// render the value as a CSV list of names based on labelField argument
 			$names = array();
-			foreach ($value as $child) {				
+			foreach ($value as $child) {
 				array_push($names, $this->renderValue($value, $labelField));
 			}
 			$value = implode(', ', $names);
@@ -288,10 +292,10 @@ class Tx_Fed_ViewHelpers_TableViewHelper extends Tx_Fed_Core_ViewHelper_Abstract
 				$value = ($hasGetter ? $value->$getter() : strval($value) . " - property '{$labelField}' does not exist.");
 			}
 		}
-		
+
 		return (string) $value;
 	}
-	
+
 	/**
 	 * Render a single <f:section> from the DomainObject template (Resources/Private/Templates).
 	 * Extensionname etc. is detected from DomainObject's class name
@@ -311,7 +315,7 @@ class Tx_Fed_ViewHelpers_TableViewHelper extends Tx_Fed_Core_ViewHelper_Abstract
 			$string = $template->render($section);
 		}
 	}
-	
+
 	/**
 	 * Get values of a DomainObject based on annotations
 	 * @param Tx_Extbase_DomainObject_DomainObjectInterface $object
@@ -329,7 +333,7 @@ class Tx_Fed_ViewHelpers_TableViewHelper extends Tx_Fed_Core_ViewHelper_Abstract
 		$values = $this->propertyMapper->getValuesByAnnotation($object, $annotationName, $annotationValue, FALSE);
 		return $values;
 	}
-	
+
 	/**
 	 * If possible, render human-readable column names based on i18n etc.
 	 * @param Tx_Extbase_DomainObject_AbstractDomainObject $object
@@ -338,15 +342,15 @@ class Tx_Fed_ViewHelpers_TableViewHelper extends Tx_Fed_Core_ViewHelper_Abstract
 	private function translatePropertyNames($object, $properties) {
 		return array_combine($properties, $properties);
 	}
-	
+
 	/**
 	 * return a JSON-valid representation of a PHP-"boolean" which can be TRUE/FALSE or 1/0
 	 * @param mixed $bool
 	 */
 	private function jsBoolean($bool) {
-		return ($bool ? 'true' : 'false'); 
+		return ($bool ? 'true' : 'false');
 	}
-	
+
 	/**
 	 * Inject an additional classname in tag attributes
 	 * @return void
@@ -363,10 +367,10 @@ class Tx_Fed_ViewHelpers_TableViewHelper extends Tx_Fed_Core_ViewHelper_Abstract
 		$classNames = implode(' ', $classes);
 		$this->tag->addAttribute('class', $classNames);
 	}
-	
+
 	/**
 	 * Attach scripts to header
-	 * 
+	 *
 	 * @return void
 	 */
 	private function addScripts() {
@@ -377,9 +381,8 @@ class Tx_Fed_ViewHelpers_TableViewHelper extends Tx_Fed_Core_ViewHelper_Abstract
 		$bSaveState = $this->jsBoolean($this->arguments['bSaveState']);
 		$oLanguage = json_encode($this->arguments['oLanguage']);
 		$init = <<< INITSCRIPT
-var tableSorter;
 jQuery(document).ready(function() {
-	tableSorter = jQuery('.fed-sortable').dataTable( {
+	var tableSorter = jQuery("#{$this->uniqId}").dataTable( {
 		"aaSorting" : {$this->arguments['aaSorting']},
 		"bPaginate" : {$bPaginate},
 		"bFilter" : {$bFilter},
@@ -390,16 +393,16 @@ jQuery(document).ready(function() {
 		"aLengthMenu" : {$this->arguments['aLengthMenu']},
 		"sPaginationType" : "{$this->arguments['sPaginationType']}",
 	} );
-} );	
+} );
 
 INITSCRIPT;
 		$this->includeFile($scriptFile1);
 		$this->includeHeader($init, 'js');
 	}
-	
+
 	/**
 	 * Add stylesheets
-	 * 
+	 *
 	 * @return void
 	 */
 	private function addStyles() {
@@ -413,7 +416,7 @@ INITSCRIPT;
 }
 
 .fed-sortable th {
-    background-image: url('{$this->arguments['iconDefault']}');	
+    background-image: url('{$this->arguments['iconDefault']}');
 }
 
 .fed-sortable th.sorting_asc {
@@ -424,11 +427,11 @@ INITSCRIPT;
 	background-image: url('{$this->arguments['iconDesc']}');
 }
 CSS;
-		$file = t3lib_extMgm::siteRelPath('fed') . 'Resources/Public/Stylesheet/Table.css'; 
+		$file = t3lib_extMgm::siteRelPath('fed') . 'Resources/Public/Stylesheet/Table.css';
 		$this->includeHeader($css, 'css');
 		$this->includeFile($file);
 	}
-	
+
 }
 
 ?>

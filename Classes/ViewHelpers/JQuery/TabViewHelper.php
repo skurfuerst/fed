@@ -58,6 +58,8 @@ class Tx_Fed_ViewHelpers_JQuery_TabViewHelper extends Tx_Fed_Core_ViewHelper_Abs
 
 	protected $tagName = 'div';
 
+	protected $uniqId;
+
 	/**
 	 * Initialization
 	 *
@@ -94,6 +96,7 @@ class Tx_Fed_ViewHelpers_JQuery_TabViewHelper extends Tx_Fed_Core_ViewHelper_Abs
 			return;
 		}
 
+
 		// render tab group
 		$this->templateVariableContainer->add('tabs', array());
 		$this->templateVariableContainer->add('selectedIndex', 0);
@@ -101,12 +104,15 @@ class Tx_Fed_ViewHelpers_JQuery_TabViewHelper extends Tx_Fed_Core_ViewHelper_Abs
 		$this->templateVariableContainer->add('currentIndex', 0);
 		$content = $this->renderChildren();
 
+		// unique id for this DOM element
+		$this->uniqId = uniqid('fedjquerytabs');
 		$tabSelector = $this->renderTabSelector();
 		$tabs = $this->renderTabs();
 		$html = ($tabSelector . chr(10) . $tabs . chr(10) . $content . chr(10));
 		$this->addScript();
 		$this->tag->setContent($html);
 		$this->tag->addAttribute('class', 'fed-tab-group');
+		$this->tag->addAttribute('id', $this->uniqId);
 		$this->templateVariableContainer->remove('tabs');
 		$this->templateVariableContainer->remove('selectedIndex');
 		$this->templateVariableContainer->remove('disabledIndices');
@@ -184,12 +190,19 @@ jQuery(document).ready(function() {
 		"cookie" : {$cookie},
 		"collapsible" : {$collapsible}
 	};
-	jQuery(".fed-tab-group").each(function() {
-		jQuery(this).tabs(options);
+	jQuery("#{$this->uniqId}").tabs(options).bind("tabchange", function(event, Element) {
+		/*
+		if (google.maps) {
+			current=maps[Element.options.active];
+			google.maps.event.trigger(current.map, 'resize');
+			current.map.setZoom( current.map.getZoom() );
+			current.map.setCenter(current.marker.getPosition());
+		};
+		*/
 	});
 });
 SCRIPT;
-		$this->includeHeader($script, 'js', 'fedJQueryTabs');
+		$this->includeHeader($script, 'js');
 	}
 
 }
