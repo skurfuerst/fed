@@ -28,7 +28,7 @@ Tx_Extbase_Utility_Extension::configurePlugin(
 		'Template' => 'show',
 	),
 	array(
-		'Template' => 'show',
+		#'Template' => 'show',
 	)
 );
 
@@ -40,7 +40,7 @@ Tx_Extbase_Utility_Extension::configurePlugin(
 		'DataSource' => 'list,show',
 	),
 	array(
-		'DataSource' => 'list,show',
+		#'DataSource' => 'list,show',
 	)
 );
 

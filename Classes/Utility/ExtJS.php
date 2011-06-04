@@ -24,7 +24,7 @@
 ***************************************************************/
 
 /**
- * Exposes a model to ExtJS - generates and includes a Model definition class file
+ * ExtJS integration service
  *
  * @package TYPO3
  * @subpackage Fluid

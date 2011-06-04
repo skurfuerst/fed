@@ -23,6 +23,13 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
+/**
+ * Exposes a model to ExtJS - generates a Model definition class file
+ *
+ * @package TYPO3
+ * @subpackage Fluid
+ * @version
+ */
 class Tx_Fed_ExtJS_ModelGenerator implements t3lib_Singleton {
 
 	/**

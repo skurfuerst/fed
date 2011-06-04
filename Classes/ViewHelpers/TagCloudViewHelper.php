@@ -81,7 +81,7 @@ class Tx_Fed_ViewHelpers_TagCloudViewHelper extends Tx_Fed_Core_ViewHelper_Abstr
 		if ($this->arguments['tags']) {
 			// tags were supplied as argument, combine with ones rendered in tag content if combine=TRUE, else overwrite
 			if (count($tags) > 0) {
-				$tags = combineTags($this->arguments['tags'], $tags);
+				$tags = $this->mergeTags((array) $this->arguments['tags'], (array) $tags);
 			} else {
 				$tags = $this->arguments['tags'];
 			}
@@ -184,8 +184,9 @@ class Tx_Fed_ViewHelpers_TagCloudViewHelper extends Tx_Fed_Core_ViewHelper_Abstr
 	 */
 	protected function mergeTags($t1, $t2) {
 		foreach ($t2 as $name=>$tag) {
+			$tag = (array) $tag;
 			if (isset($t1[$name]) === FALSE) {
-				$t1[$name] = $tag;
+				$t1[$name] = (array) $tag;
 			} else {
 				$t1[$name]['occurrences'] += $tag['occurrences'];
 			}
