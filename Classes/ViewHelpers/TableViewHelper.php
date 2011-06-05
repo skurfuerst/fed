@@ -98,6 +98,8 @@ class Tx_Fed_ViewHelpers_TableViewHelper extends Tx_Fed_Core_ViewHelper_Abstract
 		$this->registerArgument('bInfo', 'boolean', 'Display table information - depends on sortable=TRUE', FALSE, TRUE);
 		$this->registerArgument('sPaginationType', 'string', 'Which paginateion method to use. "two_buttons" or "full_numbers", default "full_numbers"', FALSE, 'full_numbers');
 		$this->registerArgument('aLengthMenu', 'string', 'aLengthMenu-format notation for the "display X items" dropdown. See DataTables jQuery plugin documentation.', FALSE, '[[20, 50, 100, -1], [20, 50, 100, "-"]]');
+		$this->registerArgument('instanceName', 'string', 'If specified uses this name for a global variable containing a reference to the jQuery instance');
+		$this->registerArgument('registerWith', 'string', 'If specified tries to call this global Javascript method to register the instance - only on parameter is used which is the jQuery instance');
 		parent::initializeArguments();
 	}
 
@@ -380,9 +382,21 @@ class Tx_Fed_ViewHelpers_TableViewHelper extends Tx_Fed_Core_ViewHelper_Abstract
 		$bInfo = $this->jsBoolean($this->arguments['bInfo']);
 		$bSaveState = $this->jsBoolean($this->arguments['bSaveState']);
 		$oLanguage = json_encode($this->arguments['oLanguage']);
+		if ($this->arguments->hasArgument('instanceName')) {
+			$instanceName = $this->arguments['instanceName'];
+			$instance = "var {$instanceName};";
+		} else {
+			$instanceName = 'tableSorter';
+			$local = "var ";
+		}
+		if ($this->arguments->hasArgument('registerWith')) {
+			$method = $this->arguments['registerWith'];
+			$register = "{$method}({$instanceName});";
+		}
 		$init = <<< INITSCRIPT
+{$instance}
 jQuery(document).ready(function() {
-	var tableSorter = jQuery("#{$this->uniqId}").dataTable( {
+	{$local}{$instanceName} = jQuery("#{$this->uniqId}").dataTable( {
 		"aaSorting" : {$this->arguments['aaSorting']},
 		"bPaginate" : {$bPaginate},
 		"bFilter" : {$bFilter},
@@ -393,6 +407,7 @@ jQuery(document).ready(function() {
 		"aLengthMenu" : {$this->arguments['aLengthMenu']},
 		"sPaginationType" : "{$this->arguments['sPaginationType']}",
 	} );
+	{$register}
 } );
 
 INITSCRIPT;
