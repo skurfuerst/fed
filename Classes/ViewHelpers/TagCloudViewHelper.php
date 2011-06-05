@@ -87,19 +87,20 @@ class Tx_Fed_ViewHelpers_TagCloudViewHelper extends Tx_Fed_Core_ViewHelper_Abstr
 			}
 		}
 
-		if ($this->arguments['mode'] === 'custom') {
-			return $content;
-		}
-
 		$renderedTagCloud = $this->renderTagCloud($this->arguments['mode'], $tags);
-
-		$classes = explode(' ', $this->arguments['class']);
-		array_push($classes, 'fed-extbase-tagcloud');
-		$classes = implode(' ', $classes);
-		$this->tag->addAttribute('class', $classes);
-		$this->tag->setContent($renderedTagCloud);
-		$rendered = $this->tag->render();
-		return $rendered;
+		if ($this->arguments['mode'] === 'custom') {
+			$this->setTagStorage($renderedTagCloud);
+			$content = $this->renderChildren();
+		} else {
+			$classes = explode(' ', $this->arguments['class']);
+			array_push($classes, 'fed-extbase-tagcloud');
+			$classes = implode(' ', $classes);
+			$this->tag->addAttribute('class', $classes);
+			$this->tag->setContent($renderedTagCloud);
+			$content = $this->tag->render();
+		}
+		$this->templateVariableContainer->remove('tags');
+		return $content;
 	}
 
 	/**
@@ -149,6 +150,7 @@ class Tx_Fed_ViewHelpers_TagCloudViewHelper extends Tx_Fed_Core_ViewHelper_Abstr
 		switch ($mode) {
 			case 'html': return $this->renderHTMLTagCloud($tags);
 			case 'flash': default: return $this->renderFlashTagCloud($tags);
+			case 'custom': return $tags;
 		}
 	}
 
@@ -184,10 +186,11 @@ class Tx_Fed_ViewHelpers_TagCloudViewHelper extends Tx_Fed_Core_ViewHelper_Abstr
 	 */
 	protected function mergeTags($t1, $t2) {
 		foreach ($t2 as $name=>$tag) {
-			$tag = (array) $tag;
+			$tag = $this->objToArray($tag);
 			if (isset($t1[$name]) === FALSE) {
-				$t1[$name] = (array) $tag;
+				$t1[$name] = $tag;
 			} else {
+				$t1[$name] = $this->objToArray($t1[$name]);
 				$t1[$name]['occurrences'] += $tag['occurrences'];
 			}
 		}
@@ -196,9 +199,12 @@ class Tx_Fed_ViewHelpers_TagCloudViewHelper extends Tx_Fed_Core_ViewHelper_Abstr
 
 	/**
 	 * Convert a simple (stdClass or class with public properties) object to an array
-	 * @param mixed $obj
+	 * @param array $obj
 	 */
 	protected function objToArray($obj) {
+		if (is_array($obj)) {
+			return $obj;
+		}
 		$arr = array();
 		foreach ($obj as $k=>$v) {
 			$arr[$k] = $v;
@@ -251,7 +257,8 @@ class Tx_Fed_ViewHelpers_TagCloudViewHelper extends Tx_Fed_Core_ViewHelper_Abstr
 		$movie = t3lib_extMgm::siteRelPath('fed') . 'Resources/Public/Flash/com.roytanck.wpcumulus.swf';
 		$tagcloud = $this->renderTags($tags);
 		$tagcloud = str_replace( "&nbsp;", " ", $tagcloud);
-		$encodedTagCloud = addslashes('<tags>' . $tagcloud . '</tags>');
+		#$encodedTagCloud = addslashes($tagCloud);
+		$encodedTagCloud = '<tags>' . $tagcloud . '</tags>';
 		$hostedLibrary = "http://ajax.googleapis.com/ajax/libs/swfobject/2/swfobject.js";
 		$expressInstall = "http://www.adobe.com/go/getflashplayer";
 		$distribute = $this->arguments['distribute'] ? 'true' : 'false';
@@ -288,15 +295,17 @@ SCRIPT;
 	protected function renderTags($tags) {
 		$cloud = "";
 		foreach ($tags as $tagData) {
+			$tagData = $this->objToArray($tagData);
 			extract($tagData);
 			$text = $this->arguments['titleIsTag'] ? $title : $tag;
 			if (strpos($href, 'http://') !== 0) {
 				$href = "http://" . $_SERVER['HTTP_HOST'] . '/' . $href;
 			}
 			$cloud .= <<< TAG
-<a href="{$href}" style="font-size: {$size}px; {$style}" rel="tag" title="{$title}">{$text}</a>
+<a href='{$href}' style='font-size: {$size}px; {$style}' rel='tag' title='{$title}'>{$text}</a>
 TAG;
 		}
+		#die($cloud);
 		return $cloud;
 	}
 
