@@ -52,6 +52,7 @@ class Tx_Fed_ViewHelpers_ExtJS_ExposeViewHelper extends Tx_Fed_Core_ViewHelper_A
 		$this->registerArgument('typeNum', 'int', 'Typenum registered for AJAX communications - see manual', TRUE);
 		$this->registerArgument('prefix', 'string', 'Optional prefix for generated class name; use to avoid collisions');
 		$this->registerArgument('properties', 'array', 'optional array of property names to expose - disregards source annotation');
+		$this->registerArgument('template', 'string', 'Optional filename (absolute path) of a Fluid template containing rendering instructions', FALSE, NULL);
 	}
 
 	/**
@@ -60,7 +61,13 @@ class Tx_Fed_ViewHelpers_ExtJS_ExposeViewHelper extends Tx_Fed_Core_ViewHelper_A
 	 * @return string
 	 */
 	public function render() {
-		$content = $this->extJS->expose($this->arguments['object'], $this->arguments['typeNum'], $this->arguments['properties'], $this->arguments['prefix']);
+		$content = $this->extJS->expose(
+				$this->arguments['object'],
+				$this->arguments['typeNum'],
+				$this->arguments['properties'],
+				$this->arguments['prefix'],
+				$this->arguments['template']
+			);
 		$this->includeHeader($content, 'js');
 		return '';
 	}

@@ -60,12 +60,17 @@ class Tx_Fed_Utility_ExtJS implements t3lib_Singleton {
 	 * Exposes one or mode ModelObjects as ExtJS Model classes in Javascript
 	 *
 	 * @param mixed $object ModelObject to expose to ExtJS
+	 * @param int $typeNum The typeNum you have registered for your plugin+controller+action combo
+	 * @param array $properties Optional array of properties (of only 1st level object) to export; can override @ExtJS annotations
+	 * @param string $prefix Optional prefix to add to the generated Model class. For instance "MyApplication." to get "MyApplication.MyModelClass"
+	 * @param string $template Optional filename of Fluid template containing rendering instructions for a Model definition
 	 * @return string
+	 * @api
 	 */
-	public function expose($object, $typeNum, $properties=NULL, $prefix) {
+	public function expose($object, $typeNum, $properties=NULL, $prefix=NULL, $template=NULL) {
 		$this->modelGenerator->setTypeNum($typeNum);
 		$this->modelGenerator->setPrefix($prefix);
-		return $this->modelGenerator->generateModelClass($object, $properties);
+		return $this->modelGenerator->generateModelClass($object, $properties, $template);
 	}
 
 	/**
@@ -78,7 +83,6 @@ class Tx_Fed_Utility_ExtJS implements t3lib_Singleton {
 	 * @return Tx_Extbase_DomainObject_AbstractDomainEntity
 	 */
 	public function mapDataFromExtJS($object, $data) {
-		#$getters =
 		return $object;
 	}
 
