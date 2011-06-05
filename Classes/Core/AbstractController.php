@@ -122,7 +122,7 @@ abstract class Tx_Fed_Core_AbstractController extends Tx_Extbase_MVC_Controller_
 	}
 
 	/**
-	 * PURELY INTERNAL
+	 * PURELY INTERNAL - CAN BE OVERRIDDEN
 	 * @return stdClas
 	 */
 	private function performRestCreate() {
@@ -136,7 +136,7 @@ abstract class Tx_Fed_Core_AbstractController extends Tx_Extbase_MVC_Controller_
 	}
 
 	/**
-	 * PURELY INTERNAL
+	 * PURELY INTERNAL - CAN BE OVERRIDDEN
 	 * @return mixed
 	 */
 	private function performRestRead() {
@@ -147,7 +147,7 @@ abstract class Tx_Fed_Core_AbstractController extends Tx_Extbase_MVC_Controller_
 	}
 
 	/**
-	 * PURELY INTERNAL
+	 * PURELY INTERNAL - CAN BE OVERRIDDEN
 	 * @return stdClas
 	 */
 	private function performRestUpdate() {
@@ -166,7 +166,7 @@ abstract class Tx_Fed_Core_AbstractController extends Tx_Extbase_MVC_Controller_
 	}
 
 	/**
-	 * PURELY INTERNAL
+	 * PURELY INTERNAL - CAN BE OVERRIDDEN
 	 * @return void
 	 */
 	private function performRestDestroy() {
@@ -174,11 +174,12 @@ abstract class Tx_Fed_Core_AbstractController extends Tx_Extbase_MVC_Controller_
 	}
 
 	/**
-	 * PURELY INTERNAL
+	 * Fetch an instance of an aggregate root object as specified by the request parameters
 	 * @param int $uid
 	 * @return stdClas
+	 * @api
 	 */
-	private function fetchRestObject($uid=NULL) {
+	public function fetchRestObject($uid=NULL) {
 		if ($uid > 0) {
 			$repository = $this->fetchRestRepository();
 			return $repository->findOneByUid($uid);
@@ -191,10 +192,11 @@ abstract class Tx_Fed_Core_AbstractController extends Tx_Extbase_MVC_Controller_
 	}
 
 	/**
-	 * PURELY INTERNAL
+	 * Fetch an instance of Repository which handles the aggregate root object this request is targetet towards
 	 * @return Tx_Extbase_Persistence_Repository
+	 * @api
 	 */
-	private function fetchRestRepository() {
+	public function fetchRestRepository() {
 		$thisClass = get_class($this);
 		$controllerName = $this->request->getArgument('controller');
 			$repositoryClassname = str_replace("Controller_{$controllerName}Controller", 'Domain_Repository_', $thisClass) . $controllerName . 'Repository';
@@ -203,10 +205,11 @@ abstract class Tx_Fed_Core_AbstractController extends Tx_Extbase_MVC_Controller_
 	}
 
 	/**
-	 * PURELY INTERNAL
+	 * Fetch an associative array of fields posted as REST request body
 	 * @return array
+	 * @api
 	 */
-	private function fetchRestBodyFields($body) {
+	public function fetchRestBodyFields($body) {
 		if (!$body) {
 			$body = file_get_contents("php://input");
 		}
