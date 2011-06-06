@@ -46,6 +46,16 @@ abstract class Tx_Fed_Core_ViewHelper_AbstractViewHelper extends Tx_Fluid_Core_V
 	protected $documentHead;
 
 	/**
+	 * @var Tx_Fed_Utility_ExtJS
+	 */
+	protected $extJSService;
+
+	/**
+	 * @var Tx_Fed_Utility_FlexForm
+	 */
+	protected $flexform;
+
+	/**
 	 * Inject JSON Service
 	 * @param Tx_Fed_Utility_JSON $service
 	 */
@@ -58,6 +68,20 @@ abstract class Tx_Fed_Core_ViewHelper_AbstractViewHelper extends Tx_Fluid_Core_V
 	 */
 	public function injectDocumentHead(Tx_Fed_Utility_DocumentHead $documentHead) {
 		$this->documentHead = $documentHead;
+	}
+
+	/**
+	 * @param Tx_Fed_Utility_ExtJS $extJSService
+	 */
+	public function injectExtJSService(Tx_Fed_Utility_ExtJS $extJSService) {
+		$this->extJSService = $extJSService;
+	}
+
+	/**
+	 * @param Tx_Fed_Utility_FlexForm $flexform
+	 */
+	public function injectFlexFormService(Tx_Fed_Utility_FlexForm $flexform) {
+		$this->flexform = $flexform;
 	}
 
 	/**

@@ -40,14 +40,15 @@ class Tx_Fed_ViewHelpers_StyleViewHelper extends Tx_Fed_Core_ViewHelper_Abstract
 	 * @param bool $cache If true, file(s) is cached
 	 * @param bool $concat If true, files are concatenated (makes sense if $file is array)
 	 * @param bool $compress If true, files are compressed using JSPacker
+	 * @param int $index Which index to take in additionalHeaderData; pushes current resident DOWN
 	 * @return string
 	 */
-	public function render($href=NULL, $cache=FALSE, $concat=FALSE, $compress=FALSE) {
+	public function render($href=NULL, $cache=FALSE, $concat=FALSE, $compress=FALSE, $index=-1) {
 		if ($href) {
-			$this->includeFile($href);
+			$this->documentHead->includeFile($href, $cache, $concat, $compress, $index);
 		} else if ($href === NULL) {
 			$css = $this->renderChildren();
-			$this->includeHeader($css, 'css');
+			$this->documentHead->includeHeader($css, 'css', NULL, $index);
 		}
 	}
 }
