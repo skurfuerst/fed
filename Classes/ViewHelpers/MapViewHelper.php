@@ -23,9 +23,15 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
+/**
+ * @author Claus Due <claus@wildside.dk>, Wildside A/S
+ * @version $Id$
+ * @copyright Copyright belongs to the respective authors
+ * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
+ * @package Fed
+ * @subpackage ViewHelpers/Map
+ */
 class Tx_Fed_ViewHelpers_MapViewHelper extends Tx_Fed_Core_ViewHelper_AbstractViewHelper {
-
-	#protected $type = 'js';
 
 	protected $tagName = 'div';
 

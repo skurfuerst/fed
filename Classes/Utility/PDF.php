@@ -50,7 +50,6 @@ class Tx_Fed_Utility_PDF implements t3lib_Singleton {
 		$this->stylesheet = $post['stylesheet'];
 		$this->wkhtmltopdf = $post['wkhtmltopdf'];
 		$pdf = $this->grabPDF($source);
-		#header("Content-type: text/plain");
 		header("Content-type: application/pdf");
 		header("Content-Length: " . strlen($pdf));
 		header("Content-disposition: attachment; filename={$filename}");
@@ -82,7 +81,6 @@ class Tx_Fed_Utility_PDF implements t3lib_Singleton {
 		$tmp = tempnam(PATH_site . 'typo3temp/', 'wspdfhtml') . ".html";
 		file_put_contents($tmp, $source);
 		$cmd = $this->buildCommand('http://' . $_SERVER['HTTP_HOST'] . str_replace(PATH_site, '/', $tmp));
-		#print $cmd; exit();
 		$output = shell_exec($cmd);
 		unlink($tmp);
 		return $output;
@@ -98,7 +96,7 @@ class Tx_Fed_Utility_PDF implements t3lib_Singleton {
 		if ($this->wkhtmltopdf !== 'wkhtmltopdf') {
 			$cmd = $this->wkhtmltopdf;
 		} else {
-			$cmd = t3lib_extMgm::extPath('fed', 'Resources/Shell/wkhtmltopdf');
+			$cmd = "wkhtmltopdf";
 		}
 		if (strlen($this->stylesheet) > 0) {
 			$path = PATH_site . '/';
