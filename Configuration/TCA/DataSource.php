@@ -3,8 +3,8 @@ if (!defined ('TYPO3_MODE')) {
 	die ('Access denied.');
 }
 
-$TCA['tx_wildsideextbase_domain_model_datasource'] = array(
-	'ctrl' => $TCA['tx_wildsideextbase_domain_model_datasource']['ctrl'],
+$TCA['tx_fed_domain_model_datasource'] = array(
+	'ctrl' => $TCA['tx_fed_domain_model_datasource']['ctrl'],
 	'interface' => array(
 		'showRecordFieldList' => 'sys_language_uid, l10n_parent, l10n_diffsource, hidden, name, description, query, func, url, url_method',
 	),
@@ -37,8 +37,8 @@ $TCA['tx_wildsideextbase_domain_model_datasource'] = array(
 				'items' => array(
 					array('', 0),
 				),
-				'foreign_table' => 'tx_wildsideextbase_domain_model_datasource',
-				'foreign_table_where' => 'AND tx_wildsideextbase_domain_model_datasource.pid=###CURRENT_PID### AND tx_wildsideextbase_domain_model_datasource.sys_language_uid IN (-1,0)',
+				'foreign_table' => 'tx_fed_domain_model_datasource',
+				'foreign_table_where' => 'AND tx_fed_domain_model_datasource.pid=###CURRENT_PID### AND tx_fed_domain_model_datasource.sys_language_uid IN (-1,0)',
 			),
 		),
 		'l10n_diffsource' => array(
@@ -93,7 +93,7 @@ $TCA['tx_wildsideextbase_domain_model_datasource'] = array(
 		),
 		'name' => array(
 			'exclude' => 0,
-			'label' => 'LLL:EXT:fed/Resources/Private/Language/locallang_db.xml:tx_wildsideextbase_domain_model_datasource.name',
+			'label' => 'LLL:EXT:fed/Resources/Private/Language/locallang_db.xml:tx_fed_domain_model_datasource.name',
 			'config' => array(
 				'type' => 'input',
 				'size' => 30,
@@ -102,7 +102,7 @@ $TCA['tx_wildsideextbase_domain_model_datasource'] = array(
 		),
 		'description' => array(
 			'exclude' => 0,
-			'label' => 'LLL:EXT:fed/Resources/Private/Language/locallang_db.xml:tx_wildsideextbase_domain_model_datasource.description',
+			'label' => 'LLL:EXT:fed/Resources/Private/Language/locallang_db.xml:tx_fed_domain_model_datasource.description',
 			'config' => array(
 				'type' => 'text',
 				'cols' => 40,
@@ -112,7 +112,7 @@ $TCA['tx_wildsideextbase_domain_model_datasource'] = array(
 		),
 		'query' => array(
 			'exclude' => 0,
-			'label' => 'LLL:EXT:fed/Resources/Private/Language/locallang_db.xml:tx_wildsideextbase_domain_model_datasource.query',
+			'label' => 'LLL:EXT:fed/Resources/Private/Language/locallang_db.xml:tx_fed_domain_model_datasource.query',
 			'config' => array(
 				'type' => 'input',
 				'size' => 30,
@@ -121,7 +121,7 @@ $TCA['tx_wildsideextbase_domain_model_datasource'] = array(
 		),
 		'func' => array(
 			'exclude' => 0,
-			'label' => 'LLL:EXT:fed/Resources/Private/Language/locallang_db.xml:tx_wildsideextbase_domain_model_datasource.func',
+			'label' => 'LLL:EXT:fed/Resources/Private/Language/locallang_db.xml:tx_fed_domain_model_datasource.func',
 			'config' => array(
 				'type' => 'input',
 				'size' => 30,
@@ -130,7 +130,7 @@ $TCA['tx_wildsideextbase_domain_model_datasource'] = array(
 		),
 		'url' => array(
 			'exclude' => 0,
-			'label' => 'LLL:EXT:fed/Resources/Private/Language/locallang_db.xml:tx_wildsideextbase_domain_model_datasource.url',
+			'label' => 'LLL:EXT:fed/Resources/Private/Language/locallang_db.xml:tx_fed_domain_model_datasource.url',
 			'config' => array(
 				'type' => 'input',
 				'size' => 30,
@@ -139,7 +139,7 @@ $TCA['tx_wildsideextbase_domain_model_datasource'] = array(
 		),
 		'url_method' => array(
 			'exclude' => 0,
-			'label' => 'LLL:EXT:fed/Resources/Private/Language/locallang_db.xml:tx_wildsideextbase_domain_model_datasource.url_method',
+			'label' => 'LLL:EXT:fed/Resources/Private/Language/locallang_db.xml:tx_fed_domain_model_datasource.url_method',
 			'config' => array(
 				'type' => 'select',
 				'items' => array(
@@ -154,7 +154,7 @@ $TCA['tx_wildsideextbase_domain_model_datasource'] = array(
 		),
 		'template_file' => array(
 			'exclude' => 0,
-			'label' => 'LLL:EXT:fed/Resources/Private/Language/locallang_db.xml:tx_wildsideextbase_domain_model_datasource.template_file',
+			'label' => 'LLL:EXT:fed/Resources/Private/Language/locallang_db.xml:tx_fed_domain_model_datasource.template_file',
 			'config' => array(
 				'type' => 'passthrough',
 				#'type' => 'group',
@@ -169,7 +169,7 @@ $TCA['tx_wildsideextbase_domain_model_datasource'] = array(
 		),
 		'template_source' => array(
 			'exclude' => 0,
-			'label' => 'LLL:EXT:fed/Resources/Private/Language/locallang_db.xml:tx_wildsideextbase_domain_model_datasource.template_source',
+			'label' => 'LLL:EXT:fed/Resources/Private/Language/locallang_db.xml:tx_fed_domain_model_datasource.template_source',
 			'config' => array(
 				'type' => 'passthrough',
 				#'type' => 'text',
