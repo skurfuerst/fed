@@ -99,6 +99,9 @@ abstract class Tx_Fed_Core_ViewHelper_AbstractViewHelper extends Tx_Fluid_Core_V
 	 * @deprecated
 	 */
 	protected function wrap($code=NULL, $file=NULL, $type=NULL) {
+		if ($type === NULL) {
+			$type = $this->type;
+		}
 		return $this->documentHead->wrap($code, $file, $type);
 	}
 

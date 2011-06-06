@@ -69,9 +69,10 @@ class Tx_Fed_Utility_DocumentHead implements t3lib_Singleton {
 	 * @param string $code A rendered tag suitable for <head>
 	 * @param string $type Optional, if left out we assume the code is already wrapped
 	 * @param string $key Optional key for referencing later through $GLOBALS['TSFE']->additionalHeaderData, defaults to md5 cheksum of tag
+	 * @param int $index Position to take in additionalHeaderData; pushes current resident DOWN
 	 * @api
 	 */
-	public function includeHeader($code, $type=NULL, $key=NULL) {
+	public function includeHeader($code, $type=NULL, $key=NULL, $index=-1) {
 		if ($type !== NULL) {
 			$code = $this->wrap($code, NULL, $type);
 		}
@@ -81,7 +82,21 @@ class Tx_Fed_Utility_DocumentHead implements t3lib_Singleton {
 		if (isset($GLOBALS['TSFE']->additionalHeaderData[$key])) {
 			unset($GLOBALS['TSFE']->additionalHeaderData[$key]);
 		}
-		$GLOBALS['TSFE']->additionalHeaderData[$key] = $code;
+		if ($index >= 0) {
+			$current = $GLOBALS['TSFE']->additionalHeaderData;
+			$new = array($key => $code);
+			if ($index === 0) {
+				$merged = array_merge($new, $current);
+			} else if ($index < count($current)-1) {
+				$after = array_splice($current, $index);
+				$merged = array_merge($current, $new, $after);
+			} else {
+				$merged = array_merge($current, $new);
+			}
+			$GLOBALS['TSFE']->additionalHeaderData = $merged;
+		} else {
+			$GLOBALS['TSFE']->additionalHeaderData[$key] = $code;
+		}
 	}
 
 	/**
@@ -94,13 +109,6 @@ class Tx_Fed_Utility_DocumentHead implements t3lib_Singleton {
 	 * @api
 	 */
 	public function wrap($code=NULL, $file=NULL, $type=NULL) {
-		/**
-		 * Type-support for old js/css inject ViewHelpers - will be removed along with those two
-		 * @deprecated
-		 */
-		if ($type === NULL) {
-			$type = $this->type;
-		}
 		if ($type == self::TYPE_JAVASCRIPT) {
 			if ($file) {
 				return "<script type='text/javascript' src='{$file}'></script>";
@@ -162,10 +170,11 @@ class Tx_Fed_Utility_DocumentHead implements t3lib_Singleton {
 	 * @param boolean $cache If true, the file is cached (makes sens if $concat or one of the other options is specified)
 	 * @param boolean $concat If true, files are concatenated
 	 * @param boolean $compress If true, files are compressed
+	 * @param int $index The position in additionalHeaderData to take; pushes current resident DOWN
 	 * @return string The MD5 checksum of files (which is also the additionalHeaderData array key if you $concat = TRUE)
 	 * @api
 	 */
-	public function includeFiles(array $filenames, $cache=FALSE, $concat=FALSE, $compress=FALSE) {
+	public function includeFiles(array $filenames, $cache=FALSE, $concat=FALSE, $compress=FALSE, $index=-1) {
 		$pathinfo = pathinfo($filename);
 		$type = $pathinfo['extension'];
 		if ($type !== 'css' && $type !== 'js') {
@@ -177,7 +186,7 @@ class Tx_Fed_Utility_DocumentHead implements t3lib_Singleton {
 				$this->includeFile($file, $cache, $compress);
 			} else {
 				$code = $this->wrap(NULL, $file); // will be added as header code
-				$this->process($code);
+				$this->includeHeader($code, $type);
 			}
 		} else {
 			foreach ($filenames as $file) {
@@ -193,16 +202,17 @@ class Tx_Fed_Utility_DocumentHead implements t3lib_Singleton {
 	 * @param boolean $cache If true, the file is cached (makes sens if $concat or one of the other options is specified)
 	 * @param boolean $concata If true and wildcard filename used, concats all files
 	 * @param boolean $compress If true, files are compressed
+	 * @param int $index Position to take in additionalHeaderData; pushes current resident DOWN
 	 * @return void
 	 * @api
 	 */
-	public function includeFile($filename, $cache=FALSE, $concat=FALSE, $compress=FALSE) {
+	public function includeFile($filename, $cache=FALSE, $concat=FALSE, $compress=FALSE, $index=-1) {
 		$pathinfo = pathinfo($filename);
 		$type = $pathinfo['extension'];
 		if ($pathinfo['filename'] === '*') {
 			$files = $this->getFilenamesOfType($pathinfo['dirname'], $pathinfo['extension']);
 			if ($files) {
-				$this->includeFiles($files, $cache, $concat, $compress);
+				$this->includeFiles($files, $cache, $concat, $compress, $index);
 			}
 			return;
 		}
@@ -224,7 +234,20 @@ class Tx_Fed_Utility_DocumentHead implements t3lib_Singleton {
 		} else {
 			$code = $this->wrap(NULL, $filename, $type);
 		}
-		$this->includeHeader($code);
+		$this->includeHeader($code, NULL, NULL, $index);
+	}
+
+	/**
+	 * Wrapper for includeFile($filename,$cache,$concat,$compress,$index) for ease.
+	 * Use this to include files at the very top of additionalHeaderData even
+	 * though the command ran at the very end of processing.
+	 *
+	 * @param string $filename Name of file to include at index $index
+	 * @param string $index Position to hijack (push resident DOWN) in additionalHeaderData. Assumes you want the TOP position ;)
+	 * @api
+	 */
+	public function includeFileAt($filename, $index=0) {
+		return $this->includeFile($filename, FALSE, FALSE, FALSE, $index);
 	}
 
 	/**
