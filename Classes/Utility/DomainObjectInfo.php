@@ -162,6 +162,7 @@ class Tx_Fed_Utility_DomainObjectInfo implements t3lib_Singleton {
 	 * @param string $annotation The annotation which must be present
 	 * @param string $value The value which annotation must contain - default is TRUE meaning annotation must simply be present
 	 * @return boolean
+	 * @api
 	 */
 	public function hasAnnotation($className, $propertyName, $annotation, $value=TRUE) {
 		$className = is_object($className) ? get_class($className) : $className;
@@ -174,11 +175,21 @@ class Tx_Fed_Utility_DomainObjectInfo implements t3lib_Singleton {
 	}
 
 	/**
+	 * Turns a Tx_Extbase_Persistence_ObjectStorage<ModelObject> into "ModelObject"
+	 * @param type $annotation
+	 * @api
+	 */
+	public function parseObjectStorageAnnotation($annotation) {
+		return array_pop(explode('<', trim($annotation, '>')));
+	}
+
+	/**
 	 * Get data types of supplied properties - if no propertyNames specified gets
 	 * all properties as "propertyName" => "dataType"
 	 *
 	 * @param mixed $object The object or classname containing the properties
 	 * @param array $propertyNames Optional list of properties to get - if empty, gets all properties' types
+	 * @api
 	 */
 	public function getPropertyTypes($object, array $propertyNames=NULL) {
 		$className = is_object($object) ? get_class($object) : $object;
@@ -195,6 +206,7 @@ class Tx_Fed_Utility_DomainObjectInfo implements t3lib_Singleton {
 	 *
 	 * @param mixed $object DomainObject or classname of DomainObject
 	 * @param string $propertyName
+	 * @api
 	 */
 	public function getPropertyType($object, $propertyName) {
 		$className = is_object($object) ? get_class($object) : $object;
@@ -208,6 +220,7 @@ class Tx_Fed_Utility_DomainObjectInfo implements t3lib_Singleton {
 	 * @param mixed $object Instance of class from which to read property tags by annotation
 	 * @param string $annotation  The annotation which the property must have
 	 * @return array
+	 * @api
 	 */
 	public function getAllTagsByAnnotation($object, $annotation) {
 		$tagArray = array();
@@ -235,6 +248,7 @@ class Tx_Fed_Utility_DomainObjectInfo implements t3lib_Singleton {
 	 * @param string $value The value to search for; multiple values may be used in the annotation; $value must be present among them. If TRUE, all properties which have the annotation are returned
 	 * @param boolean $addUid If TRUE, the UID of the DomainObject will be force-added to the output regardless of annotation
 	 * @return array
+	 * @api
 	 */
 	public function getValuesByAnnotation($object, $annotation='json', $value=TRUE, $addUid=TRUE) {
 		if (is_array($object)) {
@@ -284,8 +298,6 @@ class Tx_Fed_Utility_DomainObjectInfo implements t3lib_Singleton {
 
 
 }
-
-
 
 
 ?>
