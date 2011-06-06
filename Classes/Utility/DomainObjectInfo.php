@@ -90,6 +90,7 @@ class Tx_Fed_Utility_DomainObjectInfo implements t3lib_Singleton {
 	 * @param string $value The value to search for among annotation values. Defaults to TRUE which means the annotation must simply be present
 	 * @param boolean $addUid If TRUE, the field "uid" will be force-added to the output regardless of annotation
 	 * @return array
+	 * @api
 	 */
 	public function getPropertiesByAnnotation($object, $annotation, $value=TRUE, $addUid=TRUE) {
 		$propertyNames = array();
@@ -113,6 +114,7 @@ class Tx_Fed_Utility_DomainObjectInfo implements t3lib_Singleton {
 	 *
 	 * @param mixed $object Instance or classname of Model object
 	 * @return string
+	 * @api
 	 */
 	public function getControllerName($object) {
 		$className = is_object($object) ? get_class($object) : $object;
@@ -124,6 +126,7 @@ class Tx_Fed_Utility_DomainObjectInfo implements t3lib_Singleton {
 	 *
 	 * @param mixed $object Instance or classname of Model object
 	 * @return string
+	 * @api
 	 */
 	public function getExtensionName($object) {
 		$className = is_object($object) ? get_class($object) : $object;
@@ -137,6 +140,7 @@ class Tx_Fed_Utility_DomainObjectInfo implements t3lib_Singleton {
 	 *
 	 * @param mixed $object Instance or classname of Model object
 	 * @return string
+	 * @api
 	 */
 	public function getPluginName($object) {
 		$extensionName = $this->getExtensionName($object);
@@ -147,11 +151,23 @@ class Tx_Fed_Utility_DomainObjectInfo implements t3lib_Singleton {
 
 	/**
 	 * @param mixed $object  Instance or classname
+	 * @api
 	 */
 	public function getRepositoryClassname($object) {
 		$className = is_object($object) ? get_class($object) : $object;
 		$name = str_replace('_Domain_Model_', '_Domain_Repository_', $className) . 'Repository';
 		return $name;
+	}
+
+	/**
+	 * Get an instance of a proper Repository for $object (instance or classname)
+	 *
+	 * @param mixed $object
+	 * @return Tx_Extbase_Persistence_Repository
+	 */
+	public function getRepositoryInstance($object) {
+		$class = $this->getRepositoryClassname($object);
+		return $this->objectManger->get($class);
 	}
 
 	/**
