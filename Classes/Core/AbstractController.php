@@ -61,6 +61,16 @@ abstract class Tx_Fed_Core_AbstractController extends Tx_Extbase_MVC_Controller_
 	protected $flexform;
 
 	/**
+	 * @var Tx_Fed_Utility_DocumentHead
+	 */
+	protected $documentHead;
+
+	/**
+	 * @var Tx_Fed_Utility_Debug
+	 */
+	protected $debugService;
+
+	/**
 	 * @param Tx_Extbase_Property_Mapper $propertyMapper
 	 */
 	public function injectPropertyMapper(Tx_Extbase_Property_Mapper $propertyMapper) {
@@ -93,6 +103,20 @@ abstract class Tx_Fed_Core_AbstractController extends Tx_Extbase_MVC_Controller_
 	 */
 	public function injectFlexFormService(Tx_Fed_Utility_FlexForm $flexform) {
 		$this->flexform = $flexform;
+	}
+
+	/**
+	 * @param Tx_Fed_Utility_DocumentHead $documentHead
+	 */
+	public function injectDocumentHead(Tx_Fed_Utility_DocumentHead $documentHead) {
+		$this->documentHead = $documentHead;
+	}
+
+	/**
+	 * @param Tx_Fed_Utility_Debug $debugService
+	 */
+	public function injectDebugService(Tx_Fed_Utility_Debug $debugService) {
+		$this->debugService = $debugService;
 	}
 
 	/**
