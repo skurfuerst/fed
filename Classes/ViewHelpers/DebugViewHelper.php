@@ -117,7 +117,9 @@ class Tx_Fed_ViewHelpers_DebugViewHelper extends Tx_Fed_Core_ViewHelper_Abstract
 	 * @return string
 	 */
 	protected function renderDebugInfo() {
-		$content = "";
+		$template = $this->getTemplate(t3lib_extMgm::extPath('fed', 'Resources/Private/Templates/Debug/Results.html'));
+		$template->assign('results', $this->debugService->getAllDebugSessions());
+		$content = $template->render();
 		return $content;
 	}
 

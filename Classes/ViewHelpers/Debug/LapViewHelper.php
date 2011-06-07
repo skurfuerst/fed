@@ -49,7 +49,13 @@ class Tx_Fed_ViewHelpers_Debug_LapViewHelper extends Tx_Fed_Core_ViewHelper_Abst
 	 * Render. i.e. call the Debug Service's lap() method
 	 */
 	public function render() {
-
+		$content = $this->renderChildren();
+		if (strlen(trim($content)) > 0) {
+			$data = $content;
+		} else {
+			$data = $this->arguments['data'];
+		}
+		$this->debugService->lap($data);
 	}
 
 }

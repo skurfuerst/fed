@@ -38,18 +38,24 @@ class Tx_Fed_Utility_Debug implements t3lib_Singleton {
 
 	const STORAGE = 'fed-debug-storage';
 
-	const SKELETON = array(
+	public static $SKELETON = array(
 		'name' => self::DEFAULT_NAME,
 		'start' => 0,
 		'end' => 0,
 		'data' => NULL,
 		'laps' => array(),
 		'result' => array(
-			'milliseconds' => 0,
+			'exectime' => 0,
 			'memory' => 0,
 			'comparison' => ''
 		)
 	);
+
+	/**
+	 * Stores the name of the currently active subsection
+	 * @var string
+	 */
+	protected $currentSubsessionName = self::DEFAULT_NAME;
 
 	/**
 	 * @var Tx_Fed_Utility_DataComparison
@@ -83,9 +89,12 @@ class Tx_Fed_Utility_Debug implements t3lib_Singleton {
 	 */
 	public function begin($name=self::DEFAULT_NAME, &$data=NULL) {
 		$session =& $this->getDebugSession($name);
-		$session['start'] = microtime(TRUE);
+		$session['begin'] = microtime(TRUE);
 		$session['name'] = $name;
 		$session['data'] =& $data;
+		$session['memory'] = memory_get_usage();
+		$GLOBALS[self::STORAGE][$name] = $session;
+		$this->currentSubsessionName = $name;
 	}
 
 	/**
@@ -96,17 +105,19 @@ class Tx_Fed_Utility_Debug implements t3lib_Singleton {
 	 * @param type $name
 	 * @param type $data
 	 */
-	public function lap($name=self::DEFAULT_NAME, &$data=NULL) {
-		$session = $this->getDebugSession($name);
-		$writableSession =& $this->getDebugSession($name);
-		// perform calculations, store lap measurement
-		$last = array_shift($session['laps']) OR $session['start'];
-		$duration = microtime(TRUE) - $last;
+	public function lap(&$data=NULL) {
+		$updatedSession = $session = $this->getDebugSession($this->currentSubsessionName);
+		$last = array_pop($session['laps']);
+		if (!$last) {
+			$last = $session;
+		}
 		$lap = array();
-		$lap['memory'] = ($last ? $last['memory'] - memory_get_usage() : memory_get_usage());
-		$lap['name'] = $name;
+		$lap['end'] = microtime(TRUE);
+		$lap['memory'] = memory_get_usage() - $last['memory'];
 		$lap['data'] =& $data;
-		array_push($writableSession['laps'], $lap);
+		$lap['exectime'] = microtime(TRUE) - ($last['end'] ? $last['end'] : $last['begin']);
+		$updatedSession['laps'][] = $lap;
+		$this->setDebugSession($this->currentSubsessionName, $updatedSession);
 	}
 
 	/**
@@ -116,21 +127,22 @@ class Tx_Fed_Utility_Debug implements t3lib_Singleton {
 	 * to allow human-readable comparisons of most data types, including some
 	 * Extbase object types such as DomainObjects.
 	 *
-	 * @param string $name
 	 * @param mixed $data
 	 * @return array
 	 * @api
 	 */
-	public function end($name=self::DEFAULT_NAME, &$data=NULL) {
-		$session =& $this->getDebugSession($name);
-		$data1 = $this->fetchData($name);
+	public function end(&$data=NULL) {
+		$session = $this->getDebugSession($this->currentSubsessionName);
+		$data1 = $this->fetchData($this->currentSubsessionName);
 		$session['end'] = microtime(TRUE);
 		$session['data'] =& $data;
 		$session['results'] = array(
-			'miliseconds' => $this->getElapsedTime($name),
-			'memory' => $this->getConsumedMemory($name),
+			'exectime' => $this->getElapsedTime($this->currentSubsessionName),
+			'memory' => $this->getConsumedMemory($this->currentSubsessionName),
 			'comparison' => $this->dataComparisonService->compare($data1, $data2)
 		);
+		$this->setDebugSession($this->currentSubsessionName, $session);
+		$this->currentSubsessionName = self::DEFAULT_NAME;
 		return $session;
 	}
 
@@ -142,7 +154,7 @@ class Tx_Fed_Utility_Debug implements t3lib_Singleton {
 	 * @api
 	 */
 	public function getBeginTime($name=self::DEFAULT_NAME) {
-		$session =& $this->getDebugSession($name);
+		$session = $this->getDebugSession($name);
 		return $session['begin'];
 	}
 
@@ -156,7 +168,7 @@ class Tx_Fed_Utility_Debug implements t3lib_Singleton {
 	 * @api
 	 */
 	public function getEndTime($name=self::DEFAULT_NAME) {
-		$session =& $this->getDebugSession($name);
+		$session = $this->getDebugSession($name);
 		if ($session['end'] > 0) {
 			return $session['end'];
 		} else {
@@ -199,9 +211,41 @@ class Tx_Fed_Utility_Debug implements t3lib_Singleton {
 	 */
 	public function getDebugSession($name=self::DEFAULT_NAME) {
 		if (is_array($GLOBALS[self::STORAGE][$name]) === FALSE) {
-			$GLOBALS[self::STORAGE][$name] = self::SKELETON;
+			$GLOBALS[self::STORAGE][$name] = self::$SKELETON;
 		}
 		return $GLOBALS[self::STORAGE][$name];
+	}
+
+	/**
+	 * PURELY INTERNAL
+	 *
+	 * @param string $name
+	 * @param array $session
+	 * @return void
+	 */
+	private function setDebugSession($name, $session) {
+		$GLOBALS[self::STORAGE][$name] = $session;
+	}
+
+	/**
+	 * Returns the data associated with subsession $name
+	 *
+	 * @param string $name
+	 * @return mixed
+	 */
+	public function fetchData($name=self::DEFAULT_NAME) {
+		$session = $this->getDebugSession($name);
+		return $session['data'];
+	}
+
+	/**
+	 * Get the amount of memory consumed as measured by subsession $name
+	 *
+	 * @param string $name
+	 * @return int
+	 */
+	public function getConsumedMemory($name) {
+
 	}
 
 }

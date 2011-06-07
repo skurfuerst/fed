@@ -52,7 +52,7 @@ class Tx_Fed_ViewHelpers_Debug_EndViewHelper extends Tx_Fed_Core_ViewHelper_Abst
 	 * @return void
 	 */
 	public function render() {
-		
+		$this->debugService->end();
 		$this->templateVariableContainer->remove('fedDebugSubsessionName');
 		return NULL;
 	}

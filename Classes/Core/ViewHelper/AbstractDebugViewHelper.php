@@ -32,7 +32,7 @@
  * @package Fed
  * @subpackage Utility
  */
-class AbstractDebugViewHelper {
+class Tx_Fed_Core_ViewHelper_AbstractDebugViewHelper extends Tx_Fed_Core_ViewHelper_AbstractViewHelper{
 
 	/**
 	 * @var Tx_Fed_Utility_debug
