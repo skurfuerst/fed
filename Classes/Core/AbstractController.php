@@ -37,7 +37,7 @@ abstract class Tx_Fed_Core_AbstractController extends Tx_Extbase_MVC_Controller_
 	/**
 	 * @var Tx_Extbase_Property_Mapper
 	 */
-	protected $proprtyMapper;
+	protected $propertyMapper;
 
 	/**
 	 * @var Tx_Fed_Utility_DomainObjectInfo

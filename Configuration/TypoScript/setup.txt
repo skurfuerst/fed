@@ -5,7 +5,7 @@ plugin.tx_fed {
 		layoutRootPath = {$plugin.tx_fed.view.layoutRootPath}
 	}
 	persistence {
-		storagePid = {$plugin.tx_fed.persistence.storagePid}
+		storagePid = 146
 	}
 }
 

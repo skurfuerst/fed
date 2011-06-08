@@ -145,8 +145,21 @@ class Tx_Fed_Utility_DomainObjectInfo implements t3lib_Singleton {
 	public function getPluginName($object) {
 		$extensionName = $this->getExtensionName($object);
 		$controllerName = $this->getControllerName($object);
-		$pluginName = Tx_Extbase_Utility_Extension::getPluginNameByAction($extensionName, $controllerName, 'update');
+		$pluginName = Tx_Extbase_Utility_Extension::getPluginNameByAction($extensionName, $controllerName, 'list');
 		return $pluginName;
+	}
+
+	/**
+	 * Get the plugin namespace (for URIs) based on Model Object
+	 *
+	 * @param mixed $object
+	 * @return string
+	 * @api
+	 */
+	public function getPluginNamespace($object) {
+		$extensionName = $this->getExtensionName($object);
+		$pluginName = $this->getPluginName($object);
+		return Tx_Extbase_Utility_Extension::getPluginNamespace($extensionName, $pluginName);
 	}
 
 	/**

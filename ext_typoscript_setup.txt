@@ -30,6 +30,22 @@ FedPDFBridge {
     }
 }
 
+FedSandboxBridge = PAGE
+FedSandboxBridge {
+    typeNum = 123581322
+    config {
+    	no_cache = 1
+        disableAllHeaderCode = 1
+    }
+    headerData >
+    123581322 = USER_INT
+    123581322 {
+		userFunc = tx_fed_core_bootstrap->run
+        extensionName = Fed
+        pluginName = Datasource
+    }
+}
+
 config.tx_extbase {
 	persistence {
 		classes {

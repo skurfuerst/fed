@@ -33,6 +33,11 @@
 class Tx_Fed_ExtJS_ModelGenerator implements t3lib_Singleton {
 
 	/**
+	 * @var Tx_Extbase_MVC_Web_RequestBuilder
+	 */
+	protected $requestBuilder;
+
+	/**
 	 * @var Tx_Fed_Utility_DomainObjectInfo
 	 */
 	protected $infoService;
@@ -57,6 +62,14 @@ class Tx_Fed_ExtJS_ModelGenerator implements t3lib_Singleton {
 	 * @var int
 	 */
 	protected $typeNum;
+
+	/**
+	 * @param Tx_Extbase_MVC_Web_RequestBuilder $requestBuilder
+	 * @return void
+	 */
+	public function injectRequestBuilder(Tx_Extbase_MVC_Web_RequestBuilder $requestBuilder) {
+		$this->requestBuilder = $requestBuilder;
+	}
 
 	/**
 	 * @param Tx_Fed_Utility_DomainObjectInfo $infoService
@@ -118,6 +131,7 @@ class Tx_Fed_ExtJS_ModelGenerator implements t3lib_Singleton {
 		$className = is_object($object) ? get_class($object) : $object;
 		$properties = $this->infoService->getPropertiesByAnnotation($object, 'ExtJS');
 		$view = $this->objectManager->get('Tx_Fluid_View_StandAloneView');
+		$prefix = $this->getPrefix();
 		if ($template === NULL) {
 			$template = t3lib_extMgm::extPath('fed', 'Resources/Private/Templates/ExtJS/Model.html');
 		}
@@ -131,23 +145,9 @@ class Tx_Fed_ExtJS_ModelGenerator implements t3lib_Singleton {
 		$view->assign('className', array_pop(explode('_', $className)));
 		$view->assign('properties', $this->getPropertyDefinitions($object, $properties));
 		$view->assign('typeNum', $this->typeNum);
-		$view->assign('prefix', $this->prefix);
+		$view->assign('prefix', $prefix);
 		$view->assign('urls', $urls);
 		return $view->render();
-	}
-
-	/**
-	 * Get a prefix for a HTTP GET/POST request maching configuration
-	 *
-	 * @return string
-	 */
-	protected function getRequestPrefix($object) {
-		$ext = $this->infoService->getExtensionName($object);
-		$ext = Tx_Extbase_Utility_Extension::convertCamelCaseToLowerCaseUnderscored($ext);
-		$pi = $this->infoService->getPluginName($object);
-		$pi = Tx_Extbase_Utility_Extension::convertCamelCaseToLowerCaseUnderscored($pi);
-		$prefix = "tx_{$ext}_{$pi}";
-		return $prefix;
 	}
 
 	protected function getExtraStoreUriParameters($object) {
@@ -163,6 +163,7 @@ class Tx_Fed_ExtJS_ModelGenerator implements t3lib_Singleton {
 
 	protected function getStoreUri($object, $actionName) {
 		$uriBuilder = new Tx_Extbase_MVC_Web_Routing_UriBuilder();
+		#$request =
 		$uriBuilder = $this->objectManager->get('Tx_Extbase_MVC_Web_Routing_UriBuilder');
 		$uriBuilder->setTargetPageType($this->typeNum);
 		$uriBuilder->setTargetPageUid($GLOBALS['TSFE']->id);

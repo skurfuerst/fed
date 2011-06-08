@@ -37,10 +37,21 @@ Tx_Extbase_Utility_Extension::configurePlugin(
 	$_EXTKEY,
 	'Datasource',
 	array(
-		'DataSource' => 'list,show',
+		'DataSource' => 'list,show,rest',
 	),
 	array(
-		#'DataSource' => 'list,show',
+		'DataSource' => 'rest',
+	)
+);
+
+Tx_Extbase_Utility_Extension::configurePlugin(
+	$_EXTKEY,
+	'Sandbox',
+	array(
+		'Sandbox' => 'show',
+	),
+	array(
+		'DataSource' => 'show',
 	)
 );
 

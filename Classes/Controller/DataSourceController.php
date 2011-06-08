@@ -3,7 +3,7 @@
 *  Copyright notice
 *
 *  (c) 2011 Claus Due <claus@wildside.dk>, Wildside A/S
-*  
+*
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -26,7 +26,7 @@
 
 /**
  * Controller for the DataSource object
- * 
+ *
  * @version $Id$
  * @copyright Copyright belongs to the respective authors
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
@@ -41,9 +41,9 @@
 	 * @var Tx_Fed_Domain_Repository_DataSourceRepository
 	 */
 	protected $dataSourceRepository;
-	
+
 	/**
-	 * 
+	 *
 	 * @var Tx_Fed_Utility_DataSourceParser
 	 */
 	protected $dataSourceParser;
@@ -57,9 +57,9 @@
 	public function injectDataSourceRepository(Tx_Fed_Domain_Repository_DataSourceRepository $dataSourceRepository) {
 		$this->dataSourceRepository = $dataSourceRepository;
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * @param Tx_Fed_Utility_DataSourceParser $parser
 	 */
 	public function injectDataSourceParser(Tx_Fed_Utility_DataSourceParser $parser) {
@@ -79,9 +79,9 @@
 		$sources = explode(',', $sources);
 		$dataSources = $this->dataSourceRepository->findByUids($sources)->toArray();
 		$dataSources = $this->dataSourceParser->parseDataSources($dataSources);
-		
+
 		$view =& $this->view;
-		
+
 		if ($flexform['templateFile']) {
 			$view = $this->objectManager->get('Tx_Fluid_View_StandaloneView');
 			$view->setTemplateSource(file_get_contents(PATH_site . $flexform['templateFile']));
@@ -89,9 +89,9 @@
 			$view = $this->objectManager->get('Tx_Fluid_View_StandaloneView');
 			$view->setTemplateSource($flexform['templateSource']);
 		}
-		
+
 		$view->assign('dataSources', $dataSources);
-		
+
 		return $view->render();
 	}
 
@@ -125,12 +125,12 @@
 	public function createAction(Tx_Fed_Domain_Model_DataSource $newDataSource) {
 		$this->dataSourceRepository->add($newDataSource);
 		$this->flashMessageContainer->add('Your new DataSource was created.');
-		
-			
+
+
 			if(!empty($_FILES)){
 				$this->flashMessageContainer->add('File upload is not yet supported by the Persistence Manager. You have to implement it yourself.');
 			}
-			
+
 		$this->redirect('list');
 	}
 

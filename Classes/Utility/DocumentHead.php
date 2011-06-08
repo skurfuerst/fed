@@ -79,10 +79,10 @@ class Tx_Fed_Utility_DocumentHead implements t3lib_Singleton {
 		if ($key === NULL) {
 			$key = md5($code);
 		}
-		if (isset($GLOBALS['TSFE']->additionalHeaderData[$key])) {
-			unset($GLOBALS['TSFE']->additionalHeaderData[$key]);
-		}
 		if ($index >= 0) {
+			if (isset($GLOBALS['TSFE']->additionalHeaderData[$key])) {
+				unset($GLOBALS['TSFE']->additionalHeaderData[$key]);
+			}
 			$current = $GLOBALS['TSFE']->additionalHeaderData;
 			$new = array($key => $code);
 			if ($index === 0) {

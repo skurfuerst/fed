@@ -19,6 +19,12 @@ Tx_Extbase_Utility_Extension::registerPlugin(
 	'Data Source Display'
 );
 
+Tx_Extbase_Utility_Extension::registerPlugin(
+	$_EXTKEY,
+	'Sandbox',
+	'FED Sandbox'
+);
+
 //$TCA['tt_content']['types']['list']['subtypes_addlist'][$_EXTKEY . '_datasource'] = 'pi_flexform';
 //t3lib_extMgm::addPiFlexFormValue($_EXTKEY . '_datasource', 'FILE:EXT:' . $_EXTKEY . '/Configuration/FlexForms/flexform_datasource.xml');
 
@@ -94,5 +100,7 @@ if (TYPO3_MODE == 'BE') {
 	$TBE_MODULES_EXT['xMOD_db_new_content_el']['addElClasses']['tx_fed_configuration_wizard_template'] = t3lib_extMgm::extPath($_EXTKEY, 'Configuration/Wizard/Template.php');
 }
 
+$TCA['tt_content']['types']['list']['subtypes_addlist']['fed_sandbox'] = 'pi_flexform';
+t3lib_extMgm::addPiFlexFormValue('fed_sandbox', 'FILE:EXT:'.$_EXTKEY.'/Configuration/FlexForms/Sandbox.xml');
 
 ?>
