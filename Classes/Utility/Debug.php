@@ -1,6 +1,6 @@
 <?php
 
-/* * *************************************************************
+/***************************************************************
  *  Copyright notice
  *
  *  (c) 2010 Claus Due <claus@wildside.dk>, Wildside A/S
@@ -22,7 +22,7 @@
  *  GNU General Public License for more details.
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
- * ************************************************************* */
+ ***************************************************************/
 
 /**
  * @author Claus Due, Wildside A/S
@@ -40,15 +40,15 @@ class Tx_Fed_Utility_Debug implements t3lib_Singleton {
 
 	public static $SKELETON = array(
 		'name' => self::DEFAULT_NAME,
-		'start' => 0,
+		'begin' => 0,
 		'end' => 0,
 		'data' => NULL,
-		'laps' => array(),
-		'result' => array(
+		'memory' => 0,
+		'results' => array(
 			'exectime' => 0,
-			'memory' => 0,
 			'comparison' => ''
-		)
+		),
+		'laps' => array()
 	);
 
 	/**
