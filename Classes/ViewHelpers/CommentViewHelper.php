@@ -1,9 +1,9 @@
-<?php 
+<?php
 /***************************************************************
 *  Copyright notice
 *
 *  (c) 2010 Claus Due <claus@wildside.dk>, Wildside A/S
-*  			
+*
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -23,12 +23,21 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
+/**
+ *
+ * @author Claus Due, Wildside A/S
+ * @version $Id$
+ * @copyright Copyright belongs to the respective authors
+ * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
+ * @package Fed
+ * @subpackage ViewHelpers\Extbase\Widget
+ */
 class Tx_Fed_ViewHelpers_CommentViewHelper extends Tx_Fed_Core_ViewHelper_AbstractViewHelper {
-	
-	
+
+
 	/**
 	 * Used to suppress ALL output and rendering of child nodes
-	 * 
+	 *
 	 * @param string $comment Suppressed identifier - used only for recognizing code comments
 	 * @return string
 	 */

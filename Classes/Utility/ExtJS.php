@@ -97,9 +97,6 @@ class Tx_Fed_Utility_ExtJS implements t3lib_Singleton {
 	public function mapDataFromExtJS($object, $data) {
 		unset($data['uid']);
 		$properties = array_keys($data);
-		#var_dump($data);
-		#var_dump($properties);
-		#exit();
 		$mappingResult = $this->propertyMapper->map($properties, $data, $object);
 		return $object;
 	}

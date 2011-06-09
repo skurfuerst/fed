@@ -32,17 +32,20 @@
  */
 class Tx_Fed_ViewHelpers_ScriptViewHelper extends Tx_Fed_Core_ViewHelper_AbstractViewHelper {
 
+	public function initializeArguments() {
+		$this->registerArgument('src', 'string', 'String filename or array of filenames', FALSE, NULL);
+		$this->registerArgument('cache', 'boolean', 'If true, file(s) is cached', FALSE, FALSE);
+		$this->registerArgument('concat', 'boolean', 'If true, files are concatenated (makes sense if $file is array)', FALSE, FALSE);
+		$this->registerArgument('compress', 'boolean', 'If true, files are compressed using JSPacker', FALSE, FALSE);
+		$this->registerArgument('index', 'int', 'Which index to take in additionalHeaderData - pushes current resident DOWN', FALSE, -1);
+	}
+
 	/**
 	 * Inject JS file in the header code.
 	 *
-	 * @param mixed $src String filename or array of filenames
-	 * @param bool $cache If true, file(s) is cached
-	 * @param bool $concat If true, files are concatenated (makes sense if $file is array)
-	 * @param bool $compress If true, files are compressed using JSPacker
-	 * @param int $index Which index to take in additionalHeaderData - pushes current resident DOWN
 	 * @return string
 	 */
-	public function render($src=NULL, $cache=FALSE, $concat=FALSE, $compress=FALSE, $index=-1) {
+	public function render() {
 		if ($src === NULL) {
 			$js = $this->renderChildren();
 			$this->documentHead->includeHeader($js, 'js', NULL, $index);
