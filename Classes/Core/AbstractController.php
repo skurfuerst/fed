@@ -277,8 +277,14 @@ abstract class Tx_Fed_Core_AbstractController extends Tx_Extbase_MVC_Controller_
 	 * @param string $extensionName Optional extension name, empty for current extension name
 	 * @return int
 	 */
-	public function getConfiguredStoragePid($extensionName=NULL) {
-		$config = $this->getExtensionTyposcriptConfiguration($extensionName);
+	public function getConfiguredStoragePid() {
+		$object = $this->fetchRestObject();
+		if ($object) {
+			$extensionName = $this->infoService->getExtensionName($object);
+		} else {
+			$extensionName = $this->request->getExtensionName();
+		}
+		$config = $this->infoService->getExtensionTyposcriptConfiguration($extensionName);
 		if (is_array($config)) {
 			return $config['persistence']['storagePid'];
 		} else {
@@ -286,21 +292,6 @@ abstract class Tx_Fed_Core_AbstractController extends Tx_Extbase_MVC_Controller_
 		}
 	}
 
-	/**
-	 * Fetches the TS config array from the current extension
-	 * @param string $extensionName Optional extension name, empty for current extension name
-	 * @return array
-	 */
-	public function getExtensionTyposcriptConfiguration($extensionName=NULL) {
-		if ($extensionName === NULL) {
-			$extensionName = $this->request->getExtensionName();
-		}
-		$extensionName = strtolower($extensionName);
-		if (is_array($setup['plugin.']['tx_' . $pluginSignature . '.'])) {
-			$extensionConfiguration = t3lib_div::array_merge_recursive_overrule($pluginConfiguration, Tx_Extbase_Utility_TypoScript::convertTypoScriptArrayToPlainArray($setup['plugin.']['tx_' . $pluginSignature . '.']));
-		}
-		return $extensionConfiguration;
-	}
 
 }
 

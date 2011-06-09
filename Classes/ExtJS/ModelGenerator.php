@@ -133,7 +133,7 @@ class Tx_Fed_ExtJS_ModelGenerator implements t3lib_Singleton {
 		$view = $this->objectManager->get('Tx_Fluid_View_StandAloneView');
 		$prefix = $this->getPrefix();
 		if ($template === NULL) {
-			$template = t3lib_extMgm::extPath('fed', 'Resources/Private/Templates/ExtJS/Model.html');
+			$template = $this->resolveTemplateFile($object);
 		}
 		$urls = array(
 			'create' => $this->getStoreUri($object, 'create'),
@@ -148,6 +148,20 @@ class Tx_Fed_ExtJS_ModelGenerator implements t3lib_Singleton {
 		$view->assign('prefix', $prefix);
 		$view->assign('urls', $urls);
 		return $view->render();
+	}
+
+	protected function resolveTemplateFile($object) {
+		$default = t3lib_extMgm::extPath('fed', 'Resources/Private/Templates/ExtJS/Model.html');
+		$partialPath = $this->infoService->getPartialTemplatePath($object);
+		$possibleFile = "{$partialPath}Model.js";
+		$possibleRootFile = "{$partialPath}../Model.js";
+		if (file_exists($possibleFile)) {
+			return $possibleFile;
+		} else if (is_file($possibleRootFile)) {
+			return $possibleRootFile;
+		} else {
+			return $default;
+		}
 	}
 
 	protected function getExtraStoreUriParameters($object) {

@@ -184,6 +184,54 @@ class Tx_Fed_Utility_DomainObjectInfo implements t3lib_Singleton {
 	}
 
 	/**
+	 * Gets the absolute path to partial templates for $object
+	 */
+	public function getPartialTemplatePath($object) {
+		$controllerName = $this->getControllerName($object);
+		$viewConfig = $this->getViewConfiguration($object);
+		if ($viewConfig) {
+			return $viewConfig['partialRootPath'] . $controllerName . '/';
+		} else {
+			$resourcePath = $this->getResourcePath($object);
+			return "{$resourcePath}Private/Partials/{$controllerName}/";
+		}
+	}
+
+	/**
+	 * Returns the View configuration for $object as defined in Typoscript
+	 * @param type $object
+	 * @return type
+	 */
+	public function getViewConfiguration($object) {
+		$config = $this->getExtensionTyposcriptConfiguration($object);
+		return $config['view'];
+	}
+
+	/**
+	 * Returns the absolute path to the Resources folder for $object
+	 *
+	 * @param type $object
+	 * @return string
+	 */
+	public function getResourcePath($object) {
+		$extensionName = $this->getExtensionName($object);
+		$extensionName = strtolower($extensionName);
+		return t3lib_extMgm::extPath($extensionName, 'Resources/');
+	}
+
+	/**
+	 * Returns the site-relative path to the Resources folder for $object
+	 *
+	 * @param type $object
+	 * @return string
+	 */
+	public function getResourcePathRel($object) {
+		$extensionName = $this->getExtensionName($object);
+		$extensionName = strtolower($extensionName);
+		return t3lib_extMgm::siteRelPath($extensionName) . 'Resources/';
+	}
+
+	/**
 	 * Checks if $className->$propertyName is annotated w/ $annotation having $value
 	 *
 	 * @param mixed $className The name of the class containing the property. Can be an object instance
@@ -262,6 +310,21 @@ class Tx_Fed_Utility_DomainObjectInfo implements t3lib_Singleton {
 			}
 		}
 		return $tagArray;
+	}
+
+
+	/**
+	 * Fetches the TS config array from the current extension
+	 * @param mixed $object
+	 * @return array
+	 */
+	public function getExtensionTyposcriptConfiguration($object) {
+		$extensionName = $this->getExtensionName($object);
+		$extensionName = strtolower($extensionName);
+		if (is_array($setup['plugin.']['tx_' . $extensionName . '.'])) {
+			$extensionConfiguration = Tx_Extbase_Utility_TypoScript::convertTypoScriptArrayToPlainArray($setup['plugin.']['tx_' . $extensionName . '.']);
+		}
+		return $extensionConfiguration;
 	}
 
 	/**
