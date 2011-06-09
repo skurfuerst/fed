@@ -171,6 +171,8 @@ abstract class Tx_Fed_Core_AbstractController extends Tx_Extbase_MVC_Controller_
 		$object = $this->extJSService->mapDataFromExtJS($object, $data);
 		$object->setPid($storagePid);
 		$repository->add($object);
+		$persistenceManager = $this->objectManager->get('Tx_Extbase_Persistence_Manager');
+		$persistenceManager->persistAll();
 		return $this->formatRestResponseData($object);
 	}
 
@@ -194,8 +196,8 @@ abstract class Tx_Fed_Core_AbstractController extends Tx_Extbase_MVC_Controller_
 		$data = $this->fetchRestBodyData();
 		$object = $this->fetchRestObject();
 		$repository = $this->infoService->getRepositoryInstance($object);
-		$properties = $this->fetchRestBodyFields($body);
-		$object = $this->extJSService->mapDataFromExtJS($object, $data);
+		$target = $repository->findOneByUid($data['uid']);
+		$object = $this->extJSService->mapDataFromExtJS($target, $data);
 		$repository->update($object);
 		return $this->formatRestResponseData($object);
 	}
@@ -210,8 +212,6 @@ abstract class Tx_Fed_Core_AbstractController extends Tx_Extbase_MVC_Controller_
 		$repository = $this->infoService->getRepositoryInstance($object);
 		$target = $repository->findOneByUid($data['uid']);
 		$repository->remove($target);
-		#$persistenceManager = $this->objectManager->get('Tx_Extbase_Persistence_Manager');
-		#$persistenceManager->persistAll();
 		return $this->formatRestResponseData();
 	}
 
