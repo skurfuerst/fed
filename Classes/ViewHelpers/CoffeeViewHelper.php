@@ -42,6 +42,11 @@
  */
 class Tx_Fed_ViewHelpers_CoffeeViewHelper extends Tx_Fed_ViewHelpers_ScriptViewHelper {
 
+	/**
+	 * Make coffee.
+	 *
+	 * @return string
+	 */
 	public function render() {
 		if ($this->arguments->hasArgument('src')) {
 			$filename = PATH_site . $this->arguments['src'];
@@ -50,7 +55,7 @@ class Tx_Fed_ViewHelpers_CoffeeViewHelper extends Tx_Fed_ViewHelpers_ScriptViewH
 			$template->assignMultiple($variables);
 			$rendered = $template->render();
 			$uniqid = md5($rendered);
-			$extension = '.js';
+			$extension = 'js';
 			$tempfile = $this->documentHead->saveContentToTempFile($rendered, $uniqid, $extension);
 			$this->includeFile($tempfile);
 		}
