@@ -32,6 +32,17 @@
  */
 class Tx_Fed_ExtJS_ModelGenerator implements t3lib_Singleton {
 
+	public static $SPLIT_PATTERN_SHORTHANDSYNTAX = '/
+		(
+			{                                # Start of shorthand syntax
+				(?:                          # Shorthand syntax is either composed of...
+					[a-zA-Z0-9\->_:,.()]     # Various characters
+					|"(?:\\\"|[^"])*"        # Double-quoted strings
+					|\'(?:\\\\\'|[^\'])*\'   # Single-quoted strings
+				)+
+			}                                # End of shorthand syntax
+		)/x';
+
 	/**
 	 * @var Tx_Extbase_MVC_Web_RequestBuilder
 	 */
@@ -132,6 +143,8 @@ class Tx_Fed_ExtJS_ModelGenerator implements t3lib_Singleton {
 		$properties = $this->infoService->getPropertiesByAnnotation($object, 'ExtJS');
 		$view = $this->objectManager->get('Tx_Fluid_View_StandAloneView');
 		$prefix = $this->getPrefix();
+		$shortTagSyntaxPatternBackup = Tx_Fluid_Core_Parser_TemplateParser::$SPLIT_PATTERN_SHORTHANDSYNTAX;
+		Tx_Fluid_Core_Parser_TemplateParser::$SPLIT_PATTERN_SHORTHANDSYNTAX = self::$SPLIT_PATTERN_SHORTHANDSYNTAX;
 		if ($template === NULL) {
 			$template = $this->resolveTemplateFile($object);
 		}
@@ -147,7 +160,9 @@ class Tx_Fed_ExtJS_ModelGenerator implements t3lib_Singleton {
 		$view->assign('typeNum', $this->typeNum);
 		$view->assign('prefix', $prefix);
 		$view->assign('urls', $urls);
-		return $view->render();
+		$content = $view->render();
+		Tx_Fluid_Core_Parser_TemplateParser::$SPLIT_PATTERN_SHORTHANDSYNTAX = $shortTagSyntaxPatternBackup;
+		return $content;
 	}
 
 	protected function resolveTemplateFile($object) {
