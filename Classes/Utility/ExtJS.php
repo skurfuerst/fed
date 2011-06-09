@@ -43,6 +43,11 @@ class Tx_Fed_Utility_ExtJS implements t3lib_Singleton {
 	protected $modelGenerator;
 
 	/**
+	 * @var Tx_Extbase_Property_Mapper
+	 */
+	protected $propertyMapper;
+
+	/**
 	 * @param Tx_Fed_Utility_DomainObjectInfo $infoService
 	 */
 	public function injectInfoService(Tx_Fed_Utility_DomainObjectInfo $infoService) {
@@ -54,6 +59,13 @@ class Tx_Fed_Utility_ExtJS implements t3lib_Singleton {
 	 */
 	public function injectModelGenerator(Tx_Fed_ExtJS_ModelGenerator $modelGenerator) {
 		$this->modelGenerator = $modelGenerator;
+	}
+
+	/**
+	 * @param Tx_Extbase_Property_Mapper $propertyMapper
+	 */
+	public function injectPropertyMapper(Tx_Extbase_Property_Mapper $propertyMapper) {
+		$this->propertyMapper = $propertyMapper;
 	}
 
 	/**
@@ -83,6 +95,12 @@ class Tx_Fed_Utility_ExtJS implements t3lib_Singleton {
 	 * @return Tx_Extbase_DomainObject_AbstractDomainEntity
 	 */
 	public function mapDataFromExtJS($object, $data) {
+		unset($data['uid']);
+		$properties = array_keys($data);
+		#var_dump($data);
+		#var_dump($properties);
+		#exit();
+		$mappingResult = $this->propertyMapper->map($properties, $data, $object);
 		return $object;
 	}
 

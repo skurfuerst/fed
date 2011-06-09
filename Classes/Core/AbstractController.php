@@ -162,13 +162,16 @@ abstract class Tx_Fed_Core_AbstractController extends Tx_Extbase_MVC_Controller_
 	 * @return stdClas
 	 */
 	private function performRestCreate() {
-		$repository = $this->fetchRestRepository();
-		$body = file_get_contents('php://input');
-		$data = $this->jsonService->decode($body);
+		$data = $this->fetchRestBodyData();
 		$object = $this->fetchRestObject();
-		$properties = $this->fetchRestBodyFields($body);
+		$repository = $this->infoService->getRepositoryInstance($object);
+		$extensionName = $this->infoService->getExtensionName($object);
+		$storagePid = $this->getConfiguredStoragePid($extensionName);
+		unset($data['uid']); // do NOT allow creation of UID=0
 		$object = $this->extJSService->mapDataFromExtJS($object, $data);
-		return $this->extJSService->exportDataToExtJS($object);
+		$object->setPid($storagePid);
+		$repository->add($object);
+		return $this->formatRestResponseData($object);
 	}
 
 	/**
@@ -176,7 +179,8 @@ abstract class Tx_Fed_Core_AbstractController extends Tx_Extbase_MVC_Controller_
 	 * @return mixed
 	 */
 	private function performRestRead() {
-		$repository = $this->fetchRestRepository();
+		$object = $this->fetchRestObject();
+		$repository = $this->infoService->getRepositoryInstance($object);
 		$all = $repository->findAll()->toArray();
 		$export = $this->extJSService->exportDataToExtJS($all);
 		return $this->jsonService->encode($export);
@@ -187,18 +191,13 @@ abstract class Tx_Fed_Core_AbstractController extends Tx_Extbase_MVC_Controller_
 	 * @return stdClas
 	 */
 	private function performRestUpdate() {
-		$repository = $this->fetchRestRepository();
-		$body = file_get_contents("php://input");
-		$data = $this->jsonService->decode($body);
-		$object = $this->fetchRestObject($data->uid);
+		$data = $this->fetchRestBodyData();
+		$object = $this->fetchRestObject();
+		$repository = $this->infoService->getRepositoryInstance($object);
 		$properties = $this->fetchRestBodyFields($body);
-		if (in_array('uid', $properties)) {
-			unset($properties[array_search('uid', $properties)]);
-		}
-		$mappingResult = $this->propertyMapper->map($properties, $data, $object);
-		$responseData = $this->extJSService->exportDataToExtJS($object);
-		$response = $this->jsonService->encode($responseData);
-		return $response;
+		$object = $this->extJSService->mapDataFromExtJS($object, $data);
+		$repository->update($object);
+		return $this->formatRestResponseData($object);
 	}
 
 	/**
@@ -206,20 +205,22 @@ abstract class Tx_Fed_Core_AbstractController extends Tx_Extbase_MVC_Controller_
 	 * @return void
 	 */
 	private function performRestDestroy() {
-		$repository = $this->fetchRestRepository();
+		$data = $this->fetchRestBodyData();
+		$object = $this->fetchRestObject();
+		$repository = $this->infoService->getRepositoryInstance($object);
+		$target = $repository->findOneByUid($data['uid']);
+		$repository->remove($target);
+		#$persistenceManager = $this->objectManager->get('Tx_Extbase_Persistence_Manager');
+		#$persistenceManager->persistAll();
+		return $this->formatRestResponseData();
 	}
 
 	/**
 	 * Fetch an instance of an aggregate root object as specified by the request parameters
-	 * @param int $uid
-	 * @return stdClas
+	 * @return Tx_Extbase_DomainObject_AbstractEntity
 	 * @api
 	 */
-	public function fetchRestObject($uid=NULL) {
-		if ($uid > 0) {
-			$repository = $this->fetchRestRepository();
-			return $repository->findOneByUid($uid);
-		}
+	public function fetchRestObject() {
 		$thisClass = get_class($this);
 		$controllerName = $this->request->getArgument('controller');
 		$objectClassname = str_replace("Controller_{$controllerName}Controller", 'Domain_Model_', $thisClass) . $controllerName;
@@ -228,33 +229,77 @@ abstract class Tx_Fed_Core_AbstractController extends Tx_Extbase_MVC_Controller_
 	}
 
 	/**
-	 * Fetch an instance of Repository which handles the aggregate root object this request is targetet towards
-	 * @return Tx_Extbase_Persistence_Repository
-	 * @api
+	 * Returns associative array (with subarrays if necessary) of REST body
+	 *
+	 * @param string $body The request body to parse, empty for auto-fetch
+	 * @return array
 	 */
-	public function fetchRestRepository() {
-		$thisClass = get_class($this);
-		$controllerName = $this->request->getArgument('controller');
-			$repositoryClassname = str_replace("Controller_{$controllerName}Controller", 'Domain_Repository_', $thisClass) . $controllerName . 'Repository';
-		$repository = $this->objectManager->get($repositoryClassname);
-		return $repository;
+	public function fetchRestBodyData($body=NULL) {
+		if ($body === NULL) {
+			$body = file_get_contents("php://input");
+		}
+		$arr = array();
+		$data = $this->jsonService->decode($body);
+		foreach ($data as $k=>$v) {
+			$arr[$k] = $v;
+		}
+		return $arr;
 	}
 
 	/**
 	 * Fetch an associative array of fields posted as REST request body
+	 *
+	 * @param string $body The request body to parse, empty for auto-fetch
 	 * @return array
 	 * @api
 	 */
-	public function fetchRestBodyFields($body) {
-		if (!$body) {
-			$body = file_get_contents("php://input");
+	public function fetchRestBodyFields($body=NULL) {
+		return array_keys($this->fetchRestBodyData($body));
+	}
+
+	/**
+	 * Formats $data into a format agreable with ExtJS4 REST
+	 *
+	 * @param type $data Empty for NULL response
+	 * @return mixed
+	 */
+	public function formatRestResponseData($data=NULL) {
+		if ($data === NULL) {
+			return "{}";
 		}
-		$data = $this->jsonService->decode($body);
-		$keys = array();
-		foreach ($data as $k=>$v) {
-			array_push($keys, $k);
+		$responseData = $this->extJSService->exportDataToExtJS($data);
+		$response = $this->jsonService->encode($responseData);
+		return $response;
+	}
+
+	/**
+	 * Get the current configured storage PID for $extensionName
+	 * @param string $extensionName Optional extension name, empty for current extension name
+	 * @return int
+	 */
+	public function getConfiguredStoragePid($extensionName=NULL) {
+		$config = $this->getExtensionTyposcriptConfiguration($extensionName);
+		if (is_array($config)) {
+			return $config['persistence']['storagePid'];
+		} else {
+			return $GLOBALS['TSFE']->id;
 		}
-		return $keys;
+	}
+
+	/**
+	 * Fetches the TS config array from the current extension
+	 * @param string $extensionName Optional extension name, empty for current extension name
+	 * @return array
+	 */
+	public function getExtensionTyposcriptConfiguration($extensionName=NULL) {
+		if ($extensionName === NULL) {
+			$extensionName = $this->request->getExtensionName();
+		}
+		$extensionName = strtolower($extensionName);
+		if (is_array($setup['plugin.']['tx_' . $pluginSignature . '.'])) {
+			$extensionConfiguration = t3lib_div::array_merge_recursive_overrule($pluginConfiguration, Tx_Extbase_Utility_TypoScript::convertTypoScriptArrayToPlainArray($setup['plugin.']['tx_' . $pluginSignature . '.']));
+		}
+		return $extensionConfiguration;
 	}
 
 }

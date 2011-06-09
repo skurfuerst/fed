@@ -55,7 +55,7 @@ class Tx_Fed_Utility_DomainObjectInfo implements t3lib_Singleton {
 	 * ObjectManager instance
 	 * @var Tx_Extbase_Object_ObjectManager
 	 */
-	protected $objectManger;
+	protected $objectManager;
 
 	/**
 	 * Inject a RecursionHandler instance
@@ -180,7 +180,7 @@ class Tx_Fed_Utility_DomainObjectInfo implements t3lib_Singleton {
 	 */
 	public function getRepositoryInstance($object) {
 		$class = $this->getRepositoryClassname($object);
-		return $this->objectManger->get($class);
+		return $this->objectManager->get($class);
 	}
 
 	/**
@@ -291,7 +291,7 @@ class Tx_Fed_Utility_DomainObjectInfo implements t3lib_Singleton {
 			$className = get_class($object);
 		} else {
 			$className = $object;
-			$object = $this->objectManger->get($className);
+			$object = $this->objectManager->get($className);
 		}
 		$this->recursionHandler->in();
 		$this->recursionHandler->check($className);

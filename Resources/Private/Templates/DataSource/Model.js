@@ -4,7 +4,7 @@ Ext.define('{prefix}{className}', {
     extend: 'Ext.data.Model',
 	fields: [
 	<f:for each="{properties}" as="def" key="name" iteration="iteration">
-        <f:escape>{</f:escape> name: '{def.name}', type: '{def.type}' <f:escape>}</f:escape>
+        <f:escape>{</f:escape> name: '{def.name}', type: '{def.type}', xtype: 'textfield' <f:escape>}</f:escape>
 		<f:if condition="{iteration.isLast}" then="" else="," />
 	</f:for>
 	],
