@@ -151,7 +151,7 @@ class Tx_Fed_ExtJS_ModelGenerator implements t3lib_Singleton {
 	}
 
 	protected function resolveTemplateFile($object) {
-		$default = t3lib_extMgm::extPath('fed', 'Resources/Private/Templates/ExtJS/Model.html');
+		$default = t3lib_extMgm::extPath('fed', 'Resources/Private/Partials/DataSource/Model.js');
 		$partialPath = $this->infoService->getPartialTemplatePath($object);
 		$possibleFile = "{$partialPath}Model.js";
 		$possibleRootFile = "{$partialPath}../Model.js";
