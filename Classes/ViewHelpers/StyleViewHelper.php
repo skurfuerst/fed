@@ -33,17 +33,28 @@
 class Tx_Fed_ViewHelpers_StyleViewHelper extends Tx_Fed_Core_ViewHelper_AbstractViewHelper {
 
 	/**
+	 * Initialize arguments
+	 */
+	public function initializeArguments() {
+		$this->registerArgument('href', 'mixed', 'String filename or array of filenames', FALSE, NULL);
+		$this->registerArgument('cache', 'boolean', 'If true, file(s) is cached', FALSE, FALSE);
+		$this->registerArgument('concat', 'boolean', 'If true, files are concatenated (makes sense if $file is array)', FALSE, FALSE);
+		$this->registerArgument('compress', 'boolean', 'If true, files are compressed using JSPacker', FALSE, FALSE);
+		$this->registerArgument('index', 'int', 'Which index to take in additionalHeaderData - pushes current resident DOWN', FALSE, -1);
+	}
+
+	/**
 	 * Inject CSS file in header or code. See examples in ScriptViewHelper
 	 * the pragma is identical - only the output wrapper tags are different.
 	 *
-	 * @param string $href
-	 * @param bool $cache If true, file(s) is cached
-	 * @param bool $concat If true, files are concatenated (makes sense if $file is array)
-	 * @param bool $compress If true, files are compressed using JSPacker
-	 * @param int $index Which index to take in additionalHeaderData; pushes current resident DOWN
 	 * @return string
 	 */
-	public function render($href=NULL, $cache=FALSE, $concat=FALSE, $compress=FALSE, $index=-1) {
+	public function render() {
+		$href = $this->arguments['href'];
+		$cache = $this->arguments['cache'];
+		$concat = $this->arguments['concat'];
+		$compress = $this->arguments['compress'];
+		$index = $this->arguments['index'];
 		if ($href) {
 			$this->documentHead->includeFile($href, $cache, $concat, $compress, $index);
 		} else if ($href === NULL) {

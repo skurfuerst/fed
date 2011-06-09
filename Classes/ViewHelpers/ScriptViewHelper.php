@@ -32,8 +32,11 @@
  */
 class Tx_Fed_ViewHelpers_ScriptViewHelper extends Tx_Fed_Core_ViewHelper_AbstractViewHelper {
 
+	/**
+	 * Initialize arguments
+	 */
 	public function initializeArguments() {
-		$this->registerArgument('src', 'string', 'String filename or array of filenames', FALSE, NULL);
+		$this->registerArgument('src', 'mixed', 'String filename or array of filenames', FALSE, NULL);
 		$this->registerArgument('cache', 'boolean', 'If true, file(s) is cached', FALSE, FALSE);
 		$this->registerArgument('concat', 'boolean', 'If true, files are concatenated (makes sense if $file is array)', FALSE, FALSE);
 		$this->registerArgument('compress', 'boolean', 'If true, files are compressed using JSPacker', FALSE, FALSE);
@@ -46,6 +49,10 @@ class Tx_Fed_ViewHelpers_ScriptViewHelper extends Tx_Fed_Core_ViewHelper_Abstrac
 	 * @return string
 	 */
 	public function render() {
+		$src = $this->arguments['src'];
+		$cache = $this->arguments['cache'];
+		$concat = $this->arguments['concat'];
+		$compress = $this->arguments['compress'];
 		if ($src === NULL) {
 			$js = $this->renderChildren();
 			$this->documentHead->includeHeader($js, 'js', NULL, $index);
