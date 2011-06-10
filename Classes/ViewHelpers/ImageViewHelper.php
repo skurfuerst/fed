@@ -87,6 +87,7 @@ class Tx_Fed_ViewHelpers_ImageViewHelper extends Tx_Fluid_ViewHelpers_ImageViewH
 		$this->registerArgument('sortBy', 'string', 'Sort field of multiple files. Possible: filename, modified, created, size,
 			resolution, x, y, exif:<fieldname> - "resolution" mode means (x+y*dpi) size becomes sort value');
 		$this->registerArgument('sortDirection', 'string', 'Direction to sort', FALSE, 'ASC');
+		$this->registerArgument('clickenlarge', 'boolean', 'Change to FALSE if you do not want actions and script added if large version is rendered', FALSE, TRUE);
 	}
 
 	/**
@@ -100,7 +101,7 @@ class Tx_Fed_ViewHelpers_ImageViewHelper extends Tx_Fluid_ViewHelpers_ImageViewH
 			$images = $this->documentHead->getFilenamesOfType($pathinfo['dirname'], $pathinfo['extension']);
 		} else if ($this->arguments->hasArgument('path')) {
 			$images = explode(',', $this->arguments['src']);
-			// patch for CSV files missing relative pathnames
+			// patch for CSV files missing relative pathnames and possible missing files
 			foreach ($images as $k=>$v) {
 				$images[$k] = $this->arguments['path'] . $v;
 			}
@@ -108,6 +109,12 @@ class Tx_Fed_ViewHelpers_ImageViewHelper extends Tx_Fluid_ViewHelpers_ImageViewH
 			$images = $this->arguments['src'];
 		} else {
 			$images = array($this->arguments['src']);
+		}
+		// use altsrc for any image not present
+		foreach ($images as $k=>$v) {
+			if (is_file(PATH_site . $images[$k]) === FALSE) {
+				$images[$k] = $this->arguments['altsrc'];
+			}
 		}
 		return $this->renderImages($images);
 	}
@@ -130,8 +137,15 @@ class Tx_Fed_ViewHelpers_ImageViewHelper extends Tx_Fluid_ViewHelpers_ImageViewH
 			'maxW' => $this->arguments['maxW'],
 			'maxH' => $this->arguments['maxH']
 		);
-		if ($this->arguments['largeWidth'] > 0 || $this->arguments['largeHeight'] > 0) {
+		if ($this->arguments['clickenlarge'] === TRUE) {
 			$this->addScript();
+		}
+		if ($this->arguments['id']) {
+			$uniqid = $this->arguments['id'];
+		} else {
+			$uniqid = uniqid('fed-xl-');
+		}
+		if ($this->arguments['largeWidth'] > 0 || $this->arguments['largeHeight'] > 0) {
 			$largeSetup = array(
 				'width' => $this->arguments['largeWidth'],
 				'height' => $this->arguments['largeHeight'],
@@ -141,11 +155,6 @@ class Tx_Fed_ViewHelpers_ImageViewHelper extends Tx_Fluid_ViewHelpers_ImageViewH
 				'maxH' => $this->arguments['largeHeight']
 			);
 			$large = array();
-			if ($this->arguments['id']) {
-				$uniqid = $this->arguments['id'];
-			} else {
-				$uniqid = uniqid('fed-xl-');
-			}
 			foreach ($images as $image) {
 				$large[] = $this->renderImage($image, $largeSetup);
 			}
@@ -164,9 +173,10 @@ class Tx_Fed_ViewHelpers_ImageViewHelper extends Tx_Fluid_ViewHelpers_ImageViewH
 			$this->tag->addAttribute('width', $imagesize[0]);
 			$this->tag->addAttribute('height', $imagesize[1]);
 			$this->tag->addAttribute('src', $convertedImageFilename);
-			if ($large) {
+			if ($large && $this->arguments['clickenlarge'] === TRUE) {
 				$this->tag->addAttribute('onclick', "fedImgXL('{$uniqid}', '{$large[$k]}');");
 				$this->tag->addAttribute('class', 'small');
+				$this->tag->removeAttribute('id'); // avoid DOM ID collisions
 			}
 			$lines[] = $this->tag->render();
 		}
