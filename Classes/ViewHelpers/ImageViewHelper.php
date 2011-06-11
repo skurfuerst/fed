@@ -100,6 +100,7 @@ class Tx_Fed_ViewHelpers_ImageViewHelper extends Tx_Fluid_ViewHelpers_ImageViewH
 		$pathinfo = pathinfo($this->arguments['src']);
 		if ($pathinfo['filename'] === '*') {
 			$images = $this->documentHead->getFilenamesOfType($pathinfo['dirname'], $pathinfo['extension']);
+			$images = $this->sortImages($images);
 		} else if ($this->arguments->hasArgument('path')) {
 			$images = explode(',', $this->arguments['src']);
 			// patch for CSV files missing relative pathnames and possible missing files
@@ -108,10 +109,11 @@ class Tx_Fed_ViewHelpers_ImageViewHelper extends Tx_Fluid_ViewHelpers_ImageViewH
 			}
 		} else if (is_array($this->arguments['src'])) {
 			$images = $this->arguments['src'];
+			$images = $this->sortImages($images);
 		} else {
 			$images = array($this->arguments['src']);
+			$images = $this->sortImages($images);
 		}
-		$images = $this->sortImages($images);
 		if ($this->arguments['limit'] > 0) {
 			$images = array_slice($images, 0, $this->arguments['limit']);
 		}
@@ -121,8 +123,6 @@ class Tx_Fed_ViewHelpers_ImageViewHelper extends Tx_Fluid_ViewHelpers_ImageViewH
 				$images[$k] = $this->arguments['altsrc'];
 			}
 		}
-
-
 		return $this->renderImages($images);
 	}
 
@@ -134,6 +134,7 @@ class Tx_Fed_ViewHelpers_ImageViewHelper extends Tx_Fluid_ViewHelpers_ImageViewH
 	 * @return string
 	 */
 	protected function renderImages(array $images, $returnConverted=FALSE) {
+		global $TYPO3_CONF_VARS;
 		$converted = array();
 		$lines = array();
 		$setup = array(
@@ -142,7 +143,7 @@ class Tx_Fed_ViewHelpers_ImageViewHelper extends Tx_Fluid_ViewHelpers_ImageViewH
 			'minW' => $this->arguments['minW'],
 			'minH' => $this->arguments['minH'],
 			'maxW' => $this->arguments['maxW'],
-			'maxH' => $this->arguments['maxH']
+			'maxH' => $this->arguments['maxH'],
 		);
 		if ($this->arguments['clickenlarge'] === TRUE) {
 			$this->addScript();
@@ -159,7 +160,7 @@ class Tx_Fed_ViewHelpers_ImageViewHelper extends Tx_Fluid_ViewHelpers_ImageViewH
 				'minW' => $this->arguments['largeWidth'],
 				'minH' => $this->arguments['largeHeight'],
 				'maxW' => $this->arguments['largeWidth'],
-				'maxH' => $this->arguments['largeHeight']
+				'maxH' => $this->arguments['largeHeight'],
 			);
 			$large = array();
 			foreach ($images as $image) {
