@@ -84,10 +84,11 @@ class Tx_Fed_ViewHelpers_ImageViewHelper extends Tx_Fluid_ViewHelpers_ImageViewH
 		$this->registerArgument('largeHeight', 'string', 'Specify this to render a large version of files too, for switch-viewing', FALSE);
 		$this->registerArgument('largePosition', 'string', 'Controls where large image goes. Use top, left, right or bottom -
 			is added as class on large img', FALSE, 'left');
-		$this->registerArgument('sortBy', 'string', 'Sort field of multiple files. Possible: filename, modified, created, size,
-			resolution, x, y, exif:<fieldname> - "resolution" mode means (x+y*dpi) size becomes sort value');
+		$this->registerArgument('sortBy', 'string', 'Sort field of multiple files. Possible: filename, filesize, modified, created,
+			size, size:x, size:y, exif:<fieldname> - "size" mode means (w+h) size becomes sort value', FALSE, 'filename');
 		$this->registerArgument('sortDirection', 'string', 'Direction to sort', FALSE, 'ASC');
 		$this->registerArgument('clickenlarge', 'boolean', 'Change to FALSE if you do not want actions and script added if large version is rendered', FALSE, TRUE);
+		$this->registerArgument('limit', 'integer', 'Specify to limit the number of images which may be rendered');
 	}
 
 	/**
@@ -110,12 +111,18 @@ class Tx_Fed_ViewHelpers_ImageViewHelper extends Tx_Fluid_ViewHelpers_ImageViewH
 		} else {
 			$images = array($this->arguments['src']);
 		}
+		$images = $this->sortImages($images);
+		if ($this->arguments['limit'] > 0) {
+			$images = array_slice($images, 0, $this->arguments['limit']);
+		}
 		// use altsrc for any image not present
 		foreach ($images as $k=>$v) {
 			if (is_file(PATH_site . $images[$k]) === FALSE) {
 				$images[$k] = $this->arguments['altsrc'];
 			}
 		}
+
+
 		return $this->renderImages($images);
 	}
 
@@ -191,7 +198,28 @@ class Tx_Fed_ViewHelpers_ImageViewHelper extends Tx_Fluid_ViewHelpers_ImageViewH
 	 * @return array
 	 */
 	protected function sortImages(array $images) {
-		return $images;
+		$sorted = array();
+		foreach ($images as $image) {
+			$index = $this->getSortValue($image);
+			while (isset($sorted[$index])) {
+				$index = $this->findNewIndex($index);
+			}
+			$sorted[$index] = $image;
+		}
+		if ($this->arguments['sortDirection'] === 'ASC') {
+			ksort($sorted);
+		} else {
+			krsort($sorted);
+		}
+		return array_values($sorted);
+	}
+
+	protected function findNewIndex($index) {
+		if (is_numeric($index)) {
+			return $index+1;
+		} else {
+			return $index . 'a';
+		}
 	}
 
 	/**
@@ -201,17 +229,41 @@ class Tx_Fed_ViewHelpers_ImageViewHelper extends Tx_Fluid_ViewHelpers_ImageViewH
 	 * @return mixed
 	 */
 	protected function getSortValue($src) {
-
+		$field = $this->arguments['sortBy'];
+		list ($field, $subfield) = explode(':', $field);
+		switch ($field) {
+			case 'filesize': return (is_file(PATH_site . $src) ? filesize(PATH_site . $src) : 0);
+			case 'mofified': return (is_file(PATH_site . $src) ? filemtime(PATH_site . $src) : 0);
+			case 'created': return (is_file(PATH_site . $src) ? filectime(PATH_site . $src) : 0);
+			case 'size':
+				if (is_file(PATH_site . $src) === FALSE) {
+					return 0;
+				}
+				list ($w, $h) = getimagesize(PATH_site . $src);
+				switch ($subfield) {
+					case 'w': return $w;
+					case 'h': return $h;
+					default: return ($w*$h);
+				}
+			case 'exif': return $this->readExifInfoField(PATH_site . $src, $subfield);
+			case 'filename':
+			default: return $src;
+		}
 	}
 
 	/**
 	 * Reads EXIF info in $field for $src
 	 *
 	 * @param string $src
-	 * @return array
+	 * @return mixed
 	 */
 	protected function readExifInfoField($src, $field) {
-
+		$exif = $this->readExifInfo($src);
+		if (is_array($exif)) {
+			return $exif[$field];
+		} else {
+			return NULL;
+		}
 	}
 
 	/**
@@ -221,7 +273,7 @@ class Tx_Fed_ViewHelpers_ImageViewHelper extends Tx_Fluid_ViewHelpers_ImageViewH
 	 * @return array
 	 */
 	protected function readExifInfo($src) {
-
+		return @exif_read_data($src);
 	}
 
 	/**
