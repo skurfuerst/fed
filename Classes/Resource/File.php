@@ -32,7 +32,6 @@
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  * @package Fed
  * @subpackage Resource
- *
  */
 class Tx_Fed_Resource_File {
 
