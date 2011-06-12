@@ -72,6 +72,11 @@ class Tx_Fed_Resource_File {
 	protected $absolutePath;
 
 	/**
+	 * @var mixed
+	 */
+	protected $metadata;
+
+	/**
 	 * CONSTRUCTOR, takes absolute path to file as only argument
 	 *
 	 * @param string $filename
@@ -186,6 +191,20 @@ class Tx_Fed_Resource_File {
 	 */
 	public function setAbsolutePath($absolutePath) {
 		$this->absolutePath = $absolutePath;
+	}
+
+	/**
+	 * @return mixed
+	 */
+	public function getMetadata() {
+		return $this->metadata;
+	}
+
+	/**
+	 * @param mixed $metadata
+	 */
+	public function setMetadata($metadata) {
+		$this->metadata = $metadata;
 	}
 
 
