@@ -42,7 +42,11 @@ class Tx_Fed_ViewHelpers_ResourceViewHelper extends Tx_Fed_Core_ViewHelper_Abstr
 	 * Itnitialize all common arguments for Resource ViewHelpers
 	 */
 	public function initializeArguments() {
-		$this->registerArgument('source', 'string', 'For default behaviour support; wildcard/folder path to files');
+		$this->registerArgument('path', 'string', 'Directory from which to read files', FALSE, NULL);
+		$this->registerArgument('as', 'string', 'Optional template variable name to assign', FALSE, NULL);
+		$this->registerArgument('sortBy', 'string', 'Special sort property', FALSE, 'filename');
+		$this->registerArgument('sortDirection', 'string', 'Direction to sort', FALSE, 'ASC');
+		$this->registerArgument('limit', 'integer', 'Specify to limit the number of images which may be rendered');
 	}
 
 	/**
@@ -54,6 +58,101 @@ class Tx_Fed_ViewHelpers_ResourceViewHelper extends Tx_Fed_Core_ViewHelper_Abstr
 		// which provides the render method. Since this ViewHelper assumes
 		// default intention is to render files, we call:
 		return Tx_Fed_ViewHelpers_Resource_FilesViewHelper::render();
+	}
+
+	/**
+	 * Render a simple list of files with links to that file
+	 *
+	 * @param array $files
+	 * @return string
+	 */
+	public function renderFileList(array $files) {
+		$html = "<ol>" . chr(10);
+		foreach ($files as $file) {
+			$relPath = $file->getRelativePath();
+			$html .= "<li><a href='{$relPath}'>{$file}</a></li>" . chr(10);
+		}
+		$html .= "</ol>" . chr(10);
+		return $html;
+	}
+
+	/**
+	 * Convert an array of relative or absolute filenames to an array of File
+	 * objects.
+	 *
+	 * @param array $files
+	 * @return array
+	 */
+	protected function arrayToFileObjects(array $files) {
+		$objects = array();
+		foreach ($files as $k=>$file) {
+			if (file_exists($file) === FALSE) {
+				$file = PATH_site . $file;
+			}
+			if (file_exists($file) === TRUE) {
+				$fileObject = $this->objectManager->get('Tx_Fed_Resource_File', $file);
+				$objects[$k] = $fileObject;
+			}
+		}
+		return $objects;
+	}
+
+	/**
+	 * Sort the files as defined by arguments
+	 *
+	 * @param array $files
+	 * @return array
+	 */
+	protected function sortFiles(array $files) {
+		$sorted = array();
+		foreach ($files as $file) {
+			$index = $this->getSortValue($file);
+			while (isset($sorted[$index])) {
+				$index = $this->findNewIndex($index);
+			}
+			$sorted[$index] = $file;
+		}
+		if ($this->arguments['sortDirection'] === 'ASC') {
+			ksort($sorted);
+		} else {
+			krsort($sorted);
+		}
+		return array_values($sorted);
+	}
+
+	protected function findNewIndex($index) {
+		if (is_numeric($index)) {
+			return $index+1;
+		} else {
+			return $index . 'a';
+		}
+	}
+
+	/**
+	 * Gets the value used for sort index for this file
+	 *
+	 * @param string $src
+	 * @return mixed
+	 */
+	protected function getSortValue($src) {
+		$field = $this->arguments['sortBy'];
+		list ($field, $subfield) = explode(':', $field);
+		if ($src instanceof Tx_Fed_Resource_File) {
+			switch ($field) {
+				case 'filesize': return $src->getSize();
+				case 'mofified': return $src->getModified();
+				case 'created': return $src->getCreated();
+				default: return $src->getBasename();
+			}
+		} else {
+			switch ($field) {
+				case 'filesize': return (is_file(PATH_site . $src) ? filesize(PATH_site . $src) : 0);
+				case 'mofified': return (is_file(PATH_site . $src) ? filemtime(PATH_site . $src) : 0);
+				case 'created': return (is_file(PATH_site . $src) ? filectime(PATH_site . $src) : 0);
+				case 'filename':
+				default: return $src;
+			}
+		}
 	}
 
 }

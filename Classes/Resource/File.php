@@ -44,6 +44,11 @@ class Tx_Fed_Resource_File {
 	/**
 	 * @var string
 	 */
+	protected $basename;
+
+	/**
+	 * @var string
+	 */
 	protected $path;
 
 	/**
@@ -69,6 +74,11 @@ class Tx_Fed_Resource_File {
 	/**
 	 * @var string
 	 */
+	protected $relativePath;
+
+	/**
+	 * @var string
+	 */
 	protected $absolutePath;
 
 	/**
@@ -77,21 +87,15 @@ class Tx_Fed_Resource_File {
 	protected $metadata;
 
 	/**
-	 * CONSTRUCTOR, takes absolute path to file as only argument
+	 * CONSTRUCTOR, takes absolute or relative path to file as only argument
 	 *
 	 * @param string $filename
 	 */
 	public function __construct($filename) {
-		$this->filename = $filename;
 		if (file_exists($filename)) {
-			$pathinfo = pathinfo($filename);
-			$this->extension = $pathinfo['extension'];
-			$this->filename = $pathinfo['filename'];
-			$this->path = $pathinfo['dirname'];
-			$this->size = filesize($filename);
-			$this->created = new DateTime(filectime($filename));
-			$this->modified = new DateTime(filemtime($filename));
-			$this->absolutePath = $filename;
+			$this->setAbsolutePath($filename);
+		} else if (file_exists(PATH_site . $filename)) {
+			$this->setAbsolutePath(PATH_site . $filename);
 		}
 	}
 
@@ -107,6 +111,20 @@ class Tx_Fed_Resource_File {
 	 */
 	public function setFilename($filename) {
 		$this->filename = $filename;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getBasename() {
+		return $this->basename;
+	}
+
+	/**
+	 * @param string $basename
+	 */
+	public function setBasename($basename) {
+		$this->basename = $basename;
 	}
 
 	/**
@@ -190,7 +208,34 @@ class Tx_Fed_Resource_File {
 	 * @param string $absolutePath
 	 */
 	public function setAbsolutePath($absolutePath) {
-		$this->absolutePath = $absolutePath;
+		$this->created = new DateTime();
+		$this->modified = new DateTime();
+		if (file_exists($absolutePath)) {
+			$pathinfo = pathinfo($absolutePath);
+			$this->extension = $pathinfo['extension'];
+			$this->filename = $pathinfo['filename'];
+			$this->basename = $pathinfo['basename'];
+			$this->path = $pathinfo['dirname'];
+			$this->size = filesize($absolutePath);
+			$this->absolutePath = $absolutePath;
+			$this->relativePath = str_replace(PATH_site, '', $absolutePath);
+			$this->created->setTimestamp(filectime($absolutePath));
+			$this->modified->setTimestamp(filemtime($absolutePath));
+		}
+	}
+
+	/**
+	 * @return type
+	 */
+	public function getRelativePath() {
+		return $this->relativePath;
+	}
+
+	/**
+	 * @param string $relativePath
+	 */
+	public function setRelativePath($relativePath) {
+		$this->relativePath = $relativePath;
 	}
 
 	/**
@@ -207,6 +252,12 @@ class Tx_Fed_Resource_File {
 		$this->metadata = $metadata;
 	}
 
+	/**
+	 * @return string
+	 */
+	public function __toString() {
+		return $this->getRelativePath();
+	}
 
 }
 

@@ -25,7 +25,7 @@
 
 /**
  *
- * 
+ *
  * @author Claus Due, Wildside A/S
  * @version $Id$
  * @copyright Copyright belongs to the respective authors
@@ -43,17 +43,37 @@ class Tx_Fed_ViewHelpers_Resource_FilesViewHelper extends Tx_Fed_ViewHelpers_Res
 	public function initializeArguments() {
 		// initialization of arguments which relate to array('key' => 'filename')
 		// type resource ViewHelpers
-		$this->registerArgument('directory', 'string', 'Directory from which to read files', FALSE, NULL);
 		$this->registerArgument('files', 'array', 'Array of files to process', FALSE, NULL);
 		$this->registerArgument('sql', 'string', 'SQL Query to fetch files, must return either just "filename" or
 			"uid, filename" field in that order', FALSE, NULL);
-		$this->registerArgument('sortBy', 'string', 'Special sort property', FALSE, 'filename');
-		// ...
 	}
 
+	/**
+	 * Render / process
+	 *
+	 * @return string
+	 */
 	public function render() {
 		// if no "as" argument and no child content, return linked list of files
 		// else, assign variable "as"
+		$pathinfo = pathinfo($this->arguments['path']);
+		if ($pathinfo['filename'] === '*') {
+			$files = $this->documentHead->getFilenamesOfType($pathinfo['dirname'], $pathinfo['extension']);
+		}
+		$files = $this->arrayToFileObjects($files);
+		// rendering
+		$content = "";
+		if ($this->arguments['as']) {
+			$this->templateVariableContainer->add($this->arguments['as'], $files);
+		} else {
+			$this->templateVariableContainer->add('files', $files);
+			$content = $this->renderChildren();
+			$this->templateVariableContainer->remove('files');
+		}
+		// possible return: HTML file list
+		if (strlen(trim($content)) === 0) {
+			return $this->renderFileList($files);
+		}
 	}
 
 }

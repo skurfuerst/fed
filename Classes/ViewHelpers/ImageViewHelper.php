@@ -231,6 +231,7 @@ class Tx_Fed_ViewHelpers_ImageViewHelper extends Tx_Fluid_ViewHelpers_ImageViewH
 	 */
 	protected function getSortValue($src) {
 		$field = $this->arguments['sortBy'];
+		$src = (string) $src;
 		list ($field, $subfield) = explode(':', $field);
 		switch ($field) {
 			case 'filesize': return (is_file(PATH_site . $src) ? filesize(PATH_site . $src) : 0);
