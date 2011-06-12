@@ -44,9 +44,11 @@ class Tx_Fed_ViewHelpers_ResourceViewHelper extends Tx_Fed_Core_ViewHelper_Abstr
 	public function initializeArguments() {
 		$this->registerArgument('path', 'string', 'Directory from which to read files', FALSE, NULL);
 		$this->registerArgument('as', 'string', 'Optional template variable name to assign', FALSE, NULL);
+		$this->registerArgument('return', 'boolean', 'If TRUE, returns the array instead of registering/rendering', FALSE, FALSE);
 		$this->registerArgument('sortBy', 'string', 'Special sort property', FALSE, 'filename');
 		$this->registerArgument('sortDirection', 'string', 'Direction to sort', FALSE, 'ASC');
 		$this->registerArgument('limit', 'integer', 'Specify to limit the number of images which may be rendered');
+		$this->registerArgument('offset', 'integer', 'Specify to offset results, use in combination with "limit"', FALSE, 0);
 	}
 
 	/**
@@ -117,6 +119,9 @@ class Tx_Fed_ViewHelpers_ResourceViewHelper extends Tx_Fed_Core_ViewHelper_Abstr
 		} else {
 			krsort($sorted);
 		}
+		if ($this->arguments['limit'] > 0) {
+			$sorted = array_slice($sorted, $this->arguments['offset'], $this->arguments['limit'], TRUE);
+		}
 		return array_values($sorted);
 	}
 
@@ -140,8 +145,8 @@ class Tx_Fed_ViewHelpers_ResourceViewHelper extends Tx_Fed_Core_ViewHelper_Abstr
 		if ($src instanceof Tx_Fed_Resource_File) {
 			switch ($field) {
 				case 'filesize': return $src->getSize();
-				case 'mofified': return $src->getModified();
-				case 'created': return $src->getCreated();
+				case 'mofified': return $src->getModified()->getTimestamp();
+				case 'created': return $src->getCreated()->getTimestamp();
 				default: return $src->getBasename();
 			}
 		} else {

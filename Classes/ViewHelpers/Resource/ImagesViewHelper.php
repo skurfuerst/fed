@@ -41,6 +41,7 @@ class Tx_Fed_ViewHelpers_Resource_ImagesViewHelper extends Tx_Fed_ViewHelpers_Re
 	 * Initialize arguments relevant for image-type resource ViewHelpers
 	 */
 	public function initializeArguments() {
+		parent::initializeArguments();
 		$this->registerArgument('exif', 'boolean', 'Read exif metadata', FALSE, FALSE);
 		$this->registerArgument('resolution', 'boolean', 'Read resolution metadata', FALSE, TRUE);
 	}
@@ -56,8 +57,23 @@ class Tx_Fed_ViewHelpers_Resource_ImagesViewHelper extends Tx_Fed_ViewHelpers_Re
 		$pathinfo = pathinfo($this->arguments['path']);
 		if ($pathinfo['filename'] === '*') {
 			$files = $this->documentHead->getFilenamesOfType($pathinfo['dirname'], $pathinfo['extension']);
+		} else if (is_dir($pathinfo['dirname'] . '/' . $pathinfo['basename'])) {
+			$files = scandir($pathinfo['dirname'] . '/' . $pathinfo['basename']);
+			foreach ($files as $k=>$file) {
+				$file = $pathinfo['dirname'] . '/' . $pathinfo['basename'] . '/' . $file;
+				if (is_dir($file)) {
+					unset($files[$k]);
+				} else if (substr($file, 0, 1) === '.') {
+					unset($files[$k]);
+				} else {
+					$files[$k] = $file;
+				}
+			}
+		} else {
+			throw new Exception('Invalid path given to Resource ViewHelper', $code, $previous);
 		}
 		$files = $this->arrayToFileObjects($files);
+		$files = $this->sortFiles($files);
 		if ($this->arguments['exif'] === TRUE) {
 			$files = $this->applyExifData($files);
 		}
@@ -69,14 +85,18 @@ class Tx_Fed_ViewHelpers_Resource_ImagesViewHelper extends Tx_Fed_ViewHelpers_Re
 		$content = "";
 		if ($this->arguments['as']) {
 			$this->templateVariableContainer->add($this->arguments['as'], $files);
+		} else if ($this->arguments['return'] === TRUE) {
+			return $files;
 		} else {
 			$this->templateVariableContainer->add('images', $files);
 			$content = $this->renderChildren();
 			$this->templateVariableContainer->remove('images');
-		}
-		// possible return: HTML file list
-		if (strlen(trim($content)) === 0) {
-			return $this->renderFileList($files);
+			// possible return: HTML file list
+			if (strlen(trim($content)) === 0) {
+				return $this->renderFileList($files);
+			} else {
+				return $content;
+			}
 		}
 	}
 
@@ -112,7 +132,10 @@ class Tx_Fed_ViewHelpers_Resource_ImagesViewHelper extends Tx_Fed_ViewHelpers_Re
 	protected function applyResolutionData(array $images) {
 		foreach ($images as $k=>$image) {
 			$metadata = (array) $image->getMetadata();
-			$metadata['resolution'] = getimagesize($image->getAbsolutePath());
+			$resolution = getimagesize($image->getAbsolutePath());
+			$resolution['width'] = $resolution[0];
+			$resolution['height'] = $resolution[1];
+			$metadata['resolution'] = $resolution;
 			$images[$k]->setMetadata($metadata);
 		}
 		return $images;
@@ -124,6 +147,11 @@ class Tx_Fed_ViewHelpers_Resource_ImagesViewHelper extends Tx_Fed_ViewHelpers_Re
 	 * @param array $images
 	 */
 	protected function applyExifData(array $images) {
+		foreach ($images as $k=>$image) {
+			$metadata = (array) $image->getMetadata();
+			$metadata['exif'] = exif_read_data($image->getAbsolutePath());
+			$images[$k]->setMetadata($metadata);
+		}
 		return $images;
 	}
 

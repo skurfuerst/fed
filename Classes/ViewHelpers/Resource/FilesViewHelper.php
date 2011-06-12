@@ -43,6 +43,7 @@ class Tx_Fed_ViewHelpers_Resource_FilesViewHelper extends Tx_Fed_ViewHelpers_Res
 	public function initializeArguments() {
 		// initialization of arguments which relate to array('key' => 'filename')
 		// type resource ViewHelpers
+		parent::initializeArguments();
 		$this->registerArgument('files', 'array', 'Array of files to process', FALSE, NULL);
 		$this->registerArgument('sql', 'string', 'SQL Query to fetch files, must return either just "filename" or
 			"uid, filename" field in that order', FALSE, NULL);
@@ -57,22 +58,41 @@ class Tx_Fed_ViewHelpers_Resource_FilesViewHelper extends Tx_Fed_ViewHelpers_Res
 		// if no "as" argument and no child content, return linked list of files
 		// else, assign variable "as"
 		$pathinfo = pathinfo($this->arguments['path']);
+		#var_dump($pathinfo);
 		if ($pathinfo['filename'] === '*') {
 			$files = $this->documentHead->getFilenamesOfType($pathinfo['dirname'], $pathinfo['extension']);
+		} else if (is_dir($pathinfo['dirname'] . '/' . $pathinfo['basename'])) {
+			$files = scandir($pathinfo['dirname'] . '/' . $pathinfo['basename']);
+			foreach ($files as $k=>$file) {
+				$file = $pathinfo['dirname'] . '/' . $pathinfo['basename'] . '/' . $file;
+				if (is_dir($file)) {
+					unset($files[$k]);
+				} else if (substr($file, 0, 1) === '.') {
+					unset($files[$k]);
+				} else {
+					$files[$k] = $file;
+				}
+			}
+		} else {
+			throw new Exception('Invalid path given to Resource ViewHelper', $code, $previous);
 		}
 		$files = $this->arrayToFileObjects($files);
+		$files = $this->sortFiles($files);
 		// rendering
-		$content = "";
 		if ($this->arguments['as']) {
 			$this->templateVariableContainer->add($this->arguments['as'], $files);
+		} else if ($this->arguments['return'] === TRUE) {
+			return $files;
 		} else {
 			$this->templateVariableContainer->add('files', $files);
 			$content = $this->renderChildren();
 			$this->templateVariableContainer->remove('files');
-		}
-		// possible return: HTML file list
-		if (strlen(trim($content)) === 0) {
-			return $this->renderFileList($files);
+			// possible return: HTML file list
+			if (strlen(trim($content)) === 0) {
+				return $this->renderFileList($files);
+			} else {
+				return $content;
+			}
 		}
 	}
 

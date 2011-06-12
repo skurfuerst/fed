@@ -85,7 +85,7 @@ class Tx_Fed_ViewHelpers_ImageViewHelper extends Tx_Fluid_ViewHelpers_ImageViewH
 		$this->registerArgument('largePosition', 'string', 'Controls where large image goes. Use top, left, right or bottom -
 			is added as class on large img', FALSE, 'left');
 		$this->registerArgument('sortBy', 'string', 'Sort field of multiple files. Possible: filename, filesize, modified, created,
-			size, size:x, size:y, exif:<fieldname> - "size" mode means (w+h) size becomes sort value', FALSE, 'filename');
+			size, size:x, size:y, exif:<fieldname> - "size" mode means (w+h) size becomes sort value', FALSE, NULL);
 		$this->registerArgument('sortDirection', 'string', 'Direction to sort', FALSE, 'ASC');
 		$this->registerArgument('clickenlarge', 'boolean', 'Change to FALSE if you do not want actions and script added if large version is rendered', FALSE, TRUE);
 		$this->registerArgument('limit', 'integer', 'Specify to limit the number of images which may be rendered');
@@ -100,7 +100,6 @@ class Tx_Fed_ViewHelpers_ImageViewHelper extends Tx_Fluid_ViewHelpers_ImageViewH
 		$pathinfo = pathinfo($this->arguments['src']);
 		if ($pathinfo['filename'] === '*') {
 			$images = $this->documentHead->getFilenamesOfType($pathinfo['dirname'], $pathinfo['extension']);
-			$images = $this->sortImages($images);
 		} else if ($this->arguments->hasArgument('path')) {
 			$images = explode(',', $this->arguments['src']);
 			// patch for CSV files missing relative pathnames and possible missing files
@@ -109,14 +108,17 @@ class Tx_Fed_ViewHelpers_ImageViewHelper extends Tx_Fluid_ViewHelpers_ImageViewH
 			}
 		} else if (is_array($this->arguments['src'])) {
 			$images = $this->arguments['src'];
-			$images = $this->sortImages($images);
 		} else {
 			$images = array($this->arguments['src']);
+		}
+		if ($this->arguments['sortBy']) {
 			$images = $this->sortImages($images);
 		}
+
 		if ($this->arguments['limit'] > 0) {
 			$images = array_slice($images, 0, $this->arguments['limit']);
 		}
+
 		// use altsrc for any image not present
 		foreach ($images as $k=>$v) {
 			if (is_file(PATH_site . $images[$k]) === FALSE) {
