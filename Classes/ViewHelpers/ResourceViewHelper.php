@@ -59,7 +59,7 @@ class Tx_Fed_ViewHelpers_ResourceViewHelper extends Tx_Fed_Core_ViewHelper_Abstr
 		// Tx_Fed_ViewHelpers_Resource_FilesViewHelper is an alias of this class
 		// which provides the render method. Since this ViewHelper assumes
 		// default intention is to render files, we call:
-		return Tx_Fed_ViewHelpers_Resource_FilesViewHelper::render();
+		return Tx_Fed_ViewHelpers_Resource_FileViewHelper::render();
 	}
 
 	/**

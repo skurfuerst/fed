@@ -34,19 +34,16 @@
  * @subpackage ViewHelpers/Resource
  *
  */
-class Tx_Fed_ViewHelpers_Resource_FilesViewHelper extends Tx_Fed_ViewHelpers_ResourceViewHelper {
+class Tx_Fed_ViewHelpers_Resource_ImageViewHelper extends Tx_Fed_ViewHelpers_Resource_FileViewHelper {
 
 
 	/**
-	 * Intialize arguments relevant for file resources
+	 * Initialize arguments relevant for image-type resource ViewHelpers
 	 */
 	public function initializeArguments() {
-		// initialization of arguments which relate to array('key' => 'filename')
-		// type resource ViewHelpers
 		parent::initializeArguments();
-		$this->registerArgument('files', 'array', 'Array of files to process', FALSE, NULL);
-		$this->registerArgument('sql', 'string', 'SQL Query to fetch files, must return either just "filename" or
-			"uid, filename" field in that order', FALSE, NULL);
+		$this->registerArgument('exif', 'boolean', 'Read exif metadata', FALSE, FALSE);
+		$this->registerArgument('resolution', 'boolean', 'Read resolution metadata', FALSE, TRUE);
 	}
 
 	/**
@@ -58,7 +55,6 @@ class Tx_Fed_ViewHelpers_Resource_FilesViewHelper extends Tx_Fed_ViewHelpers_Res
 		// if no "as" argument and no child content, return linked list of files
 		// else, assign variable "as"
 		$pathinfo = pathinfo($this->arguments['path']);
-		#var_dump($pathinfo);
 		if ($pathinfo['filename'] === '*') {
 			$files = $this->documentHead->getFilenamesOfType($pathinfo['dirname'], $pathinfo['extension']);
 		} else if (is_dir($pathinfo['dirname'] . '/' . $pathinfo['basename'])) {
@@ -78,15 +74,23 @@ class Tx_Fed_ViewHelpers_Resource_FilesViewHelper extends Tx_Fed_ViewHelpers_Res
 		}
 		$files = $this->arrayToFileObjects($files);
 		$files = $this->sortFiles($files);
+		if ($this->arguments['exif'] === TRUE) {
+			$files = $this->applyExifData($files);
+		}
+		if ($this->arguments['resolution'] === TRUE) {
+			$files = $this->applyResolutionData($files);
+		}
+
 		// rendering
+		$content = "";
 		if ($this->arguments['as']) {
 			$this->templateVariableContainer->add($this->arguments['as'], $files);
 		} else if ($this->arguments['return'] === TRUE) {
 			return $files;
 		} else {
-			$this->templateVariableContainer->add('files', $files);
+			$this->templateVariableContainer->add('images', $files);
 			$content = $this->renderChildren();
-			$this->templateVariableContainer->remove('files');
+			$this->templateVariableContainer->remove('images');
 			// possible return: HTML file list
 			if (strlen(trim($content)) === 0) {
 				return $this->renderFileList($files);
@@ -94,6 +98,61 @@ class Tx_Fed_ViewHelpers_Resource_FilesViewHelper extends Tx_Fed_ViewHelpers_Res
 				return $content;
 			}
 		}
+	}
+
+	/**
+	 * Adds support for sorting on new extended sort properties "size" and "exif"
+	 * @param type $src
+	 * @return type
+	 */
+	protected function getSortValue($src) {
+		$field = $this->arguments['sortBy'];
+		list ($field, $subfield) = explode(':', $field);
+		switch ($field) {
+			case 'size':
+				if (is_file(PATH_site . $src) === FALSE) {
+					return 0;
+				}
+				list ($w, $h) = getimagesize(PATH_site . $src);
+				switch ($subfield) {
+					case 'w': return $w;
+					case 'h': return $h;
+					default: return ($w*$h);
+				}
+			case 'exif': return $this->readExifInfoField(PATH_site . $src, $subfield);
+			default: return parent::getSortValue($src);
+		}
+	}
+
+	/**
+	 * Applies resolution information to metadata for all $images
+	 *
+	 * @param array $images
+	 */
+	protected function applyResolutionData(array $images) {
+		foreach ($images as $k=>$image) {
+			$metadata = (array) $image->getMetadata();
+			$resolution = getimagesize($image->getAbsolutePath());
+			$resolution['width'] = $resolution[0];
+			$resolution['height'] = $resolution[1];
+			$metadata['resolution'] = $resolution;
+			$images[$k]->setMetadata($metadata);
+		}
+		return $images;
+	}
+
+	/**
+	 * Applies EXIF information to metadata for all $images
+	 *
+	 * @param array $images
+	 */
+	protected function applyExifData(array $images) {
+		foreach ($images as $k=>$image) {
+			$metadata = (array) $image->getMetadata();
+			$metadata['exif'] = exif_read_data($image->getAbsolutePath());
+			$images[$k]->setMetadata($metadata);
+		}
+		return $images;
 	}
 
 }
