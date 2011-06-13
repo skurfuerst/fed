@@ -31,7 +31,12 @@
 class Tx_Fed_Configuration_Wizard_FlexFormCodeEditor {
 
 	public function renderField(&$parameters, &$pObj) {
-		require_once t3lib_extMgm::extPath('t3editor' , 'classes/class.tx_t3editor_tceforms_wizard.php');
+		$t3editorWizard = t3lib_extMgm::extPath('t3editor' , 'classes/class.tx_t3editor_tceforms_wizard.php');
+		if (is_file($t3editorWizard) === FALSE) {
+			// version of t3editor not supported.
+			return NULL;
+		}
+		require_once $t3editorWizard;
 		$t3editor = t3lib_div::makeInstance('tx_t3editor');
 		if (!$t3editor->isEnabled()) {
 				return;
