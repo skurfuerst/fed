@@ -83,7 +83,7 @@ class Tx_Fed_ViewHelpers_TableViewHelper extends Tx_Fed_Core_ViewHelper_Abstract
 		$this->registerArgument('headers', 'array', 'If specified, uses $headers as array of header names', FALSE);
 		$this->registerArgument('objects', 'array', 'If specified, considers $object an array of DomainObjects or associative arrays. If !$properties and !$annotationName then all properties are rendered', FALSE);
 		$this->registerArgument('properties', 'array', 'If specified, uses array $properties as list of properties on each object to render as a row', FALSE);
-		$this->registerArgument('annotaitonName', 'string', 'If specified, source code annotation (for example @myannotation) is used to determine which object properties to render as a row', FALSE);
+		$this->registerArgument('annotationName', 'string', 'If specified, source code annotation (for example @myannotation) is used to determine which object properties to render as a row', FALSE);
 		$this->registerArgument('annotationValue', 'string', 'If specified, source code annotation $annotationName must have $annotationValue as one of its listed attributes (for example @myannotation value1 value2 matches $annotationValue="value1" and $annotationValue="value2")', FALSE);
 		$this->registerArgument('sortable', 'boolean', 'If TRUE, makes table sortable', FALSE, TRUE);
 		$this->registerArgument('dateFormat', 'string', 'Format (php date() notation) to use when rendering DateTime objects', FALSE, 'Y-m-d H:i');
