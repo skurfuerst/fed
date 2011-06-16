@@ -44,6 +44,7 @@ class Tx_Fed_ViewHelpers_MapViewHelper extends Tx_Fed_Core_ViewHelper_AbstractVi
 		$this->registerTagAttribute('icon', 'string', 'Icon filename', FALSE, $markerIcon);
 		$this->registerTagAttribute('iconCenterX', 'int', 'Icon pivot coordinate X');
 		$this->registerTagAttribute('iconCenterY', 'int', 'Icon pivot coordinate Y');
+		$this->registerArgument('mapTypeId', 'string', 'Type of map to display, default google.maps.MapTypeId.ROADMAP', FALSE, 'google.maps.MapTypeId.ROADMAP');
 	}
 
 	/**
@@ -262,21 +263,9 @@ CSS;
 	}
 
 	public function getMapOptions() {
-		/*
-		 * MAP OPTIONS OBJECT JS
-		 *
-		 * @param center 	LatLng 	The initial Map center. Required.
-		 * @param mapTypeControlOptions 	MapTypeControlOptions 	The initial display options for the Map type control.
-		 * @param mapTypeId 	MapTypeId 	The initial Map mapTypeId. Required.
-		 * @param streetView 	StreetViewPanorama 	A StreetViewPanorama to display when the Street View pegman is dropped on the map. If no panorama is specified, a default StreetViewPanorama will be displayed in the map's div when the pegman is dropped.
-		 * @param streetViewControlOptions 	StreetViewControlOptions 	The initial display options for the Street View pegman control.
-		 * @param zoomControlOptions 	ZoomControlOptions 	The display options for the zoom control.
-		 * @param panControlOptions 	PanControlOptions 	The display options for the pan control.
-		 * @param scaleControlOptions 	ScaleControlOptions 	The initial display options for the scale control.
-		 */
 		$lines = array(
 			"center: myLatlng",
-        	"mapTypeId: google.maps.MapTypeId.ROADMAP",
+        	"mapTypeId: " . $this->arguments['mapTypeId'],
 			"size: new google.maps.Size(500,500)"
 		);
 		$lines = array_merge($lines, $this->getOptions($this->getArguments()));

@@ -111,7 +111,7 @@ class Tx_Fed_ViewHelpers_ImageViewHelper extends Tx_Fluid_ViewHelpers_ImageViewH
 		} else {
 			$images = array($this->arguments['src']);
 		}
-		if ($this->arguments['sortBy']) {
+		if ($this->arguments['sortBy'] !== NULL) {
 			$images = $this->sortImages($images);
 		}
 
