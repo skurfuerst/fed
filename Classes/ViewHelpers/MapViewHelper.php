@@ -35,6 +35,11 @@ class Tx_Fed_ViewHelpers_MapViewHelper extends Tx_Fed_Core_ViewHelper_AbstractVi
 
 	protected $tagName = 'div';
 
+	/**
+	 * @var array
+	 */
+	protected $options = array();
+
 	public function initializeArguments() {
 		$markerIcon = t3lib_extMgm::siteRelPath('fed') . 'Resources/Public/Icons/MapMarker.png';
 		parent::initializeArguments();
@@ -44,7 +49,6 @@ class Tx_Fed_ViewHelpers_MapViewHelper extends Tx_Fed_Core_ViewHelper_AbstractVi
 		$this->registerTagAttribute('icon', 'string', 'Icon filename', FALSE, $markerIcon);
 		$this->registerTagAttribute('iconCenterX', 'int', 'Icon pivot coordinate X');
 		$this->registerTagAttribute('iconCenterY', 'int', 'Icon pivot coordinate Y');
-		$this->registerArgument('mapTypeId', 'string', 'Type of map to display, default google.maps.MapTypeId.ROADMAP', FALSE, 'google.maps.MapTypeId.ROADMAP');
 	}
 
 	/**
@@ -69,6 +73,8 @@ class Tx_Fed_ViewHelpers_MapViewHelper extends Tx_Fed_Core_ViewHelper_AbstractVi
 	 * @param float $zoom The initial Map zoom level. Required.
 	 * @param boolean $zoomControl The enabled/disabled state of the zoom control.
 	 * @param string $instanceName Javascript instance name to use. Default is "map".
+	 * @param string $mapTypeId Type of map to display, defaults to google.maps.MapTypeId.ROADMAP
+
 	 */
 	public function render(
 			// CUSTOM parameters
@@ -93,7 +99,8 @@ class Tx_Fed_ViewHelpers_MapViewHelper extends Tx_Fed_Core_ViewHelper_AbstractVi
 			$streetViewControl=TRUE,
 			$zoom=7,
 			$zoomControl=TRUE,
-			$instanceName='map'
+			$instanceName='map',
+			$mapTypeId='google.maps.MapTypeId.ROADMAP'
 			) {
 		if ($api === NULL) {
 			$api = "http://maps.google.com/maps/api/js?v=3.2&sensor=true";
@@ -101,6 +108,8 @@ class Tx_Fed_ViewHelpers_MapViewHelper extends Tx_Fed_Core_ViewHelper_AbstractVi
 		$min = 100000;
 		$max = 999999;
 		$elementId = 'gm' . rand($min, $max);
+
+		$this->options['mapTypeId'] = $mapTypeId;
 
 		$this->includeFile($api);
 
@@ -265,10 +274,18 @@ CSS;
 	public function getMapOptions() {
 		$lines = array(
 			"center: myLatlng",
-        	"mapTypeId: " . $this->arguments['mapTypeId'],
+        	"mapTypeId: " . $this->options['mapTypeId'],
 			"size: new google.maps.Size(500,500)"
 		);
-		$lines = array_merge($lines, $this->getOptions($this->getArguments()));
+		$removables = array('mapTypeId');
+		$args = $this->getArguments();
+		foreach ($args as $k=>$v) {
+			#$key = substr($v, 0, strpos($v, ':'));
+			if (in_array($k, $removables)) {
+				unset($args[$k]);
+			}
+		}
+		$lines = array_merge($this->getOptions($args), $lines);
 		return $this->objWrap($lines);
 	}
 
