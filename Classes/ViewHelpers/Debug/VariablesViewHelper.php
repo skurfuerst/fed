@@ -1,9 +1,9 @@
-<?php 
+<?php
 /***************************************************************
 *  Copyright notice
 *
 *  (c) 2010 Claus Due <claus@wildside.dk>, Wildside A/S
-*  			
+*
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -33,22 +33,33 @@
  *
  */
 class Tx_Fed_ViewHelpers_Debug_VariablesViewHelper extends Tx_Fed_Core_ViewHelper_AbstractViewHelper {
-	
-	
+
+	/**
+	 * Initialize arguments
+	 */
+	public function initializeArguments() {
+		$this->registerArgument('crop', 'integer', 'Maximum number of chars allowed in strings', FALSE, 250);
+	}
+
+
 	/**
 	 * Dumps registered template variables
-	 * 
-	 * @param int $crop Maximum number of chars allowed in strings
+	 *
 	 * @return string
 	 */
-	public function render($crop=100) {
+	public function render() {
 		$vars = $this->templateVariableContainer->getAll();
 		$vars = $this->trim($vars);
-		#$export = "<pre>" . var_export($vars, TRUE) . "</pre>";
 		$export = t3lib_div::view_array($vars);
 		return $export;
 	}
-	
+
+	/**
+	 * Trim all variables containing strings
+	 *
+	 * @param mixed $vars
+	 * @return mixed
+	 */
 	private function trim($vars) {
 		if (is_array($vars) || is_object($vars)) {
 			foreach ($vars as $k=>$v) {
@@ -58,8 +69,8 @@ class Tx_Fed_ViewHelpers_Debug_VariablesViewHelper extends Tx_Fed_Core_ViewHelpe
 					$vars[$k] = $this->trim($v);
 				}
 			}
-		} else if (is_string($vars) && strlen($vars) > 100) {
-			
+		} else if (is_string($vars) && strlen($vars) > $this->arguments['crop']) {
+
 		}
 		return $vars;
 	}

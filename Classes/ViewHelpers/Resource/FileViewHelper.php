@@ -45,8 +45,7 @@ class Tx_Fed_ViewHelpers_Resource_FileViewHelper extends Tx_Fed_ViewHelpers_Reso
 		// type resource ViewHelpers
 		parent::initializeArguments();
 		$this->registerArgument('files', 'array', 'Array of files to process', FALSE, NULL);
-		$this->registerArgument('sql', 'string', 'SQL Query to fetch files, must return either just "filename" or
-			"uid, filename" field in that order', FALSE, NULL);
+		$this->registerArgument('sql', 'string', 'SQL Query to fetch files, must return either just "filename" or "uid, filename" field in that order', FALSE, NULL);
 	}
 
 	/**

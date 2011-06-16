@@ -1,9 +1,9 @@
-<?php 
+<?php
 /***************************************************************
 *  Copyright notice
 *
 *  (c) 2010 Claus Due <claus@wildside.dk>, Wildside A/S
-*  			
+*
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -24,7 +24,7 @@
 ***************************************************************/
 
 /**
- * 
+ *
  * @author Claus Due, Wildside A/S
  * @version $Id$
  * @copyright Copyright belongs to the respective authors
@@ -33,15 +33,17 @@
  * @subpackage ViewHelpers\Style
  */
 class Tx_Fed_ViewHelpers_Style_SwitchViewHelper extends Tx_Fluid_Core_ViewHelper_AbstractTagBasedViewHelper {
-	
-	
+
+	/**
+	 * Initialize arguments
+	 */
 	public function initializeArguments() {
 		$this->registerUniversalTagAttributes();
-		#$this->registerArgument('');
 	}
-	
+
 	/**
 	 * Used to suppress ALL output and rendering of child nodes
+	 * 
 	 * @return string
 	 */
 	public function render() {

@@ -34,12 +34,18 @@
 class Tx_Fed_ViewHelpers_FaviconViewHelper extends Tx_Fed_Core_ViewHelper_AbstractViewHelper {
 
 	/**
-	 * Inject JS file in the header code.
+	 * Initialize arguments
+	 */
+	public function initializeArguments() {
+		$this->registerArgument('href', 'string', 'String filename /URI of favicon');
+	}
+
+	/**
+	 * Insert favicon
 	 *
-	 * @param string $href String filename of favicon
 	 * @return string
 	 */
-	public function render($href) {
+	public function render() {
 		$header = '<link rel="shortcut icon" href="' . $href . '" />' . chr(10);
 		$header .= '<link rel="apple-touch-icon-precomposed" sizes="72x72" href="' . $href . '" />' .chr(10);
 		$header .= '<link rel="apple-touch-icon-precomposed" sizes="114x114" href="' . $href . '" />' .chr(10);

@@ -41,20 +41,19 @@ class Tx_Fed_ViewHelpers_MapViewHelper extends Tx_Fed_Core_ViewHelper_AbstractVi
 	protected $options = array();
 
 	public function initializeArguments() {
-		$markerIcon = t3lib_extMgm::siteRelPath('fed') . 'Resources/Public/Icons/MapMarker.png';
-		parent::initializeArguments();
 		$this->registerUniversalTagAttributes();
-		$this->registerTagAttribute('lat', 'float', 'Lattitude');
-		$this->registerTagAttribute('lng', 'float', 'Longitude');
-		$this->registerTagAttribute('icon', 'string', 'Icon filename', FALSE, $markerIcon);
-		$this->registerTagAttribute('iconCenterX', 'int', 'Icon pivot coordinate X');
-		$this->registerTagAttribute('iconCenterY', 'int', 'Icon pivot coordinate Y');
+		$this->registerArgument('lat', 'float', 'Latitude');
+		$this->registerArgument('lng', 'float', 'Longitude');
+		$this->registerArgument('icon', 'string', 'Icon filename', FALSE, t3lib_extMgm::siteRelPath('fed') . 'Resources/Public/Icons/MapMarker.png');
+		$this->registerArgument('iconCenterX', 'int', 'Icon pivot coordinate X');
+		$this->registerArgument('iconCenterY', 'int', 'Icon pivot coordinate Y');
+
 	}
 
 	/**
-	 * @param string $api
-	 * @param string $width
-	 * @param string $height
+	 * @param string $api Optional full URL to the Google Maps API you wish to use - must be v3
+	 * @param string $width Width of map element
+	 * @param string $height Height of map element
 	 * @param string $backgroundColor Color used for the background of the Map div. This color will be visible when tiles have not yet loaded as the user pans. This option can only be set when the map is initialized.
 	 * @param boolean $disableDefaultUI Enables/disables all default UI. May be overridden individually.
 	 * @param boolean $disableDoubleClickZoom Enables/disables zoom and center on double click. Enabled by default.

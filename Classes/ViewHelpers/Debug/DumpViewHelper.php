@@ -1,9 +1,9 @@
-<?php 
+<?php
 /***************************************************************
 *  Copyright notice
 *
 *  (c) 2010 Claus Due <claus@wildside.dk>, Wildside A/S
-*  			
+*
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -24,7 +24,7 @@
 ***************************************************************/
 
 /**
- * 
+ *
  * @author Claus Due, Wildside A/S
  * @version $Id$
  * @copyright Copyright belongs to the respective authors
@@ -33,20 +33,24 @@
  * @subpackage ViewHelpers\Debug
  */
 class Tx_Fed_ViewHelpers_Debug_DumpViewHelper extends Tx_Fed_Core_ViewHelper_AbstractViewHelper {
-	
-	
+
+	public function initializeArguments() {
+		$this->registerArgument('as', 'string', 'Which datatype to force when dumping. NULL is default meaning auto-detect', FALSE, NULL);
+		$this->registerArgument('subject', 'mixed', 'The data to debug - if not specified, taken from renderChildren()', FALSE, NULL);
+	}
+
 	/**
-	 * 
-	 * @param string as Which datatype to force when dumping. NULL is default meaning auto-detect
-	 * @param mixed $subject The data to debug - if not specified, taken from renderChildren()
+	 * Render method
+	 *
 	 * @return string
 	 */
-	public function render($as=NULL, $subject=NULL) {
-		
+	public function render() {
+		$subject = $this->arguments['subject'];
+		$as = $this->arguments['as'];
 		if ($subject === NULL) {
 			$subject = $this->renderChildren();
 		}
-		
+
 		switch ($as) {
 			case 'string':
 				return (string) $subject;
@@ -55,7 +59,7 @@ class Tx_Fed_ViewHelpers_Debug_DumpViewHelper extends Tx_Fed_Core_ViewHelper_Abs
 				#return var_export($subject, TRUE);
 				break;
 		}
-		
+
 		return NULL;
 	}
 }

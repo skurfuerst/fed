@@ -1,10 +1,10 @@
-<?php 
+<?php
 
 /***************************************************************
 *  Copyright notice
 *
 *  (c) 2010 Claus Due <claus@wildside.dk>, Wildside A/S
-*  			
+*
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -25,7 +25,7 @@
 ***************************************************************/
 
 /**
- * 
+ *
  * @author Claus Due, Wildside A/S
  * @version $Id$
  * @copyright Copyright belongs to the respective authors
@@ -34,12 +34,18 @@
  * @subpackage ViewHelpers\Data
  */
 class Tx_Fed_ViewHelpers_Data_SourceViewHelper extends Tx_Fluid_Core_ViewHelper_AbstractViewHelper {
+
+	public function initializeArguments() {
+		$this->registerArgument('as', 'string', 'Which template variable name to use');
+		$this->registerArgument('source', 'mixed', 'Integer UID or string identifier of DataSource record');
+	}
+
 	/**
-	 * 
-	 * @param string $name
-	 * @param mixed $source
+	 * Render method
+	 *
+	 * @return string
 	 */
-	public function render($name=NULL, $source) {
+	public function render() {
 		$repository = $this->objectManager->get('Tx_Fed_Domain_Repository_DataSourceRepository');
 		$parser = $this->objectManager->get('Tx_Fed_Utility_DataSourceParser');
 		if (is_array($source)) {
@@ -54,16 +60,16 @@ class Tx_Fed_ViewHelpers_Data_SourceViewHelper extends Tx_Fluid_Core_ViewHelper_
 				}
 			}
 		}
-		
+
 		$sources = $parser->parseSources($sources); // property data is filled in all sources
-		
+
 		if (count($sources) == 1) {
 			$source = array_pop($sources);
 			$value = $source->getData();
 		} else if (count($sources) == 0) {
 			return NULL;
 		}
-		
+
 		if (count($value) == 1) {
 			$value = array_pop($value);
 			if (is_array($value) && count($value) == 1) {
@@ -79,7 +85,7 @@ class Tx_Fed_ViewHelpers_Data_SourceViewHelper extends Tx_Fluid_Core_ViewHelper_
 			$this->templateVariableContainer->add($name, $value);
 		}
 	}
-	
+
 }
 
 ?>

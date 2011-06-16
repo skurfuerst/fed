@@ -63,7 +63,7 @@ class Tx_Fed_ViewHelpers_JQuery_CdnViewHelper extends Tx_Fed_Core_ViewHelper_Abs
 	public function initializeArguments() {
 		$this->registerUniversalTagAttributes();
 		$this->registerArgument('jQueryVersion', 'string', 'Which version of jQuery to load. Specify as either "1", "1.8" or "1.8.2" - for the loose versions you always get the latest release', TRUE);
-		$this->registerArgument('jQueryUIVersion' , 'string', 'Which version of jQuery UI to load. If not specified does not load jQueryUI. If value is empty or "current", the newest version is automatically loaded. In production mode you should ALWAYS specifiy the major and minor versions!');
+		$this->registerArgument('jQueryUIVersion', 'string', 'Which version of jQuery UI to load. If not specified does not load jQueryUI. If value is empty or "current", the newest version is automatically loaded. In production mode you should ALWAYS specifiy the major and minor versions!');
 		$this->registerArgument('jQueryUITheme', 'string', 'Name of optional jQueryUI theme to load. Requires use of jQueryUIVersion - selects the CDN theme matching that version number');
 		$this->registerArgument('jQueryUIThemeUrl', 'string', 'If used, loads the theme from a specific url');
 		$this->registerArgument('compatibility', 'boolean', 'If TRUE, puts jQuery and jQueryUI into compatibility mode');

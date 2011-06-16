@@ -1,9 +1,9 @@
-<?php 
+<?php
 /***************************************************************
 *  Copyright notice
 *
 *  (c) 2010 Claus Due <claus@wildside.dk>, Wildside A/S
-*  			
+*
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -24,7 +24,7 @@
 ***************************************************************/
 
 /**
- * 
+ *
  * @author Claus Due, Wildside A/S
  * @version $Id$
  * @copyright Copyright belongs to the respective authors
@@ -33,22 +33,28 @@
  * @subpackage ViewHelpers\Profile
  */
 class Tx_Fed_ViewHelpers_Profile_TickViewHelper extends Tx_Fed_Core_ViewHelper_AbstractViewHelper {
-	
-	
+
+
+	public function initializeArguments() {
+		$this->registerArgument('content', 'boolean', 'If specified, this message is used - otherwise output of renderChildren() is used', FALSE, NULL);
+		$this->registerArgument('inline', 'boolean', 'If TRUE, prepends tick details to rendered child elements', FALSE, FALSE);
+		$this->registerArgument('duration', 'integer', 'If already measured, use this duration (in whole miliseconds)', FALSE, -1);
+	}
+
 	/**
 	 * Register a profiler tick with optional message
 	 * 
-	 * @param string $content If specified, this message is used - otherwise output of renderChildren() is used
-	 * @param boolean $inline If TRUE, prepends tick details to rendered child elements
-	 * @param int $duration If already measured, use this duration (in whole miliseconds)
 	 * @return string
 	 */
-	public function render($content=NULL, $inline=FALSE, $duration=-1) {
+	public function render() {
+		$content = $this->arguments['content'];
+		$inline = $this->arguments['inline'];
+		$duration = $this->arguments['duration'];
 		$profile =& $GLOBALS['fed_profile'];
 		if (is_array($profile) == FALSE) {
 			Tx_Fed_ViewHelpers_Profile_ResetViewHelper::render();
 		}
-		
+
 		$now = microtime(TRUE);
 		$last = $profile['tick'];
 		if (!$last) {
@@ -67,17 +73,17 @@ class Tx_Fed_ViewHelpers_Profile_TickViewHelper extends Tx_Fed_Core_ViewHelper_A
 			'duration' => $duration,
 			'content' => $content,
 		);
-		
-		
+
+
 		array_push($profile['ticks'], $tick);
 		$profile['tick'] = $now;
-		
+
 		$html = $this->renderChildren();
 		if ($inline) {
 			$info = "<div>Tick #" . count($profile['ticks']) . " ({$tick['duration']} ms)</div>";
 			$html = "{$info}\n{$html}";
 		}
-		
+
 		return $html;
 	}
 }

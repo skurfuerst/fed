@@ -34,13 +34,18 @@
  */
 class Tx_Fed_ViewHelpers_Data_FuncViewHelper extends Tx_Fed_Core_ViewHelper_AbstractViewHelper {
 
+	public function initializeArguments() {
+		$this->registerArgument('func', 'string', 'Function name to be called; can be an absolute reference (leave out $instance) or a method name for $instance');
+		$this->registerArgument('instance', 'string', 'If specified, runs $func on $instance', FALSE, NULL);
+		$this->registerArgument('arguments', 'array', 'Array of arguments, in order, to pass to the function', FALSE, array());
+	}
+
 	/**
+	 * Render method
 	 *
-	 * @param string $func Function name to be called; can be an absolute reference (leave out $instance) or a method name for $instance
-	 * @param object $instance If specified, runs $func on $instance
-	 * @param array $arguments Array of arguments, in order, to pass to the function
+	 * @return string
 	 */
-	public function render($func, $instance=NULL, array $arguments=array()) {
+	public function render() {
 		$content = $this->renderChildren();
 		if (count($arguments) == 0 && trim($content) != '') {
 			// innerHTML is assumed to be the only parameter to pass to $func

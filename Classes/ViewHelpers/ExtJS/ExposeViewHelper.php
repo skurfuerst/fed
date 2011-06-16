@@ -48,7 +48,7 @@ class Tx_Fed_ViewHelpers_ExtJS_ExposeViewHelper extends Tx_Fed_Core_ViewHelper_A
 	 * Initialize arguments
 	 */
 	public function initializeArguments() {
-		$this->registerArgument('object', 'string', 'Model object instance or string name pf Model class', TRUE);
+		$this->registerArgument('object', 'mixed', 'Model object instance or string name of Model class', TRUE);
 		$this->registerArgument('typeNum', 'int', 'Typenum registered for AJAX communications - see manual', TRUE);
 		$this->registerArgument('prefix', 'string', 'Optional prefix for generated class name; use to avoid collisions');
 		$this->registerArgument('properties', 'array', 'optional array of property names to expose - disregards source annotation');

@@ -34,20 +34,26 @@
  * @subpackage ViewHelpers\Data
  */
 class Tx_Fed_ViewHelpers_Data_SqlViewHelper extends Tx_Fluid_Core_ViewHelper_AbstractViewHelper {
+
+	public function initializeArguments() {
+		$this->registerArgument('as', 'string', 'Template variable name to use', FALSE, NULL);
+		$this->registerArgument('query', 'string', 'Full query - or use individual arguments', FALSE, NULL);
+		$this->registerArgument('table', 'string', 'Name of table for statement', FALSE, NULL);
+		$this->registerArgument('fields', 'string', 'List (CSV) of fields for statement', FALSE, NULL);
+		$this->registerArgument('condition', 'string', 'Conditions (SQL syntax) for statement', FALSE, NULL);
+		$this->registerArgument('offset', 'mixed', 'Integer offset of statement', FALSE, NULL);
+		$this->registerArgument('limit', 'mixed', 'Integer limit of statement', FALSE, NULL);
+		$this->registerArgument('orderBy', 'string', 'Field to order by in ORDER statement', FALSE, NULL);
+		$this->registerArgument('order', 'string', 'Which direction to order the results of statement', FALSE, NULL);
+		$this->registerArgument('silent', 'boolean', 'If TRUE, returns the output instead of registering it as a template variable', FALSE, FALSE);
+	}
+
 	/**
+	 * Render method
 	 *
-	 * @param string $name
-	 * @param string $query
-	 * @param string $table
-	 * @param string $fields
-	 * @param string $condition
-	 * @param string $offset
-	 * @param string $limit
-	 * @param string $orderBy
-	 * @param string $order
-	 * @param boolean $silent
+	 * @return string
 	 */
-	public function render($name=NULL, $query=NULL, $table=NULL, $fields=NULL, $condition=NULL, $offset=NULL, $limit=NULL, $orderBy=NULL, $order=NULL, $silent=FALSE) {
+	public function render() {
 		if (!$query && !$table) {
 			$query = $this->renderChildren();
 		} else if ($table && !$query) {

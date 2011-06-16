@@ -1,9 +1,9 @@
-<?php 
+<?php
 /***************************************************************
 *  Copyright notice
 *
 *  (c) 2010 Claus Due <claus@wildside.dk>, Wildside A/S
-*  			
+*
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -24,7 +24,7 @@
 ***************************************************************/
 
 /**
- * 
+ *
  * @author Claus Due, Wildside A/S
  * @version $Id$
  * @copyright Copyright belongs to the respective authors
@@ -33,14 +33,17 @@
  * @subpackage ViewHelpers\Debug
  */
 class Tx_Fed_ViewHelpers_Debug_StackViewHelper extends Tx_Fed_Core_ViewHelper_AbstractViewHelper {
-	
-	
+
+	public function initializeArguments() {
+		$this->registerArgument('limit', 'integer', 'Maximum number of stack entries before stopping');
+	}
+
 	/**
-	 * 
+	 *
 	 * @return string
 	 */
 	public function render() {
-		
+
 		return $this->renderChildren();
 	}
 }

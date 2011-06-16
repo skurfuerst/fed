@@ -34,14 +34,16 @@
  */
 class Tx_Fed_ViewHelpers_CommentViewHelper extends Tx_Fed_Core_ViewHelper_AbstractViewHelper {
 
+	public function initializeArguments() {
+		$this->registerArgument('comment', 'string', 'Optional comment - i.e. explanation why the fed:comment was added.');
+	}
 
 	/**
 	 * Used to suppress ALL output and rendering of child nodes
 	 *
-	 * @param string $comment Suppressed identifier - used only for recognizing code comments
 	 * @return string
 	 */
-	public function render($comment=NULL) {
+	public function render() {
 		return '';
 	}
 }

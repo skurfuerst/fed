@@ -55,15 +55,6 @@ class Tx_Fed_ViewHelpers_JQuery_ContentRotatorViewHelper extends Tx_Fed_Core_Vie
 	public function initializeArguments() {
 		$this->registerUniversalTagAttributes();
 		$this->registerArgument('tagName', 'string', 'Tagname to use - table, div, ul, etc. Defaults to div');
-		$this->registerArgument('' , '', '');
-		$this->registerArgument('' , '', '');
-		$this->registerArgument('' , '', '');
-		$this->registerArgument('' , '', '');
-		$this->registerArgument('' , '', '');
-		$this->registerArgument('' , '', '');
-		$this->registerArgument('' , '', '');
-		$this->registerArgument('' , '', '');
-		$this->registerArgument('' , '', '');
 	}
 
 }

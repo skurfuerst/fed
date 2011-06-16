@@ -1,9 +1,9 @@
-<?php 
+<?php
 /***************************************************************
 *  Copyright notice
 *
 *  (c) 2010 Claus Due <claus@wildside.dk>, Wildside A/S
-*  			
+*
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -24,7 +24,7 @@
 ***************************************************************/
 
 /**
- * 
+ *
  * @author Claus Due, Wildside A/S
  * @version $Id$
  * @copyright Copyright belongs to the respective authors
@@ -33,15 +33,15 @@
  * @subpackage ViewHelpers\TagCloud
  */
 class Tx_Fed_ViewHelpers_TagCloud_TagOccurrenceViewHelper extends Tx_Fed_ViewHelpers_TagCloudViewHelper {
-	
+
 	/**
 	 * @return void
 	 */
 	public function initializeArguments() {
-		$this->registerArgument('tag', 'string', "Name of the tag - if empty, tries to get from content. If that is empty too, it's Exception butter jelly time!");
-		$this->registerArgument('occurrences', 'int', 'Number of occurrences to add. Defaults to 1 - one occurrence! 2 - two occurrences! 3 - three occurrences! Hah-hah-hah.', FALSE, 1);
+		$this->registerArgument('tag', 'string', 'Name of the tag - if empty, tries to get from content. If that is empty too, it is Exception butter jelly time!');
+		$this->registerArgument('occurrences', 'int', 'Number of occurrences to add.', FALSE, 1);
 	}
-	
+
 	/**
 	 * @return string
 	 */
@@ -57,7 +57,7 @@ class Tx_Fed_ViewHelpers_TagCloud_TagOccurrenceViewHelper extends Tx_Fed_ViewHel
 		$this->registerOccurrence($tagName, $this->arguments['occurrences']);
 		return NULL;
 	}
-	
+
 }
 
 ?>

@@ -210,7 +210,14 @@ abstract class Tx_Fed_Core_ViewHelper_AbstractViewHelper extends Tx_Fluid_Core_V
 	public function pack($code) {
 		return (string) $this->documentHead->pack($code);
 	}
-	
+
+	/**
+	 * @return array
+	 */
+	public function getRegisteredArguments() {
+		return $this->prepareArguments();
+	}
+
 
 }
 

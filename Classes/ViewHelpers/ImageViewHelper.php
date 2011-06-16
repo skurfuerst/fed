@@ -70,22 +70,19 @@ class Tx_Fed_ViewHelpers_ImageViewHelper extends Tx_Fluid_ViewHelpers_ImageViewH
 		$this->registerTagAttribute('longdesc', 'string', 'Specifies the URL to a document that contains a long description of an image', FALSE);
 		$this->registerTagAttribute('usemap', 'string', 'Specifies an image as a client-side image-map', FALSE);
 		$this->registerArgument('src', 'mixed', 'Filename(s) to render', TRUE);
-		$this->registerArgument('width', 'mixed', '');
-		$this->registerArgument('height', 'mixed', '');
-		$this->registerArgument('minWidth', 'integer', '');
-		$this->registerArgument('minHeight', 'integer', '');
-		$this->registerArgument('maxWidth', 'integer', '');
-		$this->registerArgument('maxHeight', 'integer', '');
-		$this->registerArgument('path', 'string', 'Using this triggers CSV filename parsing but still
-			allows rendering a single image if only one is specified', FALSE, NULL);
+		$this->registerArgument('width', 'mixed', 'Width of image. Supports "200c" notation - see cObj IMAGE in TSref');
+		$this->registerArgument('height', 'mixed', 'Height of image. Supports "200c" notation - see cObj IMAGE in TSref');
+		$this->registerArgument('minWidth', 'integer', 'Minimum allowed width of image. Supports "200c" notation - see cObj IMAGE in TSref');
+		$this->registerArgument('minHeight', 'integer', 'Minimum allowed height of image. Supports "200c" notation - see cObj IMAGE in TSref');
+		$this->registerArgument('maxWidth', 'integer', 'Maximum allowed width of image. Supports "200c" notation - see cObj IMAGE in TSref');
+		$this->registerArgument('maxHeight', 'integer', 'Maximum allowed height of image. Supports "200c" notation - see cObj IMAGE in TSref');
+		$this->registerArgument('path', 'string', 'Using this triggers CSV filename parsing but still allows rendering a single image if only one is specified', FALSE, NULL);
 		$this->registerArgument('altsrc', 'string', 'Displays this image if "src" is not a file', FALSE, NULL);
 		$this->registerArgument('divider', 'string', 'String divider to insert between images', FALSE, NULL);
 		$this->registerArgument('largeWidth', 'string', 'Specify this to render a large version of files too, for switch-viewing', FALSE);
 		$this->registerArgument('largeHeight', 'string', 'Specify this to render a large version of files too, for switch-viewing', FALSE);
-		$this->registerArgument('largePosition', 'string', 'Controls where large image goes. Use top, left, right or bottom -
-			is added as class on large img', FALSE, 'left');
-		$this->registerArgument('sortBy', 'string', 'Sort field of multiple files. Possible: filename, filesize, modified, created,
-			size, size:x, size:y, exif:<fieldname> - "size" mode means (w+h) size becomes sort value', FALSE, NULL);
+		$this->registerArgument('largePosition', 'string', 'Controls where large image goes. Use top, left, right or bottom - is added as class on large img', FALSE, 'left');
+		$this->registerArgument('sortBy', 'string', 'Sort field of multiple files. Possible: filename, filesize, modified, created, size, size:x, size:y, exif:<fieldname> - "size" mode means (w+h) size becomes sort value', FALSE, NULL);
 		$this->registerArgument('sortDirection', 'string', 'Direction to sort', FALSE, 'ASC');
 		$this->registerArgument('clickenlarge', 'boolean', 'Change to FALSE if you do not want actions and script added if large version is rendered', FALSE, TRUE);
 		$this->registerArgument('limit', 'integer', 'Specify to limit the number of images which may be rendered');

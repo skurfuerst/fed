@@ -54,15 +54,10 @@ class Tx_Fed_ViewHelpers_TagCloudViewHelper extends Tx_Fed_Core_ViewHelper_Abstr
 		$this->registerArgument('fontSizeMin', 'number', 'Minimum allowed size of fonts - tag font size is scaled to match occurrence percentage', FALSE, 9);
 		$this->registerArgument('fontSizeMax', 'number', 'Maximum allowed size of fonts - tag font size is scaled to match occurrence percentage', FALSE, 30);
 		$this->registerArgument('mode', 'string', 'Rendering mode. Currently supported is "flash", "html" and "custom" (uses tag content instead of creating content)', FALSE, 'flash');
-		$this->registerArgument('useIntervals', 'boolen', 'If TRUE, renders sizes based on 10 intervals between fontSizeMin and fontSizeMax - if FALSE, size
-			is more precise but less distinct', FALSE, TRUE);
-		$this->registerArgument('tags', 'array', 'Optional list of tags. If no supplied the content of the fed:tagCloud tag becomes the tag list.
-			Other ViewHelpers included to register and count tags on-the-fly');
-		$this->registerArgument('merge', 'string', 'If "argument", prevents gathering tags from the contents of the fed:tagCloud template tag ("argument" requires
-			the $tags argument or cloud will be empty!). If "both", combines $tags with tags rendered via renderChildren(). If "content" only tags rendered
-			defined by other ViewHelpers are counted. You can use this to merge or switch between two tag sets on-the-fly. See manual.', FALSE, 'both');
-		$this->registerArgument('titleIsTag', 'boolean', 'If TRUE, makes the ViewHelper use the "title" property of each tag you register instead of the
-			"tag" attribute or innerHTML. Use this if you are counting lists of model objects or UIDs for instance; and let "tag" be the UID/model object to register', FALSE, FALSE);
+		$this->registerArgument('useIntervals', 'boolen', 'If TRUE, renders sizes based on 10 intervals between fontSizeMin and fontSizeMax - if FALSE, size is more precise but less distinct', FALSE, TRUE);
+		$this->registerArgument('tags', 'array', 'Optional list of tags. If no supplied the content of the fed:tagCloud tag becomes the tag list. Other ViewHelpers included to register and count tags on-the-fly');
+		$this->registerArgument('merge', 'string', 'If "argument", prevents gathering tags from the contents of the fed:tagCloud template tag ("argument" requires the $tags argument or cloud will be empty!). If "both", combines $tags with tags rendered via renderChildren(). If "content" only tags rendered defined by other ViewHelpers are counted. You can use this to merge or switch between two tag sets on-the-fly. See manual.', FALSE, 'both');
+		$this->registerArgument('titleIsTag', 'boolean', 'If TRUE, makes the ViewHelper use the "title" property of each tag you register instead of the "tag" attribute or innerHTML. Use this if you are counting lists of model objects or UIDs for instance; and let "tag" be the UID/model object to register', FALSE, FALSE);
 		$this->registerArgument('divider', 'string', 'Piece of HTML to insert between rendered tags, used in HTML mode only');
 	}
 
