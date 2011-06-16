@@ -43,6 +43,7 @@ class Tx_Fed_ViewHelpers_Data_SqlViewHelper extends Tx_Fluid_Core_ViewHelper_Abs
 		$this->registerArgument('condition', 'string', 'Conditions (SQL syntax) for statement', FALSE, NULL);
 		$this->registerArgument('offset', 'mixed', 'Integer offset of statement', FALSE, NULL);
 		$this->registerArgument('limit', 'mixed', 'Integer limit of statement', FALSE, NULL);
+		$this->registerArgument('groupBy', 'string', 'Field to group by in GROUP BY statement', FALSE, NULL);
 		$this->registerArgument('orderBy', 'string', 'Field to order by in ORDER statement', FALSE, NULL);
 		$this->registerArgument('order', 'string', 'Which direction to order the results of statement', FALSE, NULL);
 		$this->registerArgument('silent', 'boolean', 'If TRUE, returns the output instead of registering it as a template variable', FALSE, FALSE);
@@ -54,6 +55,18 @@ class Tx_Fed_ViewHelpers_Data_SqlViewHelper extends Tx_Fluid_Core_ViewHelper_Abs
 	 * @return string
 	 */
 	public function render() {
+		$name = $this->arguments['as'];
+		$query = $this->arguments['query'];
+		$table = $this->arguments['table'];
+		$fields = $this->arguments['fields'];
+		$condition = $this->arguments['condition'];
+		$offset = $this->arguments['offset'];
+		$limit = $this->arguments['limit'];
+		$groupBy = $this->arguments['groupBy'];
+		$orderBy = $this->arguments['orderBy'];
+		$order = $this->arguments['order'];
+		$silent = $this->arguments['silent'];
+
 		if (!$query && !$table) {
 			$query = $this->renderChildren();
 		} else if ($table && !$query) {

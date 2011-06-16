@@ -46,6 +46,9 @@ class Tx_Fed_ViewHelpers_Data_FuncViewHelper extends Tx_Fed_Core_ViewHelper_Abst
 	 * @return string
 	 */
 	public function render() {
+		$func = $this->arguments['func'];
+		$instance = $this->arguments['instance'];
+		$arguments = $this->arguments['arguments'];
 		$content = $this->renderChildren();
 		if (count($arguments) == 0 && trim($content) != '') {
 			// innerHTML is assumed to be the only parameter to pass to $func
