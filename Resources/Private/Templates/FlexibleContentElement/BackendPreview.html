@@ -1,0 +1,32 @@
+{namespace fed=Tx_Fed_ViewHelpers}
+
+<div class="t3-page-ce" style="margin-top: 8px;">
+<f:for each="{fce}" as="group">
+	<f:for each="{group.areas}" as="area" iteration="iteration">
+		<div class="t3-page-ce-header t3-row-header t3-page-colHeader" style="margin-bottom: 0px; background-image: -moz-linear-gradient(center top , #7F7F7F 10%, #5B5B5B 100%) !important;">
+			<div class="t3-page-colHeader-icons">
+				<a title="Create new record in top of this column" onclick="window.location.href='db_new_content_el.php?id=157&amp;colPos=0&amp;sys_language_uid=0&amp;uid_pid=157&amp;returnUrl=%2Ftypo3%2Fsysext%2Fcms%2Flayout%2Fdb_layout.php%3Fid%3D157';" href="#"><span class="t3-icon t3-icon-actions t3-icon-actions-document t3-icon-document-new">&nbsp;</span></a>
+				<span class="t3-page-ce-icons-move"><span class="t3-icon t3-icon-empty t3-icon-empty-empty t3-icon-empty">&nbsp;</span></span>
+			</div>
+			<div class="t3-page-colHeader-label">{area.label}</div>
+		</div>
+		<div class="t3-page-ce-body">Content elements</div>
+	</f:for>
+	<table cellspacing="0">
+		<thead>
+			<tr>
+				<th style="padding: 1px 3px 1px 3px;">Name</th>
+				<th style="padding: 1px 3px 1px 3px;">Label</th>
+				<th style="padding: 1px 3px 1px 3px;">Value</th>
+			</tr>
+		</thead>
+		<f:for each="{group.attributes}" as="attribute">
+			<tr>
+				<td style="padding: 1px 3px 1px 3px;">{attribute.name}</td>
+				<td style="padding: 1px 3px 1px 3px;">{attribute.label}</td>
+				<td style="padding: 1px 3px 1px 3px;">{attribute.value}</td>
+			</tr>
+		</f:for>
+	</table>
+</f:for>
+</div>

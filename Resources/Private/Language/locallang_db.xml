@@ -6,6 +6,8 @@
 	</meta>
 	<data type="array">
 		<languageKey index="default" type="array">
+			<label index="tx_fed_domain_model_fce">Flexible Content Element source definition</label>
+			<label index="tx_fed_domain_model_fce.filename">Fluid Template file used by this FCE</label>
 			<label index="tx_fed_domain_model_datasource">Data Source</label>
 			<label index="tx_fed_domain_model_datasource.name">Name</label>
 			<label index="tx_fed_domain_model_datasource.description">Description</label>
@@ -15,6 +17,8 @@
 			<label index="tx_fed_domain_model_datasource.url_method">Url Method</label>
 			<label index="tx_fed_domain_model_datasource.template_file">Template File</label>
 			<label index="tx_fed_domain_model_datasource.template_source">Template Source</label>
+			<label index="tt_content.tx_fed_fcecontentarea">FED FCE Content area id this content element is placed in (fx 123:main if FCE content uid is "123" and content area id is "main")</label>
+			<label index="tt_content.tx_fed_fceuid">FED FCE Uid</label>
 		</languageKey>
 	</data>
 </T3locallang>

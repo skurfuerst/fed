@@ -5,13 +5,15 @@ if (!defined ('TYPO3_MODE')){
 
 Tx_Extbase_Utility_Extension::registerPlugin(
 	$_EXTKEY,
+	'Fce',
+	'Fluid Flexible Content Element'
+);
+
+Tx_Extbase_Utility_Extension::registerPlugin(
+	$_EXTKEY,
 	'Template',
 	'Fluid Template Display'
 );
-
-//$TCA['tt_content']['types']['list']['subtypes_addlist'][$_EXTKEY . '_template'] = 'pi_flexform';
-//t3lib_extMgm::addPiFlexFormValue($_EXTKEY . '_template', 'FILE:EXT:' . $_EXTKEY . '/Configuration/FlexForms/flexform_template.xml');
-
 
 Tx_Extbase_Utility_Extension::registerPlugin(
 	$_EXTKEY,
@@ -24,9 +26,6 @@ Tx_Extbase_Utility_Extension::registerPlugin(
 	'Sandbox',
 	'FED Sandbox'
 );
-
-//$TCA['tt_content']['types']['list']['subtypes_addlist'][$_EXTKEY . '_datasource'] = 'pi_flexform';
-//t3lib_extMgm::addPiFlexFormValue($_EXTKEY . '_datasource', 'FILE:EXT:' . $_EXTKEY . '/Configuration/FlexForms/flexform_datasource.xml');
 
 
 
@@ -58,32 +57,60 @@ $TCA['tx_fed_domain_model_datasource'] = array(
 		'iconfile' 			=> t3lib_extMgm::extRelPath($_EXTKEY) . 'Resources/Public/Icons/tx_fed_domain_model_datasource.gif'
 	),
 );
-/*
-t3lib_div::loadTCA("tt_address");
-t3lib_extMgm::addTCAcolumns("tt_address", Array (
-    "lat" => Array (
-        "exclude" => 0,
-        "label" => "LLL:EXT:fed/Resources/Private/Language/locallang_db.xml:tt_address.lat",
-        "config" => Array (
-            "type" => "input",
-            #"eval" => "number"
-        )
-    ),
-    "lng" => Array (
-        "exclude" => 0,
-        "label" => "LLL:EXT:fed/Resources/Private/Language/locallang_db.xml:tt_address.lng",
-        "config" => Array (
-            "type" => "input",
-            #"eval" => "number"
-        )
-    ),
-), 1);
-t3lib_extMgm::addToAllTCAtypes("tt_address",";;;;1-1-1,lat,lng");
-*/
+
+t3lib_extMgm::addLLrefForTCAdescr('tx_fed_domain_model_fce', 'EXT:fed/Resources/Private/Language/locallang_csh_tx_fed_domain_model_fce.xml');
+t3lib_extMgm::allowTableOnStandardPages('tx_fed_domain_model_fce');
+$TCA['tx_fed_domain_model_fce'] = array(
+	'ctrl' => array(
+		'title'				=> 'LLL:EXT:fed/Resources/Private/Language/locallang_db.xml:tx_fed_domain_model_fce',
+		'label' 			=> 'filename',
+		'tstamp' 			=> 'tstamp',
+		'crdate' 			=> 'crdate',
+		'dividers2tabs' => true,
+		'versioningWS' 		=> 2,
+		'versioning_followPages'	=> TRUE,
+		'origUid' 			=> 't3_origuid',
+		'languageField' 	=> 'sys_language_uid',
+		'transOrigPointerField' 	=> 'l10n_parent',
+		'transOrigDiffSourceField' 	=> 'l10n_diffsource',
+		'delete' 			=> 'deleted',
+		'enablecolumns' 	=> array(
+			'disabled' => 'hidden',
+			'starttime' => 'starttime',
+			'endtime' => 'endtime',
+			),
+		'dynamicConfigFile' => t3lib_extMgm::extPath($_EXTKEY) . 'Configuration/TCA/Fce.php',
+		'iconfile' 			=> t3lib_extMgm::extRelPath($_EXTKEY) . 'Resources/Public/Icons/tx_fed_domain_model_fce.gif'
+	),
+);
 
 ## KICKSTARTER DEFAULTS END TOKEN - Everything BEFORE this line is overwritten with the defaults of the kickstarter
 
+t3lib_extMgm::addTCAcolumns('tt_content', array(
+	'tx_fed_fcecontentarea' => Array (
+		'exclude' => 1,
+		'label' => 'LLL:EXT:fed/locallang_db.xml:tt_content.tx_fed_fcecontentarea',
+		'config' => Array (
+			'type' => 'passthrough',
+		)
+	),
+	'tx_fed_fceuid' => Array (
+		'exclude' => 1,
+		'label' => 'LLL:EXT:fed/locallang_db.xml:tt_content.tx_fed_fceuid',
+		'config' => Array (
+			'type' => 'select',
+			'foreign_table' => 'tx_fed_domain_model_fce',
+			'minItems' => 1,
+			'maxItems' => 1
+		)
+	),
+), 1);
+
 require_once t3lib_extMgm::extPath($_EXTKEY , 'Configuration/Wizard/FlexFormCodeEditor.php');
+
+t3lib_extMgm::addPlugin(array('FED Flexible Content Element', 'fed_fce'), 'CType');
+$TCA['tt_content']['types']['fed_fce']['showitem'] = 'CType;;4;button;1-1-1, header,tx_fed_fceuid,pi_flexform';
+
 
 $TCA['tt_content']['types']['list']['subtypes_addlist']['fed_datasource'] = 'pi_flexform';
 t3lib_extMgm::addPiFlexFormValue('fed_datasource', 'FILE:EXT:'.$_EXTKEY.'/Configuration/FlexForms/DataSource.xml');
