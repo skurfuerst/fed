@@ -40,8 +40,8 @@ class Tx_Fed_ViewHelpers_Fce_ContentAreaViewHelper extends Tx_Fed_Core_ViewHelpe
 	 * Initialize arguments
 	 */
 	public function initializeArguments() {
-		$this->registerArgument('name', 'string', 'Name of the attribute', TRUE);
-		$this->registerArgument('label', 'string', 'Label for the attribute', TRUE);
+		$this->registerArgument('name', 'string', 'Name of the content area, FlexForm XML-valid tag name string', TRUE);
+		$this->registerArgument('label', 'string', 'Label for the content area, displayed in BE Page module', TRUE);
 	}
 
 	/**

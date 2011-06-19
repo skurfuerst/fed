@@ -65,25 +65,27 @@ class Tx_Fed_Backend_ContentSaveHook {
 
 		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('tx_fed_fceuid', $table, "uid = '{$id}'");
 		$content = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res);
-		$uid = array_pop($content);
-		if ($uid < 1) {
-			return;
+		if (is_array($content)) {
+			$uid = array_pop($content);
+			if ($uid < 1) {
+				return;
+			}
+			#$fce = $this->fceRepository->findByUid($uid);
+			#$templateFile = $fce->getFilename();
+			#$config = $this->fceParser->getFceDefinitionFromTemplate(PATH_site . $templateFile);
+
+			#$flexformTemplateFile = t3lib_extMgm::extPath('fed', 'Resources/Private/Templates/FlexibleContentElement/AutoFlexForm.xml');
+			#$template = $this->objectManager->get('Tx_Fluid_View_StandaloneView');
+			#$template->setTemplatePathAndFilename($flexformTemplateFile);
+			#$template->assign('fce', $config);
+			#$flexformXml = $template->render();
+			#$array = t3lib_div::xml2array($flexformXml);
+			#header("Content-type: text/plain");
+			#var_dump($fieldArray);
+			#exit();
+			#$fieldArray['pi_flexform'] = $flexformXml;
 		}
 
-		#$fce = $this->fceRepository->findByUid($uid);
-		#$templateFile = $fce->getFilename();
-		#$config = $this->fceParser->getFceDefinitionFromTemplate(PATH_site . $templateFile);
-
-		#$flexformTemplateFile = t3lib_extMgm::extPath('fed', 'Resources/Private/Templates/FlexibleContentElement/AutoFlexForm.xml');
-		#$template = $this->objectManager->get('Tx_Fluid_View_StandaloneView');
-		#$template->setTemplatePathAndFilename($flexformTemplateFile);
-		#$template->assign('fce', $config);
-		#$flexformXml = $template->render();
-		#$array = t3lib_div::xml2array($flexformXml);
-		#header("Content-type: text/plain");
-		#var_dump($fieldArray);
-		#exit();
-		#$fieldArray['pi_flexform'] = $flexformXml;
 
 	}
 }

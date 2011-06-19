@@ -40,9 +40,9 @@ class Tx_Fed_ViewHelpers_Fce_AttributeViewHelper extends Tx_Fed_Core_ViewHelper_
 	 * Initialize arguments
 	 */
 	public function initializeArguments() {
-		$this->registerArgument('name', 'string', 'Name of the attribute', TRUE);
-		$this->registerArgument('label', 'string', 'Label for the attribute', TRUE);
-		$this->registerArgument('type', 'string', 'Datatype for this attribute', TRUE);
+		$this->registerArgument('name', 'string', 'Name of the attribute, FlexForm XML-valid tag name string', TRUE);
+		$this->registerArgument('label', 'string', 'Label for the attribute, can be LLL: value', TRUE);
+		$this->registerArgument('type', 'string', 'Datatype for this attribute, use FlexForm XML field types', TRUE);
 		$this->registerArgument('default', 'string', 'Default value for this attribute');
 	}
 

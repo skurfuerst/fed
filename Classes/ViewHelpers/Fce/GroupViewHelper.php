@@ -40,8 +40,8 @@ class Tx_Fed_ViewHelpers_Fce_GroupViewHelper extends Tx_Fed_Core_ViewHelper_Abst
 	 * Initialize arguments
 	 */
 	public function initializeArguments() {
-		$this->registerArgument('name', 'string', 'Name of the attribute', TRUE);
-		$this->registerArgument('label', 'string', 'Label for the attribute', TRUE);
+		$this->registerArgument('name', 'string', 'Name of the group, used as FlexForm sheet name, must be FlexForm XML-valid tag name string', TRUE);
+		$this->registerArgument('label', 'string', 'Label for the attribute/content area group, human-readable, displayed in BE Page module', TRUE);
 	}
 
 	/**
