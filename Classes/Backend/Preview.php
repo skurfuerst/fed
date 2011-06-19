@@ -80,9 +80,17 @@ class Tx_Fed_Backend_Preview implements tx_cms_layout_tt_content_drawItemHook {
 			$drawItem = FALSE;
 			$fceParser = $this->objectManager->get('Tx_Fed_Backend_FCEParser');
 			$record = $this->fceRepository->findByUid($uid);
+			$flexform = t3lib_div::xml2array($row['pi_flexform']);
 			$filename = PATH_site . $record->getFilename();
 			$itemContent = $filename;
 			$stored = $fceParser->getFceDefinitionFromTemplate($filename);
+			foreach ($stored as $groupIndex=>$group) {
+				foreach ($group['fields'] as $fieldIndex=>$field) {
+					$value = $flexform['data']['sDEF']['lDEF'][$field['name']]['vDEF'];
+					$value = strip_tags($value);
+					$stored[$groupIndex]['fields'][$fieldIndex]['value'] = $value;
+				}
+			}
 			$this->view->assign('fce', $stored);
 			$itemContent = $this->view->render();
 		}
