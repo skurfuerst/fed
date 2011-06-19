@@ -105,8 +105,6 @@ t3lib_extMgm::addPageTSConfig('
 		}
 	}
 	mod.wizards.newContentElement.wizardItems.special.show := addToList(fed_fce,fed_template,fed_datasource)
-	#mod.wizards.newContentElement.wizardItems.special.show := addToList(fed_template)
-	#mod.wizards.newContentElement.wizardItems.special.show := addToList(fed_datasource)
 ');
 
 ?>

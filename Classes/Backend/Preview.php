@@ -33,9 +33,8 @@ require_once t3lib_extMgm::extPath('cms', 'layout/interfaces/interface.tx_cms_la
  * @copyright Copyright belongs to the respective authors
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  * @package Fed
- * @subpackage Controller
+ * @subpackage Backend
  */
-
 class Tx_Fed_Backend_Preview implements tx_cms_layout_tt_content_drawItemHook {
 
 	/**
@@ -81,7 +80,6 @@ class Tx_Fed_Backend_Preview implements tx_cms_layout_tt_content_drawItemHook {
 	 * @param array $row
 	 */
 	public function preProcess(tx_cms_layout &$parentObject, &$drawItem, &$headerContent, &$itemContent, array &$row) {
-		#var_dump($row['CType']);
 		switch ($row['CType']) {
 			case 'fed_fce': $this->preProcessFlexibleContentElement($drawItem, $itemContent, $row); break;
 			case 'fed_template': $this->preProcessTemplateDisplay($drawItem, $itemContent, $row); break;
