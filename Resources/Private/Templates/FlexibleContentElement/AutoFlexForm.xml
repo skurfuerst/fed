@@ -6,17 +6,13 @@
 	<ROOT>
 	    <type>array</type>
 	    <el>
-	<f:for each="{fce}" as="fcegroup" iteration="iteration">
-	      <f:for each="{fcegroup.attributes}" as="fceattribute" iteration="fceiteration">
-			<{fceattribute.name}>
+	<f:for each="{fce}" as="fcegroup">
+	      <f:for each="{fcegroup.fields}" as="field" iteration="iteration">
+			<{field.name}>
 			<TCEforms>
-				<label>{fceattribute.label}</label>
-				<config>
-					<type>input</type>
-					<default>{fceattribute.default}</default>
-				</config>
+				<fed:fce.renderField config="{field}" />
 			</TCEforms>
-			</{fceattribute.name}>
+			</{field.name}>
 		  </f:for>
 	</f:for>
 	    </el>

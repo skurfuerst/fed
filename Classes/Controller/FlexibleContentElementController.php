@@ -59,7 +59,7 @@ class Tx_Fed_Controller_FlexibleContentElementController extends Tx_Fed_Core_Abs
 		$filename = $fce->getFilename();
 		$this->view = $this->objectManager->get('Tx_Fluid_View_StandaloneView');
 		$this->view->setTemplatePathAndFilename(PATH_site . $filename);
-		$this->view->assign('attributes', $flexform);
+		$this->view->assignMultiple($flexform);
 		return $this->view->render();
 	}
 

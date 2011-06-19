@@ -31,34 +31,22 @@
  * @version $Id$
  * @copyright Copyright belongs to the respective authors
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
- * @package Fed/Fce
- * @subpackage ViewHelpers/
+ * @package Fed
+ * @subpackage ViewHelpers/Fce
  */
-class Tx_Fed_ViewHelpers_Fce_GroupViewHelper extends Tx_Fed_Core_ViewHelper_AbstractFceViewHelper {
 
-	/**
-	 * Initialize arguments
-	 */
+class Tx_Fed_ViewHelpers_Fce_Field_CheckboxViewHelper extends Tx_Fed_ViewHelpers_Fce_FieldViewHelper {
+
 	public function initializeArguments() {
-		$this->registerArgument('name', 'string', 'Name of the group, used as FlexForm sheet name, must be FlexForm XML-valid tag name string', TRUE);
-		$this->registerArgument('label', 'string', 'Label for the attribute/content area group, human-readable, displayed in BE Page module', TRUE);
+		parent::initializeArguments();
 	}
 
-	/**
-	 * Render method
-	 */
 	public function render() {
-		$group = array(
-			'name' => $this->arguments['name'],
-			'label' => $this->arguments['label'],
-			'fields' => array(),
-			'areas' => array()
-		);
-		$storage = $this->getStorage();
-		array_push($storage, $group);
-		$this->setStorage($storage);
-		$this->renderChildren();
+		$config = $this->getBaseConfig();
+		$config['type'] = 'check';
+		$this->addField($config);
 	}
+
 
 }
 

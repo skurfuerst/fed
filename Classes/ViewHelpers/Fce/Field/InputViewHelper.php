@@ -34,30 +34,22 @@
  * @package Fed
  * @subpackage ViewHelpers/Fce
  */
-class Tx_Fed_ViewHelpers_Fce_ContentAreaViewHelper extends Tx_Fed_Core_ViewHelper_AbstractFceViewHelper {
 
-	/**
-	 * Initialize arguments
-	 */
+class Tx_Fed_ViewHelpers_Fce_Field_InputViewHelper extends Tx_Fed_ViewHelpers_Fce_FieldViewHelper {
+
 	public function initializeArguments() {
-		$this->registerArgument('name', 'string', 'Name of the content area, FlexForm XML-valid tag name string', TRUE);
-		$this->registerArgument('label', 'string', 'Label for the content area, displayed in BE Page module', TRUE);
+		parent::initializeArguments();
+		$this->registerArgument('validate', 'string', 'FlexForm-type validation configuration for this input', FALSE, 'trim');
 	}
 
-	/**
-	 * Render method
-	 */
 	public function render() {
-		$storage = $this->getStorage();
-		$group = array_pop($storage);
-		$area = array(
-			'name' => $this->arguments['name'],
-			'label' => $this->arguments['label']
-		);
-		array_push($group['areas'], $area);
-		array_push($storage, $group);
-		$this->setStorage($storage);
+		$config = $this->getBaseConfig();
+		$config['type'] = 'input';
+		$config['required'] = ($this->arguments['required'] ? 1 : 0);
+		$config['validate'] = $this->arguments['validate'];
+		$this->addField($config);
 	}
+
 
 }
 

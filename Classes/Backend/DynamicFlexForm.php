@@ -34,8 +34,6 @@ class Tx_Fed_Backend_DynamicFlexForm {
 
 	public function getFlexFormDS_postProcessDS(&$dataStructArray, $conf, &$row, $table, $fieldName) {
 		if ($table == 'tt_content') {
-			#var_dump($row);
-			#exit();
 			$uid = $row['tx_fed_fceuid'];
 			if ($uid < 1) {
 				return;

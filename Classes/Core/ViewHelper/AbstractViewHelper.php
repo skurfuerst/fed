@@ -56,6 +56,11 @@ abstract class Tx_Fed_Core_ViewHelper_AbstractViewHelper extends Tx_Fluid_Core_V
 	protected $flexform;
 
 	/**
+	 * @var type
+	 */
+	private $registeredArguments = array();
+
+	/**
 	 * Inject JSON Service
 	 * @param Tx_Fed_Utility_JSON $service
 	 */
@@ -82,6 +87,31 @@ abstract class Tx_Fed_Core_ViewHelper_AbstractViewHelper extends Tx_Fluid_Core_V
 	 */
 	public function injectFlexFormService(Tx_Fed_Utility_FlexForm $flexform) {
 		$this->flexform = $flexform;
+	}
+
+	/**
+	 * Wrapper for registerArguments which additionally registers the entire arg
+	 * list - for use in auto-documentation and Fluid FCE processing. Point is
+	 * to be able to read a list of all, including inherited, arguments.
+	 *
+	 * @param string $name
+	 * @param string $type
+	 * @param string $description
+	 * @param boolean $required
+	 * @param mixed $defaultValue
+	 */
+	public function registerArgument($name, $type, $description, $required = FALSE, $defaultValue = NULL) {
+		$this->registeredArguments[$name] = func_get_args();
+		parent::registerArgument($name, $type, $description, $required, $defaultValue);
+	}
+
+	/**
+	 * Gets an array of all registered arguments, including inherited arguments
+	 *
+	 * @return array
+	 */
+	public function getAllRegisteredArguments() {
+		return $this->registeredArguments;
 	}
 
 	/**

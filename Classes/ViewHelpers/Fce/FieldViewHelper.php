@@ -34,7 +34,7 @@
  * @package Fed
  * @subpackage ViewHelpers/Fce
  */
-class Tx_Fed_ViewHelpers_Fce_AttributeViewHelper extends Tx_Fed_Core_ViewHelper_AbstractFceViewHelper {
+abstract class Tx_Fed_ViewHelpers_Fce_FieldViewHelper extends Tx_Fed_Core_ViewHelper_AbstractFceViewHelper {
 
 	/**
 	 * Initialize arguments
@@ -42,33 +42,56 @@ class Tx_Fed_ViewHelpers_Fce_AttributeViewHelper extends Tx_Fed_Core_ViewHelper_
 	public function initializeArguments() {
 		$this->registerArgument('name', 'string', 'Name of the attribute, FlexForm XML-valid tag name string', TRUE);
 		$this->registerArgument('label', 'string', 'Label for the attribute, can be LLL: value', TRUE);
-		$this->registerArgument('type', 'string', 'Datatype for this attribute, use FlexForm XML field types', TRUE);
 		$this->registerArgument('default', 'string', 'Default value for this attribute');
+		$this->registerArgument('required', 'boolean', 'If TRUE, this attribute must be filled when editing the FCE', FALSE, FALSE);
+		$this->registerArgument('exclude', 'boolean', 'If TRUE, this field becomes an "exclude field" (see TYPO3 documentation about this)', FALSE, FALSE);
+		$this->registerArgument('wizards', 'array', 'FlexForm-style Wizard configuration array', FALSE, array());
 	}
 
 	/**
-	 * Render method
+	 * Get a base configuration containing all shared arguments and their values
+	 *
+	 * @return array
 	 */
-	public function render() {
+	protected function getBaseConfig() {
+		return array(
+			'name' => $this->arguments['name'],
+			'label' => $this->arguments['label'],
+			'type' => $this->arguments['type'],
+			'default' => $this->arguments['default'],
+			'required' => $this->getFlexFormBoolean($this->arguments['required']),
+			'exclude' => $this->getFlexFormBoolean($this->arguments['exclude']),
+		);
+	}
+
+	/**
+	 * Add a field to the currently active/last group (or a new group, if none exist)
+	 *
+	 * @param array $config
+	 */
+	protected function addField(array $config) {
 		$storage = $this->getStorage();
 		$group = array_pop($storage);
 		if (!$group) {
 			$group = array(
 				'name' => 'default',
 				'label' => '',
-				'attributes' => array(),
+				'fields' => array(),
 				'areas' => array()
 			);
 		}
-		$attribute = array(
-			'name' => $this->arguments['name'],
-			'label' => $this->arguments['label'],
-			'type' => $this->arguments['type'],
-			'default' => $this->arguments['default']
-		);
-		array_push($group['attributes'], $attribute);
+		array_push($group['fields'], $config);
 		array_push($storage, $group);
 		$this->setStorage($storage);
+	}
+
+	/**
+	 * Get 1 or 0 from a boolean
+	 *
+	 * @param type $value
+	 */
+	protected function getFlexFormBoolean($value) {
+		return ($value === TRUE ? 1 : 0);
 	}
 
 }
