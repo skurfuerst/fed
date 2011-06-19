@@ -33,7 +33,15 @@ class Tx_Fed_Backend_DynamicFlexForm {
 	}
 
 	public function getFlexFormDS_postProcessDS(&$dataStructArray, $conf, &$row, $table, $fieldName) {
-		if ($table == 'tt_content') {
+		if ($row['CType'] == 'fed_template') {
+			$flexForm = t3lib_extMgm::extPath('fed', '/Configuration/FlexForms/Template.xml');
+			$file = file_get_contents($flexForm);
+			$dataStructArray = t3lib_div::xml2array($file);
+		} else if ($row['CType'] == 'fed_datasource') {
+			$flexForm = t3lib_extMgm::extPath('fed', '/Configuration/FlexForms/DataSource.xml');
+			$file = file_get_contents($flexForm);
+			$dataStructArray = t3lib_div::xml2array($file);
+		} else if ($row['CType'] == 'fed_fce') {
 			$uid = $row['tx_fed_fceuid'];
 			if ($uid < 1) {
 				return;
@@ -41,8 +49,7 @@ class Tx_Fed_Backend_DynamicFlexForm {
 			$fce = $this->fceRepository->findByUid($uid);
 			$templateFile = $fce->getFilename();
 			$config = $this->fceParser->getFceDefinitionFromTemplate(PATH_site . $templateFile);
-
-			$flexformTemplateFile = t3lib_extMgm::extPath('fed', 'Resources/Private/Templates/FlexibleContentElement/AutoFlexForm.xml');
+				$flexformTemplateFile = t3lib_extMgm::extPath('fed', 'Resources/Private/Templates/FlexibleContentElement/AutoFlexForm.xml');
 			$template = $this->objectManager->get('Tx_Fluid_View_StandaloneView');
 			$template->setTemplatePathAndFilename($flexformTemplateFile);
 			$template->assign('fce', $config);

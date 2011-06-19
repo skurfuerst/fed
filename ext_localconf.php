@@ -74,10 +74,39 @@ if (TYPO3_MODE == 'BE') {
 
 t3lib_extMgm::addTypoScript($_EXTKEY,'setup',
     '[GLOBAL]
-    tt_content.fed_fce < tt_content.list.20.fed_fce
-    tt_content.fed_fce.action = show',
-    TRUE
-);
+	tt_content.fed_fce < tt_content.list.20.fed_fce
+	tt_content.fed_template < tt_content.list.20.fed_template
+	'
+, TRUE);
 
+t3lib_extMgm::addPageTSConfig('
+	mod.wizards.newContentElement.wizardItems.special.elements.fed_fce {
+		icon = ../typo3conf/ext/fed/Resources/Public/Icons/Plugin.png
+		title = Fluid Flexible Content Element
+		description = Flexible Content Element using a Fluid template
+		tt_content_defValues {
+			CType = fed_fce
+		}
+	}
+	mod.wizards.newContentElement.wizardItems.special.elements.fed_template {
+		icon = ../typo3conf/ext/fed/Resources/Public/Icons/Plugin.png
+		title = Fluid Template Display
+		description = Display a standalone Fluid template with optional template variables
+		tt_content_defValues {
+			CType = fed_template
+		}
+	}
+	mod.wizards.newContentElement.wizardItems.special.elements.fed_datasource {
+		icon = ../typo3conf/ext/fed/Resources/Public/Icons/Plugin.png
+		title = Fluid DataSource Display
+		description = Display a standalone Fluid template with attached DataSource(s)
+		tt_content_defValues {
+			CType = fed_datasource
+		}
+	}
+	mod.wizards.newContentElement.wizardItems.special.show := addToList(fed_fce,fed_template,fed_datasource)
+	#mod.wizards.newContentElement.wizardItems.special.show := addToList(fed_template)
+	#mod.wizards.newContentElement.wizardItems.special.show := addToList(fed_datasource)
+');
 
 ?>

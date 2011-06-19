@@ -55,12 +55,18 @@ class Tx_Fed_Backend_Preview implements tx_cms_layout_tt_content_drawItemHook {
 	protected $fceRepository;
 
 	/**
+	 * @var Tx_Fed_Utility_JSON
+	 */
+	protected $jsonService;
+
+	/**
 	 * CONSTRUCTOR
 	 */
 	public function __construct() {
 		$templatePathAndFilename = t3lib_extMgm::extPath('fed', 'Resources/Private/Templates/FlexibleContentElement/BackendPreview.html');
 		$this->objectManager = t3lib_div::makeInstance('Tx_Extbase_Object_ObjectManager');
 		$this->fceRepository = $this->objectManager->get('Tx_Fed_Domain_Repository_FceRepository');
+		$this->jsonService = $this->objectManager->get('Tx_Fed_Utility_JSON');
 		$this->view = $this->objectManager->get('Tx_Fluid_View_StandaloneView');
 		$this->view->setTemplatePathAndFilename($templatePathAndFilename);
 	}
@@ -75,6 +81,39 @@ class Tx_Fed_Backend_Preview implements tx_cms_layout_tt_content_drawItemHook {
 	 * @param array $row
 	 */
 	public function preProcess(tx_cms_layout &$parentObject, &$drawItem, &$headerContent, &$itemContent, array &$row) {
+		#var_dump($row['CType']);
+		switch ($row['CType']) {
+			case 'fed_fce': $this->preProcessFlexibleContentElement($drawItem, $itemContent, $row); break;
+			case 'fed_template': $this->preProcessTemplateDisplay($drawItem, $itemContent, $row); break;
+			default: break;
+		}
+	}
+
+	protected function preProcessTemplateDisplay(&$drawItem, &$itemContent, array &$row) {
+		$flexform = t3lib_div::xml2array($row['pi_flexform']);
+		$templateFile = $flexform['data']['sDEF']['lDEF']['templateFile']['vDEF'];
+		$templateSource = $flexform['data']['sDEF']['lDEF']['templateSource']['vDEF'];
+		$fluidVars = $this->jsonService->decode($flexform['data']['sDEF']['lDEF']['fluidVars']['vDEF']);
+		if (is_file($templateFile)) {
+			$this->view->setTemplatePathAndFilename(PATH_site . $templateFile);
+		} else if (strlen(trim($templateSource)) > 0) {
+			$this->view->setTemplateSource($templateSource);
+		}
+		if ($fluidVars) {
+			if (is_array($fluidVars)) {
+				$vars = $fluidVars;
+			} else {
+				$vars = array();
+				foreach ($fluidVars as $k=>$v) {
+					$vars[$k] = $v;
+				}
+			}
+			$this->view->assignMultiple($vars);
+		}
+		$itemContent = $this->view->render();
+	}
+
+	protected function preProcessFlexibleContentElement(&$drawItem, &$itemContent, array &$row) {
 		$uid = $row['tx_fed_fceuid'];
 		if ($uid > 0) {
 			$drawItem = FALSE;
@@ -94,7 +133,6 @@ class Tx_Fed_Backend_Preview implements tx_cms_layout_tt_content_drawItemHook {
 			$this->view->assign('fce', $stored);
 			$itemContent = $this->view->render();
 		}
-
 	}
 
 }

@@ -7,6 +7,7 @@ return array(
 
 	'tx_fed_core_bootstrap' => $extensionClassesPath . 'Core/Bootstrap.php',
 	'tx_fed_utility_pdf' => $extensionClassesPath . 'Utility/PDF.php',
+	'tx_fed_utility_json' => $extensionClassesPath . 'Utility/JSON.php',
 	'tx_fed_utility_propertymapper' => $extensionClassesPath . 'Utility/PropertyMapper.php',
 	'tx_fed_view_flexiblecontentelementview' => $extensionClassesPath . 'View/FlexibleContentElementView.php',
 	'tx_fed_backend_preview' => $extensionClassesPath . 'Backend/Preview.php',

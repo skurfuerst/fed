@@ -11,7 +11,7 @@
 				<config>
 					<type>select</type>
 					<foreign_table>tx_fed_domain_model_datasource</foreign_table>
-	            <minitems>1</minitems>
+	            <minitems>0</minitems>
 	            <maxitems>100</maxitems>
 	            <multiple>1</multiple>
 	            <size>10</size>
