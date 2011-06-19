@@ -50,6 +50,11 @@ class Tx_Fed_ViewHelpers_Fce_Field_SelectViewHelper extends Tx_Fed_ViewHelpers_F
 	}
 
 	public function render() {
+		$config = $this->getFieldConfig();
+		$this->addField($config);
+	}
+
+	protected function getFieldConfig() {
 		$config = $this->getBaseConfig();
 		$config['type'] = 'select';
 		$config['items'] = $this->arguments['items'];
@@ -59,7 +64,7 @@ class Tx_Fed_ViewHelpers_Fce_Field_SelectViewHelper extends Tx_Fed_ViewHelpers_F
 		$config['table'] = $this->arguments['table'];
 		$config['condition'] = $this->arguments['condition'];
 		$config['mm'] = $this->arguments['mm'];
-		$this->addField($config);
+		return $config;
 	}
 
 

@@ -69,7 +69,7 @@ XML;
 		return $xml;
 	}
 
-	protected function getSelectConfiguration($config) {
+	protected function getSelectConfiguration($config, $addedConfig=NULL) {
 		if ($config['items']) {
 			$switchedConfig = '<items type="array">' . chr(10);
 			foreach ($config['items'] as $iteration=>$set) {
@@ -91,12 +91,12 @@ XML;
 <required>{$config['required']}</required>
 <config>
 	<type>{$config['type']}</type>
-	<default>{$config['default']}</default>
 	<minItems>{$config['minItems']}</minItems>
 	<maxItems>{$config['maxItems']}</maxItems>
 	<size>{$config['size']}</size>
 	<multiple>{$config['multiple']}</multiple>
 	{$switchedConfig}
+	{$addedConfig}
 </config>
 XML;
 		return $xml;
@@ -125,6 +125,14 @@ XML;
 	<type>{$config['type']}</type>
 </config>
 XML;
+	}
+
+	protected function getGroupConfiguration($config) {
+		$added = <<< XML
+	<allowed>{$config['allowed']}</allowed>
+	<internal_type>{$config['internalType']}</internal_type>
+XML;
+		return $this->getSelectConfiguration($config, $added);
 	}
 
 }
