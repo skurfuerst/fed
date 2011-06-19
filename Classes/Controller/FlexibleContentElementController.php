@@ -52,7 +52,7 @@ class Tx_Fed_Controller_FlexibleContentElementController extends Tx_Fed_Core_Abs
 	 * @return string
 	 */
 	public function showAction() {
-		$flexform = $this->getFlexForm();
+		$flexform = $this->flexform->getAll();
 		$cObj = $this->request->getContentObjectData();
 		$uid = $cObj['tx_fed_fceuid'];
 		$fce = $this->fceRepository->findByUid($uid);

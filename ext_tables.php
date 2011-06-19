@@ -117,6 +117,9 @@ $TCA['tt_content']['types']['fed_template']['showitem'] = 'CType;;4;button;1-1-1
 t3lib_extMgm::addPlugin(array('FED DataSource Display', 'fed_datasource'), 'CType');
 $TCA['tt_content']['types']['fed_datasource']['showitem'] = 'CType;;4;button;1-1-1, header,pi_flexform';
 
+$TCA['tt_content']['types']['list']['subtypes_addlist']['fed_fce'] = 'pi_flexform';
+$TCA['tt_content']['types']['list']['subtypes_addlist']['fed_template'] = 'pi_flexform';
+$TCA['tt_content']['types']['list']['subtypes_addlist']['fed_datasource'] = 'pi_flexform';
 $TCA['tt_content']['types']['list']['subtypes_addlist']['fed_sandbox'] = 'pi_flexform';
 t3lib_extMgm::addPiFlexFormValue('fed_sandbox', 'FILE:EXT:'.$_EXTKEY.'/Configuration/FlexForms/Sandbox.xml');
 

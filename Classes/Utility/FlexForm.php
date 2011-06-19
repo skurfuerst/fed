@@ -37,9 +37,20 @@
 class Tx_Fed_Utility_FlexForm implements t3lib_Singleton {
 
 	/**
+	 * @var string
+	 */
+	protected $raw;
+
+	/**
 	 * @var Tx_Fed_Utility_DomainObjectInfo
 	 */
 	protected $infoService;
+
+	/**
+	 *
+	 * @var Tx_Extbase_Configuration_FrontendConfigurationManager
+	 */
+	protected $configuration;
 
 	/**
 	 * @param Tx_Fed_Utility_DomainObjectInfo $infoService
@@ -49,27 +60,65 @@ class Tx_Fed_Utility_FlexForm implements t3lib_Singleton {
 	}
 
 	/**
+	 * @param Tx_Extbase_Configuration_FrontendConfigurationManager $configurationManager
+	 */
+	public function injectConfigurationManager(Tx_Extbase_Configuration_FrontendConfigurationManager $configurationManager) {
+		$this->configuration = $configurationManager;
+	}
+
+	/**
+	 * Initialization
+	 */
+	public function initializeObject() {
+		$cObj = $this->configuration->getContentObject();
+		$this->raw = $cObj->data['pi_flexform'];
+		$dom = new DOMDocument();
+		$dom->loadXML($this->raw);
+		foreach ($dom->getElementsByTagName('field') as $field) {
+			$name = $field->getAttribute('index');
+			$value = $field->getElementsByTagName('value')->item(0)->nodeValue;
+			$value = trim($value);
+			$this->storage[$name] = $value;
+		}
+	}
+
+	/**
 	 * Gets the value of the FlexForm field. As string. You must parse it
 	 * manually - for now. UNLESS your value is a DomainObject record reference or
 	 * a list of references to DomainObject records. In which case there's no
 	 * reason why not to turn the value into ObjectStorage<ModelObject> or
 	 * ModelObject:UID instances.
 	 *
+	 * @param boolean $applyTransformations If TRUE, transforms according to datatype - Extbase objects supported
 	 * @return string
+	 * @api
 	 */
-	public function getAll() {
-		return $this->get();
+	public function getAll($applyTransformations=TRUE) {
+		return $this->get(NULL, $applyTransformations);
 	}
 
 	/**
 	 * Get a single field's value (or all values if no $key given;
 	 * getAll() is an alias of get() with no argument)
 	 *
-	 * @param type $key
+	 * @param string $key
+	 * @param boolean $applyTransformations If TRUE, transforms according to datatype - Extbase objects supported
 	 * @return mixed
+	 * @api
 	 */
-	public function get($key=NULL) {
-
+	public function get($key=NULL, $applyTransformations=TRUE) {
+		if ($key === NULL) {
+			$arr = $this->storage;
+			foreach ($arr as $k=>$v) {
+				$arr[$k] = $this->get($k);
+			}
+			return $arr;
+		}
+		if ($applyTransformations) {
+			return $this->transform($key);
+		} else {
+			return $this->storage[$key];
+		}
 	}
 
 	/**
@@ -82,7 +131,7 @@ class Tx_Fed_Utility_FlexForm implements t3lib_Singleton {
 	 * @return void
 	 */
 	public function set($key, $value) {
-
+		$this->storage[$key] = $value;
 	}
 
 	/**
@@ -92,7 +141,7 @@ class Tx_Fed_Utility_FlexForm implements t3lib_Singleton {
 	 * @return boolean
 	 */
 	public function save() {
-
+		return FALSE;
 	}
 
 	/**
@@ -122,6 +171,10 @@ class Tx_Fed_Utility_FlexForm implements t3lib_Singleton {
 			return (bool) TRUE;
 		}
 		return (bool) FALSE;
+	}
+
+	public function transform($name) {
+		return $this->storage[$name];
 	}
 
 }

@@ -46,6 +46,7 @@ abstract class Tx_Fed_ViewHelpers_Fce_FieldViewHelper extends Tx_Fed_Core_ViewHe
 		$this->registerArgument('required', 'boolean', 'If TRUE, this attribute must be filled when editing the FCE', FALSE, FALSE);
 		$this->registerArgument('exclude', 'boolean', 'If TRUE, this field becomes an "exclude field" (see TYPO3 documentation about this)', FALSE, FALSE);
 		$this->registerArgument('wizards', 'array', 'FlexForm-style Wizard configuration array', FALSE, array());
+		$this->registerArgument('transform', 'boolean', 'If TRUE, transforms output values according to datatypes. Extbase objects supported', FALSE, TRUE);
 	}
 
 	/**
@@ -56,6 +57,7 @@ abstract class Tx_Fed_ViewHelpers_Fce_FieldViewHelper extends Tx_Fed_Core_ViewHe
 	protected function getBaseConfig() {
 		return array(
 			'name' => $this->arguments['name'],
+			'transform' => $this->arguments['transform'],
 			'label' => $this->arguments['label'],
 			'type' => $this->arguments['type'],
 			'default' => $this->arguments['default'],
