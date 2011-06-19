@@ -46,6 +46,8 @@ class Tx_Fed_ViewHelpers_Fce_Field_SelectViewHelper extends Tx_Fed_ViewHelpers_F
 		$this->registerArgument('table', 'string', 'Define foreign table name to turn selector into a record selector for that table', FALSE, NULL);
 		$this->registerArgument('condition', 'string', 'Condition to use when selecting from "foreignTable", supports FlexForm "foregin_table_where" markers', FALSE, NULL);
 		$this->registerArgument('mm', 'string', 'Optional name of MM table to use for record selection', FALSE, NULL);
+		$this->registerArgument('showThumbs', 'boolean', 'If TRUE, adds thumbnail display when editing in BE', FALSE, TRUE);
+		$this->registerArgument('itemsProcFunc', 'string', 'Optional class name of data provider to fill select options');
 		#$this->registerArgument('', '', '');
 	}
 
@@ -64,6 +66,8 @@ class Tx_Fed_ViewHelpers_Fce_Field_SelectViewHelper extends Tx_Fed_ViewHelpers_F
 		$config['table'] = $this->arguments['table'];
 		$config['condition'] = $this->arguments['condition'];
 		$config['mm'] = $this->arguments['mm'];
+		$config['showThumbs'] = $this->getFlexFormBoolean($this->argumetns['showThumbs']);
+		$config['itemsProcFunc'] = $this->arguments['itemsProcFunc'];
 		return $config;
 	}
 

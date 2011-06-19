@@ -95,6 +95,8 @@ XML;
 	<maxItems>{$config['maxItems']}</maxItems>
 	<size>{$config['size']}</size>
 	<multiple>{$config['multiple']}</multiple>
+	<show_thumbs>{$config['showThumbs']}</show_thumbs>
+	<itemsProcFunc>{$config['itemsProcFunc']}</itemsProcFunc>
 	{$switchedConfig}
 	{$addedConfig}
 </config>
@@ -125,6 +127,7 @@ XML;
 	<type>{$config['type']}</type>
 </config>
 XML;
+		return $xml;
 	}
 
 	protected function getGroupConfiguration($config) {
@@ -133,6 +136,18 @@ XML;
 	<internal_type>{$config['internalType']}</internal_type>
 XML;
 		return $this->getSelectConfiguration($config, $added);
+	}
+
+	protected function getUserConfiguration($config) {
+		$xml = <<< XML
+<label>{$config['label']}</label>
+<required>{$config['required']}</required>
+<config>
+	<type>{$config['type']}</type>
+	<userFunc>{$config['userFunc']}</userFunc>
+</config>
+XML;
+		return $xml;
 	}
 
 }

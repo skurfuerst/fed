@@ -72,13 +72,17 @@ class Tx_Fed_Utility_FlexForm implements t3lib_Singleton {
 	public function initializeObject() {
 		$cObj = $this->configuration->getContentObject();
 		$this->raw = $cObj->data['pi_flexform'];
-		$dom = new DOMDocument();
-		$dom->loadXML($this->raw);
-		foreach ($dom->getElementsByTagName('field') as $field) {
-			$name = $field->getAttribute('index');
-			$value = $field->getElementsByTagName('value')->item(0)->nodeValue;
-			$value = trim($value);
-			$this->storage[$name] = $value;
+		if ($this->raw) {
+			$dom = new DOMDocument();
+			$dom->loadXML($this->raw);
+			foreach ($dom->getElementsByTagName('field') as $field) {
+				$name = $field->getAttribute('index');
+				$value = $field->getElementsByTagName('value')->item(0)->nodeValue;
+				$value = trim($value);
+				$this->storage[$name] = $value;
+			}
+		} else {
+			return array();
 		}
 	}
 
