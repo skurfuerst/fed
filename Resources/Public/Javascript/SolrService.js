@@ -24,6 +24,18 @@ if (typeof FED == 'undefined') {
 FED.SOLR = {
 
 	minQueryStringLength: 3,
+	limit: 500,
+	perPage: 20,
+	page: 1,
+	fields: [
+		'title^40',
+		'content^10',
+		'keywords^2.0',
+		'tagsH1^5.0',
+		'tagsH2H3^3.0',
+		'tagsH4H5H6^2.0',
+		'tagsInline'
+	],
 	proxy: '/typo3conf/ext/fed/Resources/Public/Script/SolrProxy.php',
 	async: false,
 	query: {},
@@ -46,11 +58,10 @@ FED.SOLR = {
 			this.async = true;
 			this.onResult = onResult;
 			this.query = this.executeQuery(true);
-			return this;
 		} else {
 			this.query = this.executeQuery(false);
-			return this.getResults();
 		};
+		return this;
 	},
 
 	executeQuery: function() {
@@ -61,9 +72,10 @@ FED.SOLR = {
 			data: {
 				"wt": "json",
 				"json.nl": "map",
-				//"qf": encodeURI("content^40.0+title^5.0+keywords^2.0+tagsH1^5.0+tagsH2H3^3.0+tagsH4H5H6^2.0+tagsInline"),
-				"rows": 500,
 				"q": this.queryString,
+				"start": parseInt(this.perPage*(this.page-1)),
+				"fields": this.fields,
+				"rows": this.perPage,
 				"facets": this.facetsApplied
 			}
 		};
@@ -92,19 +104,60 @@ FED.SOLR = {
 	},
 
 	getNumResults: function() {
-
+		if (this.results.response) {
+			return this.results.response.numFound;
+		} else {
+			return -1;
+		}
 	},
 
 	getNumPages: function(perPage) {
-
+		if (this.results.response) {
+			return Math.ceil(this.results.response.numFound / perPage);
+		} else {
+			return -1
+		};
 	},
 
-	getResultsPage: function(pageNum, perPage) {
-
+	getResultsPage: function(page, perPage) {
+		if (typeof page == 'undefined') {
+			page = this.page;
+		};
+		if (typeof perPage == 'undefined') {
+			perPage = this.perPage;
+		};
+		this.page = page;
+		this.perPage = perPage;
+		this.executeQuery();
+		return this.results.response.docs;
 	},
 
 	getResults: function() {
 		return this.results.response.docs;
+	},
+
+	getFacets: function() {
+		return this.facetsAvailable;
+	},
+
+	getAppliedFacets: function() {
+		return this.facetsApplied;
+	},
+
+	setFields: function(fields) {
+		this.fields = fields;
+	},
+
+	addField: function(fieldName, weight) {
+
+	},
+
+	removeField: function(fieldName) {
+
+	},
+
+	setFieldWeight: function(fieldName, weight) {
+
 	}
 
 };

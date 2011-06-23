@@ -1,17 +1,13 @@
 <?php
 
 $mod = array(
-
+	#'fields' => NULL,
+	'qf' => implode('+', $_GET['fields'])
 );
 $queryString = $_SERVER['QUERY_STRING'];
 $new = "http://localhost:8080/solr/select/?" . modifyUrl($queryString, $mod);
-#var_dump(modifyUrl($queryString, $mod));
-#exit();
-#die($_SERVER['QUERY_STRING']);
 readfile($new);
 exit();
-
-
 
 function modifyUrl($url, $mod) {
     $query = explode("&", $url);
@@ -28,7 +24,7 @@ function modifyUrl($url, $mod) {
     // add new data
     foreach ($mod as $key => $value) {
         if ($value && !preg_match('/'.$key.'=/', $url)) {
-            $url .= $key.'='.$value;
+            $url .= "&" . $key.'='.$value;
         }
     }
     return $url;
