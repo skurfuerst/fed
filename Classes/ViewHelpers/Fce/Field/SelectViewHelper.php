@@ -54,6 +54,7 @@ class Tx_Fed_ViewHelpers_Fce_Field_SelectViewHelper extends Tx_Fed_ViewHelpers_F
 	public function render() {
 		$config = $this->getFieldConfig();
 		$this->addField($config);
+		$this->renderChildren();
 	}
 
 	protected function getFieldConfig() {

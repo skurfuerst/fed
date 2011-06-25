@@ -23,9 +23,8 @@ if (typeof FED == 'undefined') {
 
 FED.SOLR = {
 
+	config: {},
 	minQueryStringLength: 3,
-	limit: 500,
-	perPage: 20,
 	page: 1,
 	fields: [
 		'title^40',
@@ -37,12 +36,18 @@ FED.SOLR = {
 		'tagsInline'
 	],
 	proxy: '/typo3conf/ext/fed/Resources/Public/Script/SolrProxy.php',
-	async: false,
 	query: {},
 	queryString: '',
 	results: [],
-	facetsApplied: [],
-	facetsAvailable: [],
+	facets: [],
+
+	setConfig: function(config) {
+		this.config = config;
+	},
+
+	onResult: function() {
+
+	},
 
 	search: function (queryString, facets, onResult) {
 		if (typeof queryString == 'undefined') {
@@ -52,7 +57,7 @@ FED.SOLR = {
 		};
 		this.queryString = queryString;
 		if (typeof facets == 'array') {
-			this.facetsApplied = facets;
+			this.facets = facets;
 		};
 		if (typeof onResult == 'function') {
 			this.async = true;
@@ -67,40 +72,94 @@ FED.SOLR = {
 	executeQuery: function() {
 		var request;
 		var options = {
-			async: this.async,
+			async: false,
 			url: this.proxy,
 			data: {
 				"wt": "json",
 				"json.nl": "map",
+				"facet": "on",
 				"q": this.queryString,
-				"start": parseInt(this.perPage*(this.page-1)),
+				"fl": "*,score",
+				"start": parseInt(this.config.search.results.resultsPerPage*(this.page-1)),
 				"fields": this.fields,
-				"rows": this.perPage,
-				"facets": this.facetsApplied
+				"rows": this.config.search.results.resultsPerPage,
+				"facets": this.getFacetQueryFields(),
+				"fq": this.getFacetQueryString()
 			}
 		};
-		if (!this.async) {
-			options.onComplete = this.onResult;
-			request = jQuery.ajax(options);
-			var json = jQuery.parseJSON(request.responseText);
-			this.results = json;
-		} else {
-			options.onSuccess(this.onResult);
-			request = jQuery.ajax(options);
-		}
+		this.results = jQuery.parseJSON(jQuery.ajax(options).responseText);
+		this.onResult();
 	},
 
-	onResult: function(responseText) {
-		var json = jQuery.parseJSON(responseText);
-		this.results = json;
+	getFacetQueryString: function() {
+		var queryString = '';
+		for (var i=0; i<this.facets.length; i++) {
+			var facet = this.facets[i];
+			queryString += facet.facetName + ':"' + facet.facetValue + '" ';
+		};
+		return queryString;
+	},
+
+	getFacetQueryFields: function() {
+		var facets = [];
+		for (var fieldName in this.config.search.faceting.facets) {
+			facets.push(fieldName);
+		};
+		return facets;
+	},
+
+	getCurrentPage: function() {
+		return this.page;
+	},
+
+	getFacetLabel: function(facet) {
+		for (var i in this.config.search.faceting.facets) {
+			if (this.config.search.faceting.facets[i].field == facet) {
+				return this.config.search.faceting.facets[i].label;
+			};
+		};
 	},
 
 	setFacets: function (facets) {
-
+		this.facets = facets;
 	},
 
-	addFacet: function(facet) {
+	getFacets: function() {
+		return this.facets;
+	},
 
+
+	addFacet: function(facetName, facetValue) {
+		if (this.hasFacet(facetName, facetValue)) {
+			return;
+		};
+		this.facets.push({'facetName':facetName, 'facetValue': facetValue});
+		this.executeQuery();
+	},
+
+	removeFacet: function(facetName, facetValue) {
+		if (!this.hasFacet(facetName, facetValue)) {
+			return;
+		};
+		var facets = [], i;
+		for (var i=0; i<this.facets.length; i++) {
+			var facet = this.facets[i];
+			if (facetName != facet.facetName && facetValue != facet.facetValue) {
+				facets.push(facet);
+			};
+		};
+		this.facets = facets;
+		this.executeQuery();
+	},
+
+	hasFacet: function(facetName, facetValue) {
+		for (var i=0; i<this.facets.length; i++) {
+			var facet = this.facets[i];
+			if (facetName == facet.facetName && facetValue == facet.facetValue) {
+				return true;
+			};
+		};
+		return false;
 	},
 
 	getNumResults: function() {
@@ -111,53 +170,22 @@ FED.SOLR = {
 		}
 	},
 
-	getNumPages: function(perPage) {
+	getNumPages: function() {
 		if (this.results.response) {
-			return Math.ceil(this.results.response.numFound / perPage);
+			return Math.ceil(this.results.response.numFound / this.config.search.results.resultsPerPage);
 		} else {
 			return -1
 		};
-	},
-
-	getResultsPage: function(page, perPage) {
-		if (typeof page == 'undefined') {
-			page = this.page;
-		};
-		if (typeof perPage == 'undefined') {
-			perPage = this.perPage;
-		};
-		this.page = page;
-		this.perPage = perPage;
-		this.executeQuery();
-		return this.results.response.docs;
 	},
 
 	getResults: function() {
 		return this.results.response.docs;
 	},
 
-	getFacets: function() {
-		return this.facetsAvailable;
-	},
-
-	getAppliedFacets: function() {
-		return this.facetsApplied;
-	},
-
-	setFields: function(fields) {
-		this.fields = fields;
-	},
-
-	addField: function(fieldName, weight) {
-
-	},
-
-	removeField: function(fieldName) {
-
-	},
-
-	setFieldWeight: function(fieldName, weight) {
-
+	getResultsPage: function(pageNum) {
+		this.page = pageNum;
+		this.executeQuery();
 	}
+
 
 };

@@ -32,21 +32,27 @@
  * @copyright Copyright belongs to the respective authors
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  * @package Fed
- * @subpackage ViewHelpers/Fce
+ * @subpackage ViewHelpers/Fce/Field
  */
 
 class Tx_Fed_ViewHelpers_Fce_Field_InputViewHelper extends Tx_Fed_ViewHelpers_Fce_FieldViewHelper {
 
 	public function initializeArguments() {
 		parent::initializeArguments();
-		$this->registerArgument('validate', 'string', 'FlexForm-type validation configuration for this input', FALSE, 'trim');
+		$this->registerArgument('eval', 'string', 'FlexForm-type validation configuration for this input', FALSE, 'trim');
 	}
 
 	public function render() {
 		$config = $this->getBaseConfig();
-		$config['type'] = 'input';
-		$config['validate'] = $this->arguments['validate'];
 		$this->addField($config);
+		$this->renderChildren();
+	}
+
+	protected function getBaseConfig() {
+		$config = parent::getBaseConfig();
+		$config['eval'] = $this->arguments['eval'];
+		$config['type'] = 'input';
+		return $config;
 	}
 
 

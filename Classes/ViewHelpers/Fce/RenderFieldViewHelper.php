@@ -46,6 +46,27 @@ class Tx_Fed_ViewHelpers_Fce_RenderFieldViewHelper extends Tx_Fed_ViewHelpers_Fc
 		return $this->getCustomizedConfiguration($config);
 	}
 
+	protected function getWizardConfiguration($config) {
+		$xml = "<wizards type='array'>" . chr(10);
+		foreach ($config['wizards'] as $name=>$wizard) {
+			$xml .= "<{$name} type='array'>";
+			if (is_array($wizard) === FALSE) {
+				$xml .= $wizard;
+			} else {
+				#var_dump($config);
+				#exit();
+				$xml .= chr(10);
+				foreach ($wizard as $fieldName=>$fieldValue) {
+					$xml .= "<{$fieldName}>{$fieldValue}</{$fieldName}>" . chr(10);
+				}
+				$xml .= chr(10);
+			}
+			$xml .= "</{$name}>" .chr(10);
+		}
+		$xml .= "</wizards>" . chr(10);
+		return $xml;
+	}
+
 	protected function getCustomizedConfiguration($config) {
 		$type = $config['type'];
 		$method = "get" . ucfirst($config['type']) . "Configuration";
@@ -57,19 +78,22 @@ class Tx_Fed_ViewHelpers_Fce_RenderFieldViewHelper extends Tx_Fed_ViewHelpers_Fc
 	}
 
 	protected function getInputConfiguration($config) {
+		$wizards = $this->getWizardConfiguration($config);
 		$xml = <<< XML
 <label>{$config['label']}</label>
 <required>{$config['required']}</required>
 <config>
 	<type>{$config['type']}</type>
 	<default>{$config['default']}</default>
-	<validate>{$config['validate']}</validate>
+	<eval>{$config['eval']}</eval>
+	{$wizards}
 </config>
 XML;
 		return $xml;
 	}
 
 	protected function getSelectConfiguration($config, $addedConfig=NULL) {
+		$wizards = $this->getWizardConfiguration($config);
 		if ($config['items']) {
 			$switchedConfig = '<items type="array">' . chr(10);
 			foreach ($config['items'] as $iteration=>$set) {
@@ -99,12 +123,14 @@ XML;
 	<itemsProcFunc>{$config['itemsProcFunc']}</itemsProcFunc>
 	{$switchedConfig}
 	{$addedConfig}
+	{$wizards}
 </config>
 XML;
 		return $xml;
 	}
 
 	protected function getTextConfiguration($config) {
+		$wizards = $this->getWizardConfiguration($config);
 		$xml = <<< XML
 <label>{$config['label']}</label>
 <required>{$config['required']}</required>
@@ -113,6 +139,7 @@ XML;
 	<default>{$config['default']}</default>
 	<cols>{$config['cols']}</cols>
 	<rows>{$config['rows']}</rows>
+	{$wizards}
 </config>
 <defaultExtras>{$config['defaultExtras']}</defaultExtras>
 XML;
@@ -120,11 +147,13 @@ XML;
 	}
 
 	protected function getCheckConfiguration($config) {
+		$wizards = $this->getWizardConfiguration($config);
 		$xml = <<< XML
 <label>{$config['label']}</label>
 <required>{$config['required']}</required>
 <config>
 	<type>{$config['type']}</type>
+	{$wizards}
 </config>
 XML;
 		return $xml;
@@ -139,12 +168,14 @@ XML;
 	}
 
 	protected function getUserConfiguration($config) {
+		$wizards = $this->getWizardConfiguration($config);
 		$xml = <<< XML
 <label>{$config['label']}</label>
 <required>{$config['required']}</required>
 <config>
 	<type>{$config['type']}</type>
 	<userFunc>{$config['userFunc']}</userFunc>
+	{$wizards}
 </config>
 XML;
 		return $xml;

@@ -60,6 +60,7 @@ class Tx_Fed_ViewHelpers_Fce_Field_TextViewHelper extends Tx_Fed_ViewHelpers_Fce
 			$config['defaultExtras'] = $this->arguments['defaultExtras'];
 		}
 		$this->addField($config);
+		$this->renderChildren();
 	}
 
 

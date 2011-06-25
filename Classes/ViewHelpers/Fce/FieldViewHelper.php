@@ -63,6 +63,7 @@ abstract class Tx_Fed_ViewHelpers_Fce_FieldViewHelper extends Tx_Fed_Core_ViewHe
 			'default' => $this->arguments['default'],
 			'required' => $this->getFlexFormBoolean($this->arguments['required']),
 			'exclude' => $this->getFlexFormBoolean($this->arguments['exclude']),
+			'wizards' => array(),
 		);
 	}
 
@@ -72,6 +73,11 @@ abstract class Tx_Fed_ViewHelpers_Fce_FieldViewHelper extends Tx_Fed_Core_ViewHe
 	 * @param array $config
 	 */
 	protected function addField(array $config) {
+		// first off, clean the stored wizards to prepare for new ones
+		if ($this->templateVariableContainer->exists('wizards')) {
+			$this->templateVariableContainer->remove('wizards');
+		}
+		$this->templateVariableContainer->add('wizards', array());
 		$storage = $this->getStorage();
 		$group = array_pop($storage);
 		if (!$group) {
@@ -79,11 +85,24 @@ abstract class Tx_Fed_ViewHelpers_Fce_FieldViewHelper extends Tx_Fed_Core_ViewHe
 				'name' => 'default',
 				'label' => '',
 				'fields' => array(),
-				'areas' => array()
+				'areas' => array(),
 			);
 		}
 		array_push($group['fields'], $config);
 		array_push($storage, $group);
+		$this->setStorage($storage);
+	}
+
+	/**
+	 * Add a Wizard to the current field
+	 * @param array $config
+	 */
+	protected function addWizard(array $config) {
+		$name = $config['type']; // type is index; wizards are considered unique
+		$storage = $this->getStorage();
+		$group = count($storage)-1;
+		$field = count($storage[$group]['fields'])-1;
+		$storage[$group]['fields'][$field]['wizards'][$name] = $config;
 		$this->setStorage($storage);
 	}
 
