@@ -54,7 +54,7 @@ class Tx_Fed_Backend_ContentSaveHook {
 
 	/**
 	 *
-	 * @var Tx_Extbase_Service_FlexFormService
+	 * @var Tx_Fed_Utility_FlexForm
 	 */
 	protected $flexFormService;
 
