@@ -33,6 +33,11 @@ Tx_Extbase_Utility_Extension::registerPlugin(
 );
 
 
+t3lib_extMgm::addPlugin(array('FED Flexible Content Element', 'fed_fce'), 'CType');
+t3lib_extMgm::addPlugin(array('FED Template Display', 'fed_template'), 'CType');
+t3lib_extMgm::addPlugin(array('FED DataSource Display', 'fed_datasource'), 'CType');
+
+$TCA['tt_content']['types']['fed_datasource']['showitem'] = 'CType;;4;button;1-1-1, header,pi_flexform';
 $TCA['tt_content']['types']['fed_fce']['showitem'] = 'CType;;4;button;1-1-1, header,tx_fed_fceuid,pi_flexform';
 $TCA['tt_content']['types']['fed_template']['showitem'] = 'CType;;4;button;1-1-1, header,pi_flexform';
 $TCA['tt_content']['types']['fed_datasource']['showitem'] = 'CType;;4;button;1-1-1, header,pi_flexform';
@@ -119,15 +124,6 @@ t3lib_extMgm::addTCAcolumns('tt_content', array(
 ), 1);
 
 require_once t3lib_extMgm::extPath($_EXTKEY , 'Configuration/Wizard/FlexFormCodeEditor.php');
-#t3lib_extMgm::addPlugin(array('FED Flexible Content Element', 'fed_fce'), 'CType');
-#$TCA['tt_content']['types']['fed_fce']['showitem'] = 'CType;;4;button;1-1-1, header,tx_fed_fceuid,pi_flexform';
-
-
-#t3lib_extMgm::addPlugin(array('FED Template Display', 'fed_template'), 'CType');
-#$TCA['tt_content']['types']['fed_template']['showitem'] = 'CType;;4;button;1-1-1, header,pi_flexform';
-
-#t3lib_extMgm::addPlugin(array('FED DataSource Display', 'fed_datasource'), 'CType');
-#$TCA['tt_content']['types']['fed_datasource']['showitem'] = 'CType;;4;button;1-1-1, header,pi_flexform';
 
 
 
