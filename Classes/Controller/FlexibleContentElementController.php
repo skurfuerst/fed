@@ -36,29 +36,15 @@
 class Tx_Fed_Controller_FlexibleContentElementController extends Tx_Fed_Core_AbstractController {
 
 	/**
-	 * @var Tx_Fed_Domain_Repository_FceRepository
-	 */
-	protected $fceRepository;
-
-	/**
-	 * @param Tx_Fed_Domain_Repository_FceRepository $fceRepository
-	 */
-	public function injectFceRepository(Tx_Fed_Domain_Repository_FceRepository $fceRepository) {
-		$this->fceRepository = $fceRepository;
-	}
-
-	/**
 	 * Show template as defined in flexform
 	 * @return string
 	 */
 	public function showAction() {
 		$flexform = $this->flexform->getAll();
 		$cObj = $this->request->getContentObjectData();
-		$uid = $cObj['tx_fed_fceuid'];
-		$fce = $this->fceRepository->findByUid($uid);
-		$filename = $fce->getFilename();
+		$filename = PATH_site . $cObj['tx_fed_fcefile'];
 		$this->view = $this->objectManager->get('Tx_Fluid_View_StandaloneView');
-		$this->view->setTemplatePathAndFilename(PATH_site . $filename);
+		$this->view->setTemplatePathAndFilename($filename);
 		$this->view->assignMultiple($flexform);
 		$this->view->assign('record', $cObj);
 		return $this->view->render();

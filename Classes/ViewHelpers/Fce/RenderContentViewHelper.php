@@ -25,7 +25,7 @@
  * ************************************************************* */
 
 /**
- *
+ * ViewHelper used to render the FlexForm definition for Fluid FCEs
  *
  * @author Claus Due, Wildside A/S
  * @version $Id$
@@ -34,22 +34,39 @@
  * @package Fed
  * @subpackage ViewHelpers/Fce/Field
  */
-class Tx_Fed_ViewHelpers_Fce_Field_UserFuncViewHelper extends Tx_Fed_ViewHelpers_Fce_FieldViewHelper {
+class Tx_Fed_ViewHelpers_Fce_RenderContentViewHelper extends Tx_Fed_Core_ViewHelper_AbstractViewHelper {
+
 
 	public function initializeArguments() {
-		parent::initializeArguments();
-		$this->registerArgument('userFunc', 'string', 'Classname->function notation of UserFunc to be called, example "Tx_Fed_Configuration_Wizard_FlexFormCodeEditor->renderField" - Extbase classes need autoload registry for this', TRUE);
+		$this->registerArgument('area', 'string', 'Name of the area to render');
+		#$this->registerArgument('records', 'array', 'Array of tt_content records to be rendered');
 
 	}
 
 	public function render() {
-		$config = $this->getBaseConfig();
-		$config['type'] = 'user';
-		$config['userFunc'] = $this->arguments['userFunc'];
-		$this->addField($config);
-		$this->renderChildren();
+		$html = "";
+		$fce = $this->templateVariableContainer->get('FEDFCE');
+		$detectedArea = $fce[0]['areas'][0]['name'];
+		foreach ($fce as $group) {
+			foreach ($group['areas'] as $area) {
+				if ($area['name'] == $this->arguments['area']) {
+					$detectedArea = $area;
+				}
+			}
+		}
+		$record = $this->templateVariableContainer->get('record');
+		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('uid', 'tt_content',
+				"colPos = '255' AND tx_fed_fcecontentarea = '{$detectedArea['name']}:{$record['uid']}' AND deleted = 0 AND hidden = 0");
+		while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
+			$conf = array(
+				'tables' => 'tt_content',
+				'source' => $row['uid'],
+				'dontCheckPid' => 1
+			);
+			$html .= $GLOBALS['TSFE']->cObj->RECORDS($conf);
+		}
+		return $html;
 	}
 
 }
 ?>
- 

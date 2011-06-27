@@ -53,8 +53,6 @@ class Tx_Fed_ViewHelpers_Fce_RenderFieldViewHelper extends Tx_Fed_ViewHelpers_Fc
 			if (is_array($wizard) === FALSE) {
 				$xml .= $wizard;
 			} else {
-				#var_dump($config);
-				#exit();
 				$xml .= chr(10);
 				foreach ($wizard as $fieldName=>$fieldValue) {
 					$xml .= "<{$fieldName}>{$fieldValue}</{$fieldName}>" . chr(10);

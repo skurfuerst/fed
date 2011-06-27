@@ -5,12 +5,29 @@
 	<f:for each="{group.areas}" as="area" iteration="iteration">
 		<div class="t3-page-ce-header t3-row-header t3-page-colHeader" style="margin-bottom: 0px; background-image: -moz-linear-gradient(center top , #7F7F7F 10%, #5B5B5B 100%) !important;">
 			<div class="t3-page-colHeader-icons">
-				<a title="Create new record in top of this column" onclick="window.location.href='db_new_content_el.php?id=157&amp;colPos=0&amp;sys_language_uid=0&amp;uid_pid=157&amp;returnUrl=%2Ftypo3%2Fsysext%2Fcms%2Flayout%2Fdb_layout.php%3Fid%3D157';" href="#"><span class="t3-icon t3-icon-actions t3-icon-actions-document t3-icon-document-new">&nbsp;</span></a>
+				<a title="Create new record in top of this column"
+				   onclick="window.location.href='/typo3/alt_doc.php?edit[tt_content][{row.pid}]=new&defVals[tt_content][colPos]=255&defVals[tt_content][sys_language_uid]={row.sys_language_uid}&returnUrl=%2Ftypo3%2Fsysext%2Fcms%2Flayout%2Fdb_layout.php%3Fid%3D{row.pid}&defVals[tt_content][CType]=text&defVals[tt_content][tx_fed_fcecontentarea]={area.name}%3A{row.uid}';"
+				   href="#"><span class="t3-icon t3-icon-actions t3-icon-actions-document t3-icon-document-new">&nbsp;</span></a>
 				<span class="t3-page-ce-icons-move"><span class="t3-icon t3-icon-empty t3-icon-empty-empty t3-icon-empty">&nbsp;</span></span>
 			</div>
 			<div class="t3-page-colHeader-label">{area.label}</div>
 		</div>
-		<div class="t3-page-ce-body">Content elements</div>
+		<div class="t3-page-ce-body">
+			<f:for each="{area.records}" as="record">
+				<div class="t3-page-ce-header t3-row-header t3-page-colHeader">
+					<div class="t3-page-colHeader-icons">
+						<a title="Create new record after this record"
+							onclick="window.location.href='/typo3/alt_doc.php?edit[tt_content][{record.pid}]=new&defVals[tt_content][colPos]=255&defVals[tt_content][sys_language_uid]={row.sys_language_uid}&returnUrl=%2Ftypo3%2Fsysext%2Fcms%2Flayout%2Fdb_layout.php%3Fid%3D{record.pid}&defVals[tt_content][CType]=text&defVals[tt_content][tx_fed_fcecontentarea]={area.name}%3A{row.uid}';"
+							href="#"><span class="t3-icon t3-icon-actions t3-icon-actions-document t3-icon-document-new">&nbsp;</span></a>
+						<a href="#" onclick="window.location.href='/typo3/alt_doc.php?returnUrl=%2Ftypo3%2Fsysext%2Fcms%2Flayout%2Fdb_layout.php%3Fid%3D{row.pid}&amp;edit[tt_content][{record.uid},]=edit'; return false;" title="Edit"><span class="t3-icon t3-icon-actions t3-icon-actions-document t3-icon-document-open">&nbsp;</span></a>
+						<a href="javascript:;" onclick="deleteRecord('tt_content', '{record.uid}', 'sysext/cms/layout/db_layout.php?id={row.pid}');" title="Delete"><span class="t3-icon t3-icon-actions t3-icon-actions-edit t3-icon-edit-delete">&nbsp;</span></a>
+						<span class="t3-page-ce-icons-move"><span class="t3-icon t3-icon-empty t3-icon-empty-empty t3-icon-empty">&nbsp;</span></span>
+					</div>
+					<div class="t3-page-colHeader-label"><f:if condition="{record.header}" then="{record.header}" else="(no title)" /></div>
+				</div>
+			</f:for>
+		</div>
+
 	</f:for>
 	<table cellspacing="0">
 		<thead>

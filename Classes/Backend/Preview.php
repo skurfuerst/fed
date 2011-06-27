@@ -118,7 +118,17 @@ class Tx_Fed_Backend_Preview implements tx_cms_layout_tt_content_drawItemHook {
 						$value = strip_tags($value);
 						$stored[$groupIndex]['fields'][$fieldIndex]['value'] = $value;
 					}
+					foreach ($group['areas'] as $areaIndex=>$area) {
+						$stored[$groupIndex]['areas'][$areaIndex]['records'] = array();
+						$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('*', 'tt_content',
+								"colPos = '255' AND tx_fed_fcecontentarea = '{$area['name']}:{$row['uid']}' AND deleted = 0");
+						while ($record = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
+							array_push($stored[$groupIndex]['areas'][$areaIndex]['records'], $record);
+						}
+
+					}
 				}
+				$this->view->assign('row', $row);
 				$this->view->assign('fce', $stored);
 				$itemContent = $this->view->render();
 				$drawItem = FALSE;
