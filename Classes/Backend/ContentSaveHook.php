@@ -53,12 +53,19 @@ class Tx_Fed_Backend_ContentSaveHook {
 	protected $fceParser;
 
 	/**
+	 *
+	 * @var Tx_Extbase_Service_FlexFormService
+	 */
+	protected $flexFormService;
+
+	/**
 	 * CONSTRUCTOR
 	 */
 	public function __construct() {
 		$this->objectManager = t3lib_div::makeInstance('Tx_Extbase_Object_ObjectManager');
 		$this->fceRepository = $this->objectManager->get('Tx_Fed_Domain_Repository_FceRepository');
 		$this->fceParser = $this->objectManager->get('Tx_Fed_Backend_FCEParser');
+		$this->flexFormService = $this->objectManager->get('Tx_Extbase_Service_FlexFormService');
 	}
 
 	public function processDatamap_postProcessFieldArray($status, $table, $id, &$fieldArray, &$thisObject) {
@@ -70,6 +77,20 @@ class Tx_Fed_Backend_ContentSaveHook {
 			if ($uid < 1) {
 				return;
 			}
+			$flexFormContent = $fieldArray['pi_flexform'];
+			$languagePointer = 'lDEF';
+			$valuePointer = 'vDEF';
+			$values = $this->flexFormService->convertFlexFormContentToArray($flexFormContent, $languagePointer, $valuePointer);
+			if (is_array($values['tt_content'])) {
+				foreach ($values['tt_content'] as $name=>$value) {
+					$fieldArray[$name] = $value;
+				}
+			}
+			#var_dump($fieldArray);
+			#exit();
+			#var_dump($fieldArray);
+			#var_dump($fieldArray);
+			#die();
 			#$fce = $this->fceRepository->findByUid($uid);
 			#$templateFile = $fce->getFilename();
 			#$config = $this->fceParser->getFceDefinitionFromTemplate(PATH_site . $templateFile);

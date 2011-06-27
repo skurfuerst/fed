@@ -53,6 +53,12 @@ class Tx_Fed_Utility_FlexForm implements t3lib_Singleton {
 	protected $configuration;
 
 	/**
+	 *
+	 * @var Tx_Extbase_Service_FlexFormService
+	 */
+	protected $flexFormService;
+
+	/**
 	 * @param Tx_Fed_Utility_DomainObjectInfo $infoService
 	 */
 	public function injectInfoService(Tx_Fed_Utility_DomainObjectInfo $infoService) {
@@ -67,20 +73,22 @@ class Tx_Fed_Utility_FlexForm implements t3lib_Singleton {
 	}
 
 	/**
+	 * @param Tx_Extbase_Service_FlexFormService $flexFormService
+	 */
+	public function injectFlexFormService(Tx_Extbase_Service_FlexFormService $flexFormService) {
+		$this->flexFormService = $flexFormService;
+	}
+
+	/**
 	 * Initialization
 	 */
 	public function initializeObject() {
 		$cObj = $this->configuration->getContentObject();
 		$this->raw = $cObj->data['pi_flexform'];
 		if ($this->raw) {
-			$dom = new DOMDocument();
-			$dom->loadXML($this->raw);
-			foreach ($dom->getElementsByTagName('field') as $field) {
-				$name = $field->getAttribute('index');
-				$value = $field->getElementsByTagName('value')->item(0)->nodeValue;
-				$value = trim($value);
-				$this->storage[$name] = $value;
-			}
+			$languagePointer = 'lDEF';
+			$valuePointer = 'vDEF';
+			$this->storage = $this->flexFormService->convertFlexFormContentToArray($this->raw, $languagePointer, $valuePointer);
 		} else {
 			return array();
 		}
