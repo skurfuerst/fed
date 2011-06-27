@@ -39,7 +39,6 @@ class Tx_Fed_ViewHelpers_Fce_RenderContentViewHelper extends Tx_Fed_Core_ViewHel
 
 	public function initializeArguments() {
 		$this->registerArgument('area', 'string', 'Name of the area to render');
-		#$this->registerArgument('records', 'array', 'Array of tt_content records to be rendered');
 
 	}
 
@@ -69,4 +68,5 @@ class Tx_Fed_ViewHelpers_Fce_RenderContentViewHelper extends Tx_Fed_Core_ViewHel
 	}
 
 }
+
 ?>

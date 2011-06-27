@@ -52,4 +52,3 @@ class Tx_Fed_ViewHelpers_Fce_Field_UserFuncViewHelper extends Tx_Fed_ViewHelpers
 
 }
 ?>
- 
