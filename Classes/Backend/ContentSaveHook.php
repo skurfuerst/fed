@@ -43,11 +43,6 @@ class Tx_Fed_Backend_ContentSaveHook {
 	protected $objectManager;
 
 	/**
-	 * @var Tx_Fed_Domain_Repository_FceRepository
-	 */
-	protected $fceRepository;
-
-	/**
 	 * @var Tx_Fed_Backend_FCEParser
 	 */
 	protected $fceParser;
@@ -63,18 +58,17 @@ class Tx_Fed_Backend_ContentSaveHook {
 	 */
 	public function __construct() {
 		$this->objectManager = t3lib_div::makeInstance('Tx_Extbase_Object_ObjectManager');
-		$this->fceRepository = $this->objectManager->get('Tx_Fed_Domain_Repository_FceRepository');
 		$this->fceParser = $this->objectManager->get('Tx_Fed_Backend_FCEParser');
-		$this->flexFormService = $this->objectManager->get('Tx_Extbase_Service_FlexFormService');
+		$this->flexFormService = $this->objectManager->get('Tx_Fed_Utility_FlexForm');
 	}
 
 	public function processDatamap_postProcessFieldArray($status, $table, $id, &$fieldArray, &$thisObject) {
-
-		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('tx_fed_fceuid', $table, "uid = '{$id}'");
+		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('tx_fed_fcefile', $table, "uid = '{$id}'");
 		$content = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res);
 		if (is_array($content)) {
-			$uid = array_pop($content);
-			if ($uid < 1) {
+			$fceTemplateFile = array_pop($content);
+			$fceTemplateFile = trim($fceTemplateFile);
+			if ($fceTemplateFile == '') {
 				return;
 			}
 			$flexFormContent = $fieldArray['pi_flexform'];
@@ -86,25 +80,6 @@ class Tx_Fed_Backend_ContentSaveHook {
 					$fieldArray[$name] = $value;
 				}
 			}
-			#var_dump($fieldArray);
-			#exit();
-			#var_dump($fieldArray);
-			#var_dump($fieldArray);
-			#die();
-			#$fce = $this->fceRepository->findByUid($uid);
-			#$templateFile = $fce->getFilename();
-			#$config = $this->fceParser->getFceDefinitionFromTemplate(PATH_site . $templateFile);
-
-			#$flexformTemplateFile = t3lib_extMgm::extPath('fed', 'Resources/Private/Templates/FlexibleContentElement/AutoFlexForm.xml');
-			#$template = $this->objectManager->get('Tx_Fluid_View_StandaloneView');
-			#$template->setTemplatePathAndFilename($flexformTemplateFile);
-			#$template->assign('fce', $config);
-			#$flexformXml = $template->render();
-			#$array = t3lib_div::xml2array($flexformXml);
-			#header("Content-type: text/plain");
-			#var_dump($fieldArray);
-			#exit();
-			#$fieldArray['pi_flexform'] = $flexformXml;
 		}
 
 

@@ -66,7 +66,6 @@ class Tx_Fed_Utility_FlexForm implements t3lib_Singleton {
 		$this->configuration = $configurationManager;
 	}
 
-
 	/**
 	 * Initialization
 	 */

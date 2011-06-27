@@ -45,20 +45,3 @@ FedSandboxBridge {
         pluginName = Datasource
     }
 }
-
-config.tx_extbase {
-	persistence {
-		classes {
-			Tx_Fed_Address {
-				mapping {
-					tableName = tt_address
-					recordType = Tx_Fed_Address
-					columns {
-						lockToDomain.mapOnProperty = lockToDomain
-					}
-				}
-			}
-
-		}
-	}
-}

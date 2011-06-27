@@ -51,7 +51,6 @@ class Tx_Fed_ViewHelpers_SolrViewHelper extends Tx_Fed_Core_ViewHelper_AbstractJ
 	public function initializeArguments() {
 		$this->registerArgument('template', 'string', 'Optional filename of custom template to use - see manual', FALSE, t3lib_extMgm::extPath('fed', 'Resources/Private/Templates/Solr/Index.html'));
 		$this->registerArgument('layoutRootPath', 'string', 'Full path to layout(s) which can render SOLR templates', FALSE, t3lib_extMgm::extPath('fed', 'Resources/Private/Templates/Solr/Layouts/'));
-		$this->registerArgument('section', 'string', 'Name of the section in template to render. Set this to a special section to render only the search field, for example', FALSE, 'main');
 		$this->registerArgument('stylesheet', 'string', 'Relative URI of stylesheet to use', FALSE, (t3lib_extMgm::siteRelPath('fed') . 'Resources/Public/Stylesheet/Solr.css'));
 		$this->registerArgument('script', 'string', 'Relative URI of script to use', FALSE, (t3lib_extMgm::siteRelPath('fed') . 'Resources/Public/Javascript/DefaultSolrApp.js'));
 	}

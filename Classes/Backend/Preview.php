@@ -49,11 +49,6 @@ class Tx_Fed_Backend_Preview implements tx_cms_layout_tt_content_drawItemHook {
 	protected $view;
 
 	/**
-	 * @var Tx_Fed_Domain_Repository_FceRepository
-	 */
-	protected $fceRepository;
-
-	/**
 	 * @var Tx_Fed_Utility_JSON
 	 */
 	protected $jsonService;
@@ -64,7 +59,6 @@ class Tx_Fed_Backend_Preview implements tx_cms_layout_tt_content_drawItemHook {
 	public function __construct() {
 		$templatePathAndFilename = t3lib_extMgm::extPath('fed', 'Resources/Private/Templates/FlexibleContentElement/BackendPreview.html');
 		$this->objectManager = t3lib_div::makeInstance('Tx_Extbase_Object_ObjectManager');
-		$this->fceRepository = $this->objectManager->get('Tx_Fed_Domain_Repository_FceRepository');
 		$this->jsonService = $this->objectManager->get('Tx_Fed_Utility_JSON');
 		$this->view = $this->objectManager->get('Tx_Fluid_View_StandaloneView');
 		$this->view->setTemplatePathAndFilename($templatePathAndFilename);
@@ -112,15 +106,12 @@ class Tx_Fed_Backend_Preview implements tx_cms_layout_tt_content_drawItemHook {
 	}
 
 	protected function preProcessFlexibleContentElement(&$drawItem, &$itemContent, array &$row) {
-		$uid = $row['tx_fed_fceuid'];
-		if ($uid > 0) {
+		$fceTemplateFile = $row['tx_fed_fcefile'];
+		$fceTemplateFile = PATH_site . $fceTemplateFile;
+		if (is_file($fceTemplateFile)) {
 			$drawItem = FALSE;
 			$fceParser = $this->objectManager->get('Tx_Fed_Backend_FCEParser');
-			$record = $this->fceRepository->findByUid($uid);
-			$flexform = t3lib_div::xml2array($row['pi_flexform']);
-			$filename = PATH_site . $record->getFilename();
-			$itemContent = $filename;
-			$stored = $fceParser->getFceDefinitionFromTemplate($filename);
+			$stored = $fceParser->getFceDefinitionFromTemplate($fceTemplateFile);
 			foreach ($stored as $groupIndex=>$group) {
 				foreach ($group['fields'] as $fieldIndex=>$field) {
 					$value = $flexform['data']['sDEF']['lDEF'][$field['name']]['vDEF'];

@@ -1,4 +1,8 @@
 plugin.tx_fed {
+	fce {
+		templatePath = fileadmin/
+		recursive = 0
+	}
 	view {
 		templateRootPath = {$plugin.tx_fed.view.templateRootPath}
 		partialRootPath = {$plugin.tx_fed.view.partialRootPath}

@@ -39,10 +39,6 @@ class Tx_Fed_Backend_DynamicFlexForm {
 	 */
 	protected $objectManager;
 
-	/**
-	 * @var Tx_Fed_Domain_Repository_FceRepository
-	 */
-	protected $fceRepository;
 
 	/**
 	 * @var Tx_Fed_Backend_FCEParser
@@ -54,7 +50,6 @@ class Tx_Fed_Backend_DynamicFlexForm {
 	 */
 	public function __construct() {
 		$this->objectManager = t3lib_div::makeInstance('Tx_Extbase_Object_ObjectManager');
-		$this->fceRepository = $this->objectManager->get('Tx_Fed_Domain_Repository_FceRepository');
 		$this->fceParser = $this->objectManager->get('Tx_Fed_Backend_FCEParser');
 	}
 
@@ -68,14 +63,12 @@ class Tx_Fed_Backend_DynamicFlexForm {
 			$file = file_get_contents($flexForm);
 			$dataStructArray = t3lib_div::xml2array($file);
 		} else if ($row['CType'] == 'fed_fce') {
-			$uid = $row['tx_fed_fceuid'];
-			if ($uid < 1) {
+			$templateFile = PATH_site . $row['tx_fed_fcefile'];
+			if (is_file($templateFile) === FALSE) {
 				return;
 			}
-			$fce = $this->fceRepository->findByUid($uid);
-			$templateFile = $fce->getFilename();
-			$config = $this->fceParser->getFceDefinitionFromTemplate(PATH_site . $templateFile);
-				$flexformTemplateFile = t3lib_extMgm::extPath('fed', 'Resources/Private/Templates/FlexibleContentElement/AutoFlexForm.xml');
+			$config = $this->fceParser->getFceDefinitionFromTemplate($templateFile);
+			$flexformTemplateFile = t3lib_extMgm::extPath('fed', 'Resources/Private/Templates/FlexibleContentElement/AutoFlexForm.xml');
 			$template = $this->objectManager->get('Tx_Fluid_View_StandaloneView');
 			$template->setTemplatePathAndFilename($flexformTemplateFile);
 			$template->assign('fce', $config);
