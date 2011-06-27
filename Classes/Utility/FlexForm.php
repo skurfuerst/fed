@@ -66,12 +66,6 @@ class Tx_Fed_Utility_FlexForm implements t3lib_Singleton {
 		$this->configuration = $configurationManager;
 	}
 
-	/**
-	 * @param Tx_Extbase_Service_FlexFormService $flexFormService
-	 */
-	public function injectFlexFormService(Tx_Extbase_Service_FlexFormService $flexFormService) {
-		$this->flexFormService = $flexFormService;
-	}
 
 	/**
 	 * Initialization
