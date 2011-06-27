@@ -38,12 +38,12 @@ class Tx_Fed_Backend_FCESelector {
 		$files = $this->getFiles($typoscript['templatePath'], $typoscript['recursive'] == '0');
 		$name = $parameters['itemFormElName'];
 		$value = $parameters['itemFormElValue'];
-		$select = "<select name='{$name}'>" . chr(10);
+		$select = "<div><select name='{$name}' onchange='if (confirm(TBE_EDITOR.labels.onChangeAlert) && TBE_EDITOR.checkSubmit(-1)){ TBE_EDITOR.submitForm() };'>" . chr(10);
 		foreach ($files as $fileRelPath) {
 			$selected = ($fileRelPath == $value ? " selected='selected'" : "");
 			$select .= "<option value='{$fileRelPath}'{$selected}>{$fileRelPath}</option>" .chr(10);
 		}
-		$select .= "</select>" . chr(10);
+		$select .= "</select></div>" . chr(10);
 		return $select;
 
 	}

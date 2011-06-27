@@ -37,10 +37,11 @@ t3lib_extMgm::addPlugin(array('FED Flexible Content Element', 'fed_fce'), 'CType
 t3lib_extMgm::addPlugin(array('FED Template Display', 'fed_template'), 'CType');
 t3lib_extMgm::addPlugin(array('FED DataSource Display', 'fed_datasource'), 'CType');
 
-$TCA['tt_content']['types']['fed_datasource']['showitem'] = 'CType;;4;button;1-1-1, header,pi_flexform';
-$TCA['tt_content']['types']['fed_fce']['showitem'] = 'CType;;4;button;1-1-1, header,tx_fed_fcefile,pi_flexform';
-$TCA['tt_content']['types']['fed_template']['showitem'] = 'CType;;4;button;1-1-1, header,pi_flexform';
-$TCA['tt_content']['types']['fed_datasource']['showitem'] = 'CType;;4;button;1-1-1, header,pi_flexform';
+t3lib_div::loadTCA('tt_content');
+$TCA['tt_content']['types']['fed_datasource']['showitem'] = 'CType;;4;button;1-1-1, header, pi_flexform';
+$TCA['tt_content']['types']['fed_fce']['showitem'] = 'CType;;4;button;1-1-1, header, tx_fed_fcefile, pi_flexform';
+$TCA['tt_content']['types']['fed_template']['showitem'] = 'CType;;4;button;1-1-1, header, pi_flexform';
+$TCA['tt_content']['types']['fed_datasource']['showitem'] = 'CType;;4;button;1-1-1, header, pi_flexform';
 $TCA['tt_content']['types']['list']['subtypes_addlist']['fed_fce'] = 'pi_flexform';
 $TCA['tt_content']['types']['list']['subtypes_addlist']['fed_template'] = 'pi_flexform';
 $TCA['tt_content']['types']['list']['subtypes_addlist']['fed_datasource'] = 'pi_flexform';
@@ -81,20 +82,21 @@ $TCA['tx_fed_domain_model_datasource'] = array(
 t3lib_extMgm::addTCAcolumns('tt_content', array(
 	'tx_fed_fcecontentarea' => Array (
 		'exclude' => 1,
-		'label' => 'LLL:EXT:fed/locallang_db.xml:tt_content.tx_fed_fcecontentarea',
+		'label' => 'LLL:EXT:fed/Resources/Private/Language/locallang_db.xml:tt_content.tx_fed_fcecontentarea',
 		'config' => Array (
 			'type' => 'passthrough',
 		)
 	),
 	'tx_fed_fcefile' => Array (
 		'exclude' => 1,
-		'label' => 'LLL:EXT:fed/locallang_db.xml:tt_content.tx_fed_fcefile',
+		'label' => 'LLL:EXT:fed/Resources/Private/Language/locallang_db.xml:tt_content.tx_fed_fcefile',
 		'config' => Array (
 			'type' => 'user',
-			'userFunc' => 'Tx_Fed_Backend_FCESelector->renderField'
+			'userFunc' => 'Tx_Fed_Backend_FCESelector->renderField',
 		)
 	),
 ), 1);
+
 
 require_once t3lib_extMgm::extPath($_EXTKEY , 'Configuration/Wizard/FlexFormCodeEditor.php');
 

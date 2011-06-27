@@ -67,13 +67,17 @@ class Tx_Fed_Backend_DynamicFlexForm {
 			if (is_file($templateFile) === FALSE) {
 				return;
 			}
-			$config = $this->fceParser->getFceDefinitionFromTemplate($templateFile);
-			$flexformTemplateFile = t3lib_extMgm::extPath('fed', 'Resources/Private/Templates/FlexibleContentElement/AutoFlexForm.xml');
-			$template = $this->objectManager->get('Tx_Fluid_View_StandaloneView');
-			$template->setTemplatePathAndFilename($flexformTemplateFile);
-			$template->assign('fce', $config);
-			$flexformXml = $template->render();
-			$dataStructArray = t3lib_div::xml2array($flexformXml);
+			#try {
+				$config = $this->fceParser->getFceDefinitionFromTemplate($templateFile);
+				$flexformTemplateFile = t3lib_extMgm::extPath('fed', 'Resources/Private/Templates/FlexibleContentElement/AutoFlexForm.xml');
+				$template = $this->objectManager->get('Tx_Fluid_View_StandaloneView');
+				$template->setTemplatePathAndFilename($flexformTemplateFile);
+				$template->assign('fce', $config);
+				$flexformXml = $template->render();
+				$dataStructArray = t3lib_div::xml2array($flexformXml);
+			#} catch (Exception $e) {
+				//var_dump($e->getMessage());
+			#}
 		}
 	}
 

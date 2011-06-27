@@ -6,8 +6,6 @@
 	</meta>
 	<data type="array">
 		<languageKey index="default" type="array">
-			<label index="tx_fed_domain_model_fce">Flexible Content Element source definition</label>
-			<label index="tx_fed_domain_model_fce.filename">Fluid Template file used by this FCE</label>
 			<label index="tx_fed_domain_model_datasource">Data Source</label>
 			<label index="tx_fed_domain_model_datasource.name">Name</label>
 			<label index="tx_fed_domain_model_datasource.description">Description</label>

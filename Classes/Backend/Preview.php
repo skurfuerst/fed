@@ -102,25 +102,29 @@ class Tx_Fed_Backend_Preview implements tx_cms_layout_tt_content_drawItemHook {
 			}
 			$this->view->assignMultiple($vars);
 		}
-		$itemContent = $this->view->render();
+		#$itemContent = $this->view->render();
 	}
 
 	protected function preProcessFlexibleContentElement(&$drawItem, &$itemContent, array &$row) {
 		$fceTemplateFile = $row['tx_fed_fcefile'];
 		$fceTemplateFile = PATH_site . $fceTemplateFile;
 		if (is_file($fceTemplateFile)) {
-			$drawItem = FALSE;
-			$fceParser = $this->objectManager->get('Tx_Fed_Backend_FCEParser');
-			$stored = $fceParser->getFceDefinitionFromTemplate($fceTemplateFile);
-			foreach ($stored as $groupIndex=>$group) {
-				foreach ($group['fields'] as $fieldIndex=>$field) {
-					$value = $flexform['data']['sDEF']['lDEF'][$field['name']]['vDEF'];
-					$value = strip_tags($value);
-					$stored[$groupIndex]['fields'][$fieldIndex]['value'] = $value;
+			try {
+				$fceParser = $this->objectManager->get('Tx_Fed_Backend_FCEParser');
+				$stored = $fceParser->getFceDefinitionFromTemplate($fceTemplateFile);
+				foreach ($stored as $groupIndex=>$group) {
+					foreach ($group['fields'] as $fieldIndex=>$field) {
+						$value = $flexform['data']['sDEF']['lDEF'][$field['name']]['vDEF'];
+						$value = strip_tags($value);
+						$stored[$groupIndex]['fields'][$fieldIndex]['value'] = $value;
+					}
 				}
+				$this->view->assign('fce', $stored);
+				$itemContent = $this->view->render();
+				$drawItem = FALSE;
+			} catch (Exception $e) {
+				//var_dump($e->getMessage());
 			}
-			$this->view->assign('fce', $stored);
-			$itemContent = $this->view->render();
 		}
 	}
 
