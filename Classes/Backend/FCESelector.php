@@ -39,6 +39,7 @@ class Tx_Fed_Backend_FCESelector {
 		$name = $parameters['itemFormElName'];
 		$value = $parameters['itemFormElValue'];
 		$select = "<div><select name='{$name}' onchange='if (confirm(TBE_EDITOR.labels.onChangeAlert) && TBE_EDITOR.checkSubmit(-1)){ TBE_EDITOR.submitForm() };'>" . chr(10);
+		$select .= "<option value=''>(select FCE template file)</option>" . chr(10);
 		foreach ($files as $fileRelPath) {
 			$selected = ($fileRelPath == $value ? " selected='selected'" : "");
 			$select .= "<option value='{$fileRelPath}'{$selected}>{$fileRelPath}</option>" .chr(10);
