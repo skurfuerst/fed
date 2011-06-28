@@ -149,7 +149,7 @@ class Tx_Fed_Backend_Preview implements tx_cms_layout_tt_content_drawItemHook {
 				$itemContent = $this->view->render();
 				$drawItem = FALSE;
 			} catch (Exception $e) {
-				var_dump($e->getMessage());
+				#var_dump($e->getMessage());
 			}
 		}
 	}

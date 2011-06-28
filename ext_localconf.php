@@ -76,6 +76,7 @@ t3lib_extMgm::addTypoScript($_EXTKEY,'setup',
     '[GLOBAL]
 	tt_content.fed_fce < tt_content.list.20.fed_fce
 	tt_content.fed_template < tt_content.list.20.fed_template
+	tt_content.fed_datasource < tt_content.list.20.fed_datasource
 	'
 , TRUE);
 
