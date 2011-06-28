@@ -108,8 +108,22 @@ class Tx_Fed_Backend_Preview implements tx_cms_layout_tt_content_drawItemHook {
 	protected function preProcessFlexibleContentElement(&$drawItem, &$itemContent, array &$row) {
 		$fceTemplateFile = $row['tx_fed_fcefile'];
 		$fceTemplateFile = PATH_site . $fceTemplateFile;
+
 		if (is_file($fceTemplateFile)) {
 			try {
+				$pageRes = $GLOBALS['TYPO3_DB']->exec_SELECTquery('*', 'pages', "uid = '{$row['pid']}'");
+				$pageRecord = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($pageRes);
+				$dblist = t3lib_div::makeInstance('tx_cms_layout');
+				$dblist->backPath = $GLOBALS['BACK_PATH'];
+				$dblist->thumbs = $this->imagemode;
+				$dblist->script = 'db_layout.php';
+				$dblist->showIcon = 0;
+				$dblist->setLMargin = 0;
+				$dblist->doEdit = TRUE;
+				$dblist->ext_CALC_PERMS = $GLOBALS['BE_USER']->calcPerms($pageRecord);
+				$dblist->id = $row['pid'];
+				$dblist->nextThree = 0;
+
 				$fceParser = $this->objectManager->get('Tx_Fed_Backend_FCEParser');
 				$stored = $fceParser->getFceDefinitionFromTemplate($fceTemplateFile);
 				foreach ($stored as $groupIndex=>$group) {
@@ -123,9 +137,11 @@ class Tx_Fed_Backend_Preview implements tx_cms_layout_tt_content_drawItemHook {
 						$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('*', 'tt_content',
 								"colPos = '255' AND tx_fed_fcecontentarea = '{$area['name']}:{$row['uid']}' AND deleted = 0");
 						while ($record = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
-							array_push($stored[$groupIndex]['areas'][$areaIndex]['records'], $record);
+							$dblist->tt_contentData['nextThree'][$record['uid']] = $record['uid'];
+							$rendered = $dblist->tt_content_drawHeader($record, 15, TRUE, FALSE);
+							$rendered .= $dblist->tt_content_drawItem($record, FALSE);
+							array_push($stored[$groupIndex]['areas'][$areaIndex]['records'], $rendered);
 						}
-
 					}
 				}
 				$this->view->assign('row', $row);
@@ -133,7 +149,7 @@ class Tx_Fed_Backend_Preview implements tx_cms_layout_tt_content_drawItemHook {
 				$itemContent = $this->view->render();
 				$drawItem = FALSE;
 			} catch (Exception $e) {
-				//var_dump($e->getMessage());
+				var_dump($e->getMessage());
 			}
 		}
 	}

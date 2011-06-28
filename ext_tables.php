@@ -46,8 +46,8 @@ $TCA['tt_content']['types']['list']['subtypes_addlist']['fed_fce'] = 'pi_flexfor
 $TCA['tt_content']['types']['list']['subtypes_addlist']['fed_template'] = 'pi_flexform';
 $TCA['tt_content']['types']['list']['subtypes_addlist']['fed_datasource'] = 'pi_flexform';
 $TCA['tt_content']['types']['list']['subtypes_addlist']['fed_sandbox'] = 'pi_flexform';
-#$TCA['tt_content']['palettes']['header']['showitem'] = ',tx_fed_fcecontentarea;LLL:EXT:fed/Resources/Private/Language/locallang_db.xml:tt_content.tx_fed_fcecontentarea';
-t3lib_extMgm::addToAllTCAtypes('tt_content', 'tx_fed_fcecontentarea;;LLL:EXT:fed/Resources/Private/Language/locallang_db.xml:tt_content.tx_fed_fcecontentarea;;;1-1-1');
+t3lib_extMgm::addToAllTCAtypes('tt_content', 'tx_fed_fcecontentarea;;;1-1-1');
+
 t3lib_extMgm::addPiFlexFormValue('fed_sandbox', 'FILE:EXT:'.$_EXTKEY.'/Configuration/FlexForms/Sandbox.xml');
 t3lib_extMgm::addStaticFile($_EXTKEY, 'Configuration/TypoScript', 'FED Fluid Extbase Development Framework');
 
@@ -84,9 +84,10 @@ $TCA['tx_fed_domain_model_datasource'] = array(
 t3lib_extMgm::addTCAcolumns('tt_content', array(
 	'tx_fed_fcecontentarea' => Array (
 		'exclude' => 1,
-		'label' => 'LLL:EXT:fed/Resources/Private/Language/locallang_db.xml:tt_content.tx_fed_fcecontentarea',
+		#'label' => 'LLL:EXT:fed/Resources/Private/Language/locallang_db.xml:tt_content.tx_fed_fcecontentarea',
 		'config' => Array (
-			'type' => 'input',
+			'type' => 'user',
+			'userFunc' => 'Tx_Fed_Backend_HiddenField->renderField',
 		)
 	),
 	'tx_fed_fcefile' => Array (

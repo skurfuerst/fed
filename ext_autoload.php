@@ -13,6 +13,7 @@ return array(
 	'tx_fed_backend_fceselector' => $extensionClassesPath . 'Backend/FCESelector.php',
 	'tx_fed_backend_preview' => $extensionClassesPath . 'Backend/Preview.php',
 	'tx_fed_backend_fceparser' => $extensionClassesPath . 'Backend/FCEParser.php',
+	'tx_fed_backend_hiddenfield' => $extensionClassesPath . 'Backend/HiddenField.php',
 	'tx_fed_backend_contentsavehook' => $extensionClassesPath . 'Backend/ContentSaveHook.php',
 	'tx_fed_persistence_repository' => $extensionClassesPath . 'Persistence/Repository.php',
 
