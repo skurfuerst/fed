@@ -70,15 +70,6 @@ class Tx_Fed_Utility_FlexForm implements t3lib_Singleton {
 	 * Initialization
 	 */
 	public function initializeObject() {
-		$cObj = $this->configuration->getContentObject();
-		$this->raw = $cObj->data['pi_flexform'];
-		if ($this->raw) {
-			$languagePointer = 'lDEF';
-			$valuePointer = 'vDEF';
-			$this->storage = $this->convertFlexFormContentToArray($this->raw, $languagePointer, $valuePointer);
-		} else {
-			return array();
-		}
 	}
 
 	/**
@@ -106,6 +97,15 @@ class Tx_Fed_Utility_FlexForm implements t3lib_Singleton {
 	 * @api
 	 */
 	public function get($key=NULL, $applyTransformations=TRUE) {
+		$cObj = $this->configuration->getContentObject();
+		$this->raw = $cObj->data['pi_flexform'];
+		if ($this->raw) {
+			$languagePointer = 'lDEF';
+			$valuePointer = 'vDEF';
+			$this->storage = $this->convertFlexFormContentToArray($this->raw, $languagePointer, $valuePointer);
+		} else {
+			return NULL;
+		}
 		if ($key === NULL) {
 			$arr = $this->storage;
 			foreach ($arr as $k=>$v) {
