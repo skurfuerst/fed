@@ -40,9 +40,11 @@ class Tx_Fed_ViewHelpers_Fce_Field_SelectViewHelper extends Tx_Fed_ViewHelpers_F
 	public function initializeArguments() {
 		parent::initializeArguments();
 		$this->registerArgument('validate', 'string', 'FlexForm-type validation configuration for this input', FALSE, 'trim');
-		$this->registerArgument('items', 'array', 'Items for the selector multidimensional, matching FlexForm/TCA', FALSE, NULL);
+		$this->registerArgument('items', 'array', 'Items for the selector multidimensional, matching FlexForm/TCA', FALSE, array());
 		$this->registerArgument('size', 'integer', 'Size of the selector box', FALSE, 1);
 		$this->registerArgument('multiple', 'boolean', 'If TRUE, allows multiple selections', FALSE, FALSE);
+		$this->registerArgument('minItems', 'integer', 'Minimum required number of items to be selected', FALSE, 0);
+		$this->registerArgument('maxItems', 'integer', 'Maxium allowed number of items to be selected', FALSE, 99999);
 		$this->registerArgument('table', 'string', 'Define foreign table name to turn selector into a record selector for that table', FALSE, NULL);
 		$this->registerArgument('condition', 'string', 'Condition to use when selecting from "foreignTable", supports FlexForm "foregin_table_where" markers', FALSE, NULL);
 		$this->registerArgument('mm', 'string', 'Optional name of MM table to use for record selection', FALSE, NULL);
@@ -62,8 +64,10 @@ class Tx_Fed_ViewHelpers_Fce_Field_SelectViewHelper extends Tx_Fed_ViewHelpers_F
 		$config['type'] = 'select';
 		$config['items'] = $this->arguments['items'];
 		$config['size'] = $this->arguments['size'];
+		$config['minItems'] = $this->arguments['minItems'];
+		$config['maxItems'] = $this->arguments['maxItems'];
 		$config['multiple'] = $this->getFlexFormBoolean($this->arguments['multiple']);
-		$config['validate'] = $this->arguments['validate'];
+		#$config['validate'] = $this->arguments['validate'];
 		$config['table'] = $this->arguments['table'];
 		$config['condition'] = $this->arguments['condition'];
 		$config['mm'] = $this->arguments['mm'];

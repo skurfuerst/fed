@@ -178,6 +178,7 @@ CSS;
 
 		$this->includeHeader($js, 'js');
 		$this->includeHeader($css, 'css');
+		$this->includeFile(t3lib_extMgm::siteRelPath('fed') . 'Resources/Public/Javascript/Base64.js');
 
 		$this->tag->addAttribute('id', $elementId);
 		$this->tag->addAttribute('class', $this->arguments['class']);
@@ -235,16 +236,20 @@ CSS;
 				$markerId = $marker['id'];
 				if ($marker['infoWindow']) {
 					$infoWindow = $marker['infoWindow'];
-					$infoWindow = str_replace("\n", "\\n", $infoWindow);
-					$infoWindow = str_replace('"', '\"', $infoWindow);
-					unset($marker['infoWindow']);
-				} else {
-					$infoWindow = FALSE;
-				}
-				$options = $this->getMarkerOptions($marker);
-				$str = "\tvar {$markerId} = new google.maps.Marker($options); {$markerId}.set('id', '{$markerId}'); markers.push({$markerId}); ";
-				if ($infoWindow) {
-					$str .= "    google.maps.event.addListener({$markerId}, 'click', function(event) { infoWindow.close(); infoWindow.setOptions({maxWidth: 600}); infoWindow.open(map, {$markerId}); infoWindow.setContent(\"{$infoWindow}\"); });";
+					$infoWindow = str_replace("\n", "", $infoWindow);
+					$infoWindow = stripslashes($infoWindow);
+					$infoWindow = base64_encode($infoWindow);
+					unset($marker['infoWindow'], $marker['properties'], $marker['data']);
+					$options = $this->getMarkerOptions($marker);
+					$str = "var {$markerId} = new google.maps.Marker($options); {$markerId}.set('id', '{$markerId}'); markers.push({$markerId}); ";
+					$str .= "google.maps.event.addListener({$markerId}, 'click', function(event) {
+						var infoWindowContent = decodeURI(\"{$infoWindow}\");
+						infoWindowContent = Base64.decode(infoWindowContent);
+						infoWindow.close();
+						infoWindow.setOptions({maxWidth: 600});
+						infoWindow.open(map, {$markerId});
+						infoWindow.setContent(infoWindowContent);
+					});";
 				}
 				array_push($allMarkers, $str);
 			}
@@ -264,7 +269,10 @@ CSS;
 				continue;
 			} else if (is_bool($value)) {
 				$value = $value ? 'true' : 'false';
+			} else if (is_array($value)) {
+				$value = "\"" . implode(',', $value) . "\"";
 			}
+			$value = str_replace("\n", "", trim($value));
 			$lines[] = "\"{$name}\":{$value}";
 		}
 		return $lines;

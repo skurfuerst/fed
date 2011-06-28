@@ -47,6 +47,9 @@ class Tx_Fed_ViewHelpers_Fce_RenderFieldViewHelper extends Tx_Fed_ViewHelpers_Fc
 	}
 
 	protected function getWizardConfiguration($config) {
+		if (count($config['wizards']) == 0) {
+			return NULL;
+		}
 		$xml = "<wizards type='array'>" . chr(10);
 		foreach ($config['wizards'] as $name=>$wizard) {
 			$xml .= "<{$name} type='array'>";
@@ -95,6 +98,9 @@ XML;
 		if ($config['items']) {
 			$switchedConfig = '<items type="array">' . chr(10);
 			foreach ($config['items'] as $iteration=>$set) {
+				if (count($set) == 1) {
+					$set[1] = $set[0]; // option value becomes label
+				}
 				$switchedConfig .= '<numIndex type="array" index="' . $iteration . '">' . chr(10);
 				$switchedConfig .= '	<numIndex index="0">' . $set[1] . '</numIndex>' . chr(10);
 				$switchedConfig .= '	<numIndex index="1">' . $set[0] . '</numIndex>' . chr(10);
@@ -162,7 +168,10 @@ XML;
 	<allowed>{$config['allowed']}</allowed>
 	<internal_type>{$config['internalType']}</internal_type>
 XML;
-		return $this->getSelectConfiguration($config, $added);
+		$xml = $this->getSelectConfiguration($config, $added);
+	#header("content-type: text/plain");
+	#die($xml);
+		return $xml;
 	}
 
 	protected function getUserConfiguration($config) {

@@ -82,11 +82,12 @@ class Tx_Fed_ViewHelpers_Map_MarkerViewHelper extends Tx_Fed_ViewHelpers_MapView
 			$markerId=NULL
 			) {
 		$marker = $this->inheritArguments();
+		$infoBox = $this->arguments['infobox'];
 		if ($infoBox === NULL) {
 			$infoBox = $this->renderChildren();
 			$infoBox = trim($infoBox);
-			$marker['infoWindow'] = $infoBox;
 		}
+		$marker['infoWindow'] = $infoBox;
 		$marker['id'] = $markerId ? 'marker' . $markerId : uniqid('wsgmkr');
 		if (count($data) == 0 && $object) {
 			if (count($properties) == 0) {
