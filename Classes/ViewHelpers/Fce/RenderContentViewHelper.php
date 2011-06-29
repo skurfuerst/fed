@@ -39,6 +39,8 @@ class Tx_Fed_ViewHelpers_Fce_RenderContentViewHelper extends Tx_Fed_Core_ViewHel
 
 	public function initializeArguments() {
 		$this->registerArgument('area', 'string', 'Name of the area to render');
+		$this->registerArgument('limit', 'integer', 'Optional limit to the number of content elements to render');
+		$this->registerArgument('order', 'string', 'Optional sort order of content elements - RAND() supported');
 
 	}
 
@@ -54,8 +56,9 @@ class Tx_Fed_ViewHelpers_Fce_RenderContentViewHelper extends Tx_Fed_Core_ViewHel
 			}
 		}
 		$record = $this->templateVariableContainer->get('record');
-		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('uid', 'tt_content',
-				"colPos = '255' AND tx_fed_fcecontentarea = '{$detectedArea['name']}:{$record['uid']}' AND deleted = 0 AND hidden = 0");
+		$conditions = "colPos = '255' AND tx_fed_fcecontentarea = '{$detectedArea['name']}:{$record['uid']}'
+			AND deleted = 0 AND hidden = 0";
+		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('uid', 'tt_content', $conditions, 'uid', $this->arguments['order'], $this->arguments['limit']);
 		while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
 			$conf = array(
 				'tables' => 'tt_content',

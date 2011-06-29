@@ -62,6 +62,7 @@ class Tx_Fed_Backend_FCESelector {
 				$addFiles[$index] = $basePath . $file;
 			}
 		}
+		sort($addFiles);
 		return (array) $addFiles;
 	}
 }

@@ -77,7 +77,7 @@ class Tx_Fed_ViewHelpers_TableViewHelper extends Tx_Fed_Core_ViewHelper_Abstract
 		$this->registerArgument('iconAsc', 'string', 'Icon for sort ascending', FALSE, "{$imagePath}asc.gif");
 		$this->registerArgument('iconDesc', 'string', 'Icon for sort descending', FALSE, "{$imagePath}desc.gif");
 		$this->registerArgument('iconDefault', 'string', 'Default icon for sorting', FALSE, "{$imagePath}sort.gif");
-		$this->registerArgument('textExtraction', 'string', 'Which method to use for text extraction. Valid values are "simple", "compex" or string name of a Javascript function you created', FALSE);
+		$this->registerArgument('textExtraction', 'string', 'Which method to use for text extraction. Valid values are "simple", "complex" or string name of a Javascript function you created', FALSE);
 		$this->registerArgument('data', 'array', 'If specified, renders array $data as table rows using keys for headers', FALSE);
 		$this->registerArgument('dataSource', 'mixed', 'If specified, tries to load a single DataSource (see DataSource Frontend plugin) and use it as data', FALSE);
 		$this->registerArgument('headers', 'array', 'If specified, uses $headers as array of header names', FALSE);
@@ -384,12 +384,15 @@ class Tx_Fed_ViewHelpers_TableViewHelper extends Tx_Fed_Core_ViewHelper_Abstract
 		$oLanguage = json_encode($this->arguments['oLanguage']);
 		if ($this->arguments->hasArgument('instanceName')) {
 			$instanceName = $this->arguments['instanceName'];
+			if ($instanceName == '') {
+				$instanceName = 'tableSorter';
+			}
 			$instance = "var {$instanceName};";
 		} else {
 			$instanceName = 'tableSorter';
 			$local = "var ";
 		}
-		if ($this->arguments->hasArgument('registerWith')) {
+		if (strlen($this->arguments['registerWith']) > 0) {
 			$method = $this->arguments['registerWith'];
 			$register = "{$method}({$instanceName});";
 		}

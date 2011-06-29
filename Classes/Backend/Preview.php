@@ -54,12 +54,18 @@ class Tx_Fed_Backend_Preview implements tx_cms_layout_tt_content_drawItemHook {
 	protected $jsonService;
 
 	/**
+	 * @var Tx_Fed_Utility_FlexForm
+	 */
+	protected $flexform;
+
+	/**
 	 * CONSTRUCTOR
 	 */
 	public function __construct() {
 		$templatePathAndFilename = t3lib_extMgm::extPath('fed', 'Resources/Private/Templates/FlexibleContentElement/BackendPreview.html');
 		$this->objectManager = t3lib_div::makeInstance('Tx_Extbase_Object_ObjectManager');
 		$this->jsonService = $this->objectManager->get('Tx_Fed_Utility_JSON');
+		$this->flexform = $this->objectManager->get('Tx_Fed_Utility_FlexForm');
 		$this->view = $this->objectManager->get('Tx_Fluid_View_StandaloneView');
 		$this->view->setTemplatePathAndFilename($templatePathAndFilename);
 	}
@@ -108,7 +114,7 @@ class Tx_Fed_Backend_Preview implements tx_cms_layout_tt_content_drawItemHook {
 	protected function preProcessFlexibleContentElement(&$drawItem, &$itemContent, array &$row) {
 		$fceTemplateFile = $row['tx_fed_fcefile'];
 		$fceTemplateFile = PATH_site . $fceTemplateFile;
-
+		$flexform = $this->flexform->convertFlexFormContentToArray($row['pi_flexform']);
 		if (is_file($fceTemplateFile)) {
 			try {
 				$pageRes = $GLOBALS['TYPO3_DB']->exec_SELECTquery('*', 'pages', "uid = '{$row['pid']}'");
@@ -123,12 +129,11 @@ class Tx_Fed_Backend_Preview implements tx_cms_layout_tt_content_drawItemHook {
 				$dblist->ext_CALC_PERMS = $GLOBALS['BE_USER']->calcPerms($pageRecord);
 				$dblist->id = $row['pid'];
 				$dblist->nextThree = 0;
-
 				$fceParser = $this->objectManager->get('Tx_Fed_Backend_FCEParser');
-				$stored = $fceParser->getFceDefinitionFromTemplate($fceTemplateFile);
+				$stored = $fceParser->getFceDefinitionFromTemplate($fceTemplateFile, $flexform);
 				foreach ($stored as $groupIndex=>$group) {
 					foreach ($group['fields'] as $fieldIndex=>$field) {
-						$value = $flexform['data']['sDEF']['lDEF'][$field['name']]['vDEF'];
+						$value = $flexform[$field['name']];
 						$value = strip_tags($value);
 						$stored[$groupIndex]['fields'][$fieldIndex]['value'] = $value;
 					}
@@ -144,7 +149,9 @@ class Tx_Fed_Backend_Preview implements tx_cms_layout_tt_content_drawItemHook {
 						}
 					}
 				}
+				$this->view->assignMultiple($flexform);
 				$this->view->assign('row', $row);
+				$this->view->assignMultiple($stored);
 				$this->view->assign('fce', $stored);
 				$itemContent = $this->view->render();
 				$drawItem = FALSE;

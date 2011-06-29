@@ -57,7 +57,9 @@ class Tx_Fed_ViewHelpers_Resource_FileViewHelper extends Tx_Fed_ViewHelpers_Reso
 		// if no "as" argument and no child content, return linked list of files
 		// else, assign variable "as"
 		$pathinfo = pathinfo($this->arguments['path']);
-		#var_dump($pathinfo);
+		if (is_dir($pathinfo['dirname']) === FALSE) {
+			$pathinfo = pathinfo(PATH_site . $this->arguments['path']);
+		}
 		if ($pathinfo['filename'] === '*') {
 			$files = $this->documentHead->getFilenamesOfType($pathinfo['dirname'], $pathinfo['extension']);
 		} else if (is_dir($pathinfo['dirname'] . '/' . $pathinfo['basename'])) {

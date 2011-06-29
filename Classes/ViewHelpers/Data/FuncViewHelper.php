@@ -38,6 +38,7 @@ class Tx_Fed_ViewHelpers_Data_FuncViewHelper extends Tx_Fed_Core_ViewHelper_Abst
 		$this->registerArgument('func', 'string', 'Function name to be called; can be an absolute reference (leave out $instance) or a method name for $instance');
 		$this->registerArgument('instance', 'string', 'If specified, runs $func on $instance', FALSE, NULL);
 		$this->registerArgument('arguments', 'array', 'Array of arguments, in order, to pass to the function', FALSE, array());
+		$this->registerArgument('as', 'string', 'If specified, sets template variable container value instead of returning output');
 	}
 
 	/**
@@ -65,7 +66,14 @@ class Tx_Fed_ViewHelpers_Data_FuncViewHelper extends Tx_Fed_Core_ViewHelper_Abst
 		} else {
 			$output = call_user_func_array($method, $arguments);
 		}
-		return $output;
+		if ($this->arguments['as']) {
+			if ($this->templateVariableContainer->exists($this->arguments['as'])) {
+				$this->templateVariableContainer->remove($this->arguments['as']);
+			}
+			$this->templateVariableContainer->add($this->arguments['as'], $output);
+		} else {
+			return $output;
+		}
 	}
 
 }

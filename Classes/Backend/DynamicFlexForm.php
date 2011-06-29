@@ -46,11 +46,17 @@ class Tx_Fed_Backend_DynamicFlexForm {
 	protected $fceParser;
 
 	/**
+	 * @var Tx_Fed_Utility_FlexForm
+	 */
+	protected $flexform;
+
+	/**
 	 * CONSTRUCTOR
 	 */
 	public function __construct() {
 		$this->objectManager = t3lib_div::makeInstance('Tx_Extbase_Object_ObjectManager');
 		$this->fceParser = $this->objectManager->get('Tx_Fed_Backend_FCEParser');
+		$this->flexform = $this->objectManager->get('Tx_Fed_Utility_FlexForm');
 	}
 
 	public function getFlexFormDS_postProcessDS(&$dataStructArray, $conf, &$row, $table, $fieldName) {
@@ -68,10 +74,13 @@ class Tx_Fed_Backend_DynamicFlexForm {
 				$dataStructArray = array('ROOT' => array('type' => 'array', 'el' => array()));
 				return;
 			}
-			$config = $this->fceParser->getFceDefinitionFromTemplate($templateFile);
+			$values = $this->flexform->convertFlexFormContentToArray($row['pi_flexform']);
+			#var_dump($values);
+			$config = $this->fceParser->getFceDefinitionFromTemplate($templateFile, $values);
 			$flexformTemplateFile = t3lib_extMgm::extPath('fed', 'Resources/Private/Templates/FlexibleContentElement/AutoFlexForm.xml');
 			$template = $this->objectManager->get('Tx_Fluid_View_StandaloneView');
 			$template->setTemplatePathAndFilename($flexformTemplateFile);
+			$template->assignMultiple($values);
 			$template->assign('fce', $config);
 			$flexformXml = $template->render();
 			$dataStructArray = t3lib_div::xml2array($flexformXml);

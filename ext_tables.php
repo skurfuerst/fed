@@ -38,7 +38,6 @@ t3lib_extMgm::addPlugin(array('FED Template Display', 'fed_template'), 'CType');
 t3lib_extMgm::addPlugin(array('FED DataSource Display', 'fed_datasource'), 'CType');
 
 t3lib_div::loadTCA('tt_content');
-$TCA['tt_content']['types']['fed_datasource']['showitem'] = 'CType;;4;button;1-1-1, header, pi_flexform';
 $TCA['tt_content']['types']['fed_fce']['showitem'] = 'CType;;4;button;1-1-1, header, colPos, tx_fed_fcefile, tx_fed_fcecontentarea, pi_flexform';
 $TCA['tt_content']['types']['fed_template']['showitem'] = 'CType;;4;button;1-1-1, header, pi_flexform';
 $TCA['tt_content']['types']['fed_datasource']['showitem'] = 'CType;;4;button;1-1-1, header, pi_flexform';

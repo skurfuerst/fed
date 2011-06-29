@@ -119,8 +119,8 @@ XML;
 <required>{$config['required']}</required>
 <config>
 	<type>{$config['type']}</type>
-	<minItems>{$config['minItems']}</minItems>
-	<maxItems>{$config['maxItems']}</maxItems>
+	<minitems>{$config['minItems']}</minitems>
+	<maxitems>{$config['maxItems']}</maxitems>
 	<size>{$config['size']}</size>
 	<multiple>{$config['multiple']}</multiple>
 	<show_thumbs>{$config['showThumbs']}</show_thumbs>

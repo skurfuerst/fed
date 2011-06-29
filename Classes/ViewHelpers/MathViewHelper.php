@@ -1,9 +1,8 @@
 <?php
-
 /***************************************************************
  *  Copyright notice
  *
- *  (c) 2011 Claus Due <claus@wildside.dk>, Wildside A/S
+ *  (c) 2010 Claus Due <claus@wildside.dk>, Wildside A/S
  *
  *  All rights reserved
  *
@@ -22,52 +21,36 @@
  *  GNU General Public License for more details.
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
- * ************************************************************* */
+ ***************************************************************/
 
 /**
- *
+ * Math ViewHelper - evaluates mathematical expression and returns result
  *
  * @author Claus Due, Wildside A/S
  * @version $Id$
  * @copyright Copyright belongs to the respective authors
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  * @package Fed
- * @subpackage Core/ViewHelper
+ * @subpackage ViewHelpers
+ *
  */
-class Tx_Fed_Backend_FCEParser {
+class Tx_Fed_ViewHelpers_MathViewHelper extends Tx_Fluid_ViewHelpers_ImageViewHelper {
 
-	/**
-	 * @var Tx_Fed_View_FlexibleContentElementView
-	 */
-	protected $view;
 
-	/**
-	 * @var type Tx_Extbase_Object_ObjectManager
-	 */
-	protected $objectManager;
-
-	/**
-	 *
-	 * @param Tx_Extbase_Object_ObjectManager $objectManager
-	 */
-	public function injectObjectManager(Tx_Extbase_Object_ObjectManager $objectManager) {
-		$this->objectManager = $objectManager;
+	public function initializeArguments() {
+		$this->registerArgument('expression', 'string', 'Expression to evaluate - can also be set as tag content');
 	}
 
-	/**
-	 *
-	 */
-	public function __construct() {
-		$this->objectManager = t3lib_div::makeInstance('Tx_Extbase_Object_ObjectManager');
-		$this->view = $this->objectManager->get('Tx_Fed_View_FlexibleContentElementView');
+	public function render() {
+		if ($this->arguments['expression']) {
+			$expression = $this->arguments['expression'];
+		} else {
+			$expression = $this->renderChildren();
+		}
+		$evalString = "\$number = floatval($expression);";
+		eval($evalString);
+		return $number;
 	}
-
-	public function getFceDefinitionFromTemplate($templateFile, $data=NULL) {
-		$this->view->setTemplatePathAndFilename($templateFile);
-		$this->view->setFlexFormData($data);
-		return $this->view->getFlexibleContentElementDefinitions();
-	}
-
 
 }
 

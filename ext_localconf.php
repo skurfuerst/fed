@@ -74,9 +74,15 @@ if (TYPO3_MODE == 'BE') {
 
 t3lib_extMgm::addTypoScript($_EXTKEY,'setup',
     '[GLOBAL]
-	tt_content.fed_fce < tt_content.list.20.fed_fce
-	tt_content.fed_template < tt_content.list.20.fed_template
-	tt_content.fed_datasource < tt_content.list.20.fed_datasource
+	tt_content.fed_fce = COA
+	tt_content.fed_fce.10 < lib.stdHeader
+	tt_content.fed_fce.20 < tt_content.list.20.fed_fce
+	tt_content.fed_template = COA
+	tt_content.fed_template.10 < lib.stdHeader
+	tt_content.fed_template.20 < tt_content.list.20.fed_template
+	tt_content.fed_datasource = COA
+	tt_content.fed_datasource.10 < lib.stdheader
+	tt_content.fed_datasource.20 < tt_content.list.20.fed_datasource
 	'
 , TRUE);
 

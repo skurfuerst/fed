@@ -6,6 +6,12 @@
 	</meta>
 	<data type="array">
 		<languageKey index="default" type="array">
+			<label index="tx_fed">FED</label>
+			<label index="tx_fed_file">File resource object</label>
+			<label index="tx_fed_file.filename">Filename</label>
+			<label index="tx_fed_file.size">Filesize</label>
+			<label index="tx_fed_file.modified">Modified</label>
+			<label index="tx_fed_file.created">Created</label>
 			<label index="tx_fed_domain_model_datasource">Data Source for Fluid Display</label>
 			<label index="tx_fed_domain_model_datasource.name">Name of this data source</label>
 			<label index="tx_fed_domain_model_datasource.description">Description of this data source</label>

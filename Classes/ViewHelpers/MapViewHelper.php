@@ -234,22 +234,21 @@ CSS;
 		foreach ($layers as $name=>$markers) {
 			foreach ($markers as $index=>$marker) {
 				$markerId = $marker['id'];
-				if ($marker['infoWindow']) {
-					$infoWindow = $marker['infoWindow'];
+				$infoWindow = $marker['infoWindow'];
+				unset($marker['infoWindow'], $marker['properties'], $marker['data']);
+				$options = $this->getMarkerOptions($marker);
+				$str = "var {$markerId} = new google.maps.Marker($options); {$markerId}.set('id', '{$markerId}'); markers.push({$markerId}); ";
+				if ($infoWindow) {
 					$infoWindow = str_replace("\n", "", $infoWindow);
 					$infoWindow = stripslashes($infoWindow);
 					$infoWindow = base64_encode($infoWindow);
-					unset($marker['infoWindow'], $marker['properties'], $marker['data']);
-					$options = $this->getMarkerOptions($marker);
-					$str = "var {$markerId} = new google.maps.Marker($options); {$markerId}.set('id', '{$markerId}'); markers.push({$markerId}); ";
 					$str .= "google.maps.event.addListener({$markerId}, 'click', function(event) {
-						var infoWindowContent = decodeURI(\"{$infoWindow}\");
-						infoWindowContent = Base64.decode(infoWindowContent);
+						var infoWindowContent = Base64.decode(\"{$infoWindow}\");
 						infoWindow.close();
 						infoWindow.setOptions({maxWidth: 600});
 						infoWindow.open(map, {$markerId});
 						infoWindow.setContent(infoWindowContent);
-					});";
+					}); ";
 				}
 				array_push($allMarkers, $str);
 			}

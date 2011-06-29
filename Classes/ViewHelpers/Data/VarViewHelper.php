@@ -1,9 +1,9 @@
-<?php 
+<?php
 /***************************************************************
 *  Copyright notice
 *
 *  (c) 2010 Claus Due <claus@wildside.dk>, Wildside A/S
-*  			
+*
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -24,7 +24,7 @@
 ***************************************************************/
 
 /**
- * 
+ *
  * @author Claus Due, Wildside A/S
  * @version $Id$
  * @copyright Copyright belongs to the respective authors
@@ -33,7 +33,7 @@
  * @subpackage ViewHelpers\Data
  */
 class Tx_Fed_ViewHelpers_Data_VarViewHelper extends Tx_Fed_Core_ViewHelper_AbstractViewHelper {
-	
+
 	/**
 	 * Get or set a variable
 	 * @param string $name
@@ -46,7 +46,19 @@ class Tx_Fed_ViewHelpers_Data_VarViewHelper extends Tx_Fed_Core_ViewHelper_Abstr
 		}
 		if (trim($value) === '') {
 			// we are echoing a variable
-			return $this->templateVariableContainer->get($name);
+			if (strpos($name, '.')) {
+				$parts = explode('.', $name);
+				$name = array_shift($parts);
+			}
+			if ($this->templateVariableContainer->exists($name)) {
+				$value = $this->templateVariableContainer->get($name);
+				if (is_array($parts) && count($parts) > 0) {
+					$value = $this->recursiveValueRead($value, $parts);
+				}
+				return $value;
+			} else {
+				return NULL;
+			}
 		} else {
 			// we are setting a variable
 			if ($type === NULL) {
@@ -70,7 +82,7 @@ class Tx_Fed_ViewHelpers_Data_VarViewHelper extends Tx_Fed_Core_ViewHelper_Abstr
 		}
 		return '';
 	}
-	
+
 	/**
 	 * Type-cast a value with type $type
 	 * @param mixed $value
@@ -89,13 +101,24 @@ class Tx_Fed_ViewHelpers_Data_VarViewHelper extends Tx_Fed_Core_ViewHelper_Abstr
 				break;
 			case 'array':
 				// cheat a bit; assume CSV
-				$value = (array) explode(',', $value);
+				$value = explode(',', $value);
 				break;
 			case 'string':
 			default:
 				$value = (string) $value;
 		}
 		return $value;
+	}
+
+	private function recursiveValueRead($value, &$parts) {
+		if ((!is_array($value) && !is_object($value)) || count($parts) === 0) {
+			return $value;
+		}
+		$field = array_shift($parts);
+		if ($field) {
+			$newValue = Tx_Extbase_Reflection_ObjectAccess::getProperty($value, $field);
+			return $this->recursiveValueRead($newValue, $parts);
+		}
 	}
 }
 
