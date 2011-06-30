@@ -16,7 +16,7 @@
 			<label index="tx_fed_domain_model_datasource.template_file">Template File</label>
 			<label index="tx_fed_domain_model_datasource.template_source">Template Source</label>
 			<label index="tt_content.tx_fed_fcecontentarea">FED FCE Content area position, $contentArea:$ttContentUid</label>
-			<label index="tt_content.tx_fed_fcefile">FED FCE Filename</label>
+			<label index="tt_content.tx_fed_fcefile">FED FCE Type</label>
 		</languageKey>
 	</data>
 </T3locallang>

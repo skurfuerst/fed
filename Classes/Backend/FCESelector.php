@@ -31,18 +31,25 @@
 class Tx_Fed_Backend_FCESelector {
 
 	public function renderField(&$parameters, &$pObj) {
-		$configManager = t3lib_div::makeInstance('Tx_Extbase_Configuration_BackendConfigurationManager');
+		$objectManager = t3lib_div::makeInstance('Tx_Extbase_Object_ObjectManager');
+		$configManager = $objectManager->get('Tx_Extbase_Configuration_BackendConfigurationManager');
 		$config = $configManager->getTyposcriptSetup();
 		$config = Tx_Extbase_Utility_TypoScript::convertTypoScriptArrayToPlainArray($config);
 		$typoscript = $config['plugin']['tx_fed']['fce'];
-		$files = $this->getFiles($typoscript['templatePath'], $typoscript['recursive'] == '0');
+		$files = $this->getFiles($typoscript['templatePath'], $typoscript['recursive'] == '1');
 		$name = $parameters['itemFormElName'];
 		$value = $parameters['itemFormElValue'];
 		$select = "<div><select name='{$name}' onchange='if (confirm(TBE_EDITOR.labels.onChangeAlert) && TBE_EDITOR.checkSubmit(-1)){ TBE_EDITOR.submitForm() };'>" . chr(10);
-		$select .= "<option value=''>(select FCE template file)</option>" . chr(10);
+		$select .= "<option value=''>(Select Fluid FCE type)</option>" . chr(10);
 		foreach ($files as $fileRelPath) {
+			$view = $objectManager->get('Tx_Fed_View_FlexibleContentElementView');
+			$view->setTemplatePathAndFilename(PATH_site . $fileRelPath);
+			$label = $view->harvest('FEDFCELABEL');
+			if (!$label) {
+				$label = $fileRelPath;
+			}
 			$selected = ($fileRelPath == $value ? " selected='selected'" : "");
-			$select .= "<option value='{$fileRelPath}'{$selected}>{$fileRelPath}</option>" .chr(10);
+			$select .= "<option value='{$fileRelPath}'{$selected}>{$label}</option>" .chr(10);
 		}
 		$select .= "</select></div>" . chr(10);
 		return $select;
@@ -53,13 +60,14 @@ class Tx_Fed_Backend_FCESelector {
 		$files = scandir(PATH_site . $basePath);
 		$addFiles = array();
 		foreach ($files as $index=>$file) {
-			if (substr($file, 0, 1) == '.') {
+			if (substr($file, 0, 1) === '.') {
 				continue;
 			} else if (is_dir(PATH_site . $basePath . $file) && $recursive) {
-				$subFiles = $this->getFiles($basePath . $file . '/', $recursive);
-				$addFiles = array_merge($addFiles, $subFiles);
+				foreach ($this->getFiles($basePath . $file . '/', $recursive) as $addFile) {
+					$addFiles[] = $addFile;
+				}
 			} else if (is_file(PATH_site . $basePath . $file)) {
-				$addFiles[$index] = $basePath . $file;
+				$addFiles[] = $basePath . $file;
 			}
 		}
 		sort($addFiles);

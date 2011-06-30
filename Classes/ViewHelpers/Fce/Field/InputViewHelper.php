@@ -40,6 +40,7 @@ class Tx_Fed_ViewHelpers_Fce_Field_InputViewHelper extends Tx_Fed_ViewHelpers_Fc
 	public function initializeArguments() {
 		parent::initializeArguments();
 		$this->registerArgument('eval', 'string', 'FlexForm-type validation configuration for this input', FALSE, 'trim');
+		$this->registerArgument('size', 'integer', 'Size of field', FALSE, 32);
 	}
 
 	public function render() {
@@ -51,6 +52,7 @@ class Tx_Fed_ViewHelpers_Fce_Field_InputViewHelper extends Tx_Fed_ViewHelpers_Fc
 	protected function getBaseConfig() {
 		$config = parent::getBaseConfig();
 		$config['eval'] = $this->arguments['eval'];
+		$config['size'] = $this->arguments['size'];
 		$config['type'] = 'input';
 		return $config;
 	}

@@ -13,12 +13,21 @@ class Tx_Fed_View_FlexibleContentElementView extends Tx_Fluid_View_StandaloneVie
 		$this->flexFormData = $data;
 	}
 
-	public function getFlexibleContentElementDefinitions() {
+	public function harvest($name) {
 		if ($this->flexFormData) {
 			$this->assignMultiple($this->flexFormData);
 		}
 		$this->render();
-		return $this->baseRenderingContext->getTemplateVariableContainer()->get('FEDFCE');
+		$templateVariableContainer = $this->baseRenderingContext->getTemplateVariableContainer();
+		if ($templateVariableContainer->exists($name)) {
+			return $templateVariableContainer->get($name);
+		} else {
+			return NULL;
+		}
+	}
+
+	public function getFlexibleContentElementDefinitions() {
+		return $this->harvest('FEDFCE');
 	}
 
 }

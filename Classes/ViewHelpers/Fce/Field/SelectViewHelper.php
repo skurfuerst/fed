@@ -44,7 +44,7 @@ class Tx_Fed_ViewHelpers_Fce_Field_SelectViewHelper extends Tx_Fed_ViewHelpers_F
 		$this->registerArgument('size', 'integer', 'Size of the selector box', FALSE, 1);
 		$this->registerArgument('multiple', 'boolean', 'If TRUE, allows multiple selections', FALSE, FALSE);
 		$this->registerArgument('minItems', 'integer', 'Minimum required number of items to be selected', FALSE, 0);
-		$this->registerArgument('maxItems', 'integer', 'Maxium allowed number of items to be selected', FALSE, 99999);
+		$this->registerArgument('maxItems', 'integer', 'Maxium allowed number of items to be selected', FALSE, 1);
 		$this->registerArgument('table', 'string', 'Define foreign table name to turn selector into a record selector for that table', FALSE, NULL);
 		$this->registerArgument('condition', 'string', 'Condition to use when selecting from "foreignTable", supports FlexForm "foregin_table_where" markers', FALSE, NULL);
 		$this->registerArgument('mm', 'string', 'Optional name of MM table to use for record selection', FALSE, NULL);

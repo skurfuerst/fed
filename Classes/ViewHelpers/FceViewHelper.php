@@ -41,6 +41,7 @@ class Tx_Fed_ViewHelpers_FceViewHelper extends Tx_Fed_Core_ViewHelper_AbstractFc
 	 */
 	public function initializeArguments() {
 		$this->registerArgument('id', 'string', 'Identifier of this Flexible Content Element', TRUE);
+		$this->registerArgument('label', 'string', 'Label for this Fluid FCE in template file selector', FALSE, NULL);
 	}
 
 	/**
@@ -48,6 +49,12 @@ class Tx_Fed_ViewHelpers_FceViewHelper extends Tx_Fed_Core_ViewHelper_AbstractFc
 	 */
 	public function render() {
 		$storage = array();
+		$this->templateVariableContainer->add('FEDFCEID', $this->arguments['id']);
+		if ($this->arguments['label']) {
+			$this->templateVariableContainer->add('FEDFCELABEL', $this->arguments['label']);
+		} else {
+			$this->templateVariableContainer->add('FEDFCELABEL', $this->arguments['id']);
+		}
 		$this->setStorage($storage);
 		$this->renderChildren();
 	}

@@ -86,6 +86,7 @@ class Tx_Fed_ViewHelpers_Fce_RenderFieldViewHelper extends Tx_Fed_ViewHelpers_Fc
 <config>
 	<type>{$config['type']}</type>
 	<default>{$config['default']}</default>
+	<size>{$config['size']}</size>
 	<eval>{$config['eval']}</eval>
 	{$wizards}
 </config>
