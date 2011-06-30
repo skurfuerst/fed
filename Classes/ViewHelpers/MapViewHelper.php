@@ -35,6 +35,8 @@ class Tx_Fed_ViewHelpers_MapViewHelper extends Tx_Fed_Core_ViewHelper_AbstractVi
 
 	protected $tagName = 'div';
 
+	protected $instanceName;
+
 	/**
 	 * @var array
 	 */
@@ -98,7 +100,7 @@ class Tx_Fed_ViewHelpers_MapViewHelper extends Tx_Fed_Core_ViewHelper_AbstractVi
 			$streetViewControl=TRUE,
 			$zoom=7,
 			$zoomControl=TRUE,
-			$instanceName='map',
+			$instanceName=NULL,
 			$mapTypeId='google.maps.MapTypeId.ROADMAP'
 			) {
 		if ($api === NULL) {
@@ -107,6 +109,16 @@ class Tx_Fed_ViewHelpers_MapViewHelper extends Tx_Fed_Core_ViewHelper_AbstractVi
 		$min = 100000;
 		$max = 999999;
 		$elementId = 'gm' . rand($min, $max);
+
+		$alphabet = "abcdefghijklmnopqrstuvwxyz";
+		if ($instanceName == '') {
+			$instanceName = 'map';
+			for ($i=0; $i<8; $i++) {
+				$index = rand(0, 25);
+				$instanceName .= $alphabet{$index};
+			}
+		}
+		$this->instanceName = $instanceName;
 
 		$this->options['mapTypeId'] = $mapTypeId;
 
@@ -126,16 +138,16 @@ class Tx_Fed_ViewHelpers_MapViewHelper extends Tx_Fed_Core_ViewHelper_AbstractVi
 		$options = $this->getMapOptions();
 
 		$js = <<< INIT
-var markers = [];
 var {$instanceName};
+var {$instanceName}markers = [];
 var {$instanceName}timeout;
 var {$instanceName}refreshList = function() {
 	var i;
 	var markerlist = jQuery('.fed-maplist');
-	for (i=0; i<markers.length; i++) {
-		var marker = markers[i];
+	for (i=0; i<{$instanceName}markers.length; i++) {
+		var marker = {$instanceName}markers[i];
 		var row = markerlist.find('tr.' + marker.get('id'));
-		if (map.getBounds().contains(marker.getPosition())) {
+		if ({$instanceName}.getBounds().contains(marker.getPosition())) {
 			row.removeClass('off');
 		} else {
 			row.addClass('off');
@@ -160,10 +172,10 @@ jQuery(document).ready(function() {
 	var listElement = jQuery('.fed-maplist');
 	if (listElement.html() != '') {
 		//{$instanceName}refreshList();
-		google.maps.event.addListener(map, 'zoom_changed', {$instanceName}timer);
-		google.maps.event.addListener(map, 'bounds_changed', {$instanceName}timer);
-		google.maps.event.addListener(map, 'center_changed', {$instanceName}timer);
-		google.maps.event.addListener(map, 'resize', {$instanceName}timer);
+		google.maps.event.addListener({$instanceName}, 'zoom_changed', {$instanceName}timer);
+		google.maps.event.addListener({$instanceName}, 'bounds_changed', {$instanceName}timer);
+		google.maps.event.addListener({$instanceName}, 'center_changed', {$instanceName}timer);
+		google.maps.event.addListener({$instanceName}, 'resize', {$instanceName}timer);
 	}
 });
 
@@ -237,7 +249,7 @@ CSS;
 				$infoWindow = $marker['infoWindow'];
 				unset($marker['infoWindow'], $marker['properties'], $marker['data']);
 				$options = $this->getMarkerOptions($marker);
-				$str = "var {$markerId} = new google.maps.Marker($options); {$markerId}.set('id', '{$markerId}'); markers.push({$markerId}); ";
+				$str = "var {$markerId} = new google.maps.Marker($options); {$markerId}.set('id', '{$markerId}'); {$this->instanceName}markers.push({$markerId}); ";
 				if ($infoWindow) {
 					$infoWindow = str_replace("\n", "", $infoWindow);
 					$infoWindow = stripslashes($infoWindow);
@@ -246,7 +258,7 @@ CSS;
 						var infoWindowContent = Base64.decode(\"{$infoWindow}\");
 						infoWindow.close();
 						infoWindow.setOptions({maxWidth: 600});
-						infoWindow.open(map, {$markerId});
+						infoWindow.open({$this->instanceName}, {$markerId});
 						infoWindow.setContent(infoWindowContent);
 					}); ";
 				}
@@ -304,7 +316,7 @@ CSS;
 		);
 		$lines = array(
 			"position: new google.maps.LatLng({$marker['lat']},{$marker['lng']})",
-			"map: map",
+			"map: {$this->instanceName}",
 			#shadow 	string|MarkerImage 	Shadow image
 			#icon 	string|MarkerImage 	Icon for the foreground
 			#shape MarkerShape Image map region definition used for drag/click.
