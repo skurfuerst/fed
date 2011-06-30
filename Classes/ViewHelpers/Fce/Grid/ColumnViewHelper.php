@@ -32,37 +32,40 @@
  * @copyright Copyright belongs to the respective authors
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  * @package Fed
- * @subpackage ViewHelpers/Fce
+ * @subpackage ViewHelpers/Fce/Grid
  */
-class Tx_Fed_ViewHelpers_Fce_ContentViewHelper extends Tx_Fed_Core_ViewHelper_AbstractFceViewHelper {
+class Tx_Fed_ViewHelpers_Fce_Grid_ColumnViewHelper extends Tx_Fed_Core_ViewHelper_AbstractFceViewHelper {
 
-	/**
-	 * Initialize arguments
-	 */
 	public function initializeArguments() {
-		$this->registerArgument('name', 'string', 'Name of the content area, FlexForm XML-valid tag name string', TRUE);
-		$this->registerArgument('label', 'string', 'Label for the content area, displayed in BE Page module', TRUE);
+		$this->registerArgument('colspan', 'integer', 'Column span');
+		$this->registerArgument('rowspan', 'integer', 'Column span');
+		$this->registerArgument('width', 'string', 'Width of column, fx "50%" or "500px"');
 	}
 
-	/**
-	 * Render method
-	 */
 	public function render() {
-		$storage = $this->getStorage();
-		$group = array_pop($storage);
-		$area = array(
-			'name' => $this->arguments['name'],
-			'label' => $this->arguments['label']
+
+		// add a column
+		$row = $this->templateVariableContainer->get('row');
+		$column = array(
+			'colspan' => $this->arguments['colspan'],
+			'rowspan' => $this->arguments['rowspan'],
+			'width' => $this->arguments['width'],
+			'areas' => array()
 		);
-		array_push($group['areas'], $area);
-		array_push($storage, $group);
-		if ($this->templateVariableContainer->exists('column')) {
-			$column = $this->templateVariableContainer->get('column');
-			array_push($column['areas'], $area);
-			$this->templateVariableContainer->remove('column');
-			$this->templateVariableContainer->add('column', $column);
-		}
-		$this->setStorage($storage);
+
+		// fill the column with any definitions inside
+		$this->templateVariableContainer->add('column', $column);
+		$this->renderChildren();
+
+		$column = $this->templateVariableContainer->get('column');
+		$row = $this->templateVariableContainer->get('row');
+
+		array_push($row['columns'], $column);
+		$this->templateVariableContainer->remove('row');
+		$this->templateVariableContainer->add('row', $row);
+
+		// cleanup
+		$this->templateVariableContainer->remove('column');
 	}
 
 }

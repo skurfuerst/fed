@@ -130,6 +130,7 @@ class Tx_Fed_Backend_Preview implements tx_cms_layout_tt_content_drawItemHook {
 				$dblist->id = $row['pid'];
 				$dblist->nextThree = 0;
 				$fceParser = $this->objectManager->get('Tx_Fed_Backend_FCEParser');
+				$areas = array();
 				$stored = $fceParser->getFceDefinitionFromTemplate($fceTemplateFile, $flexform);
 				foreach ($stored as $groupIndex=>$group) {
 					foreach ($group['fields'] as $fieldIndex=>$field) {
@@ -138,6 +139,7 @@ class Tx_Fed_Backend_Preview implements tx_cms_layout_tt_content_drawItemHook {
 						$stored[$groupIndex]['fields'][$fieldIndex]['value'] = $value;
 					}
 					foreach ($group['areas'] as $areaIndex=>$area) {
+						$areas[$area['name']]['records'] = array();
 						$stored[$groupIndex]['areas'][$areaIndex]['records'] = array();
 						$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('*', 'tt_content',
 								"colPos = '255' AND tx_fed_fcecontentarea = '{$area['name']}:{$row['uid']}' AND deleted = 0");
@@ -146,10 +148,12 @@ class Tx_Fed_Backend_Preview implements tx_cms_layout_tt_content_drawItemHook {
 							$rendered = $dblist->tt_content_drawHeader($record, 15, TRUE, FALSE);
 							$rendered .= $dblist->tt_content_drawItem($record, FALSE);
 							array_push($stored[$groupIndex]['areas'][$areaIndex]['records'], $rendered);
+							array_push($areas[$area['name']]['records'], $rendered);
 						}
 					}
 				}
 				$this->view->assignMultiple($flexform);
+				$this->view->assign('areas', $areas);
 				$this->view->assign('row', $row);
 				$this->view->assignMultiple($stored);
 				$this->view->assign('fce', $stored);

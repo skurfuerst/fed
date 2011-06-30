@@ -34,35 +34,30 @@
  * @package Fed
  * @subpackage ViewHelpers/Fce
  */
-class Tx_Fed_ViewHelpers_Fce_ContentViewHelper extends Tx_Fed_Core_ViewHelper_AbstractFceViewHelper {
+class Tx_Fed_ViewHelpers_Fce_GridViewHelper extends Tx_Fed_Core_ViewHelper_AbstractFceViewHelper {
 
-	/**
-	 * Initialize arguments
-	 */
-	public function initializeArguments() {
-		$this->registerArgument('name', 'string', 'Name of the content area, FlexForm XML-valid tag name string', TRUE);
-		$this->registerArgument('label', 'string', 'Label for the content area, displayed in BE Page module', TRUE);
-	}
-
-	/**
-	 * Render method
-	 */
 	public function render() {
+
+		// intitialize an empty grid container
+		$grid = array('rows' => array());
+		$this->templateVariableContainer->add('grid', $grid);
+
+		// renderChildren fills grid configuration
+		$this->renderChildren();
+		$grid = $this->templateVariableContainer->get('grid');
+
+		#var_dump($grid);
+
+		// completed grid config is added to storage
 		$storage = $this->getStorage();
-		$group = array_pop($storage);
-		$area = array(
-			'name' => $this->arguments['name'],
-			'label' => $this->arguments['label']
-		);
-		array_push($group['areas'], $area);
-		array_push($storage, $group);
-		if ($this->templateVariableContainer->exists('column')) {
-			$column = $this->templateVariableContainer->get('column');
-			array_push($column['areas'], $area);
-			$this->templateVariableContainer->remove('column');
-			$this->templateVariableContainer->add('column', $column);
+		if (is_array($storage['grids']) === FALSE) {
+			$storage['grids'] = array();
 		}
+		array_push($storage['grids'], $grid);
 		$this->setStorage($storage);
+
+		// cleanup
+		$this->templateVariableContainer->remove('grid');
 	}
 
 }

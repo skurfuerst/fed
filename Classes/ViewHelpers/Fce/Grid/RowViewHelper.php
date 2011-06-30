@@ -32,37 +32,28 @@
  * @copyright Copyright belongs to the respective authors
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  * @package Fed
- * @subpackage ViewHelpers/Fce
+ * @subpackage ViewHelpers/Fce/Grid
  */
-class Tx_Fed_ViewHelpers_Fce_ContentViewHelper extends Tx_Fed_Core_ViewHelper_AbstractFceViewHelper {
+class Tx_Fed_ViewHelpers_Fce_Grid_RowViewHelper extends Tx_Fed_Core_ViewHelper_AbstractFceViewHelper {
 
-	/**
-	 * Initialize arguments
-	 */
-	public function initializeArguments() {
-		$this->registerArgument('name', 'string', 'Name of the content area, FlexForm XML-valid tag name string', TRUE);
-		$this->registerArgument('label', 'string', 'Label for the content area, displayed in BE Page module', TRUE);
-	}
-
-	/**
-	 * Render method
-	 */
 	public function render() {
-		$storage = $this->getStorage();
-		$group = array_pop($storage);
-		$area = array(
-			'name' => $this->arguments['name'],
-			'label' => $this->arguments['label']
-		);
-		array_push($group['areas'], $area);
-		array_push($storage, $group);
-		if ($this->templateVariableContainer->exists('column')) {
-			$column = $this->templateVariableContainer->get('column');
-			array_push($column['areas'], $area);
-			$this->templateVariableContainer->remove('column');
-			$this->templateVariableContainer->add('column', $column);
-		}
-		$this->setStorage($storage);
+		// initialize an empty row
+		$row = array('columns' => array());
+		$this->templateVariableContainer->add('row', $row);
+
+		// renderChildren fills row configuration
+		$this->renderChildren();
+
+		// add the rendered row
+		$grid = $this->templateVariableContainer->get('grid');
+		$row = $this->templateVariableContainer->get('row');
+		array_push($grid['rows'], $row);
+		$this->templateVariableContainer->remove('grid');
+		$this->templateVariableContainer->add('grid', $grid);
+
+		// cleanup
+		$this->templateVariableContainer->remove('row');
+
 	}
 
 }
