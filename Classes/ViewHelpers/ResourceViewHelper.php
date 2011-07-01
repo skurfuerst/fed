@@ -37,7 +37,6 @@
  */
 class Tx_Fed_ViewHelpers_ResourceViewHelper extends Tx_Fed_Core_ViewHelper_AbstractViewHelper {
 
-
 	/**
 	 * Itnitialize all common arguments for Resource ViewHelpers
 	 */
@@ -49,6 +48,9 @@ class Tx_Fed_ViewHelpers_ResourceViewHelper extends Tx_Fed_Core_ViewHelper_Abstr
 		$this->registerArgument('sortDirection', 'string', 'Direction to sort', FALSE, 'ASC');
 		$this->registerArgument('limit', 'integer', 'Specify to limit the number of images which may be rendered');
 		$this->registerArgument('offset', 'integer', 'Specify to offset results, use in combination with "limit"', FALSE, 0);
+		if (!$this->objectManager) {
+			$this->objectManager = t3lib_div::makeInstance('Tx_Extbase_Object_ObjectManager');
+		}
 	}
 
 	/**
