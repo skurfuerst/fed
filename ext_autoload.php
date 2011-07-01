@@ -4,6 +4,7 @@ $extensionClassesPath = t3lib_extMgm::extPath('fed', 'Classes/');
 $extbaseClassesPath = t3lib_extMgm::extPath('extbase', 'Classes/');
 return array(
 	'tx_extbase_service_cacheservice' => $extbaseClassesPath . "Service/CacheService.php",
+	'tx_extbase_service_typoscriptservice' => $extbaseClassesPath . "Service/TypoScriptService.php",
 
 	'tx_fed_core_bootstrap' => $extensionClassesPath . 'Core/Bootstrap.php',
 	'tx_fed_utility_pdf' => $extensionClassesPath . 'Utility/PDF.php',

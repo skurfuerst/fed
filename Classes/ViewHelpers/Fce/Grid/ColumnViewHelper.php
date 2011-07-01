@@ -39,7 +39,7 @@ class Tx_Fed_ViewHelpers_Fce_Grid_ColumnViewHelper extends Tx_Fed_Core_ViewHelpe
 	public function initializeArguments() {
 		$this->registerArgument('colspan', 'integer', 'Column span');
 		$this->registerArgument('rowspan', 'integer', 'Column span');
-		$this->registerArgument('width', 'string', 'Width of column, fx "50%" or "500px"');
+		$this->registerArgument('width', 'string', 'Width of column, fx "50%" or "500px"', FALSE, 'auto');
 	}
 
 	public function render() {

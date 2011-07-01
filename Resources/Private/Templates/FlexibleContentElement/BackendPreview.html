@@ -1,6 +1,7 @@
 {namespace fed=Tx_Fed_ViewHelpers}
 
 <div class="t3-page-ce" style="margin-top: 8px;">
+<fed:comment>
 <h4>FED FCE: {tt_content.header}</h4>
 
 <table cellspacing="0">
@@ -19,13 +20,14 @@
 		</tr>
 	</f:for>
 </table>
+</fed:comment>
 <f:for each="{fce.grids}" as="grid">
 	<table cellspacing="10" style="width: 100%;">
 		<tbody>
 		<f:for each="{grid.rows}" as="gridrow">
 			<tr>
 			<f:for each="{gridrow.columns}" as="gridcolumn">
-				<td colspan="{gridcolumn.colspan}" rowspan="{gridcolumn.rowspan}" style="width: {column.width};">
+				<td colspan="{gridcolumn.colspan}" rowspan="{gridcolumn.rowspan}" style="width: {gridcolumn.width};">
 				<f:for each="{gridcolumn.areas}" as="area">
 					<div class="t3-page-ce-header t3-row-header t3-page-colHeader" style="margin-bottom: 0px; background-image: -moz-linear-gradient(center top , #7F7F7F 10%, #5B5B5B 100%) !important;">
 						<div class="t3-page-colHeader-icons">

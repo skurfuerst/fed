@@ -328,8 +328,6 @@ CSS;
 				unset($lines[$k]);
 			}
 		}
-		// now we need to unset the parameters which are only related to Map:
-
 		return $this->objWrap($lines);
 	}
 
