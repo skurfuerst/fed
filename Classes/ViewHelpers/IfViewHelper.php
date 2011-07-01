@@ -130,6 +130,8 @@ class Tx_Fed_ViewHelpers_IfViewHelper extends Tx_Fluid_Core_ViewHelper_AbstractC
 				return (call_user_method('count', $condition) > 0);
 			} else if ($condition instanceof Tx_Extbase_Reflection_ObjectAccess) {
 				return (count($condition->getAccessibleProperties($object)) > 0);
+			} else if ($condition instanceof DateTime) {
+				return $this->renderThenChild();
 			} else if ($condition instanceof stdClass) {
 				return $this->renderThenChild();
 			} else {
