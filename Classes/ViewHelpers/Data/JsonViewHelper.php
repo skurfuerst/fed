@@ -34,8 +34,14 @@
  */
 class Tx_Fed_ViewHelpers_Data_JsonViewHelper extends Tx_Fed_Core_ViewHelper_AbstractViewHelper {
 
+	/**
+	 * Initialize
+	 */
 	public function initializeArguments() {
 		$this->registerArgument('data', 'mixed', 'Either an array or an object containing data to be encoded');
+		if (!$this->objectManager) {
+			$this->objectManager = t3lib_div::makeInstance('Tx_Extbase_Object_ObjectManager');
+		}
 	}
 
 	/**
@@ -44,7 +50,7 @@ class Tx_Fed_ViewHelpers_Data_JsonViewHelper extends Tx_Fed_Core_ViewHelper_Abst
 	 */
 	public function render() {
 		$jsonHandler = $this->objectManager->get('Tx_Fed_Utility_JSON');
-		$string = $jsonHandler->encode($data);
+		$string = $jsonHandler->encode($this->arguments['data']);
 		return (string) $string;
 	}
 }
