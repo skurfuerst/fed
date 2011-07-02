@@ -119,13 +119,13 @@ class Tx_Fed_ViewHelpers_IfViewHelper extends Tx_Fluid_Core_ViewHelper_AbstractC
 			return (count($condition) > 0);
 		} else if ($condition instanceof Countable) {
 			return (count($condition) > 0);
-		} else if (is_string($condition) && trim($condition) === '') {
+		} elseif (is_string($condition) && trim($condition) === '') {
 			if (trim($condition) === '') {
 				return $this->renderElseChild();
-			} else if (preg_match("/[a-z^']/", $condition)) {
-				$condition = "'{$condition}'";
+			} else if (preg_match('/[a-z^]/', $condition)) {
+				$condition = '\'' . $condition . '\'';
 			}
-		} else if (is_object($condition)) {
+		} elseif (is_object($condition)) {
 			if ($condition instanceof Iterator && method_exists($condition, 'count')) {
 				return (call_user_method('count', $condition) > 0);
 			} else if ($condition instanceof Tx_Extbase_Reflection_ObjectAccess) {
@@ -138,23 +138,40 @@ class Tx_Fed_ViewHelpers_IfViewHelper extends Tx_Fluid_Core_ViewHelper_AbstractC
 				throw new Exception('Unknown object type in IfViewHelper condition: ' . get_class($condition), 1309493049);
 			}
 		}
-		$lParenthesisCount = substr_count($condition, '(');
-		$rParenthesisCount = substr_count($condition, ')');
+		$leftParenthesisCount = substr_count($condition, '(');
+		$rightParenthesisCount = substr_count($condition, ')');
 		$singleQuoteCount = substr_count($condition, '\'');
 		$escapedSingleQuoteCount = substr_count($condition, '\\\'');
-		if ($rParenthesisCount !== $lParenthesisCount) {
-			throw new Exception('Syntax error in IfViewHelper condition', 1309490125);
+		if ($rightParenthesisCount !== $leftParenthesisCount) {
+			throw new Exception('Syntax error in IfViewHelper condition, mismatched number of opening and closing paranthesis', 1309490125);
 		}
 		if (($singleQuoteCount-$escapedSingleQuoteCount) % 2 != 0) {
-			throw new Exception('Syntax error in IfViewHelper condition', 1309490125);
+			throw new Exception('Syntax error in IfViewHelper condition, mismatched number of unescaped single quotes', 1309490125);
 		}
+		$goodFunctions = array('pow', 'exp', 'abs', 'sin', 'cos', 'tan', 'strlen', 'substr', 'strpos', 'stripos', 'strstr', 'stristr', 'trim');
+		$languageConstructs = explode(',', 'print,echo,require,include,require_once,if,else,while,for,switch,exit,break,die');
+		$functions = get_defined_functions();
+		$functions = array_merge($languageConstructs, $functions['internal'], $functions['user']);
+		$functions = array_diff($functions, $goodFunctions);
+		$conditionLength = strlen($condition);
+		$conditionHasUnderscore = strpos($condition, '_');
+		foreach ($functions as $evilFunction) {
+			if (strlen($evilFunction) > $conditionLength) {
+					// no need to check for presence of this function - quick skip
+				continue;
+			}
+			if (preg_match('/' . $evilFunction . '([\s]){0,}\(/', $condition) === 1) {
+				throw new Exception('Disallowed PHP function "' . $evilFunction . '" used in IfViewHelper condition. Allowed functions: ' . $goodFunctions, 1309613359);
+			}
+		}
+
 		$evaluation = NULL;
 		$evaluationCondition = $condition;
 		$evaluationCondition = trim($condition, ';');
-		$evaluationExpression = "\$evaluation = (bool) ({$evaluationCondition});";
+		$evaluationExpression = '$evaluation = (bool) (' . $evaluationCondition . ');';
 		eval($evaluationExpression);
 		if ($evaluation === NULL) {
-			throw new Exception('Syntax error in computed IfViewHelper expression', 1309537403);
+			throw new Exception('Syntax error while analyzing computed IfViewHelper expression', 1309537403);
 		} else if ($evaluation === TRUE) {
 			return $this->renderThenChild();
 		} else {
