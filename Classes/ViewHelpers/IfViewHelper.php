@@ -115,9 +115,15 @@ class Tx_Fed_ViewHelpers_IfViewHelper extends Tx_Fluid_Core_ViewHelper_AbstractC
 	 */
 	public function render() {
 		$condition = $this->arguments['condition'];
-		if (is_array($condition)) {
+		if (is_null($condition)) {
+			return $this->renderElseChild();
+		} elseif ($condition === TRUE) {
+			return $this->renderThenChild();
+		} elseif ($condition === FALSE) {
+			return $this->renderElseChild();
+		} elseif (is_array($condition)) {
 			return (count($condition) > 0);
-		} else if ($condition instanceof Countable) {
+		} elseif ($condition instanceof Countable) {
 			return (count($condition) > 0);
 		} elseif (is_string($condition) && trim($condition) === '') {
 			if (trim($condition) === '') {
@@ -128,14 +134,18 @@ class Tx_Fed_ViewHelpers_IfViewHelper extends Tx_Fluid_Core_ViewHelper_AbstractC
 		} elseif (is_object($condition)) {
 			if ($condition instanceof Iterator && method_exists($condition, 'count')) {
 				return (call_user_method('count', $condition) > 0);
-			} else if ($condition instanceof Tx_Extbase_Reflection_ObjectAccess) {
-				return (count($condition->getAccessibleProperties($object)) > 0);
 			} else if ($condition instanceof DateTime) {
 				return $this->renderThenChild();
 			} else if ($condition instanceof stdClass) {
 				return $this->renderThenChild();
 			} else {
-				throw new Exception('Unknown object type in IfViewHelper condition: ' . get_class($condition), 1309493049);
+				$access = t3lib_div::makeInstance('Tx_Extbase_Reflection_ObjectAccess');
+				$propertiesCount = count($access->getGettableProperties($condition));
+				if ($propertiesCount > 0) {
+					return $this->renderThenChild();
+				} else {
+					throw new Exception('Unknown object type in IfViewHelper condition: ' . get_class($condition), 1309493049);
+				}
 			}
 		}
 		$leftParenthesisCount = substr_count($condition, '(');
@@ -171,7 +181,8 @@ class Tx_Fed_ViewHelpers_IfViewHelper extends Tx_Fluid_Core_ViewHelper_AbstractC
 		$evaluationExpression = '$evaluation = (bool) (' . $evaluationCondition . ');';
 		eval($evaluationExpression);
 		if ($evaluation === NULL) {
-			throw new Exception('Syntax error while analyzing computed IfViewHelper expression', 1309537403);
+			throw new Exception('Syntax error while analyzing computed IfViewHelper expression: ' . $evaluationExpression, 1309537403);
+			return $this->renderElseChild();
 		} else if ($evaluation === TRUE) {
 			return $this->renderThenChild();
 		} else {

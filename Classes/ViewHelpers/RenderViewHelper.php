@@ -1,4 +1,5 @@
 <?php
+
 /***************************************************************
 *  Copyright notice
 *
@@ -24,43 +25,30 @@
 ***************************************************************/
 
 /**
+ * ExtJS4 App initiation ViewHelper
  *
- * @author Claus Due, Wildside A/S
+ * @author Claus Due <claus@wildside.dk>, Wildside A/S
  * @version $Id$
  * @copyright Copyright belongs to the respective authors
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  * @package Fed
- * @subpackage Utility
+ * @subpackage ViewHelpers
  */
-class Tx_Fed_Utility_PartialRender implements t3lib_Singleton {
+class Tx_Fed_ViewHelpers_RenderViewHelper extends Tx_Fed_Core_ViewHelper_AbstractViewHelper {
 
 	/**
-	 * @var Tx_Extbase_Object_ObjectManager
+	 * Initialize
 	 */
-	protected $objectManager;
-
-	/**
-	 * @param Tx_Extbase_Object_ObjectManager $objectManager
-	 */
-	public function injectObjectManager(Tx_Extbase_Object_ObjectManager $objectManager) {
-		$this->objectManager = $objectManager;
+	public function initializeArguments() {
+		$this->registerArgument('template', 'string', 'Site-relative path of Fluid template file to render', TRUE);
+		$this->registerArgument('arguments', 'array', 'Arguments for the partial template', FALSE, NULL);
 	}
 
 	/**
-	 * Renders a relative-path partial template, fx from fileadmin/templates/
-	 * Passes arguments to template
-	 *
-	 * @param string $templatePath The relative path to the Fluid template file
-	 * @param array $arguments The arguments (template vars) for the template
-	 * @return string
+	 * return string
 	 */
-	public function render($templateFile, $arguments=NULL) {
-		$view = $this->objectManager->get('Tx_Fluid_View_StandaloneView');
-		$view->setTemplatePathAndFilename(PATH_site . $templateFile);
-		if ($arguments) {
-			$view->assignMultiple($arguments);
-		}
-		return $view->render();
+	public function render() {
+		return $this->partialRender->render($this->arguments['template'], $this->arguments['arguments']);
 	}
 
 }
