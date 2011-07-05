@@ -62,7 +62,6 @@ class Tx_Fed_Utility_JSON implements t3lib_Singleton {
 		}
 	}
 
-
 	/**
 	 * Encode to working JSON depending on PHP version
 	 *
@@ -70,15 +69,14 @@ class Tx_Fed_Utility_JSON implements t3lib_Singleton {
 	 * @param int $options
 	 */
 	public function encode($source) {
-                if ($this->getPHPVersion() >= 5.3) {
-                    $options = $this->getEncodeOptions();
-                    $str = json_encode($source, $options);
-                } else {
-                    $str = json_encode($source, $options);
-                }
+		if ($this->getPHPVersion() >= 5.3) {
+			$options = $this->getEncodeOptions();
+			$str = json_encode($source, $options);
+		} else {
+			$str = json_encode($source);
+		}
 		return $str;
 	}
-
 
 	/**
 	 * Decode to working JSON depending on PHP version
@@ -89,7 +87,6 @@ class Tx_Fed_Utility_JSON implements t3lib_Singleton {
 		$decoded = json_decode($str);
 		return $decoded;
 	}
-
 
 }
 

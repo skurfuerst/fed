@@ -142,7 +142,7 @@ class Tx_Fed_Backend_Preview implements tx_cms_layout_tt_content_drawItemHook {
 						$areas[$area['name']]['records'] = array();
 						$stored[$groupIndex]['areas'][$areaIndex]['records'] = array();
 						$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('*', 'tt_content',
-								"colPos = '255' AND tx_fed_fcecontentarea = '{$area['name']}:{$row['uid']}' AND deleted = 0");
+								"colPos = '255' AND tx_fed_fcecontentarea = '{$area['name']}:{$row['uid']}' AND deleted = 0", 'uid', 'sorting ASC');
 						while ($record = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
 							$dblist->tt_contentData['nextThree'][$record['uid']] = $record['uid'];
 							$rendered = $dblist->tt_content_drawHeader($record, 15, TRUE, FALSE);

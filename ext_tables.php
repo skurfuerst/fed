@@ -48,6 +48,8 @@ $TCA['tt_content']['types']['list']['subtypes_addlist']['fed_sandbox'] = 'pi_fle
 t3lib_extMgm::addToAllTCAtypes('tt_content', 'tx_fed_fcecontentarea;;;1-1-1');
 
 t3lib_extMgm::addPiFlexFormValue('fed_sandbox', 'FILE:EXT:'.$_EXTKEY.'/Configuration/FlexForms/Sandbox.xml');
+t3lib_extMgm::addPiFlexFormValue('fed_template', 'FILE:EXT:'.$_EXTKEY.'/Configuration/FlexForms/Template.xml');
+t3lib_extMgm::addPiFlexFormValue('fed_datasource', 'FILE:EXT:'.$_EXTKEY.'/Configuration/FlexForms/DataSource.xml');
 t3lib_extMgm::addStaticFile($_EXTKEY, 'Configuration/TypoScript', 'FED Fluid Extbase Development Framework');
 
 

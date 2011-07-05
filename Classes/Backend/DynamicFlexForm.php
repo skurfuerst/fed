@@ -60,15 +60,7 @@ class Tx_Fed_Backend_DynamicFlexForm {
 	}
 
 	public function getFlexFormDS_postProcessDS(&$dataStructArray, $conf, &$row, $table, $fieldName) {
-		if ($row['CType'] == 'fed_template') {
-			$flexForm = t3lib_extMgm::extPath('fed', '/Configuration/FlexForms/Template.xml');
-			$file = file_get_contents($flexForm);
-			$dataStructArray = t3lib_div::xml2array($file);
-		} else if ($row['CType'] == 'fed_datasource') {
-			$flexForm = t3lib_extMgm::extPath('fed', '/Configuration/FlexForms/DataSource.xml');
-			$file = file_get_contents($flexForm);
-			$dataStructArray = t3lib_div::xml2array($file);
-		} else if ($row['CType'] == 'fed_fce') {
+		if ($row['CType'] == 'fed_fce') {
 			$templateFile = PATH_site . $row['tx_fed_fcefile'];
 			if (is_file($templateFile) === FALSE) {
 				$dataStructArray = array('ROOT' => array('type' => 'array', 'el' => array()));
