@@ -12,10 +12,10 @@ Ext.define('{prefix}{className}', {
     proxy: {
         type: 'rest',
 		api: {
-			create: '<f:format.raw>{urls.create}</f:format.raw>',
-			read: '<f:format.raw>{urls.read}</f:format.raw>',
-			update: '<f:format.raw>{urls.update}</f:format.raw>',
-			destroy: '<f:format.raw>{urls.destroy}</f:format.raw>'
+			create: '<fed:raw>{urls.create}</fed:raw>',
+			read: '<fed:raw>{urls.read}</fed:raw>',
+			update: '<fed:raw>{urls.update}</fed:raw>',
+			destroy: '<fed:raw>{urls.destroy}</fed:raw>'
 		}
 	}
 });
