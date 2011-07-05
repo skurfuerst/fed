@@ -70,8 +70,12 @@ class Tx_Fed_Utility_JSON implements t3lib_Singleton {
 	 * @param int $options
 	 */
 	public function encode($source) {
-		$options = $this->getEncodeOptions();
-		$str = json_encode($source, $options);
+                if ($this->getPHPVersion() >= 5.3) {
+                    $options = $this->getEncodeOptions();
+                    $str = json_encode($source, $options);
+                } else {
+                    $str = json_encode($source, $options);
+                }
 		return $str;
 	}
 
