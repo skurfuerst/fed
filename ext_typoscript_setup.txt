@@ -46,19 +46,3 @@ FedSandboxBridge {
     }
 }
 
-
-FedHashBridge = PAGE
-FedHashBridge {
-    typeNum = 1310032202
-    config {
-    	no_cache = 1
-        disableAllHeaderCode = 1
-    }
-    headerData >
-    1310032202 = USER_INT
-    1310032202 {
-		userFunc = tx_fed_core_bootstrap->run
-        extensionName = Fed
-        pluginName = Hash
-    }
-}
