@@ -32,6 +32,12 @@ Tx_Extbase_Utility_Extension::registerPlugin(
 	'FED Sandbox'
 );
 
+Tx_Extbase_Utility_Extension::registerPlugin(
+	$_EXTKEY,
+	'Hash',
+	'FED Hasher'
+);
+
 
 t3lib_extMgm::addPlugin(array('FED Flexible Content Element', 'fed_fce'), 'CType');
 t3lib_extMgm::addPlugin(array('FED Template Display', 'fed_template'), 'CType');

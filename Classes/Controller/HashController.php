@@ -35,14 +35,14 @@
 class Tx_Fed_Controller_HashController extends Tx_Fed_Core_AbstractController {
 	
 	/**
-	 * @var Tx_Extbase_Security_Channel_RequestHashService
+	 * @var Tx_Extbase_Security_Cryptography_HashService
 	 */
 	protected $hashService;
 	
 	/**
-	 * @param Tx_Extbase_Security_Channel_RequestHashService $hashService
+	 * @param Tx_Extbase_Security_Cryptography_HashService $hashService
 	 */
-	public function injectHashService(Tx_Extbase_Security_Channel_RequestHashService $hashService) {
+	public function injectHashService(Tx_Extbase_Security_Cryptography_HashService $hashService) {
 		$this->hashService = $hashService;
 	}
 	
@@ -54,6 +54,16 @@ class Tx_Fed_Controller_HashController extends Tx_Fed_Core_AbstractController {
 	 */
 	public function requestAction($fieldNames, $fieldnamePrefix='') {
 		return $this->hashService->generateRequestHash($fieldNAmes, $fieldNamePrefix);
+	}
+	
+	/**
+	 * Generate SHA1 hash for $subject using site encryption key
+	 * 
+	 * @param string $subject
+	 * @return string
+	 */
+	public function generateHashAction($subject) {
+		return $this->hashService->generateHash($subject);
 	}
 	
 }

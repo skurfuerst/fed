@@ -66,6 +66,18 @@ Tx_Extbase_Utility_Extension::configurePlugin(
 	)
 );
 
+Tx_Extbase_Utility_Extension::configurePlugin(
+	$_EXTKEY,
+	'Hash',
+	array(
+		'Hash' => 'generateHash',
+	),
+	array(
+		'Hash' => 'generateHash',
+	)
+);
+
+
 if (TYPO3_MODE == 'BE') {
 	$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processDatamapClass'][] = 'EXT:fed/Classes/Backend/ContentSaveHook.php:Tx_Fed_Backend_ContentSaveHook';
     $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['cms/layout/class.tx_cms_layout.php']['tt_content_drawItem'][] = 'EXT:fed/Classes/Backend/Preview.php:Tx_Fed_Backend_Preview';
