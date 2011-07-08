@@ -98,7 +98,7 @@ class Tx_Fed_ViewHelpers_ImageViewHelper extends Tx_Fluid_ViewHelpers_ImageViewH
 		if ($pathinfo['filename'] === '*') {
 			$images = $this->documentHead->getFilenamesOfType($pathinfo['dirname'], $pathinfo['extension']);
 		} else if ($this->arguments->hasArgument('path')) {
-			$images = explode(',', $this->arguments['src']);
+			$images = explode(',', trim($this->arguments['src'], ','));
 			// patch for CSV files missing relative pathnames and possible missing files
 			foreach ($images as $k=>$v) {
 				$images[$k] = $this->arguments['path'] . $v;
@@ -139,10 +139,10 @@ class Tx_Fed_ViewHelpers_ImageViewHelper extends Tx_Fluid_ViewHelpers_ImageViewH
 		$setup = array(
 			'width' => $this->arguments['width'],
 			'height' => $this->arguments['height'],
-			'minW' => $this->arguments['minWidth'],
-			'minH' => $this->arguments['minHeight'],
-			'maxW' => $this->arguments['maxWidth'],
-			'maxH' => $this->arguments['maxHeight'],
+			'minW' => $this->arguments['minW'],
+			'minH' => $this->arguments['minH'],
+			'maxW' => $this->arguments['maxW'],
+			'maxH' => $this->arguments['maxH'],
 		);
 		if ($this->arguments['clickenlarge'] === TRUE) {
 			$this->addScript();
