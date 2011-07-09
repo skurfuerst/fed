@@ -39,6 +39,7 @@ class Tx_Fed_ViewHelpers_MathViewHelper extends Tx_Fluid_ViewHelpers_ImageViewHe
 
 	public function initializeArguments() {
 		$this->registerArgument('expression', 'string', 'Expression to evaluate - can also be set as tag content');
+		$this->registerArgument('as', 'string', 'Variable name to insert result into, suppresses output');
 	}
 
 	public function render() {
@@ -49,7 +50,14 @@ class Tx_Fed_ViewHelpers_MathViewHelper extends Tx_Fluid_ViewHelpers_ImageViewHe
 		}
 		$evalString = "\$number = floatval($expression);";
 		eval($evalString);
-		return $number;
+		if ($this->arguments['as']) {
+			if ($this->templateVariableContainer->exists($this->arguments['as'])) {
+				$this->templateVariableContainer->remove($this->arguments['as']);
+			}
+			$this->templateVariableContainer->add($this->arguments['as'], $number);
+		} else {
+			return $number;
+		}
 	}
 
 }
