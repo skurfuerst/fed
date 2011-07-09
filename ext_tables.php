@@ -44,7 +44,17 @@ t3lib_extMgm::addPlugin(array('FED Template Display', 'fed_template'), 'CType');
 t3lib_extMgm::addPlugin(array('FED DataSource Display', 'fed_datasource'), 'CType');
 
 t3lib_div::loadTCA('tt_content');
-$TCA['tt_content']['types']['fed_fce']['showitem'] = 'CType;;4;button;1-1-1, header, colPos, tx_fed_fcefile, tx_fed_fcecontentarea, pi_flexform';
+$TCA['tt_content']['types']['fed_fce']['showitem'] = '
+--palette--;LLL:EXT:cms/locallang_ttc.xml:palette.general;general,
+ --palette--;LLL:EXT:cms/locallang_ttc.xml:palette.header;header,
+ --div--;Flexible Content Element, tx_fed_fcefile, pi_flexform;Flexible Content Element Fields,
+ --div--;LLL:EXT:cms/locallang_ttc.xml:tabs.appearance,
+ --palette--;LLL:EXT:cms/locallang_ttc.xml:palette.frames;frames,
+ --div--;LLL:EXT:cms/locallang_ttc.xml:tabs.access,
+ --palette--;LLL:EXT:cms/locallang_ttc.xml:palette.visibility;visibility,
+ --palette--;LLL:EXT:cms/locallang_ttc.xml:palette.access;access,
+ --div--;LLL:EXT:cms/locallang_ttc.xml:tabs.extended,tx_fed_fcecontentarea
+ ';
 $TCA['tt_content']['types']['fed_template']['showitem'] = 'CType;;4;button;1-1-1, header, pi_flexform';
 $TCA['tt_content']['types']['fed_datasource']['showitem'] = 'CType;;4;button;1-1-1, header, pi_flexform';
 $TCA['tt_content']['types']['list']['subtypes_addlist']['fed_fce'] = 'pi_flexform';
