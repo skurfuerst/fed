@@ -60,6 +60,7 @@ class Tx_Fed_Backend_DynamicFlexForm {
 	}
 
 	public function getFlexFormDS_postProcessDS(&$dataStructArray, $conf, &$row, $table, $fieldName) {
+
 		if ($row['CType'] == 'fed_fce') {
 			$templateFile = PATH_site . $row['tx_fed_fcefile'];
 			if (is_file($templateFile) === FALSE) {
@@ -77,7 +78,14 @@ class Tx_Fed_Backend_DynamicFlexForm {
 				$flexformXml = $template->render();
 				$dataStructArray = t3lib_div::xml2array($flexformXml);
 			}
+		} else if ($row['CType'] == 'fed_template') {
+			$templateFile = t3lib_extMgm::extPath('fed', 'Configuration/FlexForms/Template.xml');
+			$dataStructArray = t3lib_div::xml2array(file_get_contents($templateFile));
+		} else if ($row['CType'] == 'fed_datasource') {
+			$templateFile = t3lib_extMgm::extPath('fed', 'Configuration/FlexForms/DataSource.xml');
+			$dataStructArray = t3lib_div::xml2array(file_get_contents($templateFile));
 		}
+
 	}
 
 }
