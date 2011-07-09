@@ -1,9 +1,9 @@
-<?php 
+<?php
 /***************************************************************
 *  Copyright notice
 *
 *  (c) 2010 Claus Due <claus@wildside.dk>, Wildside A/S
-*  			
+*
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -24,7 +24,14 @@
 ***************************************************************/
 
 /**
+ * RPC Caller
+ *
+ * Uses SSH/2 RPC calls to communicate with other installations of TYPO3
+ * running FED. You can configure responders and inject private keys and
+ * authorized public keys by using Tx_Fed_Encryption_Keychain.
  * 
+ * Planned feature for Extbase 1.4; requires CLI support for Extbase extensions.
+ *
  * @author Claus Due, Wildside A/S
  * @version $Id$
  * @copyright Copyright belongs to the respective authors
@@ -33,33 +40,33 @@
  * @subpackage RPC
  */
 class Tx_Fed_RPC_Caller implements t3lib_Singleton {
-	
+
 	/**
 	 * @var Tx_Fed_Encryption_Keyxhain $keychain
 	 */
 	protected $keychain;
-	
+
 	/**
 	 * @var Tx_Fed_Encryption_Crypt $crypt
 	 */
 	protected $crypt;
-	
+
 	/**
 	 * @param Tx_Fed_Encryption_Crypt $crypt
 	 */
 	public function injectCrypt(Tx_Fed_Encryption_Crypt $crypt) {
 		$this->crypt = $crypt;
 	}
-	
+
 	/**
 	 * @param Tx_Fed_Encryption_Keychain $keychain
 	 */
 	public function injectKeychain(Tx_Fed_Encryption_Keychain $keychain) {
 		$this->keychain = $keychain;
 	}
-	
-	
-	
+
+
+
 }
 
 
