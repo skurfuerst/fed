@@ -1,0 +1,19 @@
+{namespace fed=Tx_Fed_ViewHelpers}
+
+<f:if condition="{numberOfSets} < 1"><fed:data.var name="numberOfSets" value="1" /></f:if>
+<f:if condition="{numberOfValuesInSet} < 1"><fed:data.var name="numberOfValuesInSet" value="1" /></f:if>
+<fed:data.func func="array_fill" arguments="{0: '0', 1: numberOfSets, 2: ''}" as="sets" />
+<fed:data.func func="array_fill" arguments="{0: '0', 1: numberOfValuesInSet, 2: ''}" as="points" />
+
+<f:debug>{numberOfValuesInSet}</f:debug>
+
+<fed:fce id="display-graph" label="Display: Live ExtJS4 Graph">
+	<fed:fce.field.input name="numberOfSets" label="Number of data sets" eval="int" />
+	<fed:fce.field.input name="numberOfValuesInSet" label="Number of value points in each set" eval="int" />
+	<f:for each="{sets}" as="void" iteration="iteration">
+		<fed:fce.field.input name="set.{iteration.cycle}.title" label="Set label, set number {iteration.cycle}" />
+		<f:for each="{points}" as="subvoid" iteration="subiteration">
+			<fed:fce.field.input name="set.{iteration.cycle}.points.{subiteration}.value" label="Data point value, set {iteration.cycle} point {subiteration.cycle}" size="8" />
+		</f:for>
+	</f:for>
+</fed:fce>

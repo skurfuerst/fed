@@ -1,0 +1,9 @@
+{namespace fed=Tx_Fed_ViewHelpers}
+
+<fed:fce id="display-style" label="Layout: Style as Content Element">
+	<fed:fce.field.userFunc name="style" label="Code editor" userFunc="Tx_Fed_Configuration_Wizard_FlexFormCodeEditor->renderField" />
+</fed:fce>
+
+<fed:style>
+	{style}
+</fed:style>

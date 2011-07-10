@@ -1,0 +1,110 @@
+{namespace fed=Tx_Fed_ViewHelpers}
+
+<fed:fce id="address-display" label="Display: Geocoded Address and Map">
+	<fed:fce.field.checkbox name="jQuery" label="Load jQuery - in case your page does not include it. Uses Google's CDN Service" />
+	<fed:fce.field.text name="address" label="Address to display" enableRichText="TRUE" />
+	<fed:fce.field.checkbox name="displayHeaders" label="Display headers above address and map" />
+	<fed:fce.field.checkbox name="displayMap" label="Display the map" />
+	<fed:fce.field.checkbox name="displayAddress" label="Display the address" />
+	<fed:fce.field.select name="headerType" label="Tagname of headers"
+		items="{0: {0:'h1'}, 1: {0:'h2'}, 2: {0:'h3'}, 3: {0:'h4'}, 4: {0:'h5'}}" />
+	<fed:fce.field.select name="mapPosition" label="Placement of map"
+		items="{0: {0: 'left'}, 1: {0: 'right'}, 2: {0: 'top'}, 3: {0: 'bottom'}}" />
+	<fed:fce.field.checkbox name="map.scaleControl" label="Enable scale controls in map" />
+	<fed:fce.field.checkbox name="map.zoomControl" label="Enable zoom controls in map" />
+	<fed:fce.field.checkbox name="map.panControl" label="Enable pan controls in map" />
+	<fed:fce.field.checkbox name="map.mapTypeControl" label="Enable map type controls in map" />
+	<fed:fce.field.input name="map.zoom" label="Zoom level on map - 1 to 20" eval="int" default="7" />
+	<fed:fce.field.input name="map.width" label="Width of map element, fx '500px' or '100%'" />
+	<fed:fce.field.input name="map.height" label="Height of map element, fx '400px' or '50%'" />
+	<fed:fce.field.select name="map.mapTypeId" label="Type of map display"
+		items="{0: {0: 'google.maps.MapTypeId.ROADMAP'}, 1: {0: 'google.maps.MapTypeId.SATELLITE'}, 2: {0: 'google.maps.MapTypeId.TERRAIN'}, 3: {0: 'google.maps.MapTypeId.HYBRID'}}"
+		default="google.maps.MapTypeId.ROADMAP" />
+	<fed:fce.field.group name="map.markerIcon" label="Optional marker icon file" internalType="file" allowed="png,gif,jpg" />
+	<fed:fce.grid>
+		<fed:fce.grid.row>
+			<fed:fce.grid.column>
+				<fed:fce.content name="addressContent" label="Additional content to display beneath address" />
+			</fed:fce.grid.column>
+			<fed:fce.grid.column>
+				<fed:fce.content name="infoboxContent" label="Content to display in infobox" />
+			</fed:fce.grid.column>
+		</fed:fce.grid.row>
+	</fed:fce.grid>
+</fed:fce>
+
+
+<!-- FCE data processing -->
+
+<fed:comment comment="Geocodes an address and stores the result in a template variable" />
+<fed:map.geocode as="gps">{address}</fed:map.geocode>
+
+<f:if condition="{jQuery}">
+	<fed:jQuery.cdn jQueryVersion="1.8" />
+</f:if>
+
+<fed:comment comment="Assigns variable 'addressHtml' for easier layout handling later on" />
+<f:if condition="{displayAddress}">
+<fed:data.var name="addressHtml">
+	<f:if condition="{displayHeaders}"><{headerType} class="address-header">Address</{headerType}></f:if>
+	<fed:raw>{address}</fed:raw>
+	<fed:fce.renderContent area="addressContent" />
+</fed:data.var>
+</f:if>
+
+
+<fed:data.var name="markerIconFilenameLength"><fed:data.func func="strlen" arguments="{0: map.markerIcon}" /></fed:data.var>
+<fed:data.var name="markerIcon">
+	<f:if condition="{markerIconFilenameLength} > 0">
+		<f:then>{map.markerIcon}</f:then>
+		<f:else><f:uri.resource path="Icons/MapMarker.png" extensionName="fed" /></f:else>
+	</f:if>
+</fed:data.var>
+
+<fed:comment comment="Assigns variable 'mapHtml' for easier layout handling later on" />
+<f:if condition="{displayMap}">
+<fed:data.var name="mapHtml">
+	<f:if condition="{displayHeaders}"><{headerType} class="map-header">Map</{headerType}></f:if>
+	<fed:map lat="{gps.lat}" lng="{gps.lng}" zoom="13"
+			 mapTypeControl="{map.mapTypeControl}" scaleControl="{map.zoomControl}" panControl="{map.panControl}"
+			 zoomControl="{map.zoomControl}"
+			 height="{map.height}" width="{map.width}" zoom="{map.zoom}" mapTypeId="{map.mapTypeId}">
+		<fed:map.layer>
+			<fed:map.marker lat="{gps.lat}" lng="{gps.lng}" icon="{markerIcon}">
+				<fed:fce.renderContent area="infoboxContent" />
+			</fed:map.marker>
+		</fed:map.layer>
+	</fed:map>
+</fed:data.var>
+</f:if>
+
+<!-- FCE rendering -->
+<fed:comment comment="Switching on mapPosition to render in proper sequence" />
+<fed:switch variable="{mapPosition}">
+	<fed:case case="left" break="TRUE">
+		<fed:style>.map-display-left {float: left; white-space: wrap; width: {map.width}; }</fed:style>
+		<div class="map-display-left">
+			<fed:raw>{addressHtml}</fed:raw>
+		</div>
+		<fed:raw>{mapHtml}</fed:raw>
+	</fed:case>
+	<fed:case case="right" break="TRUE">
+		<fed:style>.map-display-right { float: right; white-space: wrap; width: {map.width}; }</fed:style>
+		<div class="map-display-right">
+			<fed:raw>{addressHtml}</fed:raw>
+		</div>
+		<fed:raw>{mapHtml}</fed:raw>
+	</fed:case>
+	<fed:case case="top" break="TRUE">
+		<fed:raw>{mapHtml}</fed:raw>
+		<fed:raw>{addressHtml}</fed:raw>
+	</fed:case>
+	<fed:case case="bottom" break="TRUE">
+		<fed:raw>{addressHtml}</fed:raw>
+		<fed:raw>{mapHtml}</fed:raw>
+	</fed:case>
+	<fed:case case="default" break="TRUE">
+		<fed:raw>{mapHtml}</fed:raw>
+		<fed:raw>{addressHtml}</fed:raw>
+	</fed:case>
+</fed:switch>

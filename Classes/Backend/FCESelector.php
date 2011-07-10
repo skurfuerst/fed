@@ -36,11 +36,22 @@ class Tx_Fed_Backend_FCESelector {
 		$config = $configManager->getTyposcriptSetup();
 		$config = Tx_Extbase_Utility_TypoScript::convertTypoScriptArrayToPlainArray($config);
 		$typoscript = $config['plugin']['tx_fed']['fce'];
+		$builtIn = $this->getFiles(t3lib_extMgm::siteRelPath('fed') . 'Resources/Private/Elements/', TRUE);
 		$files = $this->getFiles($typoscript['templatePath'], $typoscript['recursive'] == '1');
 		$name = $parameters['itemFormElName'];
 		$value = $parameters['itemFormElValue'];
 		$select = "<div><select name='{$name}' onchange='if (confirm(TBE_EDITOR.labels.onChangeAlert) && TBE_EDITOR.checkSubmit(-1)){ TBE_EDITOR.submitForm() };'>" . chr(10);
 		$select .= "<option value=''>(Select Fluid FCE type)</option>" . chr(10);
+		foreach ($builtIn as $fileRelPath) {
+			$view = $objectManager->get('Tx_Fed_View_FlexibleContentElementView');
+			$view->setTemplatePathAndFilename(PATH_site . $fileRelPath);
+			$label = $view->harvest('FEDFCELABEL');
+			if (!$label) {
+				$label = $fileRelPath;
+			}
+			$selected = ($fileRelPath == $value ? " selected='selected'" : "");
+			$select .= "<option value='{$fileRelPath}'{$selected}>FED: {$label}</option>" .chr(10);
+		}
 		foreach ($files as $fileRelPath) {
 			$view = $objectManager->get('Tx_Fed_View_FlexibleContentElementView');
 			$view->setTemplatePathAndFilename(PATH_site . $fileRelPath);
@@ -49,7 +60,7 @@ class Tx_Fed_Backend_FCESelector {
 				$label = $fileRelPath;
 			}
 			$selected = ($fileRelPath == $value ? " selected='selected'" : "");
-			$select .= "<option value='{$fileRelPath}'{$selected}>{$label}</option>" .chr(10);
+			$select .= "<option value='{$fileRelPath}'{$selected}>EXT: {$label}</option>" .chr(10);
 		}
 		$select .= "</select></div>" . chr(10);
 		return $select;

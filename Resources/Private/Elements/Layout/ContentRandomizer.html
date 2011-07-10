@@ -1,0 +1,14 @@
+{namespace fed=Tx_Fed_ViewHelpers}
+
+<fed:fce id="content-randomizer" label="Layout: Content Randomizer">
+	<fed:fce.field.input name="limit" label="Number of items to select randomly" eval="int" />
+	<fed:fce.grid>
+		<fed:fce.grid.row>
+			<fed:fce.grid.column>
+				<fed:fce.content name="content" label="Content to be randomized" />
+			</fed:fce.grid.column>
+		</fed:fce.grid.row>
+	</fed:fce.grid>
+</fed:fce>
+
+<fed:fce.renderContent area="content" limit="{limit}" order="RAND()" />

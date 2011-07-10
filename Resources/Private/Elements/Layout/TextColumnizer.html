@@ -1,0 +1,40 @@
+{namespace fed=Tx_Fed_ViewHelpers}
+
+<f:if condition="{columns} < 1">
+	<fed:data.var name="columns">1</fed:data.var>
+</f:if>
+
+<fed:fce id="content-columns" label="Layout: Text Columnizer">
+	<fed:fce.field.select name="columns" label="Number of columns for text splitting"
+		items="{0: {0: 1}, 1: {0: 2}, 2: {0: 3}, 3: {0: 4}, 4: {0: 5}, 5: {0: 6}, 6: {0: 7}, 7: {0: 8}, 8: {0: 9}}" default="1" maxItems="1" />
+	<fed:fce.field.text name="tt_content.bodytext" label="Text which is going to be split into columns" enableRichText="TRUE" />
+</fed:fce>
+
+<fed:data.func func="strlen" as="strlen">{tt_content.bodytext}</fed:data.func>
+<fed:data.func func="floor" as="chunksize"><fed:math>{strlen} / {columns}</fed:math></fed:data.func>
+<fed:data.func func="array_fill" arguments="{0: '0', 1: columns, 2: ''}" as="columnArray" />
+<fed:data.func func="chunk_split" arguments="{0: tt_content.bodytext, 1: chunksize, 2: '||||||'}" as="chunks" />
+<fed:data.func func="explode" arguments="{0: '||||||', 1: chunks}" as="chunks" />
+
+<fed:style>
+	.text-splitter { width: 100%; }
+	.text-splitter .w { vertical-align: top; }
+	.text-splitter .w1 { width: 100%; }
+	.text-splitter .w2 { width: 50%; }
+	.text-splitter .w3 { width: 33.3%; }
+	.text-splitter .w4 { width: 25%; }
+	.text-splitter .w5 { width: 20%; }
+	.text-splitter .w6 { width: 16.5%; }
+	.text-splitter .w7 { width: 14.25; }
+	.text-splitter .w8 { width: 12.5%; }
+	.text-splitter .w9 { width: 11.1%; }
+</fed:style>
+
+<table class="text-splitter">
+<tr>
+<f:for each="{chunks}" as="chunk" iteration="iteration">
+	<td class="w w{columns}"><f:format.html>{chunk}</f:format.html></td>
+</f:for>
+</tr>
+</table>
+
