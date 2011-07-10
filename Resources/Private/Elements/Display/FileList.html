@@ -65,29 +65,31 @@
 					</f:else>
 				</f:if>
 			</f:if>
-			<f:if condition="{fed:data.func(func: 'strcmp', arguments: {0: fieldName, 1: 'size'})} == 0">
-				<fed:data.var name="filesize" type="float">
-				<f:if condition="{fed:data.func(func: 'strcmp', arguments: {0: unit, 1: 'GB'})} == 0">
-					<f:format.number decimals="{decimals}"><fed:math><fed:data.var name="file.size" />/1024/1024/1024</fed:math></f:format.number>
-				</f:if>
-				<f:if condition="{fed:data.func(func: 'strcmp', arguments: {0: unit, 1: 'MB'})} == 0">
-					<f:format.number decimals="{decimals}"><fed:math><fed:data.var name="file.size" />/1024/1024</fed:math></f:format.number>
-				</f:if>
-				<f:if condition="{fed:data.func(func: 'strcmp', arguments: {0: unit, 1: 'KB'})} == 0">
-					<f:format.number decimals="{decimals}"><fed:math><fed:data.var name="file.size" />/1024</fed:math></f:format.number>
-				</f:if>
-				<f:if condition="{fed:data.func(func: 'strcmp', arguments: {0: unit, 1: 'B'})} == 0">
-					<fed:math><fed:data.var name="file.size" /></fed:math>
-				</f:if>
-				</fed:data.var>
-				{filesize} {unit}
-			</f:if>
-			<f:if condition="{fed:data.func(func: 'strcmp', arguments: {0: fieldName, 1: 'created'})} == 0">
-				<f:format.date format="{dateFormat}"><fed:data.var name="file.created" /></f:format.date>
-			</f:if>
-			<f:if condition="{fed:data.func(func: 'strcmp', arguments: {0: fieldName, 1: 'modified'})} == 0">
-				<f:format.date format="{dateFormat}"><fed:data.var name="file.modified" /></f:format.date>
-			</f:if>
+			<fed:switch variable="{fieldName}">
+				<fed:case case="size">
+					<fed:data.var name="size" type="float">
+					<f:if condition="{fed:data.func(func: 'strcmp', arguments: {0: unit, 1: 'GB'})} == 0">
+						<f:format.number decimals="{decimals}"><fed:math>{file.size}/1024/1024/1024</fed:math></f:format.number>
+					</f:if>
+					<f:if condition="{fed:data.func(func: 'strcmp', arguments: {0: unit, 1: 'MB'})} == 0">
+						<f:format.number decimals="{decimals}"><fed:math>{file.size}/1024/1024</fed:math></f:format.number>
+					</f:if>
+					<f:if condition="{fed:data.func(func: 'strcmp', arguments: {0: unit, 1: 'KB'})} == 0">
+						<f:format.number decimals="{decimals}"><fed:math>{file.size}/1024</fed:math></f:format.number>
+					</f:if>
+					<f:if condition="{fed:data.func(func: 'strcmp', arguments: {0: unit, 1: 'B'})} == 0">
+						<fed:math>{file.size}</fed:math>
+					</f:if>
+					</fed:data.var>
+					{file.size} {unit}
+				</fed:case>
+				<fed:case case="created">
+					<f:format.date format="{dateFormat}"><fed:data.var name="file.created" /></f:format.date>
+				</fed:case>
+				<fed:case case="modified">
+					<f:format.date format="{dateFormat}"><fed:data.var name="file.modified" /></f:format.date>
+				</fed:case>
+			</fed:switch>
 			</td>
 		</f:for>
 		</tr>

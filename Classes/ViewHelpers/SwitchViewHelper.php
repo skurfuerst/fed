@@ -77,6 +77,9 @@ class Tx_Fed_ViewHelpers_SwitchViewHelper extends Tx_Fed_Core_ViewHelper_Abstrac
 				}
 			}
 		}
+		$context->getViewHelperVariableContainer()->remove('Tx_Fed_ViewHelpers_SwitchViewHelper', 'switchCaseValue');
+		$context->getViewHelperVariableContainer()->remove('Tx_Fed_ViewHelpers_SwitchViewHelper', 'switchBreakRequested');
+		$context->getViewHelperVariableContainer()->remove('Tx_Fed_ViewHelpers_SwitchViewHelper', 'switchContinueUntilBreak');
 		return $content;
 
 	}
