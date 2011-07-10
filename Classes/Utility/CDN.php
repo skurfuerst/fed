@@ -100,7 +100,7 @@ class Tx_Fed_Utility_CDN implements t3lib_Singleton {
 			$returns[] = $this->includeJQueryUITheme($jQueryUITheme, $return);
 		}
 		if ($compatibility) {
-			$this->includeJQeruyNoConflict();
+			$this->includeJQueryNoConflict();
 		}
 	}
 
@@ -137,7 +137,7 @@ class Tx_Fed_Utility_CDN implements t3lib_Singleton {
 	 * Includes a header script setting jQuery.noConflict() for compatibility
 	 * @return void
 	 */
-	public function includeJQeruyNoConflict() {
+	public function includeJQueryNoConflict() {
 		$script = 'jQuery.noConflict();';
 		$this->documentHead->includeHeader($script, 'js', NULL, 1);
 	}
@@ -148,8 +148,9 @@ class Tx_Fed_Utility_CDN implements t3lib_Singleton {
 	 * @param string $package URI-name of the package
 	 * @param string $version The version number to load
 	 * @param string $file Filename to load from that package
+	 * @api
 	 */
-	protected function buildPackageUri($package, $version, $file) {
+	public function buildPackageUri($package='jquery', $version=NULL, $file='jquery.min.js') {
 		$uri = $this->patternUrlJQuery;
 		if ($version === NULL) {
 			$uri = str_replace('@version/', '', $uri);

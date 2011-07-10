@@ -111,15 +111,15 @@ class Tx_Fed_Utility_DocumentHead implements t3lib_Singleton {
 	public function wrap($code=NULL, $file=NULL, $type=NULL) {
 		if ($type == self::TYPE_JAVASCRIPT) {
 			if ($file) {
-				return "<script type='text/javascript' src='{$file}'></script>";
+				return '<script type="text/javascript" src="' . $file . '"></script>';
 			} else {
-				return "<script type='text/javascript'>\n{$code}\n</script>";
+				return '<script type="text/javascript">' . $code . '</script>';
 			}
 		} else if ($type == self::TYPE_STYLESHEET) {
 			if ($file) {
-				return "<link rel='stylesheet' type='text/css' href='{$file}' />";
+				return '<link rel="stylesheet" type="text/css" href="' . $file . '" />';
 			} else {
-				return "<style type='text/css'>\n{$code}\n</style>";
+				return '<style type="text/css">' . $code . '</style>';
 			}
 		} else {
 			return $code;
@@ -156,7 +156,9 @@ class Tx_Fed_Utility_DocumentHead implements t3lib_Singleton {
 	 * @param string $extension Extensin of the filename
 	 * @api
 	 */
-	public function saveContentToTempFile($contents, $uniqid, $extension) {
+	public function saveContentToTempFile($contents, $uniqid=NULL, $extension=NULL) {
+		$uniqid = $uniqid === NULL ? uniqid('u') : $uniqid;
+		$extension = $extension === NULL ? 'txt' : $extension;
 		$tempFilePath = "typo3temp/{$uniqid}.{$extension}";
 		$tempFile = PATH_site . $tempFilePath;
 		file_put_contents($tempFile, $contents);
