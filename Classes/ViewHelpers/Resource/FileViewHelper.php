@@ -62,7 +62,7 @@ class Tx_Fed_ViewHelpers_Resource_FileViewHelper extends Tx_Fed_ViewHelpers_Reso
 		}
 		if ($pathinfo['filename'] === '*') {
 			$files = $this->documentHead->getFilenamesOfType($pathinfo['dirname'], $pathinfo['extension']);
-		} else if (is_array($this->arguments['files'])) {
+		} else if (is_array($this->arguments['files']) && count($this->arguments['files']) > 0) {
 			$files = $this->arguments['files'];
 		} else if (is_dir($pathinfo['dirname'] . '/' . $pathinfo['basename'])) {
 			$files = scandir($pathinfo['dirname'] . '/' . $pathinfo['basename']);

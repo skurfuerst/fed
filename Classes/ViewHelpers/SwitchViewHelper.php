@@ -43,11 +43,14 @@ class Tx_Fed_ViewHelpers_SwitchViewHelper extends Tx_Fed_Core_ViewHelper_Abstrac
 	 */
 	private $childNodes = array();
 
+	private $backup;
+
 	/**
 	 * Initialize
 	 */
 	public function initializeArguments() {
-		$this->registerArgument('variable', 'string', 'Variable on which to switch - string, integer or number', TRUE);
+		$this->registerArgument('value', 'string', 'Variable on which to switch - string, integer or number', TRUE);
+		$this->registerArgument('as', 'string', 'If specified, inserts the matched case tag content as variable using name from "as"');
 	}
 
 	/**
@@ -64,14 +67,17 @@ class Tx_Fed_ViewHelpers_SwitchViewHelper extends Tx_Fed_Core_ViewHelper_Abstrac
 	public function render() {
 		$content = "";
 		$context = $this->getRenderingContext();
-		$context->getViewHelperVariableContainer()->add('Tx_Fed_ViewHelpers_SwitchViewHelper', 'switchCaseValue', $this->arguments['variable']);
-		$context->getViewHelperVariableContainer()->add('Tx_Fed_ViewHelpers_SwitchViewHelper', 'switchBreakRequested', FALSE);
-		$context->getViewHelperVariableContainer()->add('Tx_Fed_ViewHelpers_SwitchViewHelper', 'switchContinueUntilBreak', FALSE);
+		if ($context->getViewHelperVariableContainer()->exists('Tx_Fed_ViewHelpers_SwitchViewHelper', 'switchCaseValue')) {
+			$this->storeBackup($context);
+		}
+		$context->getViewHelperVariableContainer()->addOrUpdate('Tx_Fed_ViewHelpers_SwitchViewHelper', 'switchCaseValue', $this->arguments['value']);
+		$context->getViewHelperVariableContainer()->addOrUpdate('Tx_Fed_ViewHelpers_SwitchViewHelper', 'switchBreakRequested', FALSE);
+		$context->getViewHelperVariableContainer()->addOrUpdate('Tx_Fed_ViewHelpers_SwitchViewHelper', 'switchContinueUntilBreak', FALSE);
 		foreach ($this->childNodes as $childNode) {
 			if ($childNode instanceof Tx_Fluid_Core_Parser_SyntaxTree_ViewHelperNode
 				&& $childNode->getViewHelperClassName() === 'Tx_Fed_ViewHelpers_CaseViewHelper') {
 				$content .= $childNode->evaluate($context);
-				$shouldBreak = $context->getViewHelperVariableContainer()->get('Tx_Fed_ViewHelpers_SwitchViewHelper', 'switchBreakRequested');
+				$shouldBreak = $this->determineBooleanOf($context, 'switchBreakRequested');
 				if ($shouldBreak === TRUE) {
 					return $content;
 				}
@@ -80,8 +86,35 @@ class Tx_Fed_ViewHelpers_SwitchViewHelper extends Tx_Fed_Core_ViewHelper_Abstrac
 		$context->getViewHelperVariableContainer()->remove('Tx_Fed_ViewHelpers_SwitchViewHelper', 'switchCaseValue');
 		$context->getViewHelperVariableContainer()->remove('Tx_Fed_ViewHelpers_SwitchViewHelper', 'switchBreakRequested');
 		$context->getViewHelperVariableContainer()->remove('Tx_Fed_ViewHelpers_SwitchViewHelper', 'switchContinueUntilBreak');
-		return $content;
+		if ($this->backup) {
+			$this->restoreBackup($context);
+		}
+		if ($this->arguments['as']) {
+			$this->templateVariableContainer->add($this->arguments['as'], $content);
+		} else {
+			return $content;
+		}
 
+	}
+
+	protected function storeBackup($context) {
+		$this->backup = array(
+			$context->getViewHelperVariableContainer()->get('Tx_Fed_ViewHelpers_SwitchViewHelper', 'switchCaseValue'),
+			$this->determineBooleanOf($context, 'switchBreakRequested'),
+			$this->determineBooleanOf($context, 'switchContinueUntilBreak')
+		);
+	}
+
+	protected function restoreBackup($context) {
+		$context->getViewHelperVariableContainer()->add('Tx_Fed_ViewHelpers_SwitchViewHelper', 'switchCaseValue', $this->backup[0]);
+		$context->getViewHelperVariableContainer()->add('Tx_Fed_ViewHelpers_SwitchViewHelper', 'switchBreakRequested', $this->backup[1]);
+		$context->getViewHelperVariableContainer()->add('Tx_Fed_ViewHelpers_SwitchViewHelper', 'switchContinueUntilBreak', $this->backup[2]);
+	}
+
+	protected function determineBooleanOf($context, $var) {
+		if ($context->getViewHelperVariableContainer()->exists('Tx_Fed_ViewHelpers_SwitchViewHelper', 'switchBreakRequested')) {
+			return $context->getViewHelperVariableContainer()->get('Tx_Fed_ViewHelpers_SwitchViewHelper', 'switchBreakRequested');
+		}
 	}
 
 

@@ -65,7 +65,7 @@ class Tx_Fed_ViewHelpers_Fce_Field_SelectViewHelper extends Tx_Fed_ViewHelpers_F
 		$config['size'] = $this->arguments['size'];
 		$config['minItems'] = $this->arguments['minItems'];
 		$config['maxItems'] = $this->arguments['maxItems'];
-		$config['multiple'] = $this->getFlexFormBoolean($this->arguments['multiple']);
+		$config['multiple'] = $this->arguments['multiple'] ? 1 : 0;
 		#$config['validate'] = $this->arguments['validate'];
 		$config['table'] = $this->arguments['table'];
 		$config['condition'] = $this->arguments['condition'];

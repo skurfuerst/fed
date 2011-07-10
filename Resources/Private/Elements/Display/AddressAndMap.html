@@ -80,7 +80,7 @@
 
 <!-- FCE rendering -->
 <fed:comment comment="Switching on mapPosition to render in proper sequence" />
-<fed:switch variable="{mapPosition}">
+<fed:switch value="{mapPosition}">
 	<fed:case case="left" break="TRUE">
 		<fed:style>.map-display-left {float: left; white-space: wrap; width: {map.width}; }</fed:style>
 		<div class="map-display-left">

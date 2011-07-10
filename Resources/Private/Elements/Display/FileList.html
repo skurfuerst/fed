@@ -10,7 +10,7 @@
 	<fed:fce.field.input name="decimals" label="Number of decimals to display in file sizes" default="2" />
 	<fed:fce.field.select name="fields" label="Fields to display"
 		items="{0: {0: 'iteration'}, 1: {0: 'filename'}, 2: {0: 'size'}, 3: {0: 'created'}, 4: {0: 'modified'}}"
-		minItems="1" multiple="TRUE" size="6" />
+		minItems="1" maxItems="6" multiple="TRUE" size="6" />
 	<fed:fce.field.select name="resource.sortBy" label="Initially sort by field" maxItems="1"
 		items="{0: {0: 'iteration'}, 1: {0: 'filename'}, 2: {0: 'size'}, 3: {0: 'created'}, 4: {0: 'modified'}}" />
 	<fed:fce.field.select name="resource.sortDirection" label="Initial sorting direction" items="{0: {0: 'ASC'}, 1: {0: 'DESC'}}" maxItems="1" />
@@ -44,54 +44,45 @@
 	<thead>
 		<tr>
 		<f:for each="{fields}" as="fieldName">
-			<fed:data.var name="key">LLL:EXT:fed/Resources/Private/Language/locallang.xml:tx_fed_file.{fieldName}</fed:data.var>
-			<th><f:translate key="{key}" default="{key}" /></th>
+			<th><f:translate key="LLL:EXT:fed/Resources/Private/Language/locallang.xml:tx_fed_file.{fieldName}" default="{fieldName}" /></th>
 		</f:for>
 		</tr>
 	</thead>
 	</f:if>
+
 	<f:for each="{files}" as="file" iteration="iteration">
 		<tr>
-		<f:for each="{fields}" as="fieldName">
-			<td>
-			<f:if condition="{fed:data.func(func: 'strcmp', arguments: {0: fieldName, 1: 'iteration'})} == 0">{iteration.cycle}</f:if>
-			<f:if condition="{fed:data.func(func: 'strcmp', arguments: {0: fieldName, 1: 'filename'})} == 0">
-				<f:if condition="{downloadable}">
-					<f:then>
-						<a href="{file.relativePath}"><fed:data.var name="file.filename" />.<fed:data.var name="file.extension" /></a>
-					</f:then>
-					<f:else>
-						<fed:data.var name="file.filename" />.<fed:data.var name="file.extension" />
-					</f:else>
-				</f:if>
-			</f:if>
-			<fed:switch variable="{fieldName}">
-				<fed:case case="size">
-					<fed:data.var name="size" type="float">
-					<f:if condition="{fed:data.func(func: 'strcmp', arguments: {0: unit, 1: 'GB'})} == 0">
-						<f:format.number decimals="{decimals}"><fed:math>{file.size}/1024/1024/1024</fed:math></f:format.number>
-					</f:if>
-					<f:if condition="{fed:data.func(func: 'strcmp', arguments: {0: unit, 1: 'MB'})} == 0">
-						<f:format.number decimals="{decimals}"><fed:math>{file.size}/1024/1024</fed:math></f:format.number>
-					</f:if>
-					<f:if condition="{fed:data.func(func: 'strcmp', arguments: {0: unit, 1: 'KB'})} == 0">
-						<f:format.number decimals="{decimals}"><fed:math>{file.size}/1024</fed:math></f:format.number>
-					</f:if>
-					<f:if condition="{fed:data.func(func: 'strcmp', arguments: {0: unit, 1: 'B'})} == 0">
-						<fed:math>{file.size}</fed:math>
-					</f:if>
-					</fed:data.var>
-					{file.size} {unit}
-				</fed:case>
-				<fed:case case="created">
-					<f:format.date format="{dateFormat}"><fed:data.var name="file.created" /></f:format.date>
-				</fed:case>
-				<fed:case case="modified">
-					<f:format.date format="{dateFormat}"><fed:data.var name="file.modified" /></f:format.date>
-				</fed:case>
-			</fed:switch>
-			</td>
-		</f:for>
+			<f:for each="{fields}" as="fieldName">
+				<td>
+					<fed:switch value="{fieldName}">
+						<fed:case case="iteration" break="TRUE">{iteration.cycle}</fed:case>
+						<fed:case case="filename" break="TRUE">
+							<f:if condition="{downloadable}">
+								<f:then>
+									<a href="{file.relativePath}">{file.filename}.{file.extension}</a>
+								</f:then>
+								<f:else>
+									{file.filename}.{file.extension}
+								</f:else>
+							</f:if>
+						</fed:case>
+						<fed:case case="size" break="TRUE">
+							<fed:switch value="{unit}">
+								<fed:case case="GB" break="TRUE"><f:format.number decimals="{decimals}"><fed:math>{file.size}/1024/1024/1024</fed:math></f:format.number> {unit}</fed:case>
+								<fed:case case="MB" break="TRUE"><f:format.number decimals="{decimals}"><fed:math>{file.size}/1024/1024</fed:math></f:format.number> {unit}</fed:case>
+								<fed:case case="KB" break="TRUE"><f:format.number decimals="{decimals}"><fed:math>{file.size}/1024</fed:math></f:format.number> {unit}</fed:case>
+								<fed:case case="B" break="TRUE">{file.size} {unit}</fed:case>
+							</fed:switch>
+						</fed:case>
+						<fed:case case="created" break="TRUE">
+							<f:format.date format="{dateFormat}">{file.created}</f:format.date>
+						</fed:case>
+						<fed:case case="modified" break="TRUE">
+							<f:format.date format="{dateFormat}">{file.modified}</f:format.date>
+						</fed:case>
+					</fed:switch>
+				</td>
+			</f:for>
 		</tr>
 	</f:for>
 </fed:table>
