@@ -1,11 +1,13 @@
 <?php
 
 $extensionClassesPath = t3lib_extMgm::extPath('fed', 'Classes/');
+$extensionPath = t3lib_extMgm::extPath('fed');
 $extbaseClassesPath = t3lib_extMgm::extPath('extbase', 'Classes/');
 return array(
 	'tx_extbase_service_cacheservice' => $extbaseClassesPath . "Service/CacheService.php",
 	'tx_extbase_service_typoscriptservice' => $extbaseClassesPath . "Service/TypoScriptService.php",
 
+	'tx_fed_tests_unit_basetestcase' => $extensionPath . 'Tests/Unit/BaseTestCase.php',
 	'tx_fed_core_bootstrap' => $extensionClassesPath . 'Core/Bootstrap.php',
 	'tx_fed_utility_pdf' => $extensionClassesPath . 'Utility/PDF.php',
 	'tx_fed_utility_recursionhandler' => $extensionClassesPath . 'Utility/RecursionHandler.php',
