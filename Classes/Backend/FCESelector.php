@@ -36,31 +36,43 @@ class Tx_Fed_Backend_FCESelector {
 		$config = $configManager->getTyposcriptSetup();
 		$config = Tx_Extbase_Utility_TypoScript::convertTypoScriptArrayToPlainArray($config);
 		$typoscript = $config['plugin']['tx_fed']['fce'];
-		$builtIn = $this->getFiles(t3lib_extMgm::siteRelPath('fed') . 'Resources/Private/Elements/', TRUE);
-		$files = $this->getFiles($typoscript['templatePath'], $typoscript['recursive'] == '1');
+		$paths = $typoscript['templatePaths'];
+		$gathered = array();
+		$gathered['standalone'] = array();
+		foreach ($paths as $path) {
+			if (strpos($path, 'EXT:') === 0) {
+				$slice = strpos($path, '/');
+				$extKey = array_pop(explode(':', substr($path, 0, $slice)));
+				$path = t3lib_extMgm::siteRelPath($extKey) . substr($path, $slice);
+				$gathered[$extKey] = $this->getFiles($path, TRUE);
+			} else {
+				$gathered['standalone'] = array_merge($gathered['standalone'], $this->getFiles($path, TRUE));
+			}
+		}
 		$name = $parameters['itemFormElName'];
 		$value = $parameters['itemFormElValue'];
 		$select = "<div><select name='{$name}' onchange='if (confirm(TBE_EDITOR.labels.onChangeAlert) && TBE_EDITOR.checkSubmit(-1)){ TBE_EDITOR.submitForm() };'>" . chr(10);
 		$select .= "<option value=''>(Select Fluid FCE type)</option>" . chr(10);
-		foreach ($builtIn as $fileRelPath) {
-			$view = $objectManager->get('Tx_Fed_View_FlexibleContentElementView');
-			$view->setTemplatePathAndFilename(PATH_site . $fileRelPath);
-			$label = $view->harvest('FEDFCELABEL');
-			if (!$label) {
-				$label = $fileRelPath;
+		foreach ($gathered as $extKey=>$files) {
+			if (count($files) > 0) {
+				if ($extKey == 'standalone') {
+					$label = 'Standalone Templates';
+				} else {
+					$label = 'EXT:' . $extKey;
+				}
+				$select .= "<optgroup label='{$label}'>" . chr(10);
+				foreach ($files as $fileRelPath) {
+					$view = $objectManager->get('Tx_Fed_View_FlexibleContentElementView');
+					$view->setTemplatePathAndFilename(PATH_site . $fileRelPath);
+					$label = $view->harvest('FEDFCELABEL');
+					if (!$label) {
+						$label = $fileRelPath;
+					}
+					$selected = ($fileRelPath == $value ? " selected='selected'" : "");
+					$select .= "<option value='{$fileRelPath}'{$selected}>{$label}</option>" .chr(10);
+				}
+				$select .= "</optgroup>" . chr(10);
 			}
-			$selected = ($fileRelPath == $value ? " selected='selected'" : "");
-			$select .= "<option value='{$fileRelPath}'{$selected}>FED: {$label}</option>" .chr(10);
-		}
-		foreach ($files as $fileRelPath) {
-			$view = $objectManager->get('Tx_Fed_View_FlexibleContentElementView');
-			$view->setTemplatePathAndFilename(PATH_site . $fileRelPath);
-			$label = $view->harvest('FEDFCELABEL');
-			if (!$label) {
-				$label = $fileRelPath;
-			}
-			$selected = ($fileRelPath == $value ? " selected='selected'" : "");
-			$select .= "<option value='{$fileRelPath}'{$selected}>EXT: {$label}</option>" .chr(10);
 		}
 		$select .= "</select></div>" . chr(10);
 		return $select;

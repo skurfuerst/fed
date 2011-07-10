@@ -1,7 +1,8 @@
 plugin.tx_fed {
 	fce {
-		templatePath = fileadmin/
-		recursive = 1
+		templatePaths {
+			0 = EXT:fed/Resources/Private/Elements/
+		}
 	}
 	view {
 		templateRootPath = {$plugin.tx_fed.view.templateRootPath}
