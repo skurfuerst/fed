@@ -61,9 +61,9 @@ class Tx_Fed_Controller_PageController extends Tx_Fed_Core_AbstractController {
 		$config = $this->configurationManager->getConfiguration(Tx_Extbase_Configuration_ConfigurationManagerInterface::CONFIGURATION_TYPE_FULL_TYPOSCRIPT);
 		$config = Tx_Extbase_Utility_TypoScript::convertTypoScriptArrayToPlainArray($config);
 		$typoscript = $config['plugin']['tx_fed']['page'];
-
-
 		$view = $this->objectManager->get('Tx_Fluid_View_TemplateView');
+		$rootline = array();
+		$configuration = $this->getPageTemplateConfiguration($GLOBALS['TSFE']->id, $rootline);
 		if ($view instanceof Tx_Fluid_View_TemplateView) {
 			$templateRootPath = $this->translatePath($typoscript['templateRootPath']);
 			$layoutRootPath = $this->translatePath($typoscript['layoutRootPath']);
@@ -72,21 +72,18 @@ class Tx_Fed_Controller_PageController extends Tx_Fed_Core_AbstractController {
 			$view->setTemplateRootPath($templateRootPath);
 			$view->setLayoutRootPath($layoutRootPath);
 			$view->setPartialRootPath($partialRootPath);
-			return $view->render('default');
+			return $view->render($configuration['tx_fed_page_controller_action']);
 		}
-
-
-
 		return $view->render;
-		#return var_export($typoscript, TRUE);
+	}
 
-		#$view = $this->ob
-
-		#$paths = $typoscript['templateRootPath'];
-
-
-
-		return 'test';
+	protected function getPageTemplateConfiguration($id, $rootline) {
+		$page = $GLOBALS['TSFE']->page;
+		return array(
+			'tx_fed_page_controller_action' => $page['tx_fed_page_controller_action'],
+			#'tx_fed_page_controller_action_sub' => $page['tx_fed_page_controller_action_sub'],
+			'tx_fed_page_format' => $page['tx_fed_page_layout']
+		);
 	}
 
 	protected function translatePath($path) {

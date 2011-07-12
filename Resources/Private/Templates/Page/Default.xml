@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+    Document   : Default.xml
+    Created on : July 12, 2011, 9:15 PM
+    Author     : claus
+    Description:
+        Purpose of the document follows.
+-->
+
+<root>
+<default>This is the default tempalte - remember to change your Typoscript path!</default>
+</root>

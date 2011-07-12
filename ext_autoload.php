@@ -19,6 +19,7 @@ return array(
 	'tx_fed_view_flexiblecontentelementview' => $extensionClassesPath . 'View/FlexibleContentElementView.php',
 	'tx_fed_view_exposedtemplateview' => $extensionClassesPath . 'View/ExposedTemplateView.php',
 	'tx_fed_backend_pagelayout' => $extensionClassesPath . 'Backend/PageLayout.php',
+	'tx_fed_backend_pagelayoutselector' => $extensionClassesPath . 'Backend/PageLayoutSelector.php',
 	'tx_fed_backend_fceselector' => $extensionClassesPath . 'Backend/FCESelector.php',
 	'tx_fed_backend_preview' => $extensionClassesPath . 'Backend/Preview.php',
 	'tx_fed_backend_fceparser' => $extensionClassesPath . 'Backend/FCEParser.php',

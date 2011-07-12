@@ -54,6 +54,8 @@ $TCA['tt_content']['types']['list']['subtypes_addlist']['fed_fce'] = 'pi_flexfor
 $TCA['tt_content']['types']['list']['subtypes_addlist']['fed_sandbox'] = 'pi_flexform';
 
 t3lib_extMgm::addToAllTCAtypes('tt_content', 'tx_fed_fcecontentarea;;;1-1-1');
+#t3lib_extMgm::addToAllTCAtypes('pages', 'tx_fed_page_format,tx_fed_page_controller_action,tx_fed_page_controller_action_sub;;;1-1-1');
+t3lib_extMgm::addToAllTCAtypes('pages', 'tx_fed_page_controller_action,tx_fed_page_controller_action_sub;;;1-1-1');
 t3lib_extMgm::addPiFlexFormValue('fed_sandbox', 'FILE:EXT:'.$_EXTKEY.'/Configuration/FlexForms/Sandbox.xml');
 t3lib_extMgm::addStaticFile($_EXTKEY, 'Configuration/TypoScript', 'FED Fluid Extbase Development Framework');
 
@@ -119,6 +121,32 @@ $TCA['tx_fed_domain_model_datasource'] = array(
 );
 
 
+t3lib_extMgm::addTCAcolumns('pages', array(
+	'tx_fed_page_format' => Array (
+		'exclude' => 1,
+		'label' => 'LLL:EXT:fed/Resources/Private/Language/locallang_db.xml:pages.tx_fed_page_format',
+		'config' => Array (
+			'type' => 'user',
+			'userFunc' => 'Tx_Fed_Backend_PageLayoutSelector->renderFormatField'
+		)
+	),
+	'tx_fed_page_controller_action' => Array (
+		'exclude' => 1,
+		'label' => 'LLL:EXT:fed/Resources/Private/Language/locallang_db.xml:pages.tx_fed_page_controller_action',
+		'config' => Array (
+			'type' => 'user',
+			'userFunc' => 'Tx_Fed_Backend_PageLayoutSelector->renderField'
+		)
+	),
+	'tx_fed_page_controller_action_sub' => Array (
+		'exclude' => 1,
+		'label' => 'LLL:EXT:fed/Resources/Private/Language/locallang_db.xml:pages.tx_fed_page_controller_action_sub',
+		'config' => Array (
+			'type' => 'user',
+			'userFunc' => 'Tx_Fed_Backend_PageLayoutSelector->renderField'
+		)
+	),
+), 1);
 t3lib_extMgm::addTCAcolumns('tt_content', array(
 	'tx_fed_fcecontentarea' => Array (
 		'exclude' => 1,

@@ -51,7 +51,7 @@ class Tx_Fed_Backend_FCESelector {
 		}
 		$name = $parameters['itemFormElName'];
 		$value = $parameters['itemFormElValue'];
-		$select = "<div><select name='{$name}' onchange='if (confirm(TBE_EDITOR.labels.onChangeAlert) && TBE_EDITOR.checkSubmit(-1)){ TBE_EDITOR.submitForm() };'>" . chr(10);
+		$select = "<div><select name='{$name}'  class='formField select' onchange='if (confirm(TBE_EDITOR.labels.onChangeAlert) && TBE_EDITOR.checkSubmit(-1)){ TBE_EDITOR.submitForm() };'>" . chr(10);
 		$select .= "<option value=''>(Select Fluid FCE type)</option>" . chr(10);
 		foreach ($gathered as $extKey=>$files) {
 			if (count($files) > 0) {

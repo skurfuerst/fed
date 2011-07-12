@@ -1,0 +1,1 @@
+This is the default template - remember to change your Typoscript path!
