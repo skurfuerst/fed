@@ -70,10 +70,10 @@ Tx_Extbase_Utility_Extension::configurePlugin(
 	$_EXTKEY,
 	'Hash',
 	array(
-		'Hash' => 'generateHash',
+		'Hash' => 'request',
 	),
 	array(
-		'Hash' => 'generateHash',
+		'Hash' => 'request',
 	)
 );
 
