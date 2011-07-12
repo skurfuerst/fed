@@ -3,7 +3,7 @@
 *  Copyright notice
 *
 *  (c) 2010 Claus Due <claus@wildside.dk>, Wildside A/S
-*  			
+*
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -24,7 +24,7 @@
 ***************************************************************/
 
 /**
- * Controller 
+ * Controller
  *
  * @version $Id$
  * @copyright Copyright belongs to the respective authors
@@ -33,39 +33,32 @@
  * @subpackage Controller
  */
 class Tx_Fed_Controller_HashController extends Tx_Fed_Core_AbstractController {
-	
+
 	/**
 	 * @var Tx_Extbase_Security_Cryptography_HashService
 	 */
 	protected $hashService;
-	
+
 	/**
 	 * @param Tx_Extbase_Security_Cryptography_HashService $hashService
 	 */
 	public function injectHashService(Tx_Extbase_Security_Cryptography_HashService $hashService) {
 		$this->hashService = $hashService;
 	}
-	
+
 	/**
-	 * @param array $fieldNames
+	 * @param string $fieldNames
 	 * @param string $fieldnamePrefix
 	 * @return string
 	 * @dontverifyrequesthash
 	 */
-	public function requestAction($fieldNames, $fieldnamePrefix='') {
-		return $this->hashService->generateRequestHash($fieldNAmes, $fieldNamePrefix);
+	public function requestAction($fieldNames, $fieldNamePrefix='') {
+		$hash = $this->hashService->generateHash($fieldNames, $fieldNamePrefix);
+		echo $hash;
+		exit();
+		#die($hash);
 	}
-	
-	/**
-	 * Generate SHA1 hash for $subject using site encryption key
-	 * 
-	 * @param string $subject
-	 * @return string
-	 */
-	public function generateHashAction($subject) {
-		return $this->hashService->generateHash($subject);
-	}
-	
+
 }
 
 ?>
