@@ -96,7 +96,7 @@ class Tx_Fed_ViewHelpers_TableViewHelper extends Tx_Fed_Core_ViewHelper_Abstract
 		$this->registerArgument('bSaveState', 'boolean', 'Set to TRUE to save the state of the table in a cookie', FALSE, FALSE);
 		$this->registerArgument('bFilter', 'boolean', 'Display filtering search box - depends on sortable=TRUE', FALSE, TRUE);
 		$this->registerArgument('bInfo', 'boolean', 'Display table information - depends on sortable=TRUE', FALSE, TRUE);
-		$this->registerArgument('sPaginationType', 'string', 'Which paginateion method to use. "two_buttons" or "full_numbers", default "full_numbers"', FALSE, 'full_numbers');
+		$this->registerArgument('sPaginationType', 'string', 'Which pagination method to use. "two_buttons" or "full_numbers", default "full_numbers"', FALSE, 'full_numbers');
 		$this->registerArgument('aLengthMenu', 'string', 'aLengthMenu-format notation for the "display X items" dropdown. See DataTables jQuery plugin documentation.', FALSE, '[[20, 50, 100, -1], [20, 50, 100, "-"]]');
 		$this->registerArgument('instanceName', 'string', 'If specified uses this name for a global variable containing a reference to the jQuery instance');
 		$this->registerArgument('registerWith', 'string', 'If specified tries to call this global Javascript method to register the instance - only on parameter is used which is the jQuery instance');
@@ -118,13 +118,14 @@ class Tx_Fed_ViewHelpers_TableViewHelper extends Tx_Fed_Core_ViewHelper_Abstract
 		}
 
 		$headers = $this->arguments['headers'];
-		$properties = count($this->arguments['properties']) > 0 ? $this->arguments['properties'] : array_keys($this->arguments['data']);
+		
 		if ($this->arguments->hasArgument('objects')) {
 			$objects = $this->arguments['objects'];
 			if (is_array($objects) == FALSE) {
 				$objects = $objects->toArray();
 			}
 		}
+		$properties = count($this->arguments['properties']) > 0 ? $this->arguments['properties'] : array_keys($this->arguments['data']);
 
 		if ($this->arguments['dataSource']) {
 			$source = $this->arguments['dataSource'];
@@ -408,7 +409,7 @@ jQuery(document).ready(function() {
 		"oLanguage" : {$oLanguage},
 		"iDisplayLength" : {$this->arguments['iDisplayLength']},
 		"aLengthMenu" : {$this->arguments['aLengthMenu']},
-		"sPaginationType" : "{$this->arguments['sPaginationType']}",
+		"sPaginationType" : "{$this->arguments['sPaginationType']}"
 	} );
 	{$register}
 } );
