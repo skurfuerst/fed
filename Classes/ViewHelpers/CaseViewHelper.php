@@ -52,7 +52,8 @@ class Tx_Fed_ViewHelpers_CaseViewHelper extends Tx_Fed_Core_ViewHelper_AbstractV
 	public function render() {
 		$matchesCase = $this->viewHelperVariableContainer->get('Tx_Fed_ViewHelpers_SwitchViewHelper', 'switchCaseValue') == $this->arguments['case'];
 		$mustContinue = $this->viewHelperVariableContainer->get('Tx_Fed_ViewHelpers_SwitchViewHelper', 'switchContinueUntilBreak');
-		if ($matchesCase || $mustContinue) {
+		$isDefault = $this->arguments['case'] == 'default';
+		if ($matchesCase || $mustContinue || $isDefault) {
 			if ($this->arguments['break'] === TRUE) {
 				$this->viewHelperVariableContainer->addOrUpdate('Tx_Fed_ViewHelpers_SwitchViewHelper', 'switchBreakRequested', TRUE);
 			} else {
