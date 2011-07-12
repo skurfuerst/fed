@@ -48,7 +48,7 @@ class Tx_Fed_Utility_PropertyMapper extends Tx_Fed_Utility_DomainObjectInfo impl
 	 * @param string $value The value to search for; multiple values may be used in the annotation; $value must be present among them. If TRUE, all properties which have the annotation are returned
 	 * @param boolean $addUid If TRUE, the UID of the DomainObject will be force-added to the output regardless of annotation
 	 * @return array
-	 * @deprecated Remains as legacy but related functionality moved to Tx_Fed_Utility_DomainObjectReflection
+	 * @deprecated Remains as legacy but related functionality moved to Tx_Fed_Utility_DomainObjectInfo
 	 */
 	public function getValuesByAnnotation($object, $annotation='json', $value=TRUE, $addUid=TRUE) {
 		if (is_object($object)) {
