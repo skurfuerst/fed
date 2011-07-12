@@ -118,6 +118,22 @@ abstract class Tx_Fed_Core_AbstractController extends Tx_Extbase_MVC_Controller_
 	public function injectDebugService(Tx_Fed_Utility_Debug $debugService) {
 		$this->debugService = $debugService;
 	}
+	
+	/**
+	 * Clear the page cache for specified pages or current page
+	 * 
+	 * @param mixed $pids 
+	 */
+	protected function clearPageCache($pids=NULL) {
+		if ($pids === NULL) {
+			$pids = $GLOBALS['TSFE']->id;
+		}
+		if ($this->cacheService instanceof Tx_Extbase_Service_CacheService) {
+			$this->cacheService->clearPageCache($pids);
+		} else if (class_exists('Tx_Extbase_Utility_Cache')) {
+			Tx_Extbase_Utility_Cache::clearPageCache($pids);
+		}
+	}
 
 	/**
 	 * Get the flexform definition from the current cObj instance
