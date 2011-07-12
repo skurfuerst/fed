@@ -4,20 +4,34 @@ if (!defined ('TYPO3_MODE')) {
 }
 
 
+
+Tx_Extbase_Utility_Extension::configurePlugin(
+	$_EXTKEY,
+	'Page',
+	array(
+		'Page' => 'list,render',
+	),
+	array(
+		'Page' => 'list,render',
+	)
+);
+
 Tx_Extbase_Utility_Extension::configurePlugin(
 	$_EXTKEY,
 	'API',
 	array(
+		'Page' => 'render',
 		'FileuploadWidget' => 'upload',
 		'RecordSelectorWidget' => 'search',
 		'Hash' => 'request',
-		'Tool' => 'clearCache,inspectCookie,removeCookie,setCookie,inspectSession,setSession,removeSession',
+		'Tool' => 'clearCache,inspectCookie,removeCookie,setCookie,inspectSession,setSession,removeSession'
 	),
 	array(
+		'Page' => 'render',
 		'FileuploadWidget' => 'upload',
 		'RecordSelectorWidget' => 'search',
 		'Hash' => 'request',
-		'Tool' => 'clearCache,inspectCookie,removeCookie,setCookie,inspectSession,setSession,removeSession',
+		'Tool' => 'clearCache,inspectCookie,removeCookie,setCookie,inspectSession,setSession,removeSession'
 	)
 );
 
@@ -98,7 +112,9 @@ t3lib_extMgm::addTypoScript($_EXTKEY,'setup',
 	'
 , TRUE);
 
+
 t3lib_extMgm::addPageTSConfig('
+	TCEFORM.pages.layout.addItems.255 = FED Fluid Page
 	mod.wizards.newContentElement.wizardItems.special.elements.fed_fce {
 		icon = ../typo3conf/ext/fed/Resources/Public/Icons/Plugin.png
 		title = Fluid Flexible Content Element

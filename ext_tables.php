@@ -10,6 +10,12 @@ $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['extbase']['extensions']['fed']['plugins'
 
 Tx_Extbase_Utility_Extension::registerPlugin(
 	$_EXTKEY,
+	'Page',
+	'FED Page Renderer'
+);
+
+Tx_Extbase_Utility_Extension::registerPlugin(
+	$_EXTKEY,
 	'Fce',
 	'Fluid Flexible Content Element'
 );
@@ -37,6 +43,7 @@ Tx_Extbase_Utility_Extension::registerPlugin(
 	'Hash',
 	'FED Hasher'
 );
+
 
 t3lib_extMgm::addPlugin(array('FED Flexible Content Element', 'fed_fce'), 'CType');
 t3lib_extMgm::addPlugin(array('FED Template Display', 'fed_template'), 'CType');

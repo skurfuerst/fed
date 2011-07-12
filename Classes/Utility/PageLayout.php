@@ -25,7 +25,7 @@
  * ************************************************************* */
 
 /**
- *
+ * Frontend/Shared PageLayout Utility
  *
  * @author Claus Due, Wildside A/S
  * @version $Id$
@@ -34,41 +34,14 @@
  * @package Fed
  * @subpackage Backend
  */
-class Tx_Fed_Backend_FCEParser implements t3lib_Singleton {
+class Tx_Fed_Utility_PageLayout {
 
-	/**
-	 * @var Tx_Fed_View_FlexibleContentElementView
-	 */
-	protected $view;
-
-	/**
-	 * @var type Tx_Extbase_Object_ObjectManager
-	 */
-	protected $objectManager;
-
-	/**
-	 *
-	 * @param Tx_Extbase_Object_ObjectManager $objectManager
-	 */
-	public function injectObjectManager(Tx_Extbase_Object_ObjectManager $objectManager) {
-		$this->objectManager = $objectManager;
+	public function renderPage() {
+		#echo 'boach';
+		#exit();
+		#return 'TEST';
+		return 'BLAH';
 	}
-
-	/**
-	 *
-	 */
-	public function __construct() {
-		$this->objectManager = t3lib_div::makeInstance('Tx_Extbase_Object_ObjectManager');
-		$this->view = $this->objectManager->get('Tx_Fed_View_FlexibleContentElementView');
-	}
-
-	public function getFceDefinitionFromTemplate($templateFile, $data=NULL) {
-		$this->view->setTemplatePathAndFilename($templateFile);
-		$this->view->setFlexFormData($data);
-		return $this->view->getFlexibleContentElementDefinitions();
-	}
-
 
 }
-
 ?>

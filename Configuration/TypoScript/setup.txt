@@ -1,8 +1,23 @@
+[globalVar=TSFE:page|layout=255]
+page = PAGE
+page.typeNum = 0
+page.5 = USER
+page.5.userFunc = tx_fed_core_bootstrap->run
+page.5.extensionName = Fed
+page.5.pluginName = Page
+page.10 >
+
+[GLOBAL]
 plugin.tx_fed {
 	fce {
 		templatePaths {
 			0 = EXT:fed/Resources/Private/Elements/
 		}
+	}
+	page {
+		templateRootPath = EXT:fed/Resources/Private/Templates/
+		partialRootPath = EXT:fed/Resources/Private/Partials/
+		layoutRootPath = EXT:fed/Resources/Private/Layouts/
 	}
 	view {
 		templateRootPath = {$plugin.tx_fed.view.templateRootPath}
