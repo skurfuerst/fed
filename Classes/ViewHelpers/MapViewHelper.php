@@ -74,6 +74,7 @@ class Tx_Fed_ViewHelpers_MapViewHelper extends Tx_Fed_Core_ViewHelper_AbstractVi
 	 * @param float $zoom The initial Map zoom level. Required.
 	 * @param boolean $zoomControl The enabled/disabled state of the zoom control.
 	 * @param string $instanceName Javascript instance name to use. Default is "map".
+	 * @param string $registerWith Javascript function to call once map object is ready.
 	 * @param string $mapTypeId Type of map to display, defaults to google.maps.MapTypeId.ROADMAP
 
 	 */
@@ -101,6 +102,7 @@ class Tx_Fed_ViewHelpers_MapViewHelper extends Tx_Fed_Core_ViewHelper_AbstractVi
 			$zoom=7,
 			$zoomControl=TRUE,
 			$instanceName=NULL,
+			$registerWith=NULL,
 			$mapTypeId='google.maps.MapTypeId.ROADMAP'
 			) {
 		if ($api === NULL) {
@@ -136,6 +138,10 @@ class Tx_Fed_ViewHelpers_MapViewHelper extends Tx_Fed_Core_ViewHelper_AbstractVi
 		$lng = $this->arguments['lng'] ? $this->arguments['lng'] : 10.45;
 
 		$options = $this->getMapOptions();
+		
+		if (strlen($registerWith) > 0) {
+			$register = "{$registerWith}({$instanceName}, {$instanceName}markers);";
+		}
 
 		$js = <<< INIT
 var {$instanceName};
@@ -176,7 +182,8 @@ jQuery(document).ready(function() {
 		google.maps.event.addListener({$instanceName}, 'bounds_changed', {$instanceName}timer);
 		google.maps.event.addListener({$instanceName}, 'center_changed', {$instanceName}timer);
 		google.maps.event.addListener({$instanceName}, 'resize', {$instanceName}timer);
-	}
+	};
+	{$register}
 });
 
 INIT;
