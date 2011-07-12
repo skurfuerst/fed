@@ -98,7 +98,11 @@ class Tx_Fed_ViewHelpers_ImageViewHelper extends Tx_Fluid_ViewHelpers_ImageViewH
 		if ($pathinfo['filename'] === '*') {
 			$images = $this->documentHead->getFilenamesOfType($pathinfo['dirname'], $pathinfo['extension']);
 		} else if ($this->arguments->hasArgument('path')) {
-			$images = explode(',', trim($this->arguments['src'], ','));
+			$src = trim(trim($this->arguments['src']), ',');
+			if (strlen($src) === 0) {
+				return '';
+			}
+			$images = explode(',', $src);
 			// patch for CSV files missing relative pathnames and possible missing files
 			foreach ($images as $k=>$v) {
 				$images[$k] = $this->arguments['path'] . $v;
@@ -114,6 +118,11 @@ class Tx_Fed_ViewHelpers_ImageViewHelper extends Tx_Fluid_ViewHelpers_ImageViewH
 
 		if ($this->arguments['limit'] > 0) {
 			$images = array_slice($images, 0, $this->arguments['limit']);
+		}
+		
+		
+		if (count($images) === 0) {
+			return '';
 		}
 
 		// use altsrc for any image not present
