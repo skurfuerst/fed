@@ -76,6 +76,7 @@ class Tx_Fed_ViewHelpers_ExtJS_AppViewHelper extends Tx_Fed_ViewHelpers_RenderVi
 		parent::initializeArguments();
 		$this->registerArgument('id', 'string', 'ID of DOM element to insert', TRUE);
 		$this->registerArgument('tagName', 'string', 'Optional override for the tag name to render, defaults to "div"', FALSE, 'div');
+		$this->registerArgument('fluid', 'boolean', 'If TRUE, parses application source file as if it were Fluid', FALSE, FALSE);
 		// inherits "template" and "arguments" params from RenderViewHelper
 	}
 
@@ -88,11 +89,16 @@ class Tx_Fed_ViewHelpers_ExtJS_AppViewHelper extends Tx_Fed_ViewHelpers_RenderVi
 		$arguments = $this->arguments['arguments'];
 		$tag = $this->arguments['tagName'];
 		$arguments['id'] = $this->arguments['id'];
-		$applicationScriptContent = $this->partialRender->render($this->arguments['template'], $arguments);
-		$initScript = $this->renderChildren();
-		$uniqid = md5($applicationScriptContent);
-		$this->includeHeader($initScript, 'js');
-		$tempFile = $this->documentHead->saveContentToTempFile($applicationScriptContent, $uniqid, 'js');
+		
+		if ($this->arguments['fluid'] === TRUE) {
+			$applicationScriptContent = $this->partialRender->render($this->arguments['template'], $arguments);
+			$initScript = $this->renderChildren();
+			$uniqid = md5($applicationScriptContent);
+			$this->includeHeader($initScript, 'js');
+			$tempFile = $this->documentHead->saveContentToTempFile($applicationScriptContent, $uniqid, 'js');
+		} else {
+			$this->includeFile($this->arguments['template']);
+		}
 		$this->includeFile($tempFile);
 		$element = '<' . $tag . ' id="' . $this->arguments['id'] . '"><span>&nbsp;</span></' . $tag . '>' . chr(10);
 		return $element;
