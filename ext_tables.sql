@@ -47,15 +47,15 @@ CREATE TABLE tx_fed_domain_model_datasource (
 # Table structure for table 'tt_content'
 #
 CREATE TABLE tt_content (
-	tx_fed_fcecontentarea VARCHAR(255) DEFAULT '' NOT NULL,
-	tx_fed_fcefile VARCHAR(255) DEFAULT '' NOT NULL
+	tx_fed_fcecontentarea varchar(255) DEFAULT '' NOT NULL,
+	tx_fed_fcefile varchar(255) DEFAULT '' NOT NULL
 );
 
 #
 # Table structure for table 'pages'
 #
 CREATE TABLE pages (
-	tx_fed_page_format VARCHAR(255) DEFAULT '' NOT NULL,
-	tx_fed_page_controller_action VARCHAR(255) DEFAULT '' NOT NULL,
-	tx_fed_page_controller_action_sub VARCHAR(255) DEFAULT '' NOT NULL,
+	tx_fed_page_format varchar(255) DEFAULT '' NOT NULL,
+	tx_fed_page_controller_action varchar(255) DEFAULT '' NOT NULL,
+	tx_fed_page_controller_action_sub varchar(255) DEFAULT '' NOT NULL,
 );
