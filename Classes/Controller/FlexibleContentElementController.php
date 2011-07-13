@@ -47,6 +47,7 @@ class Tx_Fed_Controller_FlexibleContentElementController extends Tx_Fed_Core_Abs
 		$this->view->setTemplatePathAndFilename($filename);
 		$this->view->assignMultiple($flexform);
 		$this->view->assign('record', $cObj);
+		$this->view->assign('page', $GLOBALS['TSFE']->page);
 		return $this->view->render();
 	}
 
