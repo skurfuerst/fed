@@ -75,8 +75,10 @@ class Tx_Fed_ViewHelpers_FormViewHelper extends Tx_Fluid_ViewHelpers_FormViewHel
 				$this->tag->addAttribute('id', $id);
 			}
 			$link = $this->controllerContext->getUriBuilder()->setTargetPageUid($pageUid)->uriFor('validate');
+			$prefix = $this->getFieldNamePrefix();
+			$relData = json_encode(array('link' => $link, 'prefix' => $prefix, 'objectName' => $objectName));
 			$this->tag->addAttribute('class', 'fed-validator ' . ($this->arguments['autoSubmit'] === TRUE ? 'fed-autosubmit' : ''));
-			$this->tag->addAttribute('rel', $link);
+			$this->tag->addAttribute('rel', $relData);
 			$scriptFile = t3lib_extMgm::siteRelPath('fed') . 'Resources/Public/Javascript/FormValidator.js';
 			$this->includeFile($scriptFile);
 		}
