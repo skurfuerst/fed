@@ -118,11 +118,11 @@ abstract class Tx_Fed_Core_AbstractController extends Tx_Extbase_MVC_Controller_
 	public function injectDebugService(Tx_Fed_Utility_Debug $debugService) {
 		$this->debugService = $debugService;
 	}
-	
+
 	/**
 	 * Clear the page cache for specified pages or current page
-	 * 
-	 * @param mixed $pids 
+	 *
+	 * @param mixed $pids
 	 */
 	protected function clearPageCache($pids=NULL) {
 		if ($pids === NULL) {
@@ -158,6 +158,37 @@ abstract class Tx_Fed_Core_AbstractController extends Tx_Extbase_MVC_Controller_
 			$array[$name] = $value;
 		}
 		return $array;
+	}
+
+	/**
+	 * Constructs an instance of $className and validates after applying values
+	 * from $data. Does not generate validation messages - is purely intended
+	 * to validate a form's contents through AJAX before submission is allowed.
+	 * If $className is not specified a DomainObject of the type related to this
+	 * controller is assumed.
+	 *
+	 * Circumvents request processing to output a JSON response directly.
+	 *
+	 * @param array $data Associative array of data to be validated
+	 * @param string $className Class name to validate $data against
+	 * @return string
+	 */
+	public function validateAction($data, $className=NULL) {
+		if ($className === NULL) {
+			$className = 'Tx_' . $this->request->getExtensionName() . '_Domain_Model_' . $this->request->getControllerName();
+		}
+		$propertyNames = $this->reflectionService->getClassPropertyNames($className);
+		$propertyMapper = $this->objectManager->get('Tx_Extbase_Property_Mapper');
+		$instance = $this->objectManager->get($className);
+		$result = $propertyMapper->mapAndValidate($propertyMapper, $data, $instance);
+		if ($result === TRUE) {
+			echo '1';
+			exit;
+		}
+		$mappingResults = $propertyMapper->getMappingResults();
+		$json = $this->jsonService->encode($mappingResults);
+		echo $json;
+		exit();
 	}
 
 	/**
