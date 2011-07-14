@@ -80,9 +80,15 @@ class Tx_Fed_ViewHelpers_FormViewHelper extends Tx_Fluid_ViewHelpers_FormViewHel
 			$relData = json_encode(array('link' => $link, 'prefix' => $prefix, 'objectName' => $objectName, 'autosubmit' => $this->arguments['autosubmit']));
 			$this->tag->addAttribute('class', 'fed-validator ' . $this->arguments['class'] . ' ' . ($this->arguments['autoSubmit'] === TRUE ? 'fed-autosubmit' : ''));
 			$this->tag->addAttribute('rel', $relData);
-			$scriptFile = t3lib_extMgm::siteRelPath('fed') . 'Resources/Public/Javascript/FormValidator.js';
+			$scripts = array(
+				t3lib_extMgm::siteRelPath('fed') . 'Resources/Public/Javascript/FormValidator.js',
+				t3lib_extMgm::siteRelPath('fed') . 'Resources/Public/Javascript/Utf8Encode.js',
+				t3lib_extMgm::siteRelPath('fed') . 'Resources/Public/Javascript/Utf8Decode.js',
+				t3lib_extMgm::siteRelPath('fed') . 'Resources/Public/Javascript/Serialize.js',
+				t3lib_extMgm::siteRelPath('fed') . 'Resources/Public/Javascript/Unserialize.js'
+			);
 			$documentHead = $this->objectManager->get('Tx_Fed_Utility_DocumentHead');
-			$documentHead->includeFile($scriptFile);
+			$documentHead->includeFiles($scripts);
 		}
 		$content = parent::render($action, $arguments, $controller, $extensionName, $pluginName, $pageUid, $object, $pageType, $noCache, $noCacheHash, $section, $format, $additionalParams, $absolute, $addQueryString, $argumentsToBeExcludedFromQueryString, $fieldNamePrefix, $actionUri, $objectName);
 		return $content;
