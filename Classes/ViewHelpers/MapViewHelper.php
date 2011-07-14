@@ -305,7 +305,6 @@ CSS;
 		$removables = array('mapTypeId');
 		$args = $this->getArguments();
 		foreach ($args as $k=>$v) {
-			#$key = substr($v, 0, strpos($v, ':'));
 			if (in_array($k, $removables)) {
 				unset($args[$k]);
 			}
@@ -323,11 +322,11 @@ CSS;
 		);
 		$lines = array(
 			"position: new google.maps.LatLng({$marker['lat']},{$marker['lng']})",
+			"icon: new google.maps.MarkerImage('{$marker['icon']}', null, null, 
+				new google.maps.Point({$marker['iconCenterX']}, {$marker['iconCenterY']}))",
 			"map: {$this->instanceName}",
-			#shadow 	string|MarkerImage 	Shadow image
-			#icon 	string|MarkerImage 	Icon for the foreground
-			#shape MarkerShape Image map region definition used for drag/click.
 		);
+		unset($marker['icon']);
 		$lines = array_merge($lines, $this->getOptions($marker));
 		foreach ($lines as $k=>$v) {
 			$key = substr($v, 0, strpos($v, ':'));
