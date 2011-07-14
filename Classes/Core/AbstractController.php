@@ -175,18 +175,38 @@ abstract class Tx_Fed_Core_AbstractController extends Tx_Extbase_MVC_Controller_
 	 */
 	public function validateAction($data, $className=NULL) {
 		if ($className === NULL) {
-			$className = 'Tx_' . $this->request->getExtensionName() . '_Domain_Model_' . $this->request->getControllerName();
+			$className = 'Tx_' . $this->extensionName . '_Domain_Model_' . $this->request->getControllerName();
 		}
+		$data['pid'] = $this->getConfiguredStoragePid();
+		$data['uid'] = NULL;
+		$data['_localizedUid'] = NULL;
 		$propertyNames = $this->reflectionService->getClassPropertyNames($className);
-		$propertyMapper = $this->objectManager->get('Tx_Extbase_Property_Mapper');
+
 		$instance = $this->objectManager->get($className);
-		$result = $propertyMapper->mapAndValidate($propertyMapper, $data, $instance);
-		if ($result === TRUE) {
-			echo '1';
-			exit;
+		$validatorResolver = $this->objectManager->get('Tx_Extbase_Validation_ValidatorResolver');
+		$validator = $validatorResolver->getBaseValidatorConjunction($className);
+
+		$propertyMapper = $this->objectManager->get('Tx_Extbase_Property_Mapper');
+		$propertyMapper->map($propertyNames, $data, $instance);
+
+		$errors = array();
+		if (method_exists($validator, 'validate')) {
+			$isValid = $validator->validate($instance);
+		} else {
+			$isValid = $validator->isValid($instance);
 		}
-		$mappingResults = $propertyMapper->getMappingResults();
-		$json = $this->jsonService->encode($mappingResults);
+		if ($isValid === TRUE) {
+			echo '1';
+			exit();
+		}
+		foreach ($validator->getErrors() as $name=>$error) {
+			$errors[$name] = array(
+				'name' => $name,
+				'message' => $error->getMessage(),
+				'code' => $error->getCode()
+			);
+		}
+		$json = $this->jsonService->encode($errors);
 		echo $json;
 		exit();
 	}

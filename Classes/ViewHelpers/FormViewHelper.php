@@ -38,8 +38,9 @@ class Tx_Fed_ViewHelpers_FormViewHelper extends Tx_Fluid_ViewHelpers_FormViewHel
 
 
 	public function initializeArguments() {
+		parent::initializeArguments();
 		$this->registerArgument('validate', 'boolean', 'If TRUE, uses AJAX to validate the form before submission. Requires jQuery', FALSE, FALSE);
-		$this->registerArgument('autoSubmit', 'boolean', 'If TRUE and validate TRUE, automatically submits the form when valid', FALSE, FALSE);
+		$this->registerArgument('autosubmit', 'boolean', 'If TRUE and validate TRUE, automatically submits the form when valid', FALSE, FALSE);
 	}
 
 	/**
@@ -76,19 +77,17 @@ class Tx_Fed_ViewHelpers_FormViewHelper extends Tx_Fluid_ViewHelpers_FormViewHel
 			}
 			$link = $this->controllerContext->getUriBuilder()->setTargetPageUid($pageUid)->uriFor('validate');
 			$prefix = $this->getFieldNamePrefix();
-			$relData = json_encode(array('link' => $link, 'prefix' => $prefix, 'objectName' => $objectName));
-			$this->tag->addAttribute('class', 'fed-validator ' . ($this->arguments['autoSubmit'] === TRUE ? 'fed-autosubmit' : ''));
+			$relData = json_encode(array('link' => $link, 'prefix' => $prefix, 'objectName' => $objectName, 'autosubmit' => $this->arguments['autosubmit']));
+			$this->tag->addAttribute('class', 'fed-validator ' . $this->arguments['class'] . ' ' . ($this->arguments['autoSubmit'] === TRUE ? 'fed-autosubmit' : ''));
 			$this->tag->addAttribute('rel', $relData);
 			$scriptFile = t3lib_extMgm::siteRelPath('fed') . 'Resources/Public/Javascript/FormValidator.js';
-			$this->includeFile($scriptFile);
+			$documentHead = $this->objectManager->get('Tx_Fed_Utility_DocumentHead');
+			$documentHead->includeFile($scriptFile);
 		}
 		$content = parent::render($action, $arguments, $controller, $extensionName, $pluginName, $pageUid, $object, $pageType, $noCache, $noCacheHash, $section, $format, $additionalParams, $absolute, $addQueryString, $argumentsToBeExcludedFromQueryString, $fieldNamePrefix, $actionUri, $objectName);
 		return $content;
 	}
 
-	protected function dispatchRenderMethod() {
-
-	}
 
 }
 
