@@ -218,8 +218,10 @@ class Tx_Fed_Resource_File {
 			$this->size = filesize($absolutePath);
 			$this->absolutePath = $absolutePath;
 			$this->relativePath = str_replace(PATH_site, '', $absolutePath);
-			$this->created->setTimestamp(filectime($absolutePath));
-			$this->modified->setTimestamp(filemtime($absolutePath));
+			if (method_exists($this->created, 'setTimestamp')) {
+				$this->created->setTimestamp(filectime($absolutePath));
+				$this->modified->setTimestamp(filemtime($absolutePath));
+			}
 		}
 	}
 

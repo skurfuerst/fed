@@ -86,6 +86,7 @@ class Tx_Fed_ViewHelpers_ImageViewHelper extends Tx_Fluid_ViewHelpers_ImageViewH
 		$this->registerArgument('sortDirection', 'string', 'Direction to sort', FALSE, 'ASC');
 		$this->registerArgument('clickenlarge', 'boolean', 'Change to FALSE if you do not want actions and script added if large version is rendered', FALSE, TRUE);
 		$this->registerArgument('limit', 'integer', 'Specify to limit the number of images which may be rendered');
+		$this->registerArgument('lightbox', 'boolean', 'If TRUE, creates a lightbox from the tag content', FALSE, FALSE);
 	}
 
 	/**
@@ -319,7 +320,7 @@ class Tx_Fed_ViewHelpers_ImageViewHelper extends Tx_Fluid_ViewHelpers_ImageViewH
 	 * @return void
 	 */
 	protected function addScript() {
-		$script = "function fedImgXL(parent, filename) {  document.getElementById(parent).src = filename; };";
+		$script = "function fedImgXL(parent, filename) { document.getElementById(parent).src = filename; };";
 		$this->documentHead->includeHeader($script, 'js');
 	}
 
