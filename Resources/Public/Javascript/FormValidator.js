@@ -24,6 +24,7 @@ FED.FormValidator = {
 			data: data,
 			complete: function(response, status) {
 				var result = response.responseText;
+				var data = jQuery.parseJSON(result);
 				FED.FormValidator.cleanFields(form);
 				if (result == '1') {
 					if (json.autosubmit) {
@@ -32,7 +33,6 @@ FED.FormValidator = {
 						return true;
 					};
 				} else if (typeof data == 'object') {
-					var data = jQuery.parseJSON(result);
 					FED.FormValidator.highlightErrorFields(form, json, data);
 				} else {
 					console.warn('Unsupported return type: ' + typeof data);
