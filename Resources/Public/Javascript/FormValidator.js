@@ -19,23 +19,26 @@ FED.FormValidator = {
 		var result = jQuery.ajax({
 			type: 'post',
 			dataType: 'json',
-			async: false,
+			async: true,
 			url: json.link,
-			data: data
-		}).responseText;
-		FED.FormValidator.cleanFields(form);
-		if (result == '1') {
-			if (json.autosubmit) {
-				form.submit();
-			} else {
-				return true;
-			};
-		} else if (typeof data == 'object') {
-			var data = jQuery.parseJSON(result);
-			FED.FormValidator.highlightErrorFields(form, json, data);
-		} else {
-			console.warn('Unsupported return type: ' + typeof data);
-		};
+			data: data,
+			complete: function(response, status) {
+				var result = response.responseText;
+				FED.FormValidator.cleanFields(form);
+				if (result == '1') {
+					if (json.autosubmit) {
+						form.submit();
+					} else {
+						return true;
+					};
+				} else if (typeof data == 'object') {
+					var data = jQuery.parseJSON(result);
+					FED.FormValidator.highlightErrorFields(form, json, data);
+				} else {
+					console.warn('Unsupported return type: ' + typeof data);
+				};
+			}
+		});
 	},
 
 	highlightErrorFields : function(form, config, errors) {

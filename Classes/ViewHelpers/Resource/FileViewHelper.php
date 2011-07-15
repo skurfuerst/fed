@@ -77,7 +77,8 @@ class Tx_Fed_ViewHelpers_Resource_FileViewHelper extends Tx_Fed_ViewHelpers_Reso
 				}
 			}
 		} else {
-			throw new Exception('Invalid path given to Resource ViewHelper', $code, $previous);
+			//throw new Exception('Invalid path given to Resource ViewHelper', $code, $previous);
+			return '';
 		}
 		$files = $this->arrayToFileObjects($files);
 		$files = $this->sortFiles($files);
