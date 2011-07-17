@@ -49,15 +49,24 @@ t3lib_extMgm::addPlugin(array('FED Flexible Content Element', 'fed_fce'), 'CType
 t3lib_extMgm::addPlugin(array('FED Template Display', 'fed_template'), 'CType');
 t3lib_extMgm::addPlugin(array('FED DataSource Display', 'fed_datasource'), 'CType');
 
+t3lib_div::loadTCA('pages');
 t3lib_div::loadTCA('tt_content');
 $TCA['tt_content']['types']['list']['subtypes_addlist']['fed_fce'] = 'pi_flexform';
 $TCA['tt_content']['types']['list']['subtypes_addlist']['fed_sandbox'] = 'pi_flexform';
 
+$before = "backend_layout;LLL:EXT:cms/locallang_tca.xml:pages.backend_layout_formlabel";
+$pos = strpos($TCA['pages']['palettes']['layout']['showitem'], $before);
+$spliceIn = 'tx_fed_page_controller_action,tx_fed_page_controller_action_sub,--linebreak--,';
+$backup = $TCA['pages']['palettes']['layout']['showitem'];
+$append = ",--linebreak--,tx_fed_page_flexform";
+$TCA['pages']['palettes']['layout']['showitem'] = substr($backup, 0, $pos) . $spliceIn . substr($backup, $pos) . $append;
+$TCA['pages']['ctrl']['requestUpdate'] .= 'tx_fed_page_controller_action';
+
 t3lib_extMgm::addToAllTCAtypes('tt_content', 'tx_fed_fcecontentarea;;;1-1-1');
-#t3lib_extMgm::addToAllTCAtypes('pages', 'tx_fed_page_format,tx_fed_page_controller_action,tx_fed_page_controller_action_sub;;;1-1-1');
-t3lib_extMgm::addToAllTCAtypes('pages', 'tx_fed_page_controller_action,tx_fed_page_controller_action_sub;;;1-1-1');
 t3lib_extMgm::addPiFlexFormValue('fed_sandbox', 'FILE:EXT:'.$_EXTKEY.'/Configuration/FlexForms/Sandbox.xml');
 t3lib_extMgm::addStaticFile($_EXTKEY, 'Configuration/TypoScript', 'FED Fluid Extbase Development Framework');
+
+
 
 $TCA['tt_content']['types']['fed_fce']['showitem'] = '
 --palette--;LLL:EXT:cms/locallang_ttc.xml:palette.general;general,
@@ -146,6 +155,17 @@ t3lib_extMgm::addTCAcolumns('pages', array(
 			'userFunc' => 'Tx_Fed_Backend_PageLayoutSelector->renderField'
 		)
 	),
+	'tx_fed_page_flexform' => Array (
+        'exclude' => 1,
+        'label' => 'LLL:EXT:fed/Resources/Private/Language/locallang_db.xml:pages.tx_fed_page_flexform',
+        'config' => Array (
+            'type' => 'flex',
+            #'ds_pointerField' => 'tx_templavoila_ds',
+            #'ds_pointerField_searchParent' => 'pid',
+            #'ds_pointerField_searchParent_subField' => 'tx_templavoila_next_ds',
+            #'ds_tableField' => 'tx_templavoila_datastructure:dataprot',
+        )
+    ),
 ), 1);
 t3lib_extMgm::addTCAcolumns('tt_content', array(
 	'tx_fed_fcecontentarea' => Array (

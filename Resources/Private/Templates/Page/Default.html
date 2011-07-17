@@ -1,7 +1,25 @@
 {namespace fed=Tx_Fed_ViewHelpers}
 
+
 <f:layout name="Default" />
 
 <f:section name="main">
+	<fed:page id="default">
+		<fed:page.field.input name="test" label="Testfield" />
+		<fed:page.field.input name="test2" label="Testfield 2" />
+	</fed:page>
+
+
 	This is a page template, main section, in Default.html
+	<fed:comment comment="Using 'as', it is assumed that content is manually iterated.
+		Remove and use self-closing tag on page.renderContent for auto-rendering." />
+
+	<h1>{test}</h1>
+	<fed:debug.variables />
+	<fed:page.renderContent column="0" as="content">
+		<h4>Page content elements colPos 0</h4>
+		<f:for each="{content}" as="ce" iteration="iteration">
+			<fed:raw>{ce}</fed:raw>
+		</f:for>
+	</fed:page.renderContent>
 </f:section>

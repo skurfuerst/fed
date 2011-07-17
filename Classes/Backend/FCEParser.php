@@ -62,10 +62,23 @@ class Tx_Fed_Backend_FCEParser implements t3lib_Singleton {
 		$this->view = $this->objectManager->get('Tx_Fed_View_FlexibleContentElementView');
 	}
 
-	public function getFceDefinitionFromTemplate($templateFile, $data=NULL) {
+	public function getFceDefinitionFromTemplate($templateFile, $data=NULL, $paths=array()) {
 		$this->view->setTemplatePathAndFilename($templateFile);
 		$this->view->setFlexFormData($data);
+		if ($paths) {
+			$this->view->setPartialRootPath(PATH_site . $this->translatePath($paths['partialRootPath']));
+			$this->view->setLayoutRootPath(PATH_site . $this->translatePath($paths['layoutRootPath']));
+		}
 		return $this->view->getFlexibleContentElementDefinitions();
+	}
+
+	protected function translatePath($path) {
+		if (strpos($path, 'EXT:') === 0) {
+			$slice = strpos($path, '/');
+			$extKey = array_pop(explode(':', substr($path, 0, $slice)));
+			$path = t3lib_extMgm::siteRelPath($extKey) . substr($path, $slice);
+		}
+		return $path;
 	}
 
 

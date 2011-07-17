@@ -58,6 +58,7 @@ class Tx_Fed_Controller_PageController extends Tx_Fed_Core_AbstractController {
 	 * @return string
 	 */
 	public function listAction() {
+		$flexform = $this->flexform->convertFlexFormContentToArray($GLOBALS['TSFE']->page['tx_fed_page_flexform']);
 		$config = $this->configurationManager->getConfiguration(Tx_Extbase_Configuration_ConfigurationManagerInterface::CONFIGURATION_TYPE_FULL_TYPOSCRIPT);
 		$config = Tx_Extbase_Utility_TypoScript::convertTypoScriptArrayToPlainArray($config);
 		$typoscript = $config['plugin']['tx_fed']['page'];
@@ -72,6 +73,11 @@ class Tx_Fed_Controller_PageController extends Tx_Fed_Core_AbstractController {
 			$view->setTemplateRootPath($templateRootPath);
 			$view->setLayoutRootPath($layoutRootPath);
 			$view->setPartialRootPath($partialRootPath);
+			$view->assignMultiple($flexform);
+			$view->assign('page', $GLOBALS['TSFE']->page);
+			$view->assign('user', $GLOBALS['TSFE']->fe_user->user);
+			$view->assign('cookies', $_COOKIE);
+			$view->assign('session', $_SESSION);
 			return $view->render($configuration['tx_fed_page_controller_action']);
 		}
 		return $view->render;

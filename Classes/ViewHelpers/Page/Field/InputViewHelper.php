@@ -35,23 +35,7 @@
  * @subpackage ViewHelpers/Fce/Field
  */
 
-class Tx_Fed_ViewHelpers_Fce_Field_GroupViewHelper extends Tx_Fed_ViewHelpers_Fce_Field_SelectViewHelper {
-
-	public function initializeArguments() {
-		parent::initializeArguments();
-		$this->registerArgument('internalType', 'string', 'FlexForm-internalType of this Group Selector', TRUE);
-		$this->registerArgument('allowed', 'string', 'FlexForm-style "allowed" content for a group type field');
-	}
-
-	public function render() {
-		$config = $this->getFieldConfig();
-		$config['type'] = 'group';
-		$config['internalType'] = $this->arguments['internalType'];
-		$config['allowed'] = $this->arguments['allowed'];
-		$this->addField($config);
-		$this->renderChildren();
-	}
-
+class Tx_Fed_ViewHelpers_Page_Field_InputViewHelper extends Tx_Fed_ViewHelpers_Fce_Field_InputViewHelper {
 
 }
 

@@ -20,6 +20,7 @@
 			<label index="pages.tx_fed_page_controller_action">FED Fluid Page Layout - this page</label>
 			<label index="pages.tx_fed_page_controller_action_sub">FED Fluid Page Layout - subpages</label>
 			<label index="pages.tx_fed_page_format">FED Fluid Page Format</label>
+			<label index="pages.tx_fed_page_flexform">FED Page configuration</label>
 		</languageKey>
 	</data>
 </T3locallang>
