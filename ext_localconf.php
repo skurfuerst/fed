@@ -3,8 +3,6 @@ if (!defined ('TYPO3_MODE')) {
 	die ('Access denied.');
 }
 
-
-
 Tx_Extbase_Utility_Extension::configurePlugin(
 	$_EXTKEY,
 	'Page',
@@ -12,7 +10,6 @@ Tx_Extbase_Utility_Extension::configurePlugin(
 		'Page' => 'list,render',
 	),
 	array(
-		'Page' => 'list,render',
 	)
 );
 
@@ -27,7 +24,6 @@ Tx_Extbase_Utility_Extension::configurePlugin(
 		'Tool' => 'clearCache,inspectCookie,removeCookie,setCookie,inspectSession,setSession,removeSession'
 	),
 	array(
-		'Page' => 'render',
 		'FileuploadWidget' => 'upload',
 		'RecordSelectorWidget' => 'search',
 		'Hash' => 'request',
@@ -42,7 +38,6 @@ Tx_Extbase_Utility_Extension::configurePlugin(
 		'FlexibleContentElement' => 'show',
 	),
 	array(
-		//'Template' => 'show',
 	)
 );
 
@@ -53,7 +48,6 @@ Tx_Extbase_Utility_Extension::configurePlugin(
 		'Template' => 'show',
 	),
 	array(
-		//'Template' => 'show',
 	)
 );
 
@@ -76,7 +70,6 @@ Tx_Extbase_Utility_Extension::configurePlugin(
 		'Sandbox' => 'show',
 	),
 	array(
-		//'DataSource' => 'show',
 	)
 );
 

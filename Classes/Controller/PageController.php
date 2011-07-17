@@ -65,29 +65,33 @@ class Tx_Fed_Controller_PageController extends Tx_Fed_Core_AbstractController {
 		$view = $this->objectManager->get('Tx_Fluid_View_TemplateView');
 		$rootline = array();
 		$configuration = $this->getPageTemplateConfiguration($GLOBALS['TSFE']->id, $rootline);
-		if ($view instanceof Tx_Fluid_View_TemplateView) {
-			$templateRootPath = $this->translatePath($typoscript['templateRootPath']);
-			$layoutRootPath = $this->translatePath($typoscript['layoutRootPath']);
-			$partialRootPath = $this->translatePath($typoscript['partialRootPath']);
-			$view->setControllerContext($this->controllerContext);
-			$view->setTemplateRootPath($templateRootPath);
-			$view->setLayoutRootPath($layoutRootPath);
-			$view->setPartialRootPath($partialRootPath);
-			$view->assignMultiple($flexform);
-			$view->assign('page', $GLOBALS['TSFE']->page);
-			$view->assign('user', $GLOBALS['TSFE']->fe_user->user);
-			$view->assign('cookies', $_COOKIE);
-			$view->assign('session', $_SESSION);
-			return $view->render($configuration['tx_fed_page_controller_action']);
+		if (strpos($configuration['tx_fed_page_controller_action'], '->')) {
+			list ($extensionName, $action) = explode('->', $configuration['tx_fed_page_controller_action']);
+		} else {
+			$extensionName = 'fed';
+			$action = $configuration['tx_fed_page_controller_action'];
 		}
-		return $view->render;
+		$templates = $this->getTyposcript();
+		$paths = $templates[$extensionName];
+		$templateRootPath = $this->translatePath($paths['templateRootPath']);
+		$layoutRootPath = $this->translatePath($paths['layoutRootPath']);
+		$partialRootPath = $this->translatePath($paths['partialRootPath']);
+		$view->setControllerContext($this->controllerContext);
+		$view->setTemplateRootPath($templateRootPath);
+		$view->setLayoutRootPath($layoutRootPath);
+		$view->setPartialRootPath($partialRootPath);
+		$view->assignMultiple($flexform);
+		$view->assign('page', $GLOBALS['TSFE']->page);
+		$view->assign('user', $GLOBALS['TSFE']->fe_user->user);
+		$view->assign('cookies', $_COOKIE);
+		$view->assign('session', $_SESSION);
+		return $view->render($action);
 	}
 
 	protected function getPageTemplateConfiguration($id, $rootline) {
 		$page = $GLOBALS['TSFE']->page;
 		return array(
 			'tx_fed_page_controller_action' => $page['tx_fed_page_controller_action'],
-			#'tx_fed_page_controller_action_sub' => $page['tx_fed_page_controller_action_sub'],
 			'tx_fed_page_format' => $page['tx_fed_page_layout']
 		);
 	}
@@ -101,6 +105,44 @@ class Tx_Fed_Controller_PageController extends Tx_Fed_Core_AbstractController {
 		return $path;
 	}
 
+	/**
+	 *
+	 * @TODO This is duplicated code. Should be moved to a Service in the future
+	 * @param type $format
+	 * @return type
+	 */
+	protected function getAvailablePageTemplates($format) {
+		$typoscript = $this->getTyposcript();
+		$output = array();
+		foreach ($typoscript as $extensionName=>$group) {
+			$path = $group['templateRootPath'] . 'Page/';
+			$path = $this->translatePath($path);
+			$dir = PATH_site . $path;
+			$files = scandir($dir);
+			$output[$extensionName] = array();
+			foreach ($files as $k=>$file) {
+				$pathinfo = pathinfo($dir . $file);
+				$extension = $pathinfo['extension'];
+				if (substr($file, 0, 1) === '.') {
+					unset($files[$k]);
+				} else if (strtolower($extension) != strtolower($format)) {
+					unset($files[$k]);
+				} else {
+					$output[$extensionName][] = $pathinfo['filename'];
+				}
+			}
+		}
+		return $output;
+	}
+
+	protected function getTyposcript() {
+		$objectManager = t3lib_div::makeInstance('Tx_Extbase_Object_ObjectManager');
+		$configManager = $objectManager->get('Tx_Extbase_Configuration_BackendConfigurationManager');
+		$config = $configManager->getTyposcriptSetup();
+		$config = Tx_Extbase_Utility_TypoScript::convertTypoScriptArrayToPlainArray($config);
+		$typoscript = $config['plugin']['tx_fed']['page'];
+		return $typoscript;
+	}
 
 }
 

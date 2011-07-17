@@ -38,10 +38,15 @@ class Tx_Fed_Backend_PageLayoutSelector {
 		$format = 'html';
 		$availableTemplates = $this->getAvailablePageTemplates($format);
 		$selector = '<select name="' . $name . '" class="formField select">' . chr(10);
-		foreach ($availableTemplates as $template) {
-			$selected = ($template == $value ? ' selected="formField selected"' : '');
-			$option = '<option value="' . $template . '"' . $selected . '>' . $template . '</option>';
-			$selector .= $option . chr(10);
+		foreach ($availableTemplates as $extension=>$group) {
+			$selector .= '<optgroup label="Extension: ' . $extension . '">' . chr(10);
+			foreach ($group as $template) {
+				$optionValue = $extension . '->' . $template;
+				$selected = ($optionValue == $value ? ' selected="formField selected"' : '');
+				$option = '<option value="' . $optionValue . '"' . $selected . '>' . $optionValue . '</option>';
+				$selector .= $option . chr(10);
+			}
+			$selector .= '</optgroup>' . chr(10);
 		}
 		$selector .= '</select>' . chr(10);
 		return $selector;
@@ -82,22 +87,26 @@ class Tx_Fed_Backend_PageLayoutSelector {
 
 	protected function getAvailablePageTemplates($format) {
 		$typoscript = $this->getTyposcript();
-		$path = $typoscript['templateRootPath'] . 'Page/';
-		$path = $this->translatePath($path);
-		$dir = PATH_site . $path;
-		$files = scandir($dir);
-		foreach ($files as $k=>$file) {
-			$pathinfo = pathinfo($dir . $file);
-			$extension = $pathinfo['extension'];
-			if (substr($file, 0, 1) === '.') {
-				unset($files[$k]);
-			} else if (strtolower($extension) != strtolower($format)) {
-				unset($files[$k]);
-			} else {
-				$files[$k] = $pathinfo['filename'];
+		$output = array();
+		foreach ($typoscript as $extensionName=>$group) {
+			$path = $group['templateRootPath'] . 'Page/';
+			$path = $this->translatePath($path);
+			$dir = PATH_site . $path;
+			$files = scandir($dir);
+			$output[$extensionName] = array();
+			foreach ($files as $k=>$file) {
+				$pathinfo = pathinfo($dir . $file);
+				$extension = $pathinfo['extension'];
+				if (substr($file, 0, 1) === '.') {
+					unset($files[$k]);
+				} else if (strtolower($extension) != strtolower($format)) {
+					unset($files[$k]);
+				} else {
+					$output[$extensionName][] = $pathinfo['filename'];
+				}
 			}
 		}
-		return $files;
+		return $output;
 	}
 
 	protected function translatePath($path) {
