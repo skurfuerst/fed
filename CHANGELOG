@@ -1,0 +1,1470 @@
+------------------------------------------------------------------------
+r49867 | claus@wildside.dk | 2011-07-17 16:43:26 +0200 (Sun, 17 Jul 2011) | 8 lines
+
+[FEATURE] Fluid Page Rendering
+
+Topic says it all. This does for Page Rendering what Fluid FCEs 
+did for Content Rendering.
+
+Documentation: http://fedext.net/fluid-pages/step-by-step-guide/what-is-a-fluid-page/
+
+
+------------------------------------------------------------------------
+r49831 | claus@wildside.dk | 2011-07-15 12:03:10 +0200 (Fri, 15 Jul 2011) | 2 lines
+
+[BUGFIX] FormValidator, Resource/FileViewHelper and Resource/ImageViewHelper
+
+------------------------------------------------------------------------
+r49829 | claus@wildside.dk | 2011-07-15 11:58:30 +0200 (Fri, 15 Jul 2011) | 2 lines
+
+[TASK] Made FormValidator AJAX async
+
+------------------------------------------------------------------------
+r49824 | claus@wildside.dk | 2011-07-15 00:51:06 +0200 (Fri, 15 Jul 2011) | 2 lines
+
+[TASK] Added necessary resource scripts for FormViewHelper
+
+------------------------------------------------------------------------
+r49823 | claus@wildside.dk | 2011-07-15 00:08:54 +0200 (Fri, 15 Jul 2011) | 9 lines
+
+[TASK] Completed FormValidator Javascript Class
+
+To implement, simply use fed:form and set validate=TRUE 
+then allow access to action "validate" for the controller 
+which handles the form.
+
+REQUIRES: objectName and object arguments AND controller context!
+
+
+------------------------------------------------------------------------
+r49822 | claus@wildside.dk | 2011-07-14 22:26:54 +0200 (Thu, 14 Jul 2011) | 2 lines
+
+[TASK] Added necessary JSON request config to FormViewHelper
+
+------------------------------------------------------------------------
+r49819 | claus@wildside.dk | 2011-07-14 21:25:39 +0200 (Thu, 14 Jul 2011) | 2 lines
+
+[BUGFIX] AJAX Form Validator. Pre-validates form against Model
+
+------------------------------------------------------------------------
+r49808 | claus@wildside.dk | 2011-07-14 16:12:11 +0200 (Thu, 14 Jul 2011) | 2 lines
+
+[BUGFIX] Fixed iconCenterY support in Map/MarkerViewHelper
+
+------------------------------------------------------------------------
+r49807 | claus@wildside.dk | 2011-07-14 15:27:36 +0200 (Thu, 14 Jul 2011) | 2 lines
+
+[FEATURE] Added JQuery/LightboxViewHelper
+
+------------------------------------------------------------------------
+r49796 | claus@wildside.dk | 2011-07-13 21:36:33 +0200 (Wed, 13 Jul 2011) | 2 lines
+
+[FEATURE] Added {page} to automatically assigned FCE template variables
+
+------------------------------------------------------------------------
+r49795 | claus@wildside.dk | 2011-07-13 21:13:41 +0200 (Wed, 13 Jul 2011) | 7 lines
+
+[FEATURE] Model Objects for Page, BackendLayout and ContentElement
+
+This is simply an initial commit which is not yet activated 
+by the necessary Typoscript mappings. Will serve as part of 
+the Page rendering features of FED.
+
+
+------------------------------------------------------------------------
+r49787 | claus@wildside.dk | 2011-07-13 16:47:08 +0200 (Wed, 13 Jul 2011) | 7 lines
+
+[BUGFIX] Fixed SQL definition which made ExtManager request DB alterations
+
+Thanks to Axel Boeswetter for reporting and providing patch!
+
+Fixes: #28178
+
+
+------------------------------------------------------------------------
+r49782 | claus@wildside.dk | 2011-07-13 14:47:10 +0200 (Wed, 13 Jul 2011) | 2 lines
+
+[DOC] Fixed incorrect comment in sPaginationType, TableViewHelper
+
+------------------------------------------------------------------------
+r49768 | claus@wildside.dk | 2011-07-12 22:02:44 +0200 (Tue, 12 Jul 2011) | 2 lines
+
+[TASK] Fluid Page Template selectors added to page properties
+
+------------------------------------------------------------------------
+r49765 | claus@wildside.dk | 2011-07-12 18:42:40 +0200 (Tue, 12 Jul 2011) | 10 lines
+
+[BUGFIX] Default in SwitchViewHelper not rendered if all cases break
+
+This fixes a problem where the default case would not be rendered 
+if all cases have break=TRUE.
+
+Thanks to Axel Boeswetter for reporting and proving patch!
+
+Fixes: #28135 
+
+
+------------------------------------------------------------------------
+r49764 | claus@wildside.dk | 2011-07-12 18:31:57 +0200 (Tue, 12 Jul 2011) | 18 lines
+
+[FEATURE] First iteration of Fluid Page Rendering feature
+
+Does not currently support a lot of features; can render one 
+single Fluid template as a site design templat at this time.
+
+Next iteration will feature selection of the "Controller action" 
+which is run on the "Page" controller - in other words, turning 
+TYPO3's page rendering into an MVC module using BE-layouts to 
+guide content and extended fields to select the FE rendering 
+template file.
+
+Supports Partials and Layouts, too. Path to page templates can 
+be defined through TypoScript, allowing extensions to provide 
+the page templating along with Fluid FCEs and the usual MVC.
+
+A complete reference will be provided on the doc. web site.
+
+
+------------------------------------------------------------------------
+r49763 | claus@wildside.dk | 2011-07-12 18:14:40 +0200 (Tue, 12 Jul 2011) | 2 lines
+
+[TASK] Continued work on ExtJS AppViewHelper
+
+------------------------------------------------------------------------
+r49762 | claus@wildside.dk | 2011-07-12 18:13:22 +0200 (Tue, 12 Jul 2011) | 2 lines
+
+[TASK] Continued work on HashController
+
+------------------------------------------------------------------------
+r49761 | claus@wildside.dk | 2011-07-12 18:12:23 +0200 (Tue, 12 Jul 2011) | 2 lines
+
+[COMPAT] Proxy function for clearPageCache, 1.3 to 1.4 compat
+
+------------------------------------------------------------------------
+r49760 | claus@wildside.dk | 2011-07-12 18:10:54 +0200 (Tue, 12 Jul 2011) | 2 lines
+
+[BUGFIX] ImageViewHelper err. message when "src" empty removed
+
+------------------------------------------------------------------------
+r49759 | claus@wildside.dk | 2011-07-12 18:10:01 +0200 (Tue, 12 Jul 2011) | 6 lines
+
+[DOC] Corrected incorrect reference to DomainObjectInfo
+
+PropertyMapper will be dropped come TYPO3 4.6 but still 
+the reference should be correct until then.
+
+
+------------------------------------------------------------------------
+r49757 | claus@wildside.dk | 2011-07-12 18:08:13 +0200 (Tue, 12 Jul 2011) | 2 lines
+
+[TASK] Changed default action for HashController to "request"
+
+------------------------------------------------------------------------
+r49756 | claus@wildside.dk | 2011-07-12 18:07:19 +0200 (Tue, 12 Jul 2011) | 2 lines
+
+[BUGFIX] Bugfixes for TableViewHelper
+
+------------------------------------------------------------------------
+r49755 | claus@wildside.dk | 2011-07-12 18:06:19 +0200 (Tue, 12 Jul 2011) | 2 lines
+
+[BUGFIX] InstanceName/RegisterWith bugfix, MapViewHelper
+
+------------------------------------------------------------------------
+r49692 | claus@wildside.dk | 2011-07-11 01:12:03 +0200 (Mon, 11 Jul 2011) | 2 lines
+
+[BUGFIX] Small Fluid FCE related bugs fixed
+
+------------------------------------------------------------------------
+r49690 | claus@wildside.dk | 2011-07-11 00:12:09 +0200 (Mon, 11 Jul 2011) | 2 lines
+
+[BUGFIX] A few bugfixes for Switch and Resource/File ViewHelpers
+
+------------------------------------------------------------------------
+r49686 | claus@wildside.dk | 2011-07-10 23:39:03 +0200 (Sun, 10 Jul 2011) | 2 lines
+
+[TER] 1.3.28
+
+------------------------------------------------------------------------
+r49685 | claus@wildside.dk | 2011-07-10 23:36:52 +0200 (Sun, 10 Jul 2011) | 7 lines
+
+[FEATURE] Other extensions may now add Fluid FCEs to selector via TS
+
+Usage: Typoscript: plugin.tx_fed.fce.templatePaths.12345678 = <path>
+
+Supports EXT:extname/... paths and raw site-relative paths.
+
+
+------------------------------------------------------------------------
+r49675 | claus@wildside.dk | 2011-07-10 23:08:05 +0200 (Sun, 10 Jul 2011) | 10 lines
+
+[FEATURE] Fluid Flexible Content Elements now built-in
+
+FCE-selector in BE editing still displays FCEs from TS 
+defined path - these are prefixed with "EXT:", the 
+built-in content elements are prefixed "FED:".
+
+Next up for this feature is the option for other extensions 
+to provide selectable Fluid FCEs :)
+
+
+------------------------------------------------------------------------
+r49674 | claus@wildside.dk | 2011-07-10 22:33:08 +0200 (Sun, 10 Jul 2011) | 5 lines
+
+[TEST] Added skeletons for over 100 unit test files
+
+Should cover around 80% of FED's code base once filled out.
+
+
+------------------------------------------------------------------------
+r49673 | claus@wildside.dk | 2011-07-10 21:39:16 +0200 (Sun, 10 Jul 2011) | 2 lines
+
+[CLEANUP] Cleanup in extension definition files
+
+------------------------------------------------------------------------
+r49672 | claus@wildside.dk | 2011-07-10 21:38:53 +0200 (Sun, 10 Jul 2011) | 2 lines
+
+[BUGFIX] Some small issues in DocumentHead and CDN Services
+
+------------------------------------------------------------------------
+r49665 | claus@wildside.dk | 2011-07-09 21:46:36 +0200 (Sat, 09 Jul 2011) | 2 lines
+
+[FEATURE] Basis for HMAC Javascript service added
+
+------------------------------------------------------------------------
+r49664 | claus@wildside.dk | 2011-07-09 21:28:56 +0200 (Sat, 09 Jul 2011) | 2 lines
+
+[DOC] Added code comment about plan for RPC classes
+
+------------------------------------------------------------------------
+r49663 | claus@wildside.dk | 2011-07-09 21:28:25 +0200 (Sat, 09 Jul 2011) | 5 lines
+
+[CLEANUP] Re-added processing of FlexForm for fed_template and fed_datasource
+
+Was necessary due to plugins no longer being registered as plugins.
+
+
+------------------------------------------------------------------------
+r49662 | claus@wildside.dk | 2011-07-09 21:02:16 +0200 (Sat, 09 Jul 2011) | 2 lines
+
+[CLEANUP] Some TCA/FlexForm related improvements for the FED content elements
+
+------------------------------------------------------------------------
+r49661 | claus@wildside.dk | 2011-07-09 20:39:25 +0200 (Sat, 09 Jul 2011) | 10 lines
+
+[TASK] Major improvement to TCA for Fluid FCE
+
+Now supports all usual TYPO3 TCA fields for tt_content elements 
+and has a dedicated tab for the fields defined in the FCE.
+
+Thanks to Marcel Zweifel for assisting :)
+
+Fixes: #27843
+
+
+------------------------------------------------------------------------
+r49658 | claus@wildside.dk | 2011-07-09 18:06:22 +0200 (Sat, 09 Jul 2011) | 2 lines
+
+[CLEANUP] Removing unused Security classes
+
+------------------------------------------------------------------------
+r49650 | claus@wildside.dk | 2011-07-09 15:44:31 +0200 (Sat, 09 Jul 2011) | 5 lines
+
+[BUGFIX] Prevented error message on no FCE fields defined
+
+Fixes: #27842
+
+
+------------------------------------------------------------------------
+r49649 | claus@wildside.dk | 2011-07-09 15:29:59 +0200 (Sat, 09 Jul 2011) | 2 lines
+
+[-FEATURE] Reverted #49643; handled by base class
+
+------------------------------------------------------------------------
+r49644 | claus@wildside.dk | 2011-07-09 15:22:01 +0200 (Sat, 09 Jul 2011) | 2 lines
+
+[FEATURE] Added "as" argument to MathViewHelper; assigns template var
+
+------------------------------------------------------------------------
+r49643 | claus@wildside.dk | 2011-07-09 15:20:23 +0200 (Sat, 09 Jul 2011) | 2 lines
+
+[TASK] Prepended PATH_site to "files" arg in Resource/FileViewHelper
+
+------------------------------------------------------------------------
+r49641 | claus@wildside.dk | 2011-07-09 14:39:45 +0200 (Sat, 09 Jul 2011) | 7 lines
+
+[BUGFIX] Fixed "files" argument support in Resource/FileViewHelper
+
+Thanks to Rainer Becker for reporting!
+
+Refererences: #27973
+
+
+------------------------------------------------------------------------
+r49624 | claus@wildside.dk | 2011-07-08 15:26:14 +0200 (Fri, 08 Jul 2011) | 2 lines
+
+[COMPAT] Better compat in ImageViewHelper by trim('c,s,v', ',') on src
+
+------------------------------------------------------------------------
+r49616 | claus@wildside.dk | 2011-07-08 10:04:54 +0200 (Fri, 08 Jul 2011) | 2 lines
+
+[TASK] ExposedTemplateView requires autoload registry for BE
+
+------------------------------------------------------------------------
+r49611 | claus@wildside.dk | 2011-07-07 23:23:55 +0200 (Thu, 07 Jul 2011) | 2 lines
+
+[-FEATURE] Revoked typeNum access for HashController
+
+------------------------------------------------------------------------
+r49610 | claus@wildside.dk | 2011-07-07 22:45:45 +0200 (Thu, 07 Jul 2011) | 18 lines
+
+[FEATURE] Began work on HashController
+
+PLEASE BE AWARE THAT THIS HAS SECURITY IMPLICATIONS 
+WHEN USED! YOU SHOULD -NEVER- ADD THIS PLUGIN ON PUBLIC 
+PAGES - ALLOW ACCESS FOR ONLY VERIFIED USERS!
+
+This Controller will let you "sign" dynamic form fields with 
+your site's encryption key, allowing you to dynamically change the 
+hmac checksum of Extbase forms (using a shortly incoming JS util).
+
+To work this, insert a "general plugin" of FED Hasher on the page 
+which renders your dynamic form. Using the Javascript util your 
+form will be parsed and corrected - and a call will be made to the 
+exact same page, asking for a HMAC checksum.
+
+I repeat: NEVER USE THIS ON UNPROTECTED PAGES!
+
+
+------------------------------------------------------------------------
+r49609 | claus@wildside.dk | 2011-07-07 22:35:33 +0200 (Thu, 07 Jul 2011) | 2 lines
+
+[FEATURE] Added the ExposedTemplateView class - see previous commit msg.
+
+------------------------------------------------------------------------
+r49608 | claus@wildside.dk | 2011-07-07 22:34:24 +0200 (Thu, 07 Jul 2011) | 14 lines
+
+[FEATURE] Added ExposedTemplateView which can access info after rendering
+
+The FlexibleContentElementView now extends this and only adds the 
+getFlexibleContentElementDefinitions method
+
+You can use this ExposedTemplateView for emails, among other things, 
+by registering subjects etc. using vars: fed:data.var name="subject" 
+and then $template->harvest('subject'); from where you started rendering 
+
+Currently only supports "harvest" method which gets a single variable, but 
+will shortly be extended with a lot more methods to harvest a lot more 
+details about the template rendering context and variables.
+
+
+------------------------------------------------------------------------
+r49595 | claus@wildside.dk | 2011-07-07 15:07:13 +0200 (Thu, 07 Jul 2011) | 7 lines
+
+[BUGFIX] Wrong reference to minW, maxW, minH and maxH, ImageViewHelper
+
+Thanks to Rainer Becker for reporting!
+
+Fixes: #27929
+
+
+------------------------------------------------------------------------
+r49586 | claus@wildside.dk | 2011-07-07 11:06:30 +0200 (Thu, 07 Jul 2011) | 2 lines
+
+[FEATURE] Added a few JS assistance classes
+
+------------------------------------------------------------------------
+r49448 | claus@wildside.dk | 2011-07-05 23:01:59 +0200 (Tue, 05 Jul 2011) | 2 lines
+
+[BUGFIX] Dynamic FlexForm, JSON and FCE related bugfixes
+
+------------------------------------------------------------------------
+r49447 | claus@wildside.dk | 2011-07-05 23:00:53 +0200 (Tue, 05 Jul 2011) | 2 lines
+
+[BUGFIX] Fluid 1.3 compatibility issue in ExtJS4 model Javascript fixed
+
+------------------------------------------------------------------------
+r49426 | claus@wildside.dk | 2011-07-05 13:05:47 +0200 (Tue, 05 Jul 2011) | 6 lines
+
+[BUGFIX] Second parameter of json_encode() used in PHP 5.2
+
+Fixed by checking the version of PHP and excluding second arg if < 5.3
+
+Fixes: #27854
+
+------------------------------------------------------------------------
+r49411 | claus@wildside.dk | 2011-07-04 21:14:19 +0200 (Mon, 04 Jul 2011) | 2 lines
+
+[FEATURE] Added RenderViewHelper, added ExtJS AppViewHelper
+
+------------------------------------------------------------------------
+r49359 | claus@wildside.dk | 2011-07-02 17:18:10 +0200 (Sat, 02 Jul 2011) | 5 lines
+
+[TASK] Improvements for IfViewHelper
+
+Among other things, security against executing "bad" PHP.
+
+
+------------------------------------------------------------------------
+r49355 | claus@wildside.dk | 2011-07-01 20:29:21 +0200 (Fri, 01 Jul 2011) | 2 lines
+
+[BUGFIX] Patching JSON ViewHelper for BE usage
+
+------------------------------------------------------------------------
+r49354 | claus@wildside.dk | 2011-07-01 20:15:26 +0200 (Fri, 01 Jul 2011) | 2 lines
+
+[BUGFIX] Patching ResourceViewHelper for BE usage.
+
+------------------------------------------------------------------------
+r49353 | claus@wildside.dk | 2011-07-01 19:16:17 +0200 (Fri, 01 Jul 2011) | 2 lines
+
+[TER] 1.3.27
+
+------------------------------------------------------------------------
+r49352 | claus@wildside.dk | 2011-07-01 19:04:27 +0200 (Fri, 01 Jul 2011) | 2 lines
+
+[TASK] Added DateTime support to IfViewHelper
+
+------------------------------------------------------------------------
+r49351 | claus@wildside.dk | 2011-07-01 18:54:56 +0200 (Fri, 01 Jul 2011) | 6 lines
+
+[FEATURE] Extended If-ViewHelper and new Switch/Case-ViewHelper
+
+IfViewHelper supports complex expressions and string comparison. 
+SwitchViewHelper does exactly what PHP switch() construct does.
+
+
+------------------------------------------------------------------------
+r49260 | claus@wildside.dk | 2011-06-30 19:01:56 +0200 (Thu, 30 Jun 2011) | 5 lines
+
+[BUGFIX] MapViewHelper: bug when using multiple maps per page
+
+Fixed Javascript scope problem.
+
+
+------------------------------------------------------------------------
+r49259 | claus@wildside.dk | 2011-06-30 17:57:07 +0200 (Thu, 30 Jun 2011) | 2 lines
+
+[TER] 1.3.26
+
+------------------------------------------------------------------------
+r49258 | claus@wildside.dk | 2011-06-30 17:41:58 +0200 (Thu, 30 Jun 2011) | 6 lines
+
+[TASK] Yet another improvement for Fluid FCE: BE layout type grid support
+
+Unfortunately, this breaks the content areas of any Fluid FCE made before 
+this update. To fix, simply add the necessary grid setup (see site)
+
+
+------------------------------------------------------------------------
+r49251 | claus@wildside.dk | 2011-06-30 05:08:27 +0200 (Thu, 30 Jun 2011) | 2 lines
+
+[TASK] Some small changes necessary for Fluid FCE label handling
+
+------------------------------------------------------------------------
+r49250 | claus@wildside.dk | 2011-06-30 01:33:33 +0200 (Thu, 30 Jun 2011) | 8 lines
+
+[TASK] Improvements for all FCE-related classes and ViewHelpers
+
+Includes many new low-level features such as FlexForm feedback (change the 
+layout of the dynamic FlexForm itself from within the FlexForm...) and 
+many smaller improvements such as tolerating more input types in ViewHelper 
+arguments.
+
+
+------------------------------------------------------------------------
+r49222 | claus@wildside.dk | 2011-06-29 00:39:51 +0200 (Wed, 29 Jun 2011) | 2 lines
+
+[TER] 1.3.25
+
+------------------------------------------------------------------------
+r49221 | claus@wildside.dk | 2011-06-29 00:36:41 +0200 (Wed, 29 Jun 2011) | 2 lines
+
+[TASK] Preparations for major Fluid FCE feature - preset config tabs
+
+------------------------------------------------------------------------
+r49220 | claus@wildside.dk | 2011-06-29 00:31:19 +0200 (Wed, 29 Jun 2011) | 2 lines
+
+[FEATURE] Added Base64 Javascript encoder/decoder
+
+------------------------------------------------------------------------
+r49217 | claus@wildside.dk | 2011-06-28 22:45:23 +0200 (Tue, 28 Jun 2011) | 2 lines
+
+[TASK] Some improvements to the Google Map ViewHelper suite
+
+------------------------------------------------------------------------
+r49216 | claus@wildside.dk | 2011-06-28 22:44:56 +0200 (Tue, 28 Jun 2011) | 2 lines
+
+[FEATURE] Geocoding ViewHelper (Map/GeocodeViewHelper) added
+
+------------------------------------------------------------------------
+r49215 | claus@wildside.dk | 2011-06-28 18:56:24 +0200 (Tue, 28 Jun 2011) | 5 lines
+
+[BUGFIX] Fixed persisted FlexForm content problem
+
+Thanks to Marcel Zweifel for reporting and assisting with debug info.
+
+
+------------------------------------------------------------------------
+r49202 | claus@wildside.dk | 2011-06-28 14:28:53 +0200 (Tue, 28 Jun 2011) | 6 lines
+
+[COMPAT] Backport of RawViewHelper to allow BE preview of FCE
+
+Brings Fluid 1.4-dev ViewHelper into FED for temporary use in 
+order to compat Extbase/Fluid 1.3
+
+
+------------------------------------------------------------------------
+r49201 | claus@wildside.dk | 2011-06-28 13:13:40 +0200 (Tue, 28 Jun 2011) | 5 lines
+
+[BUGFIX] Rendering problem in fed_datasource CType
+
+Thanks to Marcel Zweifel for reporting!
+
+
+------------------------------------------------------------------------
+r49172 | claus@wildside.dk | 2011-06-28 04:22:16 +0200 (Tue, 28 Jun 2011) | 7 lines
+
+[TASK] Even more improvements to Fluid FCEs
+
+Now has a far better editing experience in BE. Unfortunately, 
+no support for using the new content element wizard and sorting 
+as of yet.
+
+
+------------------------------------------------------------------------
+r49170 | claus@wildside.dk | 2011-06-27 23:08:19 +0200 (Mon, 27 Jun 2011) | 2 lines
+
+[TER] 1.3.24
+
+------------------------------------------------------------------------
+r49169 | claus@wildside.dk | 2011-06-27 23:01:18 +0200 (Mon, 27 Jun 2011) | 2 lines
+
+[BUGFIX] Eradicating sad little pieces of whitespace. Bad shell command.
+
+------------------------------------------------------------------------
+r49166 | claus@wildside.dk | 2011-06-27 22:44:34 +0200 (Mon, 27 Jun 2011) | 2 lines
+
+[TASK] Beginnings of content area support for Fluid FCEs
+
+------------------------------------------------------------------------
+r49158 | claus@wildside.dk | 2011-06-27 18:27:33 +0200 (Mon, 27 Jun 2011) | 7 lines
+
+[TASK] More usability improvements in FCE
+
+Default value if no FCE template selected. Added default option 
+if no template selected, requiring a template to be selected before 
+FlexForm is rendered.
+
+
+------------------------------------------------------------------------
+r49157 | claus@wildside.dk | 2011-06-27 18:18:34 +0200 (Mon, 27 Jun 2011) | 5 lines
+
+[TASK] Improve usability of FCE editing features
+
+Most notably reloading on template file selection.
+
+
+------------------------------------------------------------------------
+r49153 | claus@wildside.dk | 2011-06-27 16:54:58 +0200 (Mon, 27 Jun 2011) | 2 lines
+
+[TER] 1.3.22
+
+------------------------------------------------------------------------
+r49151 | claus@wildside.dk | 2011-06-27 16:32:28 +0200 (Mon, 27 Jun 2011) | 9 lines
+
+[CHANGE] Fluid FCE now uses Typoscript to determine available templates
+
+To upgrade old FCEs, simply set Typoscript plugin.tx_fed.fce.templatePath 
+anywhere, then edit your FCEs and re-select the proper FCE template file.
+
+After this you can safely remove any FCE records and the tx_fed_domain_model_fce 
+database table. Remember to clear all caches!
+
+
+------------------------------------------------------------------------
+r49143 | claus@wildside.dk | 2011-06-27 14:59:49 +0200 (Mon, 27 Jun 2011) | 2 lines
+
+[BUGFIX] Removed 1.3-incompatible classname from FlexForm Utility
+
+------------------------------------------------------------------------
+r49140 | claus@wildside.dk | 2011-06-27 14:43:22 +0200 (Mon, 27 Jun 2011) | 5 lines
+
+[COMPAT] Copied FlexForm parsing functions from Extbase 1.4-dev
+
+Will of course be proxied and made deprecated once Extbase 1.4 is released.
+
+
+------------------------------------------------------------------------
+r49135 | claus@wildside.dk | 2011-06-27 14:09:08 +0200 (Mon, 27 Jun 2011) | 12 lines
+
+[FEATURE] Allowing Fluid FCE to write fields to tt_content
+
+Also now supported is reading the raw fields of the tt_content record 
+from the Fluid FCE template using {record.fieldname}.
+
+Automatic write-back from FlexForm to tt_content record if fieldname 
+has tt_content. prefix, i.e. tt_content.bodytext as field name writes 
+the contents of the field to the tt_content record field "bodytext".
+
+Fixes: #27708
+
+
+------------------------------------------------------------------------
+r49131 | claus@wildside.dk | 2011-06-27 14:06:12 +0200 (Mon, 27 Jun 2011) | 2 lines
+
+[BUGFIX] Reverting change which caused special content elements to be unrecognized
+
+------------------------------------------------------------------------
+r49107 | claus@wildside.dk | 2011-06-26 15:02:34 +0200 (Sun, 26 Jun 2011) | 7 lines
+
+[CLEANUP] Uniform use of $GLOBALS['TYPO3_CONF_VARS'], ext_localconf.php
+
+Thanks to Carsten Bleicker for pointing this out.
+
+Fixes: #27707
+
+
+------------------------------------------------------------------------
+r49106 | claus@wildside.dk | 2011-06-26 14:57:39 +0200 (Sun, 26 Jun 2011) | 7 lines
+
+[CLEANUP] Switched registration methods for PI's acting as CType
+
+Thanks to Carsten Bleicker for pointing this out
+
+Fixes: #27706
+
+
+------------------------------------------------------------------------
+r49101 | claus@wildside.dk | 2011-06-26 00:44:46 +0200 (Sun, 26 Jun 2011) | 2 lines
+
+[TER] 1.3.21
+
+------------------------------------------------------------------------
+r49100 | claus@wildside.dk | 2011-06-26 00:27:14 +0200 (Sun, 26 Jun 2011) | 17 lines
+
+[FEATURE] Fully working SOLR AJAX service
+
+This adds the first fully working, facet-supporting implementation 
+and service for TYPO3 installations running SOLR. It allows zero-config 
+usage or any of custom templates, layouts or Javascript search apps.
+
+The ViewHelper lets you use this anywhere from Fluid, for example from 
+a Fluid Template Display FE plugin.
+
+The current service is solid but fairly low-level, requiring a search 
+application - a default is included but in all likelyhood you will 
+want to make your own adaptations.
+
+Docs, VH: http://fedext.net/viewhelper-documentation/data-manipulators/solr-viewhelper/
+Docs, Service: http://fedext.net/api-documentation/services/solr-javascript-service/
+
+
+------------------------------------------------------------------------
+r49045 | claus@wildside.dk | 2011-06-24 00:31:11 +0200 (Fri, 24 Jun 2011) | 2 lines
+
+[TASK] A few more features and improvements, SOLR JS Service
+
+------------------------------------------------------------------------
+r49041 | claus@wildside.dk | 2011-06-23 20:00:22 +0200 (Thu, 23 Jun 2011) | 10 lines
+
+[FEATURE] Initial version of SOLR Javascript Service
+
+This will be complemented by a ViewHelper which automatically 
+reads the tx_solr Typoscript configuration and uses a Fluid 
+template file with sections to display search, facets, limits, 
+results, paginator etc.
+
+Demo: http://fedext.net/sandbox/example-renderings/solr-js-service/
+
+
+------------------------------------------------------------------------
+r48906 | claus@wildside.dk | 2011-06-19 23:37:45 +0200 (Sun, 19 Jun 2011) | 2 lines
+
+[CLEANUP] Removed a few undecided-commented lines
+
+------------------------------------------------------------------------
+r48900 | claus@wildside.dk | 2011-06-19 21:48:54 +0200 (Sun, 19 Jun 2011) | 2 lines
+
+[TER] 1.3.20
+
+------------------------------------------------------------------------
+r48897 | claus@wildside.dk | 2011-06-19 21:44:34 +0200 (Sun, 19 Jun 2011) | 2 lines
+
+[TASK] Added "UserFunc" to Fluid FCE field types
+
+------------------------------------------------------------------------
+r48896 | claus@wildside.dk | 2011-06-19 21:25:13 +0200 (Sun, 19 Jun 2011) | 2 lines
+
+[BUGFIX] Restoration/crash recovery
+
+------------------------------------------------------------------------
+r48847 | claus@wildside.dk | 2011-06-19 15:01:01 +0200 (Sun, 19 Jun 2011) | 2 lines
+
+[TASK] Added "group" type support to Fluid FCE
+
+------------------------------------------------------------------------
+r48846 | claus@wildside.dk | 2011-06-19 14:41:38 +0200 (Sun, 19 Jun 2011) | 5 lines
+
+[TASK] Moved FED Content Elements to "Special" section in content creation wizard
+
+Also added FED Flexible Content Element to this section
+
+
+------------------------------------------------------------------------
+r48843 | claus@wildside.dk | 2011-06-19 13:16:02 +0200 (Sun, 19 Jun 2011) | 2 lines
+
+[TASK] Matching BE Preview with new Fluid FCE subtypes, added Value display
+
+------------------------------------------------------------------------
+r48842 | claus@wildside.dk | 2011-06-19 13:01:48 +0200 (Sun, 19 Jun 2011) | 5 lines
+
+[TASK] First batch of Fluid FCE configuration ViewHelpers
+
+Input, Select (also records, even MM), Text (also RTE), Checkbox now supported
+
+
+------------------------------------------------------------------------
+r48836 | claus@wildside.dk | 2011-06-19 02:38:51 +0200 (Sun, 19 Jun 2011) | 2 lines
+
+[TASK] Improvements and cleanup in Fluid FCE related classes
+
+------------------------------------------------------------------------
+r48835 | claus@wildside.dk | 2011-06-19 01:11:49 +0200 (Sun, 19 Jun 2011) | 16 lines
+
+[FEATURE] Initial version of new Fluid Template based FCE
+
+This is the first, proof-of-concept-quality version of the 
+quite special Fluid Template FCE implementation. It allows 
+the creation of TemplaVoila-style FCE content which can 
+be configured and rendered from a single Fluid template. It 
+automatically creates a Flexform from the Fluid template FCE 
+variables you register, making it EXTREMELY flexible, allowing 
+for conditioned attributes and much more - already much more 
+than what TemplaVoila FCEs are capable of doing.
+
+Much more will happen to this feature shortly.
+
+Documentation: http://fedext.net/guides/dynamic-fluid-fce/creating-a-fluid-fce/
+
+
+------------------------------------------------------------------------
+r48781 | claus@wildside.dk | 2011-06-16 21:40:12 +0200 (Thu, 16 Jun 2011) | 2 lines
+
+[BUGFIX] Corrected typo in TableViewHelper "annotationName" argument
+
+------------------------------------------------------------------------
+r48780 | claus@wildside.dk | 2011-06-16 21:31:04 +0200 (Thu, 16 Jun 2011) | 2 lines
+
+[CLEANUP] Removing old, unused ViewHelpers now covered by fed:data.func
+
+------------------------------------------------------------------------
+r48779 | claus@wildside.dk | 2011-06-16 21:22:01 +0200 (Thu, 16 Jun 2011) | 5 lines
+
+[CLEANUP] Major cleanup in ViewHelper argument registrations
+
+This to allow automatic reflections on http://fedext.net
+
+
+------------------------------------------------------------------------
+r48774 | claus@wildside.dk | 2011-06-16 17:46:08 +0200 (Thu, 16 Jun 2011) | 5 lines
+
+[DOC] Truncated the manual. Out with the old...
+
+Manual replaced by this docsite.
+
+
+------------------------------------------------------------------------
+r48767 | claus@wildside.dk | 2011-06-16 16:45:32 +0200 (Thu, 16 Jun 2011) | 2 lines
+
+[TASK] Cleanup in MapViewHelper
+
+------------------------------------------------------------------------
+r48765 | claus@wildside.dk | 2011-06-16 16:33:33 +0200 (Thu, 16 Jun 2011) | 5 lines
+
+[FEATURE] Support for mapTypeId arg in MapViewHelper
+
+Allows setting the default type of map displayed.
+
+
+------------------------------------------------------------------------
+r48667 | claus@wildside.dk | 2011-06-13 15:24:27 +0200 (Mon, 13 Jun 2011) | 2 lines
+
+[BUGFIX] Handled missing/old t3editor extension in FlexFormCodeEditor
+
+------------------------------------------------------------------------
+r48666 | claus@wildside.dk | 2011-06-13 14:48:28 +0200 (Mon, 13 Jun 2011) | 5 lines
+
+[TER] 1.3.19
+
+Hotfix for Resource ViewHelper naming conventions
+
+
+------------------------------------------------------------------------
+r48665 | claus@wildside.dk | 2011-06-13 14:42:55 +0200 (Mon, 13 Jun 2011) | 2 lines
+
+[CHANGE] Singular form of resource names now convention for Resource VHs
+
+------------------------------------------------------------------------
+r48636 | claus@wildside.dk | 2011-06-12 23:34:28 +0200 (Sun, 12 Jun 2011) | 5 lines
+
+[FEATURE] Added CSSPresso ViewHelper
+
+Does exactly what CoffeeViewHelper does, just with CSS.
+
+
+------------------------------------------------------------------------
+r48635 | claus@wildside.dk | 2011-06-12 23:06:17 +0200 (Sun, 12 Jun 2011) | 2 lines
+
+[TER] 1.3.18
+
+------------------------------------------------------------------------
+r48634 | claus@wildside.dk | 2011-06-12 22:41:59 +0200 (Sun, 12 Jun 2011) | 5 lines
+
+[TASK] More work on ResourceViewHelper; documentation added
+
+Documentation: http://fedext.net/viewhelper-documentation/visual-components/advanced-image/
+
+
+------------------------------------------------------------------------
+r48633 | claus@wildside.dk | 2011-06-12 21:20:42 +0200 (Sun, 12 Jun 2011) | 2 lines
+
+[TASK] Bit more work on Resource ViewHelpers
+
+------------------------------------------------------------------------
+r48632 | claus@wildside.dk | 2011-06-12 20:30:19 +0200 (Sun, 12 Jun 2011) | 2 lines
+
+[TASK] Work on Resource ViewHelper wireframe
+
+------------------------------------------------------------------------
+r48631 | claus@wildside.dk | 2011-06-12 20:23:40 +0200 (Sun, 12 Jun 2011) | 5 lines
+
+[TASK] Wireframe for Resource ViewHelpers and File Resource
+
+Basic wireframe showing structure and basic logic
+
+
+------------------------------------------------------------------------
+r48555 | claus@wildside.dk | 2011-06-11 18:07:16 +0200 (Sat, 11 Jun 2011) | 2 lines
+
+[TER] 1.3.17
+
+------------------------------------------------------------------------
+r48546 | claus@wildside.dk | 2011-06-11 13:16:23 +0200 (Sat, 11 Jun 2011) | 5 lines
+
+[TASK] Finished Advanced ImageViewHelper
+
+All sorting etc. now supported - and "limit" arg added.
+
+
+------------------------------------------------------------------------
+r48543 | claus@wildside.dk | 2011-06-11 01:51:18 +0200 (Sat, 11 Jun 2011) | 2 lines
+
+[TASK] A bit more work on ImageViewHelper
+
+------------------------------------------------------------------------
+r48542 | claus@wildside.dk | 2011-06-11 01:12:35 +0200 (Sat, 11 Jun 2011) | 11 lines
+
+[FEATURE] Added Advanced Image ViewHelper
+
+Supports a lot of useful features: multiple images, sorting 
+of these multiple images, CSV filenames from FlexForm/record, 
+array of filenames. Supports "altsrc" attribute. Allows 
+a multi-image, thumbnail-and-large-version matrix using a 
+single tag in Fluid.
+
+Doc: http://fedext.net/viewhelper-documentation/visual-components/advanced-image/
+
+
+------------------------------------------------------------------------
+r48506 | claus@wildside.dk | 2011-06-09 22:55:48 +0200 (Thu, 09 Jun 2011) | 2 lines
+
+[TASK] Style/Script ViewHelper arguments moved to initializeArguments()
+
+------------------------------------------------------------------------
+r48505 | claus@wildside.dk | 2011-06-09 21:22:03 +0200 (Thu, 09 Jun 2011) | 2 lines
+
+[BUGFIX] Small bugfix in generated filename, CoffeeViewHelper
+
+------------------------------------------------------------------------
+r48504 | claus@wildside.dk | 2011-06-09 21:13:38 +0200 (Thu, 09 Jun 2011) | 7 lines
+
+[FEATURE] Coffee ViewHelper - not a joke
+
+This ViewHelper lets you use Fluid in Javascript files 
+which are parsed before being inserted into the page 
+header. Why coffee? Well, it's Java Script Fluid...
+
+
+------------------------------------------------------------------------
+r48500 | claus@wildside.dk | 2011-06-09 20:33:13 +0200 (Thu, 09 Jun 2011) | 13 lines
+
+[TASK] Improved ExtJS4 Template parsing using custom pattern
+
+A special pattern which disregards { } notations in Fluid if 
+they are found to contain spaces was implemented - this to 
+allow un-escaped notations of complex object structures in 
+a Fluid template without having to repeatedly use 
+f:format.escape on nested curly braces.
+
+The original pattern is restored immediately after parsing 
+and does not affect Fluid parsing - but does affect any 
+nested ViewHelper call you use in your ExtJS4 Model.js
+
+
+------------------------------------------------------------------------
+r48498 | claus@wildside.dk | 2011-06-09 19:07:52 +0200 (Thu, 09 Jun 2011) | 2 lines
+
+[TER] 1.3.16
+
+------------------------------------------------------------------------
+r48497 | claus@wildside.dk | 2011-06-09 19:04:07 +0200 (Thu, 09 Jun 2011) | 2 lines
+
+[CLEANUP] Temporary default Model.js set to DataSource's Model.js
+
+------------------------------------------------------------------------
+r48495 | claus@wildside.dk | 2011-06-09 19:01:26 +0200 (Thu, 09 Jun 2011) | 2 lines
+
+[CLEANUP] Removing old path ExtJS4 Model template
+
+------------------------------------------------------------------------
+r48494 | claus@wildside.dk | 2011-06-09 19:00:26 +0200 (Thu, 09 Jun 2011) | 21 lines
+
+[FEATURE] Automatic ExtJS4 Model.js template detection
+
+This enables the detection and usage of custom ExtJS4 Model 
+definitions by scanning the path specified as partialRootPath 
+in TypoScript for your extension (the extension, not a plugin). 
+Changing this path in your Typoscript also makes FED look for 
+these template files in that location.
+
+Two files may be used and are detected, in order:
+
+EXT:myext/Resources/Private/Partials/MyDomainObject/Model.js
+
+EXT:myext/Resources/Private/Partials/Model.js
+
+This means that if the first file is not found the second one 
+is used and functions as a "master" template for any Domain 
+Object which does not have a custom template.
+
+If no template is specified at all the FED default is still used.
+
+
+------------------------------------------------------------------------
+r48493 | claus@wildside.dk | 2011-06-09 18:27:26 +0200 (Thu, 09 Jun 2011) | 2 lines
+
+[BUGFIX] REST destroy/create persistence bug fixed
+
+------------------------------------------------------------------------
+r48492 | claus@wildside.dk | 2011-06-09 18:16:40 +0200 (Thu, 09 Jun 2011) | 12 lines
+
+[TASK] Improvements on ExtJS4 features and Sandbox FE Plugin
+
+This improves handling of CRUD requests through ExtJS4 REST, 
+improves DomainModel exposition and finally improves the 
+included FE "Sandbox" plugin to take advantage of the new 
+code.
+
+Live example is http://fedext.net/sandbox/example-renderings/sandbox-plugin/
+
+Refs: #27301
+
+
+------------------------------------------------------------------------
+r48467 | claus@wildside.dk | 2011-06-09 01:27:03 +0200 (Thu, 09 Jun 2011) | 5 lines
+
+[FEATURE] Added 'Sandbox' example ExtJS4 frontend plugin
+
+Will be extended with more features as they become available.
+
+
+------------------------------------------------------------------------
+r48466 | claus@wildside.dk | 2011-06-08 18:43:08 +0200 (Wed, 08 Jun 2011) | 2 lines
+
+[CLEANUP] Removed oldschool namespace file
+
+------------------------------------------------------------------------
+r48464 | claus@wildside.dk | 2011-06-08 18:13:47 +0200 (Wed, 08 Jun 2011) | 2 lines
+
+[-FEATURE] Removing files which will not be required from now on
+
+------------------------------------------------------------------------
+r48456 | claus@wildside.dk | 2011-06-08 09:04:53 +0200 (Wed, 08 Jun 2011) | 6 lines
+
+[FEATURE] DebugService and DebugViewHelper improvements
+
+Improved rendering, argument support and fixed a few 
+data collection inconsistencies.
+
+
+------------------------------------------------------------------------
+r48455 | claus@wildside.dk | 2011-06-08 08:58:54 +0200 (Wed, 08 Jun 2011) | 2 lines
+
+[-FEATURE] Removing now unused template files
+
+------------------------------------------------------------------------
+r48448 | claus@wildside.dk | 2011-06-07 23:15:33 +0200 (Tue, 07 Jun 2011) | 5 lines
+
+[FEATURE] Code for Debug Suite up to basic workable state
+
+Basic usage of ViewHelper Suite also supported.
+
+
+------------------------------------------------------------------------
+r48441 | claus@wildside.dk | 2011-06-07 20:39:42 +0200 (Tue, 07 Jun 2011) | 23 lines
+
+[FEATURE] Major new feature: Extreme Debugging Suite
+
+Complete overkill for debugging the entire request 
+execution from Controller all the way down through 
+any class you want to debug from down to all template 
+rendering using a single, simple Service for it all.
+
+Includes optional superclass for auto-debuggable 
+ViewHelpers - which can be used during development 
+and then switched off with no ill effect. 
+
+Includes profiling with lap support for detailed 
+profiling of loop execution times in any Extbase 
+class in your extension as well as from within your 
+Fluid templates.
+
+Future plans: Graphed execution times and memory 
+consumption etc. using ExtJS4 graphing features. 
+With instant-replay type animation with control 
+over the speed factor, naturally :) for all you 
+control freaks out there.
+
+
+------------------------------------------------------------------------
+r48421 | claus@wildside.dk | 2011-06-07 00:00:32 +0200 (Tue, 07 Jun 2011) | 6 lines
+
+[FEATURE] Added getRepositoryInstance() to DomainObjectInfo Service
+
+Accepts instances or class names of Model Objects, returns a
+Repository instance for that Model Object
+
+
+------------------------------------------------------------------------
+r48420 | claus@wildside.dk | 2011-06-06 23:55:27 +0200 (Mon, 06 Jun 2011) | 7 lines
+
+[FEATURE] Marked more functions in DomainObjectService @api
+
+Documentation available at:
+
+http://fedext.net/api-documentation/services/domainobject-info/
+
+
+------------------------------------------------------------------------
+r48419 | claus@wildside.dk | 2011-06-06 23:29:43 +0200 (Mon, 06 Jun 2011) | 7 lines
+
+[FEATURE] Skeleton for upcoming FlexForm Service added
+
+Featured in documentation; class-and-method skeleton
+added so the example will not break when tried against 
+SVN trunk.
+
+
+------------------------------------------------------------------------
+r48412 | claus@wildside.dk | 2011-06-06 20:34:13 +0200 (Mon, 06 Jun 2011) | 2 lines
+
+[TER] 1.3.15
+
+------------------------------------------------------------------------
+r48411 | claus@wildside.dk | 2011-06-06 20:27:53 +0200 (Mon, 06 Jun 2011) | 16 lines
+
+[FEATURE] Added CDN Service and ViewHelper, DocumentHead Utility
+
+This allows single-line inclusion of any version of
+jQuery you wish for. Abstract version definitions such
+as "1.8" or even "1" simply loads the newest stable release.
+
+The new DocumentHead utility allows advanced access to the data
+inserted in additionalHeaderData, most notably the support for
+enforcing a load-order to your scripts.
+
+Documentation:
+http://fedext.net/api-documentation/services/cdn-service/
+http://fedext.net/api-documentation/services/documenthead-service/
+http://fedext.net/viewhelper-documentation/resource-assistants/jquery-ui-cdn-loader/
+
+
+------------------------------------------------------------------------
+r48410 | claus@wildside.dk | 2011-06-06 19:37:46 +0200 (Mon, 06 Jun 2011) | 5 lines
+
+[-FEATURE] Removed vestigal JQuery/LoadViewHelper
+
+No longer needed; CDN service coming up after tests.
+
+
+------------------------------------------------------------------------
+r48409 | claus@wildside.dk | 2011-06-06 19:10:44 +0200 (Mon, 06 Jun 2011) | 9 lines
+
+[FEATURE] New class: Tx_Fed_Utility_DocumentHead
+
+Singleton, which can be injected and allows advanced
+access to manipulating the contents of additionalHeaderData.
+
+Corresponding methods from AbstractViewHelper moved to this
+new class and proxy methods created for backwards compat.
+
+
+------------------------------------------------------------------------
+r48407 | claus@wildside.dk | 2011-06-06 18:24:50 +0200 (Mon, 06 Jun 2011) | 5 lines
+
+[BUGFIX] Post-refactoring bug in DataSource TCA
+
+Thanks to Tim Wentzlau for reporting!
+
+
+------------------------------------------------------------------------
+r48406 | claus@wildside.dk | 2011-06-06 17:50:01 +0200 (Mon, 06 Jun 2011) | 5 lines
+
+[REFACTOR] Moved PdfViewHelper to ViewHelpers/PdfViewHelper
+
+Necessary after scrapping ViewHelpers/Extbase
+
+
+------------------------------------------------------------------------
+r48405 | claus@wildside.dk | 2011-06-06 17:37:55 +0200 (Mon, 06 Jun 2011) | 14 lines
+
+[CLEANUP] Removing parts that no longer belong in FED
+
+The oldschool Javascript framework now scrapped in favor
+of ExtJS4 which is being worked into FED.
+
+Aloha has been removed but may be re-integrated when a
+more controllable fashion is found. Expect this to happen
+once the basic ExtJS4 integration reaches a workable state.
+
+This DEFINITELY BREAKS CODE if you used the JS framework.
+You can find a legacy download version of the old JS 
+framework and ViewHelpers/ExtBase folder on http://fedext/net
+
+
+------------------------------------------------------------------------
+r48403 | claus@wildside.dk | 2011-06-06 17:27:19 +0200 (Mon, 06 Jun 2011) | 5 lines
+
+[CLEANUP] Removing vestigal jQuery accordion.min.js
+
+Spring cleaning. Springs are dirty.
+
+
+------------------------------------------------------------------------
+r48377 | claus@wildside.dk | 2011-06-05 17:11:15 +0200 (Sun, 05 Jun 2011) | 6 lines
+
+[FEATURE] Made methods related to REST request parameter reading public and @api
+
+This opens access to the fetchRestObject(), fetchRestRepository() and fetchRestBodyFields() methods 
+of Tx_Fed_Core_AbstractController, necessary in overriden rest-CRUD actions.
+
+
+------------------------------------------------------------------------
+r48376 | claus@wildside.dk | 2011-06-05 16:50:26 +0200 (Sun, 05 Jun 2011) | 5 lines
+
+[FEATURE] Added option for custom template when generating ExtJS Models
+
+Support added to both ExtJS Service and ViewHelper
+
+
+------------------------------------------------------------------------
+r48374 | claus@wildside.dk | 2011-06-05 14:40:32 +0200 (Sun, 05 Jun 2011) | 16 lines
+
+[-FEATURE] Removed wkhtmltopdf binary
+
+PDF ViewHelper now expects "wkhtmltopdf" to be in web server 
+process' PATH - and if not, expects the full path to the binary to 
+be specified as argument.
+
+Download size of FED drastically decreased.
+
+WARNING: This will break your code if you did NOT already install
+wkhtmltopdf on your system.
+
+See http://fedext.net/guides/shell-commands/support-for-wkhtmltopdf/
+
+Fixes: #27211
+
+
+------------------------------------------------------------------------
+r48373 | claus@wildside.dk | 2011-06-05 14:29:07 +0200 (Sun, 05 Jun 2011) | 6 lines
+
+[FEATURE] Added "instanceName" and "registerWith" attributes to TableViewHelper
+
+Allows assignment of globally accessible variable and/or registration
+through an custom Javascript function with created instance as argument/value.
+
+
+------------------------------------------------------------------------
+r48372 | claus@wildside.dk | 2011-06-05 13:22:31 +0200 (Sun, 05 Jun 2011) | 5 lines
+
+[BUGFIX] Fixed an array-to-object problem in TagCloudViewHelper
+
+Bug prevented an array of associative arrays of tags from rendering correctly.
+
+
+------------------------------------------------------------------------
+r48371 | claus@wildside.dk | 2011-06-05 00:28:37 +0200 (Sun, 05 Jun 2011) | 2 lines
+
+[DOC] Improvement on a few code comments and annotations
+
+------------------------------------------------------------------------
+r48370 | claus@wildside.dk | 2011-06-04 16:41:50 +0200 (Sat, 04 Jun 2011) | 2 lines
+
+[TER] 1.3.14
+
+------------------------------------------------------------------------
+r48369 | claus@wildside.dk | 2011-06-04 16:33:58 +0200 (Sat, 04 Jun 2011) | 5 lines
+
+[MAJOR BUGFIX] Many small issues fixed before release of doc. web site
+
+New documentation web site: http://fedext.net
+
+
+------------------------------------------------------------------------
+r48331 | claus@wildside.dk | 2011-06-01 19:06:00 +0200 (Wed, 01 Jun 2011) | 7 lines
+
+[+BUGFIX] Fixed a few additional problems in PDFViewHelper
+
+Again thanks to Jan Loderhose
+
+Refs: #27810
+
+
+------------------------------------------------------------------------
+r48329 | claus@wildside.dk | 2011-06-01 17:26:49 +0200 (Wed, 01 Jun 2011) | 2 lines
+
+[DOC] Major manual revision. More logical grouping and sequence.
+
+------------------------------------------------------------------------
+r48324 | claus@wildside.dk | 2011-06-01 16:25:44 +0200 (Wed, 01 Jun 2011) | 9 lines
+
+[CHANGE] Changed "filename" argument on PDFViewHelper to optional
+
+This to fit the manual's examples. Default filename is still "file.pdf"
+
+Thanks to Jan Loderhosen for reporting!
+
+Fixes: #27180
+
+
+------------------------------------------------------------------------
+r48323 | claus@wildside.dk | 2011-06-01 16:23:50 +0200 (Wed, 01 Jun 2011) | 2 lines
+
+[DOC] Fixed examples about PDFViewHelper in manual
+
+------------------------------------------------------------------------
+r48321 | claus@wildside.dk | 2011-06-01 16:20:43 +0200 (Wed, 01 Jun 2011) | 7 lines
+
+[+BUGFIX] PDF download ViewHelper bugfixed (27180)
+
+Thanks to Jan Loderhosen for reporting the issues!
+
+Fixes: #27180
+
+
+------------------------------------------------------------------------
+r48300 | claus@wildside.dk | 2011-06-01 01:08:27 +0200 (Wed, 01 Jun 2011) | 2 lines
+
+[DOC] Updated manual chapters on ExtJS
+
+------------------------------------------------------------------------
+r48299 | claus@wildside.dk | 2011-06-01 01:05:25 +0200 (Wed, 01 Jun 2011) | 5 lines
+
+[+FEATURE] First version of automatic ExtJS4 model creation.
+
+Here you go :)
+
+
+------------------------------------------------------------------------
+r48274 | claus@wildside.dk | 2011-05-30 23:44:03 +0200 (Mon, 30 May 2011) | 6 lines
+
+[+FEATURE] SASS ViewHelper and Service
+
+This adds SASS (syntactically awesome style sheets)
+compiler support Service and ViewHelper.
+
+
+------------------------------------------------------------------------
+r48244 | claus@wildside.dk | 2011-05-29 14:18:36 +0200 (Sun, 29 May 2011) | 5 lines
+
+[+FEATURE] Added FaviconViewHelper for easy favicons from Fluid
+
+Single attribute: href
+
+
+------------------------------------------------------------------------
+r48242 | claus@wildside.dk | 2011-05-29 03:59:24 +0200 (Sun, 29 May 2011) | 2 lines
+
+[TER] Uploaded 1.3.10
+
+------------------------------------------------------------------------
+r48240 | claus@wildside.dk | 2011-05-28 22:50:03 +0200 (Sat, 28 May 2011) | 2 lines
+
+[DOC] Updated manual about AbstractViewHelper and wildcard pattern file inclusions
+
+------------------------------------------------------------------------
+r48239 | claus@wildside.dk | 2011-05-28 22:39:27 +0200 (Sat, 28 May 2011) | 5 lines
+
+[+FEATURE] Support for wildcard filenames in script and style ViewHelpers
+
+Patterns such as "<fed:script src="path/to/*.js" /> now supported
+
+
+------------------------------------------------------------------------
+r48216 | claus@wildside.dk | 2011-05-27 14:15:44 +0200 (Fri, 27 May 2011) | 2 lines
+
+[REFACTOR] Added AbstractJQueryViewHelper abstract base class
+
+------------------------------------------------------------------------
+r48209 | claus@wildside.dk | 2011-05-27 12:13:14 +0200 (Fri, 27 May 2011) | 5 lines
+
+[+FEATURE] Added jQuery Accordion ViewHelper
+
+Twin brother of the jQuery Tab ViewHelper
+
+
+------------------------------------------------------------------------
+r48200 | claus@wildside.dk | 2011-05-27 01:23:45 +0200 (Fri, 27 May 2011) | 2 lines
+
+[+BUGFIX] Another small bugfix for jQuery TabViewHelper argument types
+
+------------------------------------------------------------------------
+r48199 | claus@wildside.dk | 2011-05-26 23:15:10 +0200 (Thu, 26 May 2011) | 2 lines
+
+[+BUGFIX] Small refactoring-related bug in Data SortViewHelper
+
+------------------------------------------------------------------------
+r48198 | claus@wildside.dk | 2011-05-26 23:13:36 +0200 (Thu, 26 May 2011) | 2 lines
+
+[DOC] Updated manual with section on jQuery TabViewHelper
+
+------------------------------------------------------------------------
+r48197 | claus@wildside.dk | 2011-05-26 23:06:48 +0200 (Thu, 26 May 2011) | 5 lines
+
+[+FEATURE] Added jQuery TabViewHelper to create tab groups
+
+Adds ViewHelper integration on the jQuery Tabs display type.
+
+
+------------------------------------------------------------------------
+r48147 | claus@wildside.dk | 2011-05-26 03:29:18 +0200 (Thu, 26 May 2011) | 5 lines
+
+[DOC] Updated manual about FlexFormCodeField
+
+That's all.
+
+
+------------------------------------------------------------------------
+r48146 | claus@wildside.dk | 2011-05-26 03:28:23 +0200 (Thu, 26 May 2011) | 5 lines
+
+[+FEATURE] Small follow-up change to FlexFormCodeField.php
+
+Limited height of editor field.
+
+
+------------------------------------------------------------------------
+r48145 | claus@wildside.dk | 2011-05-26 03:13:21 +0200 (Thu, 26 May 2011) | 7 lines
+
+[+FEATURE] Use t3editor for code editing in FE plugins
+
+Added a class for rendering t3editor textareas in FlexForm
+plugins - used this class to render this type of field in
+the two included frontend plugins.
+
+
+------------------------------------------------------------------------
+r48102 | claus@wildside.dk | 2011-05-25 00:27:12 +0200 (Wed, 25 May 2011) | 5 lines
+
+[+BUGFIX] Shift from call_user_func to call_user_func_array in data.func ViewHelper
+
+Support for multivalued array as argument
+
+
+------------------------------------------------------------------------
+r48100 | claus@wildside.dk | 2011-05-24 23:59:48 +0200 (Tue, 24 May 2011) | 5 lines
+
+[REFACTOR] Restored missing function bodies in data.sort ViewHelper
+
+Again thanks to Moritz Helten.
+
+
+------------------------------------------------------------------------
+r48099 | claus@wildside.dk | 2011-05-24 23:38:36 +0200 (Tue, 24 May 2011) | 5 lines
+
+[+BUGFIX] Problem in inline CSS inclusion after refactoring
+
+Again thanks to Moritz Helten for pointing this out to me.
+
+
+------------------------------------------------------------------------
+r48060 | claus@wildside.dk | 2011-05-24 11:25:02 +0200 (Tue, 24 May 2011) | 5 lines
+
+[+BUGFIX] Fixed a few problems in Flexforms
+
+Thanks to Moritz Helten for pointing these out :)
+
+
+------------------------------------------------------------------------
+r47988 | claus@wildside.dk | 2011-05-22 18:46:46 +0200 (Sun, 22 May 2011) | 5 lines
+
+[REFACTOR] Moved Widget DisplayObject and Event classes
+
+Refactored to match corresponding Field+Component classes.
+
+
+------------------------------------------------------------------------
+r47987 | claus@wildside.dk | 2011-05-22 18:45:22 +0200 (Sun, 22 May 2011) | 6 lines
+
+[+FEATURE] Better Fluid-like syntax in AJAX Widgets
+
+This adds support for "object" and "property" usage similar
+to to Fluid forms in the AJAX ViewHelpers
+
+
+------------------------------------------------------------------------
+r47934 | claus@wildside.dk | 2011-05-19 23:56:22 +0200 (Thu, 19 May 2011) | 5 lines
+
+[+FEATURE] Added Session/Cookie/Cache Control ViewHelpers
+
+Small tools to manipulate stored values and caches.
+
+
+------------------------------------------------------------------------
+r47926 | claus@wildside.dk | 2011-05-19 22:01:16 +0200 (Thu, 19 May 2011) | 5 lines
+
+[BUGFIX] Fixed an oops in ext_tables.sql
+
+tt_address related problem gone.
+
+
+------------------------------------------------------------------------
+r47925 | claus@wildside.dk | 2011-05-19 21:59:35 +0200 (Thu, 19 May 2011) | 5 lines
+
+[DOC] Updated the manual to fit the new extension key
+
+All examples should now be fully updated.
+
+
+------------------------------------------------------------------------
+r47924 | claus@wildside.dk | 2011-05-19 21:53:15 +0200 (Thu, 19 May 2011) | 6 lines
+
+[-FEATURE] Removed Persistence/ObjectStorage
+
+Removed this class; will be replaced by a service
+which sorts, shifts, pops, splices etc. ObjectStorage
+
+
+------------------------------------------------------------------------
+r47920 | claus@wildside.dk | 2011-05-19 21:40:17 +0200 (Thu, 19 May 2011) | 5 lines
+
+[INITIAL] Initial add of all extension files
+
+This could be the beginning of a beautiful friendship...
+
+
+------------------------------------------------------------------------
+r47916 | www | 2011-05-19 20:47:07 +0200 (Thu, 19 May 2011) | 1 line
+
+Initializing project fed (4/4)
+------------------------------------------------------------------------
