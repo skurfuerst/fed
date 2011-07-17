@@ -136,9 +136,11 @@ class Tx_Fed_ViewHelpers_MapViewHelper extends Tx_Fed_Core_ViewHelper_AbstractVi
 
 		$lat = $this->arguments['lat'] ? $this->arguments['lat'] : 56.25;
 		$lng = $this->arguments['lng'] ? $this->arguments['lng'] : 10.45;
+		$lat = strval($lat);
+		$lng = strval($lng);
 
 		$options = $this->getMapOptions();
-		
+
 		if (strlen($registerWith) > 0) {
 			$register = "{$registerWith}({$instanceName}, {$instanceName}markers);";
 		}
@@ -320,10 +322,23 @@ CSS;
 			"scrollWheel", "streetViewControl", "zoom", "zoomControl", "instanceName", "class",
 			"data", "properties"
 		);
+		$icon = trim($marker['icon']);
+		$lat = strval(floatval($marker['lat']));
+		$lng = strval(floatval($marker['lng']));
+		if ($marker['iconCenterX'] || $marker['iconCenterY']) {
+			if (!$marker['iconCenterY']) {
+				$marker['iconCenterY'] = 16;
+			}
+			if (!$marker['iconCenterX']) {
+				$marker['iconCenterX'] = 8;
+			}
+			$markerPivot = "new google.maps.Point({$marker['iconCenterX']}, {$marker['iconCenterY']})";
+		} else {
+			$markerPivot = 'null';
+		}
 		$lines = array(
-			"position: new google.maps.LatLng({$marker['lat']},{$marker['lng']})",
-			"icon: new google.maps.MarkerImage('{$marker['icon']}', null, null, 
-				new google.maps.Point({$marker['iconCenterX']}, {$marker['iconCenterY']}))",
+			"position: new google.maps.LatLng({$lat},{$lng})",
+			"icon: new google.maps.MarkerImage('{$icon}', null, null, {$markerPivot})",
 			"map: {$this->instanceName}",
 		);
 		unset($marker['icon']);
