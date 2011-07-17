@@ -84,7 +84,7 @@ class Tx_Fed_Backend_DynamicFlexForm {
 	}
 
 	protected function readFlexFormFields($templateFile, $values, $paths, &$dataStructArray, $conf, &$row, $table, $fieldName) {
-		if (is_file($templateFile) === FALSE) {
+		if (is_file($templateFile) === FALSE && @count($dataStructArray) == 0) {
 			$dataStructArray = array('ROOT' => array('type' => 'array', 'el' => array()));
 			return;
 		}

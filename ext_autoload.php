@@ -18,6 +18,7 @@ return array(
 	'tx_fed_utility_pagelayout' => $extensionClassesPath . 'Utility/PageLayout.php',
 	'tx_fed_view_flexiblecontentelementview' => $extensionClassesPath . 'View/FlexibleContentElementView.php',
 	'tx_fed_view_exposedtemplateview' => $extensionClassesPath . 'View/ExposedTemplateView.php',
+	'tx_fed_backend_tcemain' => $extensionClassesPath . 'Backend/TCEMain.php',
 	'tx_fed_backend_pagelayout' => $extensionClassesPath . 'Backend/PageLayout.php',
 	'tx_fed_backend_pagelayoutselector' => $extensionClassesPath . 'Backend/PageLayoutSelector.php',
 	'tx_fed_backend_fceselector' => $extensionClassesPath . 'Backend/FCESelector.php',

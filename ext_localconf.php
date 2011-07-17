@@ -98,6 +98,8 @@ if (TYPO3_MODE == 'BE') {
 	$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_befunc.php']['getFlexFormDSClass'][] = 'EXT:fed/Classes/Backend/DynamicFlexForm.php:Tx_Fed_Backend_DynamicFlexForm';
 }
 $GLOBALS['TYPO3_CONF_VARS']['FE']['addRootLineFields'].=',tx_fed_page_controller_action,tx_fed_page_controller_action_sub,tx_fed_page_flexform,';
+$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processDatamapClass']['fed'] = 'EXT:fed/Classes/Backend/TCEMain.php:Tx_Fed_Backend_TCEMain';
+
 
 t3lib_extMgm::addTypoScript($_EXTKEY,'setup',
     '[GLOBAL]
