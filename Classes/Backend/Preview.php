@@ -23,7 +23,7 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
-
+require_once t3lib_extMgm::extPath('cms', 'layout/class.tx_cms_layout.php');
 require_once t3lib_extMgm::extPath('cms', 'layout/interfaces/interface.tx_cms_layout_tt_content_drawitemhook.php');
 
 /**
@@ -87,7 +87,7 @@ class Tx_Fed_Backend_Preview implements tx_cms_layout_tt_content_drawItemHook {
 		}
 	}
 
-	protected function preProcessTemplateDisplay(&$drawItem, &$itemContent, array &$row) {
+	public function preProcessTemplateDisplay(&$drawItem, &$itemContent, array &$row) {
 		$flexform = t3lib_div::xml2array($row['pi_flexform']);
 		$templateFile = $flexform['data']['sDEF']['lDEF']['templateFile']['vDEF'];
 		$templateSource = $flexform['data']['sDEF']['lDEF']['templateSource']['vDEF'];
@@ -111,7 +111,7 @@ class Tx_Fed_Backend_Preview implements tx_cms_layout_tt_content_drawItemHook {
 		#$itemContent = $this->view->render();
 	}
 
-	protected function preProcessFlexibleContentElement(&$drawItem, &$itemContent, array &$row) {
+	public function preProcessFlexibleContentElement(&$drawItem, &$itemContent, array &$row) {
 		$fceTemplateFile = $row['tx_fed_fcefile'];
 		$fceTemplateFile = PATH_site . $fceTemplateFile;
 		$flexform = $this->flexform->convertFlexFormContentToArray($row['pi_flexform']);
