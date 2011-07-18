@@ -8,7 +8,7 @@
 }
 
 .fed-sortable tr.even td,
-.fed-sortable th {
+.fed-sortable th, .fed-sortable thead td {
 	background-color: #EDEDED;
 }
 

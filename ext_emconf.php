@@ -12,7 +12,7 @@
 
 $EM_CONF[$_EXTKEY] = array(
 	'title' => 'Fluid Extbase Development Framework',
-	'description' => 'Extensive library of Plugins, ViewHelpers and Services allowing usage of Fluid Content Elements, automatically generated ExtJS4 Stores and Models, REST Controller features for Extbase and so much more. Documentation web site: http://fedext.net',
+	'description' => 'Extensive library of Configuration, Plugins, ViewHelpers and Services for making Fluid Page Templates, Fluid Content Elements, AJAX form validations, AJAX-REST-enabled ExtJS4 Models and so much more. Web site: http://fedext.net',
 	'category' => 'misc',
 	'author' => 'Claus Due',
 	'author_email' => 'claus@wildside.dk',

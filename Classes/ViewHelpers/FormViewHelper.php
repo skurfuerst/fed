@@ -36,6 +36,18 @@
  */
 class Tx_Fed_ViewHelpers_FormViewHelper extends Tx_Fluid_ViewHelpers_FormViewHelper {
 
+	/**
+	 * @var Tx_Extbase_Object_ObjectManager
+	 * @inject
+	 */
+	protected $objectManager;
+
+	/**
+	 * @param Tx_Extbase_Object_ObjectManager $objectManager
+	 */
+	public function injectObjectManager(Tx_Extbase_Object_ObjectManager $objectManager) {
+		$this->objectManager = $objectManager;
+	}
 
 	public function initializeArguments() {
 		parent::initializeArguments();

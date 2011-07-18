@@ -189,24 +189,25 @@ abstract class Tx_Fed_Core_AbstractController extends Tx_Extbase_MVC_Controller_
 		$propertyMapper = $this->objectManager->get('Tx_Extbase_Property_Mapper');
 		$propertyMapper->map($propertyNames, $data, $instance);
 
-		$errors = array();
+		$errorArray = array();
 		if (method_exists($validator, 'validate')) {
 			$isValid = $validator->validate($instance);
+			$errors = $isValid->getFlattenedErrors();
 		} else {
 			$isValid = $validator->isValid($instance);
+			$errors = $validator->getErrors();
 		}
-		if ($isValid === TRUE) {
-			echo '1';
-			exit();
-		}
-		foreach ($validator->getErrors() as $name=>$error) {
-			$errors[$name] = array(
+		foreach ($errors as $name=>$error) {
+			if (is_array($error)) {
+				$error = array_pop($error);
+			}
+			$errorArray[$name] = array(
 				'name' => $name,
 				'message' => $error->getMessage(),
 				'code' => $error->getCode()
 			);
 		}
-		$json = $this->jsonService->encode($errors);
+		$json = $this->jsonService->encode($errorArray);
 		echo $json;
 		exit();
 	}
