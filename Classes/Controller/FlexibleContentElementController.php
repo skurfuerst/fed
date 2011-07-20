@@ -23,7 +23,6 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
-
 /**
  * Flexible Content Element Plugin Rendering Controller
  *
@@ -43,12 +42,16 @@ class Tx_Fed_Controller_FlexibleContentElementController extends Tx_Fed_Core_Abs
 		$flexform = $this->flexform->getAll();
 		$cObj = $this->request->getContentObjectData();
 		$filename = PATH_site . $cObj['tx_fed_fcefile'];
-		$this->view = $this->objectManager->get('Tx_Fluid_View_StandaloneView');
-		$this->view->setTemplatePathAndFilename($filename);
-		$this->view->assignMultiple($flexform);
-		$this->view->assign('record', $cObj);
-		$this->view->assign('page', $GLOBALS['TSFE']->page);
-		return $this->view->render();
+		$exposedView = $this->objectManager->get('Tx_Fed_View_ExposedTemplateView');
+		$exposedView->setTemplatePathAndFilename($filename);
+		$exposedView->setLayoutRootPath(t3lib_extMgm::extPath('fed', 'Resources/Private/Layouts/'));
+		$data = $exposedView->harvest('FEDFCE');
+		$flexform['page'] = $GLOBALS['TSFE']->page;
+		$flexform['record'] = $cObj;
+		$flexform['areas'] = $data['areas'];
+		$exposedView->assign('layout', 'FCE');
+		$exposedView->assignMultiple($flexform);
+		return $exposedView->render();
 	}
 
 }
