@@ -65,11 +65,15 @@ class Tx_Fed_Backend_FCESelector {
 					$view = $objectManager->get('Tx_Fed_View_FlexibleContentElementView');
 					$view->setTemplatePathAndFilename(PATH_site . $fileRelPath);
 					$label = $view->harvest('FEDFCELABEL');
-					if (!$label) {
-						$label = $fileRelPath;
+					$enabled = $view->harvest('FEDFCEENABLED');
+					#var_dump($enabled);
+					if ($enabled !== 'FALSE') {
+						if (!$label) {
+							$label = $fileRelPath;
+						}
+						$selected = ($fileRelPath == $value ? " selected='selected'" : "");
+						$select .= "<option value='{$fileRelPath}'{$selected}>{$label}</option>" .chr(10);
 					}
-					$selected = ($fileRelPath == $value ? " selected='selected'" : "");
-					$select .= "<option value='{$fileRelPath}'{$selected}>{$label}</option>" .chr(10);
 				}
 				$select .= "</optgroup>" . chr(10);
 			}

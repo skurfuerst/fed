@@ -99,7 +99,9 @@ XML;
 		if ($config['items']) {
 			$switchedConfig = '<items type="array">' . chr(10);
 			foreach ($config['items'] as $iteration=>$set) {
-				if (count($set) == 1) {
+				if (is_array($set) === FALSE) {
+					$set = array($set, $set);
+				} else if (count($set) == 1) {
 					$set[1] = $set[0]; // option value becomes label
 				}
 				$switchedConfig .= '<numIndex type="array" index="' . $iteration . '">' . chr(10);

@@ -1,7 +1,8 @@
 {namespace fed=Tx_Fed_ViewHelpers}
 
+<f:layout name="{layout}" />
 
-<fed:fce id="fedexampleapp" label="Display: Example ExtJS4 Application">
+<fed:fce id="fedexampleapp" label="Test: ExtJS4 Application" enabled="FALSE">
 	<fed:fce.field.input name="app.title" label="Application window title" />
 	<fed:fce.field.input name="app.display.width" label="Application window width" eval="int" />
 	<fed:fce.field.input name="app.display.height" label="Application window height" eval="int" />
@@ -11,15 +12,21 @@
 	<fed:fce.field.checkbox name="app.autoSync" label="Automatically sync store" />
 </fed:fce>
 
-<f:if condition="{app.loadJQuery}">
-	<fed:jQuery.cdn jQueryVersion="1" jQueryUIVersion="1" />
-</f:if>
-<f:if condition="{app.loadExtJS}">
-	<fed:script src="fileadmin/FedSite/Resources/Public/Javascript/ExtJS/ext-all.js" index="0" />
-	<fed:style href="fileadmin/FedSite/Resources/Public/Javascript/ExtJS/resources/css/ext-all.css" />
-</f:if>
+<f:section name="preview">
 
-<fed:extJS.expose object="Tx_Fed_Domain_Model_DataSource" typeNum="123581322" prefix="Fed." />
-<div>
-	<fed:extJS.app template="fileadmin/FedSite/Resources/Public/Javascript/ExtJSApplicationAsFCE.js" arguments="{app}" id="fedexampleapp" />
-</div>
+</f:section>
+
+<f:section name="main">
+	<f:if condition="{app.loadJQuery}">
+		<fed:jQuery.cdn jQueryVersion="1" jQueryUIVersion="1" />
+	</f:if>
+	<f:if condition="{app.loadExtJS}">
+		<fed:script src="fileadmin/FedSite/Resources/Public/Javascript/ExtJS/ext-all.js" index="0" />
+		<fed:style href="fileadmin/FedSite/Resources/Public/Javascript/ExtJS/resources/css/ext-all.css" />
+	</f:if>
+
+	<fed:extJS.expose object="Tx_Fed_Domain_Model_DataSource" typeNum="123581322" prefix="Fed." />
+	<div>
+		<fed:extJS.app template="fileadmin/FedSite/Resources/Public/Javascript/ExtJSApplicationAsFCE.js" fluid="TRUE" arguments="{app}" id="fedexampleapp" />
+	</div>
+</f:section>

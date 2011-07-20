@@ -1,8 +1,16 @@
 {namespace fed=Tx_Fed_ViewHelpers}
 
-<fed:fce id="simpletestfce" label="Test: Simple test">
-	
+<f:layout name="{layout}" />
+
+<fed:fce id="simpletestfce" label="Test: Simple test" enabled="FALSE">
+
 </fed:fce>
 
-<h2>FCE Simple Test</h2>
-<fed:debug.variables />
+<f:section name="preview">
+
+</f:section>
+
+<f:section name="main">
+	<h2>FCE Simple Test</h2>
+	<fed:debug.variables />
+</f:section>

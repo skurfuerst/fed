@@ -89,17 +89,17 @@ class Tx_Fed_ViewHelpers_ExtJS_AppViewHelper extends Tx_Fed_ViewHelpers_RenderVi
 		$arguments = $this->arguments['arguments'];
 		$tag = $this->arguments['tagName'];
 		$arguments['id'] = $this->arguments['id'];
-		
+
 		if ($this->arguments['fluid'] === TRUE) {
 			$applicationScriptContent = $this->partialRender->render($this->arguments['template'], $arguments);
 			$initScript = $this->renderChildren();
 			$uniqid = md5($applicationScriptContent);
-			$this->includeHeader($initScript, 'js');
 			$tempFile = $this->documentHead->saveContentToTempFile($applicationScriptContent, $uniqid, 'js');
+			$this->includeHeader($initScript, 'js');
+			$this->includeFile($tempFile);
 		} else {
 			$this->includeFile($this->arguments['template']);
 		}
-		$this->includeFile($tempFile);
 		$element = '<' . $tag . ' id="' . $this->arguments['id'] . '"><span>&nbsp;</span></' . $tag . '>' . chr(10);
 		return $element;
 	}

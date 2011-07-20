@@ -25,8 +25,6 @@
  * ************************************************************* */
 
 /**
- *
- *
  * @author Claus Due, Wildside A/S
  * @version $Id$
  * @copyright Copyright belongs to the respective authors
@@ -37,23 +35,7 @@
 class Tx_Fed_ViewHelpers_Fce_Grid_RowViewHelper extends Tx_Fed_Core_ViewHelper_AbstractFceViewHelper {
 
 	public function render() {
-		// initialize an empty row
-		$row = array('columns' => array());
-		$this->templateVariableContainer->add('row', $row);
-
-		// renderChildren fills row configuration
-		$this->renderChildren();
-
-		// add the rendered row
-		$grid = $this->templateVariableContainer->get('grid');
-		$row = $this->templateVariableContainer->get('row');
-		array_push($grid['rows'], $row);
-		$this->templateVariableContainer->remove('grid');
-		$this->templateVariableContainer->add('grid', $grid);
-
-		// cleanup
-		$this->templateVariableContainer->remove('row');
-
+		return array();
 	}
 
 }

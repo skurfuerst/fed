@@ -1,5 +1,7 @@
 {namespace fed=Tx_Fed_ViewHelpers}
 
+<f:layout name="{layout}" />
+
 <fed:fce id="display-file-list" label="Display: Customizable File List">
 	<fed:fce.field.checkbox name="jQuery" label="Load jQuery - in case your page does not include it. Uses Google's CDN Service" />
 	<fed:fce.field.input name="path" label="Site-relative path to dir containing files, remember trailing slash" />
@@ -30,59 +32,65 @@
 	<fed:fce.field.input name="table.registerWith" label="Name of Javascript function this instance will be passed to after init" />
 </fed:fce>
 
-<fed:data.var name="fields" type="array">{fields}</fed:data.var>
-<fed:resource.file path="{path}" as="files" sortBy="{resource.sortBy}" sortDirection="{resource.sortDirection}" />
+<f:section name="preview">
 
-<f:if condition="{jQuery}">
-	<fed:jQuery.cdn jQueryVersion="1.8" />
-</f:if>
+</f:section>
 
-<fed:table cellspacing="{table.cellspacing}" cellpadding="{table.cellpadding}" iDisplayLength="{table.iDisplayLength}" textExtraction="{table.textExtraction}"
-	sortable="{table.sortable}" bPaginate="{table.bPaginate}" bSaveState="{table.bSaveState}" bInfo="{table.bInfo}" bFilter="{table.bFilter}"
-	instanceName="{table.instanceName}" registerWith="{table.registerWith}">
-	<f:if condition="{headers}">
-	<thead>
-		<tr>
-		<f:for each="{fields}" as="fieldName">
-			<th><f:translate key="LLL:EXT:fed/Resources/Private/Language/locallang.xml:tx_fed_file.{fieldName}" default="{fieldName}" /></th>
-		</f:for>
-		</tr>
-	</thead>
+<f:section name="main">
+	<fed:data.var name="fields" type="array">{fields}</fed:data.var>
+	<fed:resource.file path="{path}" as="files" sortBy="{resource.sortBy}" sortDirection="{resource.sortDirection}" />
+
+	<f:if condition="{jQuery}">
+		<fed:jQuery.cdn jQueryVersion="1.8" />
 	</f:if>
 
-	<f:for each="{files}" as="file" iteration="iteration">
-		<tr>
+	<fed:table cellspacing="{table.cellspacing}" cellpadding="{table.cellpadding}" iDisplayLength="{table.iDisplayLength}" textExtraction="{table.textExtraction}"
+		sortable="{table.sortable}" bPaginate="{table.bPaginate}" bSaveState="{table.bSaveState}" bInfo="{table.bInfo}" bFilter="{table.bFilter}"
+		instanceName="{table.instanceName}" registerWith="{table.registerWith}">
+		<f:if condition="{headers}">
+		<thead>
+			<tr>
 			<f:for each="{fields}" as="fieldName">
-				<td>
-					<fed:switch value="{fieldName}">
-						<fed:case case="iteration" break="TRUE">{iteration.cycle}</fed:case>
-						<fed:case case="filename" break="TRUE">
-							<f:if condition="{downloadable}">
-								<f:then>
-									<a href="{file.relativePath}">{file.filename}.{file.extension}</a>
-								</f:then>
-								<f:else>
-									{file.filename}.{file.extension}
-								</f:else>
-							</f:if>
-						</fed:case>
-						<fed:case case="size" break="TRUE">
-							<fed:switch value="{unit}">
-								<fed:case case="GB" break="TRUE"><f:format.number decimals="{decimals}"><fed:math>{file.size}/1024/1024/1024</fed:math></f:format.number> {unit}</fed:case>
-								<fed:case case="MB" break="TRUE"><f:format.number decimals="{decimals}"><fed:math>{file.size}/1024/1024</fed:math></f:format.number> {unit}</fed:case>
-								<fed:case case="KB" break="TRUE"><f:format.number decimals="{decimals}"><fed:math>{file.size}/1024</fed:math></f:format.number> {unit}</fed:case>
-								<fed:case case="B" break="TRUE">{file.size} {unit}</fed:case>
-							</fed:switch>
-						</fed:case>
-						<fed:case case="created" break="TRUE">
-							<f:format.date format="{dateFormat}">{file.created}</f:format.date>
-						</fed:case>
-						<fed:case case="modified" break="TRUE">
-							<f:format.date format="{dateFormat}">{file.modified}</f:format.date>
-						</fed:case>
-					</fed:switch>
-				</td>
+				<th><f:translate key="LLL:EXT:fed/Resources/Private/Language/locallang.xml:tx_fed_file.{fieldName}" default="{fieldName}" /></th>
 			</f:for>
-		</tr>
-	</f:for>
-</fed:table>
+			</tr>
+		</thead>
+		</f:if>
+
+		<f:for each="{files}" as="file" iteration="iteration">
+			<tr>
+				<f:for each="{fields}" as="fieldName">
+					<td>
+						<fed:switch value="{fieldName}">
+							<fed:case case="iteration" break="TRUE">{iteration.cycle}</fed:case>
+							<fed:case case="filename" break="TRUE">
+								<f:if condition="{downloadable}">
+									<f:then>
+										<a href="{file.relativePath}">{file.filename}.{file.extension}</a>
+									</f:then>
+									<f:else>
+										{file.filename}.{file.extension}
+									</f:else>
+								</f:if>
+							</fed:case>
+							<fed:case case="size" break="TRUE">
+								<fed:switch value="{unit}">
+									<fed:case case="GB" break="TRUE"><f:format.number decimals="{decimals}"><fed:math>{file.size}/1024/1024/1024</fed:math></f:format.number> {unit}</fed:case>
+									<fed:case case="MB" break="TRUE"><f:format.number decimals="{decimals}"><fed:math>{file.size}/1024/1024</fed:math></f:format.number> {unit}</fed:case>
+									<fed:case case="KB" break="TRUE"><f:format.number decimals="{decimals}"><fed:math>{file.size}/1024</fed:math></f:format.number> {unit}</fed:case>
+									<fed:case case="B" break="TRUE">{file.size} {unit}</fed:case>
+								</fed:switch>
+							</fed:case>
+							<fed:case case="created" break="TRUE">
+								<f:format.date format="{dateFormat}">{file.created}</f:format.date>
+							</fed:case>
+							<fed:case case="modified" break="TRUE">
+								<f:format.date format="{dateFormat}">{file.modified}</f:format.date>
+							</fed:case>
+						</fed:switch>
+					</td>
+				</f:for>
+			</tr>
+		</f:for>
+	</fed:table>
+</f:section>

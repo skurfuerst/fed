@@ -64,7 +64,9 @@ class Tx_Fed_Backend_FCEParser implements t3lib_Singleton {
 
 	public function getFceDefinitionFromTemplate($templateFile, $data=NULL, $paths=array()) {
 		$this->view->setTemplatePathAndFilename($templateFile);
-		$this->view->setFlexFormData($data);
+		if (is_array($data)) {
+			$this->view->assignMultiple($data);
+		}
 		if ($paths) {
 			$this->view->setPartialRootPath(PATH_site . $this->translatePath($paths['partialRootPath']));
 			$this->view->setLayoutRootPath(PATH_site . $this->translatePath($paths['layoutRootPath']));

@@ -115,54 +115,24 @@ class Tx_Fed_Backend_Preview implements tx_cms_layout_tt_content_drawItemHook {
 		$fceTemplateFile = $row['tx_fed_fcefile'];
 		$fceTemplateFile = PATH_site . $fceTemplateFile;
 		$flexform = $this->flexform->convertFlexFormContentToArray($row['pi_flexform']);
-		if (is_file($fceTemplateFile)) {
-			try {
-				$pageRes = $GLOBALS['TYPO3_DB']->exec_SELECTquery('*', 'pages', "uid = '{$row['pid']}'");
-				$pageRecord = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($pageRes);
-				$dblist = t3lib_div::makeInstance('tx_cms_layout');
-				$dblist->backPath = $GLOBALS['BACK_PATH'];
-				$dblist->thumbs = $this->imagemode;
-				$dblist->script = 'db_layout.php';
-				$dblist->showIcon = 0;
-				$dblist->setLMargin = 0;
-				$dblist->doEdit = TRUE;
-				$dblist->ext_CALC_PERMS = $GLOBALS['BE_USER']->calcPerms($pageRecord);
-				$dblist->id = $row['pid'];
-				$dblist->nextThree = 0;
-				$fceParser = $this->objectManager->get('Tx_Fed_Backend_FCEParser');
-				$areas = array();
-				$stored = $fceParser->getFceDefinitionFromTemplate($fceTemplateFile, $flexform);
-				foreach ($stored as $groupIndex=>$group) {
-					foreach ($group['fields'] as $fieldIndex=>$field) {
-						$value = $flexform[$field['name']];
-						$value = strip_tags($value);
-						$stored[$groupIndex]['fields'][$fieldIndex]['value'] = $value;
-					}
-					foreach ($group['areas'] as $areaIndex=>$area) {
-						$areas[$area['name']]['records'] = array();
-						$stored[$groupIndex]['areas'][$areaIndex]['records'] = array();
-						$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('*', 'tt_content',
-								"colPos = '255' AND tx_fed_fcecontentarea = '{$area['name']}:{$row['uid']}' AND deleted = 0", 'uid', 'sorting ASC');
-						while ($record = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
-							$dblist->tt_contentData['nextThree'][$record['uid']] = $record['uid'];
-							$rendered = $dblist->tt_content_drawHeader($record, 15, TRUE, FALSE);
-							$rendered .= $dblist->tt_content_drawItem($record, FALSE);
-							array_push($stored[$groupIndex]['areas'][$areaIndex]['records'], $rendered);
-							array_push($areas[$area['name']]['records'], $rendered);
-						}
-					}
-				}
-				$this->view->assignMultiple($flexform);
-				$this->view->assign('areas', $areas);
-				$this->view->assign('row', $row);
-				$this->view->assignMultiple($stored);
-				$this->view->assign('fce', $stored);
-				$itemContent = $this->view->render();
-				$drawItem = FALSE;
-			} catch (Exception $e) {
-				#var_dump($e->getMessage());
-			}
-		}
+
+		$view = $this->objectManager->get('Tx_Fed_View_ExposedTemplateView');
+		$view->setTemplatePathAndFilename($fceTemplateFile);
+		$view->setLayoutRootPath(t3lib_extMgm::extPath('fed', 'Resources/Private/Layouts/'));
+		$view->assignMultiple($flexform);
+		$view->assign('layout', 'FCE');
+		$stored = $view->harvest('FEDFCE');
+		$label = $view->harvest('FEDFCELABEL');
+
+		$view->assign('layout', 'FCEPreview');
+		$preview = $view->render();
+
+		$this->view->assignMultiple($flexform);
+		$this->view->assignMultiple($stored);
+		$this->view->assign('label', $label);
+		$this->view->assign('row', $row);
+		$this->view->assign('preview', $preview);
+		$itemContent = $this->view->render();
 	}
 
 }

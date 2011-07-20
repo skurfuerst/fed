@@ -46,8 +46,9 @@ class Tx_Fed_ViewHelpers_Fce_Field_UserFuncViewHelper extends Tx_Fed_ViewHelpers
 		$config = $this->getBaseConfig();
 		$config['type'] = 'user';
 		$config['userFunc'] = $this->arguments['userFunc'];
-		$this->addField($config);
-		$this->renderChildren();
+		return $config;
+		#$this->addField($config);
+		#$this->renderChildren();
 	}
 
 }

@@ -1,0 +1,18 @@
+{namespace fed=Tx_Fed_ViewHelpers}
+<T3DataStructure>
+	<meta>
+	    <langDisable>1</langDisable>
+	</meta>
+	<ROOT>
+	    <type>array</type>
+	    <el>
+	<f:for each="{fields}" as="field" key="name" iteration="iteration">
+		<{name}>
+		<TCEforms>
+			<fed:fce.renderField config="{field}" />
+		</TCEforms>
+		</{name}>
+	</f:for>
+	    </el>
+	</ROOT>
+</T3DataStructure>

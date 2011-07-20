@@ -46,13 +46,10 @@ class Tx_Fed_ViewHelpers_Fce_RenderContentViewHelper extends Tx_Fed_Core_ViewHel
 
 	public function render() {
 		$html = "";
-		$fce = $this->templateVariableContainer->get('FEDFCE');
 		$detectedArea = $fce[0]['areas'][0]['name'];
-		foreach ($fce as $group) {
-			foreach ($group['areas'] as $area) {
-				if ($area['name'] == $this->arguments['area']) {
-					$detectedArea = $area;
-				}
+		foreach ($this->templateVariableContainer->get('areas') as $area) {
+			if ($area['name'] == $this->arguments['area']) {
+				$detectedArea = $area;
 			}
 		}
 		$record = $this->templateVariableContainer->get('record');

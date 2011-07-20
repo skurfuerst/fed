@@ -42,11 +42,7 @@ class Tx_Fed_Core_ViewHelper_AbstractFceViewHelper extends Tx_Fed_Core_ViewHelpe
 	 * @return array
 	 */
 	protected function getStorage() {
-		if ($this->templateVariableContainer->exists('FEDFCE')) {
-			return $this->templateVariableContainer->get('FEDFCE');
-		} else {
-			return array();
-		}
+		#return (array) $GLOBALS['FEDFCE'];
 	}
 
 	/**
@@ -55,10 +51,7 @@ class Tx_Fed_Core_ViewHelper_AbstractFceViewHelper extends Tx_Fed_Core_ViewHelpe
 	 * @param type $storage
 	 */
 	protected function setStorage($storage) {
-		if ($this->templateVariableContainer->exists('FEDFCE')) {
-			$this->templateVariableContainer->remove('FEDFCE');
-		}
-		$this->templateVariableContainer->add('FEDFCE', $storage);
+		#$GLOBALS['FEDFCE'] = $storage;
 	}
 
 }

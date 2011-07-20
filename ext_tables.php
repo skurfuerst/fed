@@ -51,6 +51,7 @@ t3lib_extMgm::addPlugin(array('FED DataSource Display', 'fed_datasource'), 'CTyp
 
 t3lib_div::loadTCA('pages');
 t3lib_div::loadTCA('tt_content');
+#$TCA['tt_content']['ctrl']['enablecolumns']['disabled'] = 'tx_fed_fcecontentarea';
 $TCA['tt_content']['types']['list']['subtypes_addlist']['fed_fce'] = 'pi_flexform';
 $TCA['tt_content']['types']['list']['subtypes_addlist']['fed_sandbox'] = 'pi_flexform';
 
@@ -134,6 +135,7 @@ t3lib_extMgm::addTCAcolumns('pages', array(
 	'tx_fed_page_format' => Array (
 		'exclude' => 1,
 		'label' => 'LLL:EXT:fed/Resources/Private/Language/locallang_db.xml:pages.tx_fed_page_format',
+		'displayCond' => 'FIELD:layout:=:255',
 		'config' => Array (
 			'type' => 'user',
 			'userFunc' => 'Tx_Fed_Backend_PageLayoutSelector->renderFormatField'
@@ -142,6 +144,7 @@ t3lib_extMgm::addTCAcolumns('pages', array(
 	'tx_fed_page_controller_action' => Array (
 		'exclude' => 1,
 		'label' => 'LLL:EXT:fed/Resources/Private/Language/locallang_db.xml:pages.tx_fed_page_controller_action',
+		'displayCond' => 'FIELD:layout:=:255',
 		'config' => Array (
 			'type' => 'user',
 			'userFunc' => 'Tx_Fed_Backend_PageLayoutSelector->renderField'
@@ -150,6 +153,7 @@ t3lib_extMgm::addTCAcolumns('pages', array(
 	'tx_fed_page_controller_action_sub' => Array (
 		'exclude' => 1,
 		'label' => 'LLL:EXT:fed/Resources/Private/Language/locallang_db.xml:pages.tx_fed_page_controller_action_sub',
+		'displayCond' => 'FIELD:layout:=:255',
 		'config' => Array (
 			'type' => 'user',
 			'userFunc' => 'Tx_Fed_Backend_PageLayoutSelector->renderField'
@@ -158,12 +162,9 @@ t3lib_extMgm::addTCAcolumns('pages', array(
 	'tx_fed_page_flexform' => Array (
         'exclude' => 1,
         'label' => 'LLL:EXT:fed/Resources/Private/Language/locallang_db.xml:pages.tx_fed_page_flexform',
+		'displayCond' => 'FIELD:layout:=:255',
         'config' => Array (
             'type' => 'flex',
-            #'ds_pointerField' => 'tx_templavoila_ds',
-            #'ds_pointerField_searchParent' => 'pid',
-            #'ds_pointerField_searchParent_subField' => 'tx_templavoila_next_ds',
-            #'ds_tableField' => 'tx_templavoila_datastructure:dataprot',
         )
     ),
 ), 1);
@@ -172,13 +173,14 @@ t3lib_extMgm::addTCAcolumns('tt_content', array(
 		'exclude' => 1,
 		#'label' => 'LLL:EXT:fed/Resources/Private/Language/locallang_db.xml:tt_content.tx_fed_fcecontentarea',
 		'config' => Array (
-			'type' => 'user',
-			'userFunc' => 'Tx_Fed_Backend_HiddenField->renderField',
+			'type' => 'passthrough',
+			#'userFunc' => 'Tx_Fed_Backend_HiddenField->renderField',
 		)
 	),
 	'tx_fed_fcefile' => Array (
 		'exclude' => 1,
 		'label' => 'LLL:EXT:fed/Resources/Private/Language/locallang_db.xml:tt_content.tx_fed_fcefile',
+		'displayCond' => 'FIELD:type:=:fed_fce',
 		'config' => Array (
 			'type' => 'user',
 			'userFunc' => 'Tx_Fed_Backend_FCESelector->renderField',

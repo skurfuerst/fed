@@ -34,7 +34,9 @@
  * @package Fed
  * @subpackage ViewHelpers/Fce
  */
-class Tx_Fed_ViewHelpers_FceViewHelper extends Tx_Fed_Core_ViewHelper_AbstractFceViewHelper {
+class Tx_Fed_ViewHelpers_FceViewHelper
+extends Tx_Fed_Core_ViewHelper_AbstractFceViewHelper
+implements Tx_Fluid_Core_ViewHelper_Facets_PostParseInterface {
 
 	/**
 	 * Initialize arguments
@@ -42,21 +44,28 @@ class Tx_Fed_ViewHelpers_FceViewHelper extends Tx_Fed_Core_ViewHelper_AbstractFc
 	public function initializeArguments() {
 		$this->registerArgument('id', 'string', 'Identifier of this Flexible Content Element', TRUE);
 		$this->registerArgument('label', 'string', 'Label for this Fluid FCE in template file selector', FALSE, NULL);
+		$this->registerArgument('enabled', 'boolean', 'If FALSE, makes the FCE inactive', FALSE, TRUE);
+	}
+
+	/**
+	 * @param Tx_Fluid_Core_Parser_SyntaxTree_ViewHelperNode $syntaxTreeNode
+	 * @param array $viewHelperArguments
+	 * @param Tx_Fluid_Core_ViewHelper_TemplateVariableContainer $variableContainer
+	 * @return void
+	 */
+	static public function postParseEvent(Tx_Fluid_Core_Parser_SyntaxTree_ViewHelperNode $syntaxTreeNode, array $viewHelperArguments, Tx_Fluid_Core_ViewHelper_TemplateVariableContainer $variableContainer) {
+		$label = $viewHelperArguments['label'] ? $viewHelperArguments['label']->getText() : $viewHelperArguments['id'];
+		$variableContainer->add('FEDFCE', $syntaxTreeNode);
+		$variableContainer->add('FEDFCEID', $viewHelperArguments['id']->getText());
+		$variableContainer->add('FEDFCELABEL', $label);
+		$variableContainer->add('FEDFCEENABLED', $viewHelperArguments['enabled'] ? $viewHelperArguments['enabled']->getText() : TRUE);
 	}
 
 	/**
 	 * Render method
 	 */
 	public function render() {
-		$storage = array();
-		$this->templateVariableContainer->add('FEDFCEID', $this->arguments['id']);
-		if ($this->arguments['label']) {
-			$this->templateVariableContainer->add('FEDFCELABEL', $this->arguments['label']);
-		} else {
-			$this->templateVariableContainer->add('FEDFCELABEL', $this->arguments['id']);
-		}
-		$this->setStorage($storage);
-		$this->renderChildren();
+
 	}
 
 }

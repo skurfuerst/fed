@@ -43,29 +43,13 @@ class Tx_Fed_ViewHelpers_Fce_Grid_ColumnViewHelper extends Tx_Fed_Core_ViewHelpe
 	}
 
 	public function render() {
-
-		// add a column
-		$row = $this->templateVariableContainer->get('row');
 		$column = array(
 			'colspan' => $this->arguments['colspan'],
 			'rowspan' => $this->arguments['rowspan'],
 			'width' => $this->arguments['width'],
 			'areas' => array()
 		);
-
-		// fill the column with any definitions inside
-		$this->templateVariableContainer->add('column', $column);
-		$this->renderChildren();
-
-		$column = $this->templateVariableContainer->get('column');
-		$row = $this->templateVariableContainer->get('row');
-
-		array_push($row['columns'], $column);
-		$this->templateVariableContainer->remove('row');
-		$this->templateVariableContainer->add('row', $row);
-
-		// cleanup
-		$this->templateVariableContainer->remove('column');
+		return $column;
 	}
 
 }

@@ -1,6 +1,8 @@
 {namespace fed=Tx_Fed_ViewHelpers}
 
-<fed:fce id="testfce" label="Test: General test">
+<f:layout name="{layout}" />
+
+<fed:fce id="testfce" label="Test: General test" enabled="FALSE">
 	<fed:fce.field.input name="innerHeader" label="Inside heading" required="TRUE" />
 	<fed:fce.field.text name="basicText" label="Basic text area" rows="20" cols="40" />
 	<fed:fce.field.text name="formattedText" label="RTE text area" enableRichText="TRUE" />
@@ -37,42 +39,48 @@
 
 </fed:fce>
 
-<fed:debug.variables />
+<f:section name="preview">
 
-<h1>Extended FCE Test</h1>
-<p>Should have a flattened group/sheet structure due to having just a single group/sheet.</p>
+</f:section>
 
-<h2>Testing "input" data type</h2>
-<p>A one-line, unformatted text should follow this paragraph:</p>
-<p>{innerHeader}</p>
+<f:section name="main">
+	<fed:debug.variables />
 
-<h2>Testing "text" data type</h2>
-<p>A text should follow this paragraph:</p>
-{basicText}
+	<h1>Extended FCE Test</h1>
+	<p>Should have a flattened group/sheet structure due to having just a single group/sheet.</p>
 
-<h2>Testing "rte" data type</h2>
-<p>A formatted text should follow this paragraph:</p>
-<f:format.html>{formattedText}</f:format.html>
+	<h2>Testing "input" data type</h2>
+	<p>A one-line, unformatted text should follow this paragraph:</p>
+	<p>{innerHeader}</p>
 
-<h2>Testing "select" data type</h2>
-<p>A select box index value representation should follow this paragraph:</p>
-{select}
+	<h2>Testing "text" data type</h2>
+	<p>A text should follow this paragraph:</p>
+	{basicText}
 
-<h2>Testing "select data type with foreign table"</h2>
-<p>A dump of an FE-user UID should follow this paragraph:</p>
-<p>{selectForeign}</p>
+	<h2>Testing "rte" data type</h2>
+	<p>A formatted text should follow this paragraph:</p>
+	<f:format.html>{formattedText}</f:format.html>
 
-<h2>Testing "group" data type</h2>
-<p>A filename should follow this paragraph</p>
-<p>{groupFile}</p>
+	<h2>Testing "select" data type</h2>
+	<p>A select box index value representation should follow this paragraph:</p>
+	{select}
 
-<h2>Testing "checkbox" data type</h2>
-<p>A one or a zero should follow this paragraph:</p>
-<p>{checkbox}</p>
+	<h2>Testing "select data type with foreign table"</h2>
+	<p>A dump of an FE-user UID should follow this paragraph:</p>
+	<p>{selectForeign}</p>
 
-<h2>Testing code editor field</h2>
-<p>Some raw HTML output should follow this paragraph</p>
-<f:format.html>{codeEditor}</f:format.html>
+	<h2>Testing "group" data type</h2>
+	<p>A filename should follow this paragraph</p>
+	<p>{groupFile}</p>
 
-<h2>Testing content area output</h2>
-<fed:fce.renderContent area="content" />
+	<h2>Testing "checkbox" data type</h2>
+	<p>A one or a zero should follow this paragraph:</p>
+	<p>{checkbox}</p>
+
+	<h2>Testing code editor field</h2>
+	<p>Some raw HTML output should follow this paragraph</p>
+	<f:format.html>{codeEditor}</f:format.html>
+
+	<h2>Testing content area output</h2>
+	<fed:fce.renderContent area="content" />
+</f:section>

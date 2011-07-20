@@ -1,58 +1,50 @@
 {namespace fed=Tx_Fed_ViewHelpers}
 
-<div class="t3-page-ce" style="margin-top: 8px;">
-<fed:comment>
-<h4>FED FCE: {tt_content.header}</h4>
+<style type="text/css">
+.fce-header { background-color: #5B5B5B; background-image: -moz-linear-gradient(center top , #7F7F7F 10%, #5B5B5B 100%); padding: 4px; margin-top: 8px; color: white; font-weight: bold; }
+.fce-header span { position: absolute; }
+.fce-header div { text-align: center; }
+.fce-container { padding: 8px; border: 1px solid #5B5B5B; border-top: none; }
+.fce-container .t3-page-ce-body { margin-bottom: 8px; }
+td.spacer { width: 8px; height: 8px; }
+</style>
 
-<table cellspacing="0">
-	<thead>
+<h3>{label}</h3>
+
+{preview}
+
+<table style="width: 100%; margin-top: 8px;" cellspacing="0" cellpadding="0">
+	<tbody>
+	<f:for each="{grid}" as="gridrow" iteration="rowIteration">
 		<tr>
-			<th style="padding: 1px 3px 1px 3px;">Name</th>
-			<th style="padding: 1px 3px 1px 3px;">Label</th>
-			<th style="padding: 1px 3px 1px 3px;">Value</th>
-		</tr>
-	</thead>
-	<f:for each="{fce.0.fields}" as="attribute">
-		<tr>
-			<td style="padding: 1px 3px 1px 3px;">{attribute.name}</td>
-			<td style="padding: 1px 3px 1px 3px;">{attribute.label}</td>
-			<td style="padding: 1px 3px 1px 3px;">{attribute.value}</td>
-		</tr>
-	</f:for>
-</table>
-</fed:comment>
-<f:for each="{fce.grids}" as="grid">
-	<table cellspacing="10" style="width: 100%;">
-		<tbody>
-		<f:for each="{grid.rows}" as="gridrow">
-			<tr>
-			<f:for each="{gridrow.columns}" as="gridcolumn">
-				<td colspan="{gridcolumn.colspan}" rowspan="{gridcolumn.rowspan}" style="width: {gridcolumn.width};">
-				<f:for each="{gridcolumn.areas}" as="area">
-					<div class="t3-page-ce-header t3-row-header t3-page-colHeader" style="margin-bottom: 0px; background-image: -moz-linear-gradient(center top , #7F7F7F 10%, #5B5B5B 100%) !important;">
-						<div class="t3-page-colHeader-icons">
-							<a title="Create new record in top of this column"
-							   onclick="window.location.href='/typo3/alt_doc.php?edit[tt_content][{row.pid}]=new&defVals[tt_content][colPos]=255&defVals[tt_content][sys_language_uid]={row.sys_language_uid}&returnUrl=%2Ftypo3%2Fsysext%2Fcms%2Flayout%2Fdb_layout.php%3Fid%3D{row.pid}&defVals[tt_content][CType]=text&defVals[tt_content][tx_fed_fcecontentarea]={area.name}%3A{row.uid}';"
-							   href="#"><span class="t3-icon t3-icon-actions t3-icon-actions-document t3-icon-document-new">&nbsp;</span></a>
-							<span class="t3-page-ce-icons-move"><span class="t3-icon t3-icon-empty t3-icon-empty-empty t3-icon-empty">&nbsp;</span></span>
-						</div>
-						<div class="t3-page-colHeader-label">{area.label}</div>
+		<f:for each="{gridrow}" as="gridcolumn" iteration="columnIteration">
+			<td colspan="{gridcolumn.colspan}" rowspan="{gridcolumn.rowspan}" style="width: {gridcolumn.width};">
+			<f:for each="{gridcolumn.areas}" as="area">
+				<fed:be.contentArea area="{area.name}" row="{row}">
+					<div class="fce-header">
+						<fed:be.link.content.new row="{row}" area="{area.name}" />
+						<fed:comment><fed:be.link.content.paste row="{row}" area="{area.name}" /></fed:comment>
+						<div>{area.label}</div>
 					</div>
-					<div class="t3-page-ce-body">
-						<fed:data.var name="areaVarName">areas.{area.name}.records</fed:data.var>
-						<f:for each="{fed:data.var(name: areaVarName)}" as="record">
-							<fed:raw>{record}</fed:raw>
-							<!-- NOTE: TYPO3 fudged up its logic and thus, this syntactically WRONG element NEEDS to be here for proper rendering :( -->
-							</div><br />
+					<div class="fce-container">
+						<f:for each="{records}" as="record">
+							<fed:be.contentElement row="{record}" dblist="{dblist}" />
+							</div>
 						</f:for>
 					</div>
-				</f:for>
-				</td>
+				</fed:be.contentArea>
 			</f:for>
-			</tr>
+			</td>
+			<f:if condition="{columnIteration.isLast} < 1">
+				<td class="spacer">&nbsp;</td>
+			</f:if>
 		</f:for>
-		</tbody>
-	</table>
-	<br />
-</f:for>
-</div>
+		</tr>
+		<f:if condition="{rowIteration.isLast} < 1">
+			<tr>
+				<td class="spacer">&nbsp;</td>
+			</tr>
+		</f:if>
+	</f:for>
+	</tbody>
+</table>

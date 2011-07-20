@@ -45,8 +45,9 @@ class Tx_Fed_ViewHelpers_Fce_Field_InputViewHelper extends Tx_Fed_ViewHelpers_Fc
 
 	public function render() {
 		$config = $this->getBaseConfig();
-		$this->addField($config);
-		$this->renderChildren();
+		return $config;
+		#$this->addField($config);
+		#$this->renderChildren();
 	}
 
 	protected function getBaseConfig() {

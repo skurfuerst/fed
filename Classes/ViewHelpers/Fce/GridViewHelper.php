@@ -38,26 +38,6 @@ class Tx_Fed_ViewHelpers_Fce_GridViewHelper extends Tx_Fed_Core_ViewHelper_Abstr
 
 	public function render() {
 
-		// intitialize an empty grid container
-		$grid = array('rows' => array());
-		$this->templateVariableContainer->add('grid', $grid);
-
-		// renderChildren fills grid configuration
-		$this->renderChildren();
-		$grid = $this->templateVariableContainer->get('grid');
-
-		#var_dump($grid);
-
-		// completed grid config is added to storage
-		$storage = $this->getStorage();
-		if (is_array($storage['grids']) === FALSE) {
-			$storage['grids'] = array();
-		}
-		array_push($storage['grids'], $grid);
-		$this->setStorage($storage);
-
-		// cleanup
-		$this->templateVariableContainer->remove('grid');
 	}
 
 }

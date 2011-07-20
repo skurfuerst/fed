@@ -48,21 +48,11 @@ class Tx_Fed_ViewHelpers_Fce_ContentViewHelper extends Tx_Fed_Core_ViewHelper_Ab
 	 * Render method
 	 */
 	public function render() {
-		$storage = $this->getStorage();
-		$group = array_pop($storage);
 		$area = array(
 			'name' => $this->arguments['name'],
 			'label' => $this->arguments['label']
 		);
-		array_push($group['areas'], $area);
-		array_push($storage, $group);
-		if ($this->templateVariableContainer->exists('column')) {
-			$column = $this->templateVariableContainer->get('column');
-			array_push($column['areas'], $area);
-			$this->templateVariableContainer->remove('column');
-			$this->templateVariableContainer->add('column', $column);
-		}
-		$this->setStorage($storage);
+		return $area;
 	}
 
 }

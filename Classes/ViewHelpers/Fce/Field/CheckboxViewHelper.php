@@ -44,8 +44,9 @@ class Tx_Fed_ViewHelpers_Fce_Field_CheckboxViewHelper extends Tx_Fed_ViewHelpers
 	public function render() {
 		$config = $this->getBaseConfig();
 		$config['type'] = 'check';
-		$this->addField($config);
-		$this->renderChildren();
+		return $config;
+		#$this->addField($config);
+		#$this->renderChildren();
 	}
 
 
