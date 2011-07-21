@@ -105,6 +105,8 @@ class Tx_Fed_Backend_TCEMain {
 				$incomingFieldArray['tx_fed_fcecontentarea'] = $this->getFceContentAreaFromTable($table, $uid);
 				$incomingFieldArray['pid'] = $pid ? $pid : $incomingFieldArray['pid'];
 			}
+			#var_dump($incomingFieldArray);
+			#exit();
 		}
 	}
 

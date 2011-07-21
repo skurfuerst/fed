@@ -36,6 +36,7 @@ class Tx_Fed_View_ExposedTemplateView extends Tx_Fluid_View_StandaloneView {
 						}
 						$row = $rowNode->evaluate($this->baseRenderingContext);
 						for ($r=0; $r<$row['repeat']; $r++) {
+							$row = $rowNode->evaluate($this->baseRenderingContext);
 							foreach ($rowNode->getChildNodes() as $columnNode) {
 								if ($columnNode instanceof Tx_Fluid_Core_Parser_SyntaxTree_ViewHelperNode === FALSE) {
 									continue;
@@ -48,10 +49,10 @@ class Tx_Fed_View_ExposedTemplateView extends Tx_Fluid_View_StandaloneView {
 											continue;
 										}
 										$area = $areaNode->evaluate($this->baseRenderingContext);
-										if ($column['repeat'] > 1) {
-											$area['name'] .= $i;
+										if ($column['repeat'] > 1 || $row['repeat'] > 1) {
+											$area['name'] .= $r.$i;
 										}
-										$area['label'] .= ($column['repeat'] > 1 ? ' #' . ($i+1) : '');
+										$area['label'] .= ($row['repeat'] > 1 ? ' #' . ($r+1) : '') . ($column['repeat'] > 1 ? ' #' . ($i+1) : '');
 										$areas[$area['name']] = $area;
 									}
 									$column['areas'] = $areas;

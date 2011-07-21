@@ -20,7 +20,6 @@ td.spacer { width: 8px; height: 8px; }
 		<f:for each="{gridrow.columns}" as="gridcolumn" iteration="columnIteration">
 			<td colspan="{gridcolumn.colspan}" rowspan="{gridcolumn.rowspan}" style="width: {gridcolumn.width};">
 			<f:for each="{gridcolumn.areas}" as="area">
-				<f:debug>{area.name}</f:debug>
 				<fed:be.contentArea area="{area.name}" row="{row}">
 					<div class="fce-header">
 						<fed:be.link.content.new row="{row}" area="{area.name}" />

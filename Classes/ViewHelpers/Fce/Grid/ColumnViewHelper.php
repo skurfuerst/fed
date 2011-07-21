@@ -36,6 +36,9 @@
  */
 class Tx_Fed_ViewHelpers_Fce_Grid_ColumnViewHelper extends Tx_Fed_Core_ViewHelper_AbstractFceViewHelper {
 
+	/**
+	 * Initialize
+	 */
 	public function initializeArguments() {
 		$this->registerArgument('colspan', 'integer', 'Column span');
 		$this->registerArgument('rowspan', 'integer', 'Column span');
@@ -43,6 +46,9 @@ class Tx_Fed_ViewHelpers_Fce_Grid_ColumnViewHelper extends Tx_Fed_Core_ViewHelpe
 		$this->registerArgument('repeat', 'integer', 'number of times to repeat this colum while appending $iteration to name', FALSE, 1);
 	}
 
+	/**
+	 * @return array
+	 */
 	public function render() {
 		$column = array(
 			'colspan' => $this->arguments['colspan'],

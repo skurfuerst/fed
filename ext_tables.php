@@ -168,16 +168,13 @@ t3lib_extMgm::addTCAcolumns('pages', array(
 t3lib_extMgm::addTCAcolumns('tt_content', array(
 	'tx_fed_fcecontentarea' => Array (
 		'exclude' => 1,
-		#'label' => 'LLL:EXT:fed/Resources/Private/Language/locallang_db.xml:tt_content.tx_fed_fcecontentarea',
 		'config' => Array (
 			'type' => 'passthrough',
-			#'userFunc' => 'Tx_Fed_Backend_HiddenField->renderField',
 		)
 	),
 	'tx_fed_fcefile' => Array (
 		'exclude' => 1,
 		'label' => 'LLL:EXT:fed/Resources/Private/Language/locallang_db.xml:tt_content.tx_fed_fcefile',
-		#'displayCond' => 'FIELD:cType:=:fed_fce',
 		'config' => Array (
 			'type' => 'user',
 			'userFunc' => 'Tx_Fed_Backend_FCESelector->renderField',

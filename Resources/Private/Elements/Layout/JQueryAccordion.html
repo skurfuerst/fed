@@ -7,9 +7,8 @@
 <f:if condition="{columns} < 1">
 	<fed:data.var name="columns">1</fed:data.var>
 </f:if>
-<fed:data.func func="array_fill" arguments="{0: '0', 1: columns, 2: ''}" as="columnArray" />
 
-<fed:fce id="jquery-accordion" label="Layout: JQuery Accordion">
+<fed:fce id="jquery-accordion" label="Layout: JQuery Accordion" enabled="TRUE">
 	<fed:fce.field.select name="columns" label="Number of jQuery Accordion tabs"
 		items="{0: {0: 1}, 1: {0: 2}, 2: {0: 3}, 3: {0: 4}, 4: {0: 5}, 5: {0: 6}, 6: {0: 7}, 7: {0: 8}, 8: {0: 9}}" default="1" maxItems="1" />
 	<fed:fce.field.select name="active" label="The initially activated tab"
@@ -20,14 +19,11 @@
 	<fed:fce.field.checkbox name="collapsed" label="Collapsed" />
 
 	<fed:fce.grid>
-		<f:for each="{columnArray}" as="void" iteration="iteration">
-			<fed:fce.grid.row>
-				<fed:fce.grid.column>
-					<fed:fce.field.input name="title{iteration.cycle}" label="Header for accordion tab {iteration.cycle}" />
-					<fed:fce.content name="column{iteration.cycle}" label="Content in accordion tab {iteration.cycle}" />
-				</fed:fce.grid.column>
-			</fed:fce.grid.row>
-		</f:for>
+		<fed:fce.grid.row repeat="{columns}">
+			<fed:fce.grid.column>
+				<fed:fce.content name="column" label="Content in accordion tab" />
+			</fed:fce.grid.column>
+		</fed:fce.grid.row>
 	</fed:fce.grid>
 </fed:fce>
 
@@ -39,12 +35,12 @@
 	<fed:data.var name="disabledArray" type="array">{disabled}</fed:data.var>
 
 	<fed:jQuery.accordion collapsible="{collapsible}" collapsed="{collapsed}">
-		<f:for each="{columnArray}" as="void" iteration="iteration">
+		<fed:loop count="{columns}" iteration="iteration">
 			<fed:data.var name="title"><fed:data.var name="title{iteration.cycle}" /></fed:data.var>
 			<fed:data.func func="in_array" arguments="{0: iteration.cycle, 1: disabledArray}" as="isDisabled" />
 			<fed:jQuery.accordion title="{title}" active="{active} == {iteration.cycle}" disabled="{isDisabled}">
 				<fed:fce.renderContent area="column{iteration.cycle}" />
 			</fed:jQuery.accordion>
-		</f:for>
+		</fed:loop>
 	</fed:jQuery.accordion>
 </f:section>
