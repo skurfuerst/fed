@@ -40,7 +40,7 @@ class Tx_Fed_ViewHelpers_LoopViewHelper extends Tx_Fluid_ViewHelpers_ImageViewHe
 	 * Initialize
 	 */
 	public function initializeArguments() {
-		$this->registerArgument('count', 'integer', 'Number of times to render child content', FALSE, 0);
+		$this->registerArgument('count', 'integer', 'Number of times to render child content', TRUE);
 		$this->registerArgument('minimum', 'integer', 'Minimum number of loops before stopping', FALSE, 0);
 		$this->registerArgument('iteration', 'string', 'Variable name to insert result into, suppresses output', FALSE, NULL);
 	}
@@ -54,11 +54,14 @@ class Tx_Fed_ViewHelpers_LoopViewHelper extends Tx_Fluid_ViewHelpers_ImageViewHe
 		$content = '';
 		while ($i < $max) {
 			if ($this->arguments['iteration']) {
-				$iteration = array();
-				$iteration['cycle'] = $i+1;
-				$iteration['index'] = $i;
-				$iteration['isFirst'] = ($i === 0 ? 1 : 0);
-				$iteration['isLast'] = ($i === $max-1 ? 1 : 0);
+				$iteration = array(
+					'cycle' => $i+1,
+					'index' => $i,
+					'isOdd' => ($i%2 == 0 ? 1 : 0),
+					'isEven' => $i%2,
+					'isFirst' => ($i === 0 ? 1 : 0),
+					'isLast' => ($i === ($max-1) ? 1 : 0)
+				);
 				if ($this->templateVariableContainer->exists('iteration')) {
 					$this->templateVariableContainer->remove('iteration');
 				}
