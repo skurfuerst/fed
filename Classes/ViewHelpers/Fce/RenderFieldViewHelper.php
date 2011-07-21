@@ -117,9 +117,13 @@ XML;
 				"<MM>{$config['mm']}</MM>",
 			));
 		}
+		if ($config['requestUpdate'] === TRUE) {
+			$onChange = "<onChange>reload</onChange>" . chr(10);
+		}
 		$xml = <<< XML
 <label>{$config['label']}</label>
 <required>{$config['required']}</required>
+{$onChange}
 <config>
 	<type>{$config['type']}</type>
 	<minitems>{$config['minItems']}</minitems>
