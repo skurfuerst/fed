@@ -107,7 +107,7 @@ class Tx_Fed_Backend_TCEMain {
 				$incomingFieldArray['pid'] = $this->getPageUidFromTable($table, $uid);
 			} else if ($uid > 0) {
 				$incomingFieldArray['tx_fed_fcecontentarea'] = $this->getFceContentAreaFromTable($table, $uid);
-				$incomingFieldArray['pid'] = $pid ? $pid : $_GET['id'];
+				#$incomingFieldArray['pid'] = $pid ? $pid : $_GET['id'];
 			}
 			#var_dump($incomingFieldArray);
 			#exit();
