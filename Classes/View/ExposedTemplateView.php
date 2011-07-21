@@ -9,6 +9,9 @@ class Tx_Fed_View_ExposedTemplateView extends Tx_Fluid_View_StandaloneView {
 		$this->templateParser->setConfiguration($this->buildParserConfiguration());
 		$parsedTemplate = $this->templateParser->parse($this->templateSource);
 		$this->startRendering(Tx_Fluid_View_AbstractTemplateView::RENDERING_TEMPLATE, $parsedTemplate, $this->baseRenderingContext);
+		if ($parsedTemplate->getVariableContainer()->exists($name) === FALSE) {
+			return NULL;
+		}
 		$value = $parsedTemplate->getVariableContainer()->get($name);
 		if ($value instanceof Tx_Fluid_Core_Parser_SyntaxTree_ViewHelperNode) {
 			$childNodes = $value->getChildNodes();
@@ -26,30 +29,37 @@ class Tx_Fed_View_ExposedTemplateView extends Tx_Fluid_View_StandaloneView {
 				} else if ($className == 'Tx_Fed_ViewHelpers_Fce_PreviewViewHelper') {
 					$value['preview'] = $config;
 				} else if ($className == 'Tx_Fed_ViewHelpers_Fce_GridViewHelper') {
-					$grid = array();
+					$grid = $node->evaluate($this->baseRenderingContext);
 					foreach ($node->getChildNodes() as $rowNode) {
 						if ($rowNode instanceof Tx_Fluid_Core_Parser_SyntaxTree_ViewHelperNode === FALSE) {
 							continue;
 						}
-						$row = array();
-						$rowNode->evaluateChildNodes($this->baseRenderingContext);
-						foreach ($rowNode->getChildNodes() as $columnNode) {
-							if ($columnNode instanceof Tx_Fluid_Core_Parser_SyntaxTree_ViewHelperNode === FALSE) {
-								continue;
-							}
-							$column = $columnNode->evaluate($this->baseRenderingContext);
-							$areas = array();
-							foreach ($columnNode->getChildNodes() as $areaNode) {
-								if ($areaNode instanceof Tx_Fluid_Core_Parser_SyntaxTree_ViewHelperNode === FALSE) {
+						$row = $rowNode->evaluate($this->baseRenderingContext);
+						for ($r=0; $r<$row['repeat']; $r++) {
+							foreach ($rowNode->getChildNodes() as $columnNode) {
+								if ($columnNode instanceof Tx_Fluid_Core_Parser_SyntaxTree_ViewHelperNode === FALSE) {
 									continue;
 								}
-								$area = $areaNode->evaluate($this->baseRenderingContext);
-								$areas[$area['name']] = $area;
+								$column = $columnNode->evaluate($this->baseRenderingContext);
+								for ($i=0; $i<$column['repeat']; $i++) {
+									$areas = array();
+									foreach ($columnNode->getChildNodes() as $areaNode) {
+										if ($areaNode instanceof Tx_Fluid_Core_Parser_SyntaxTree_ViewHelperNode === FALSE) {
+											continue;
+										}
+										$area = $areaNode->evaluate($this->baseRenderingContext);
+										if ($column['repeat'] > 1) {
+											$area['name'] .= $i;
+										}
+										$area['label'] .= ($column['repeat'] > 1 ? ' #' . ($i+1) : '');
+										$areas[$area['name']] = $area;
+									}
+									$column['areas'] = $areas;
+									$row['columns'][] = $column;
+								}
 							}
-							$column['areas'] = $areas;
-							$row[] = $column;
+							$grid['rows'][] = $row;
 						}
-						$grid[] = $row;
 					}
 					$value['grid'] = $grid;
 				}

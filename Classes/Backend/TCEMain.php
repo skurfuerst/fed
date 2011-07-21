@@ -103,6 +103,7 @@ class Tx_Fed_Backend_TCEMain {
 				$incomingFieldArray['pid'] = $pid ? $pid : $incomingFieldArray['pid'];
 			} else if ($uid > 0) {
 				$incomingFieldArray['tx_fed_fcecontentarea'] = $this->getFceContentAreaFromTable($table, $uid);
+				$incomingFieldArray['pid'] = $pid ? $pid : $incomingFieldArray['pid'];
 			}
 		}
 	}

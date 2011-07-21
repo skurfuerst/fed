@@ -34,8 +34,15 @@
  */
 class Tx_Fed_ViewHelpers_Fce_Grid_RowViewHelper extends Tx_Fed_Core_ViewHelper_AbstractFceViewHelper {
 
+	public function initializeArguments() {
+		$this->registerArgument('repeat', 'integer', 'number of times to repeat this row', FALSE, 1);
+	}
+
 	public function render() {
-		return array();
+		return array(
+			'repeat' => $this->arguments['repeat'],
+			'columns' => array()
+		);
 	}
 
 }

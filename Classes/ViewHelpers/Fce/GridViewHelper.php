@@ -37,7 +37,9 @@
 class Tx_Fed_ViewHelpers_Fce_GridViewHelper extends Tx_Fed_Core_ViewHelper_AbstractFceViewHelper {
 
 	public function render() {
-
+		return array(
+			'rows' => array()
+		);
 	}
 
 }

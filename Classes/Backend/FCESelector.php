@@ -66,7 +66,6 @@ class Tx_Fed_Backend_FCESelector {
 					$view->setTemplatePathAndFilename(PATH_site . $fileRelPath);
 					$label = $view->harvest('FEDFCELABEL');
 					$enabled = $view->harvest('FEDFCEENABLED');
-					#var_dump($enabled);
 					if ($enabled !== 'FALSE') {
 						if (!$label) {
 							$label = $fileRelPath;

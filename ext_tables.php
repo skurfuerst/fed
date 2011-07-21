@@ -63,11 +63,9 @@ $append = ",--linebreak--,tx_fed_page_flexform";
 $TCA['pages']['palettes']['layout']['showitem'] = substr($backup, 0, $pos) . $spliceIn . substr($backup, $pos) . $append;
 $TCA['pages']['ctrl']['requestUpdate'] .= 'tx_fed_page_controller_action';
 
-t3lib_extMgm::addToAllTCAtypes('tt_content', 'tx_fed_fcecontentarea;;;1-1-1');
+#t3lib_extMgm::addToAllTCAtypes('tt_content', 'tx_fed_fcecontentarea;;;1-1-1');
 t3lib_extMgm::addPiFlexFormValue('fed_sandbox', 'FILE:EXT:'.$_EXTKEY.'/Configuration/FlexForms/Sandbox.xml');
 t3lib_extMgm::addStaticFile($_EXTKEY, 'Configuration/TypoScript', 'FED Fluid Extbase Development Framework');
-
-
 
 $TCA['tt_content']['types']['fed_fce']['showitem'] = '
 --palette--;LLL:EXT:cms/locallang_ttc.xml:palette.general;general,
@@ -102,7 +100,6 @@ $TCA['tt_content']['types']['fed_datasource']['showitem'] = '
 --palette--;LLL:EXT:cms/locallang_ttc.xml:palette.access;access,
 --div--;LLL:EXT:cms/locallang_ttc.xml:tabs.extended,tx_fed_fcecontentarea
 ';
-
 
 t3lib_extMgm::addLLrefForTCAdescr('tx_fed_domain_model_datasource', 'EXT:fed/Resources/Private/Language/locallang_csh_tx_fed_domain_model_datasource.xml');
 t3lib_extMgm::allowTableOnStandardPages('tx_fed_domain_model_datasource');
@@ -180,7 +177,7 @@ t3lib_extMgm::addTCAcolumns('tt_content', array(
 	'tx_fed_fcefile' => Array (
 		'exclude' => 1,
 		'label' => 'LLL:EXT:fed/Resources/Private/Language/locallang_db.xml:tt_content.tx_fed_fcefile',
-		'displayCond' => 'FIELD:type:=:fed_fce',
+		#'displayCond' => 'FIELD:cType:=:fed_fce',
 		'config' => Array (
 			'type' => 'user',
 			'userFunc' => 'Tx_Fed_Backend_FCESelector->renderField',
