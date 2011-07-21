@@ -48,7 +48,6 @@ class Tx_Fed_Controller_FlexibleContentElementController extends Tx_Fed_Core_Abs
 		$data = $exposedView->harvest('FEDFCE');
 		$flexform['page'] = $GLOBALS['TSFE']->page;
 		$flexform['record'] = $cObj;
-		$flexform['areas'] = $data['areas'];
 		$exposedView->assign('layout', 'FCE');
 		$exposedView->assignMultiple($flexform);
 		return $exposedView->render();

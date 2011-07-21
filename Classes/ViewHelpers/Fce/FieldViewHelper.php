@@ -44,6 +44,7 @@ abstract class Tx_Fed_ViewHelpers_Fce_FieldViewHelper extends Tx_Fed_Core_ViewHe
 		$this->registerArgument('label', 'string', 'Label for the attribute, can be LLL: value', TRUE);
 		$this->registerArgument('default', 'string', 'Default value for this attribute');
 		$this->registerArgument('required', 'boolean', 'If TRUE, this attribute must be filled when editing the FCE', FALSE, FALSE);
+		$this->registerArgument('repeat', 'integer', 'Number of times to repeat field while appending number to name', FALSE, 1);
 		$this->registerArgument('exclude', 'boolean', 'If TRUE, this field becomes an "exclude field" (see TYPO3 documentation about this)', FALSE, FALSE);
 		$this->registerArgument('wizards', 'array', 'FlexForm-style Wizard configuration array', FALSE, array());
 		$this->registerArgument('transform', 'boolean', 'If TRUE, transforms output values according to datatypes. Extbase objects supported', FALSE, TRUE);
@@ -62,11 +63,12 @@ abstract class Tx_Fed_ViewHelpers_Fce_FieldViewHelper extends Tx_Fed_Core_ViewHe
 			'type' => $this->arguments['type'],
 			'default' => $this->arguments['default'],
 			'required' => $this->getFlexFormBoolean($this->arguments['required']),
+			'repeat' => $this->arguments['repeat'],
 			'exclude' => $this->getFlexFormBoolean($this->arguments['exclude']),
 			'wizards' => array(),
 		);
 	}
-	
+
 	/**
 	 * Get 1 or 0 from a boolean
 	 *

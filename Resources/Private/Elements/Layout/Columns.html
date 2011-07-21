@@ -20,11 +20,10 @@
 </fed:fce>
 
 <f:section name="preview">
-	BE PREVIEW
+	Content columns ({columns})
 </f:section>
 
 <f:section name="main">
-	<fed:data.func func="array_fill" arguments="{0: '0', 1: columns, 2: ''}" as="columnArray" />
 	<fed:style>
 		<fed:raw>
 		.content-columns { width: 100%; }
@@ -45,7 +44,7 @@
 	<table class="content-columns" id="{id}">
 		<tr>
 		<fed:loop count="{columns}" iteration="iteration" minimum="1">
-			<td class="content-column w{columns} column{iteration.cycle}"><fed:fce.renderContent area="column{iteration.cycle}" /></td>
+			<td class="content-column w{columns} column{iteration.cycle}"><fed:fce.renderContent area="column1{iteration.cycle}" /></td>
 		</fed:loop>
 		</tr>
 	</table>

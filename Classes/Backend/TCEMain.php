@@ -96,17 +96,22 @@ class Tx_Fed_Backend_TCEMain {
 			$uid = abs($targetRelative);
 			$url = $_GET['returnUrl'];
 			$rpos = strrpos($url, '#');
-			$pid = $this->getPageUidFromTable($table, $uid);
+			if ($_GET['id'] > 0) {
+				$pid = $_GET['id'];
+			} else {
+				$pid = key($_GET['edit']['tt_content']);
+			}
 			if ($rpos > 0 && $uid) {
 				$area = substr($url, 1 - (strlen($url)-$rpos));
 				$incomingFieldArray['tx_fed_fcecontentarea'] = $area . ':' . $uid;
-				$incomingFieldArray['pid'] = $pid ? $pid : $incomingFieldArray['pid'];
+				$incomingFieldArray['pid'] = $pid ? $pid : $_GET['id'];
 			} else if ($uid > 0) {
 				$incomingFieldArray['tx_fed_fcecontentarea'] = $this->getFceContentAreaFromTable($table, $uid);
-				$incomingFieldArray['pid'] = $pid ? $pid : $incomingFieldArray['pid'];
+				$incomingFieldArray['pid'] = $pid ? $pid : $_GET['id'];
 			}
 			#var_dump($incomingFieldArray);
 			#exit();
+			#var_dump($_GET);
 		}
 	}
 

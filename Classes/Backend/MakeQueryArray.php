@@ -38,11 +38,10 @@
 class Tx_Fed_Backend_MakeQueryArray {
 
 	public function makeQueryArray_post(&$queryParts, &$reference, $table, $id, &$addWhere, &$fieldList, &$_params) {
-
 		if (get_class($reference) === 'tx_cms_layout' && $table === 'tt_content') {
 			$queryParts['WHERE'] .= " AND tt_content.tx_fed_fcecontentarea = ''";
 		}
-		
+
 	}
 
 }

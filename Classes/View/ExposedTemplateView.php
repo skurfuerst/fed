@@ -25,7 +25,17 @@ class Tx_Fed_View_ExposedTemplateView extends Tx_Fluid_View_StandaloneView {
 				$config = $node->evaluate($this->baseRenderingContext);
 				$name = $config['name'];
 				if ($dummy instanceof Tx_Fed_ViewHelpers_Fce_FieldViewHelper) {
-					$value['fields'][$name] = $config;
+					if ($config['repeat'] > 1) {
+						$label = $config['label'];
+						for ($f=0; $f<$config['repeat']; $f++) {
+							$num = $f+1;
+							$config['name'] = $name . $num;
+							$config['label'] = $label . ' #' . $num;
+							$value['fields'][$name . $num] = $config;
+						}
+					} else {
+						$value['fields'][$name] = $config;
+					}
 				} else if ($className == 'Tx_Fed_ViewHelpers_Fce_PreviewViewHelper') {
 					$value['preview'] = $config;
 				} else if ($className == 'Tx_Fed_ViewHelpers_Fce_GridViewHelper') {
@@ -50,7 +60,7 @@ class Tx_Fed_View_ExposedTemplateView extends Tx_Fluid_View_StandaloneView {
 										}
 										$area = $areaNode->evaluate($this->baseRenderingContext);
 										if ($column['repeat'] > 1 || $row['repeat'] > 1) {
-											$area['name'] .= $r.$i;
+											$area['name'] .= ($r+1).($i+1);
 										}
 										$area['label'] .= ($row['repeat'] > 1 ? ' #' . ($r+1) : '') . ($column['repeat'] > 1 ? ' #' . ($i+1) : '');
 										$areas[$area['name']] = $area;

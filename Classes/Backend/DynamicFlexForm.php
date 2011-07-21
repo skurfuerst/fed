@@ -106,10 +106,6 @@ class Tx_Fed_Backend_DynamicFlexForm {
 		$template->assignMultiple($values);
 		$template->assignMultiple($config);
 		$flexformXml = $template->render();
-		#header("Content-type: text/plain");
-		#var_dump($config);
-		#echo $flexformXml;
-		#exit();
 		$dataStructArray = t3lib_div::xml2array($flexformXml);
 	}
 

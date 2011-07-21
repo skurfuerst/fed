@@ -67,7 +67,7 @@ class Tx_Fed_ViewHelpers_Page_RenderContentViewHelper extends Tx_Fed_Core_ViewHe
 		$pid = $GLOBALS['TSFE']->id;
 		$order = $this->arguments['order'] . ' ' . $this->arguments['sortDirection'];
 		$colPos = $this->arguments['column'];
-		$conditions = "pid = '{$pid}' AND colPos = '{$colPos}' AND deleted = 0 AND hidden = 0";
+		$conditions = "pid = '{$pid}' AND colPos = '{$colPos}' AND tx_fed_fcecontentarea = '' AND deleted = 0 AND hidden = 0";
 		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('uid', 'tt_content', $conditions, 'uid', $order, $this->arguments['limit']);
 		$content = array();
 		while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {

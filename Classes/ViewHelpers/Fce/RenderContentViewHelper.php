@@ -46,15 +46,9 @@ class Tx_Fed_ViewHelpers_Fce_RenderContentViewHelper extends Tx_Fed_Core_ViewHel
 
 	public function render() {
 		$html = "";
-		$detectedArea = $fce[0]['areas'][0]['name'];
-		foreach ($this->templateVariableContainer->get('areas') as $area) {
-			if ($area['name'] == $this->arguments['area']) {
-				$detectedArea = $area;
-			}
-		}
 		$record = $this->templateVariableContainer->get('record');
 		$order = $this->arguments['order'] . ' ' . $this->arguments['sortDirection'];
-		$conditions = "colPos = '255' AND tx_fed_fcecontentarea = '{$detectedArea['name']}:{$record['uid']}'
+		$conditions = "tx_fed_fcecontentarea = '{$this->arguments['area']}:{$record['uid']}'
 			AND deleted = 0 AND hidden = 0";
 		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('uid', 'tt_content', $conditions, 'uid', $order, $this->arguments['limit']);
 		while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
