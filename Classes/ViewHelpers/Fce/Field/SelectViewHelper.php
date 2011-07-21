@@ -50,7 +50,6 @@ class Tx_Fed_ViewHelpers_Fce_Field_SelectViewHelper extends Tx_Fed_ViewHelpers_F
 		$this->registerArgument('mm', 'string', 'Optional name of MM table to use for record selection', FALSE, NULL);
 		$this->registerArgument('showThumbs', 'boolean', 'If TRUE, adds thumbnail display when editing in BE', FALSE, TRUE);
 		$this->registerArgument('itemsProcFunc', 'string', 'Optional class name of data provider to fill select options');
-		$this->registerArgument('requestUpdate', 'boolean', 'If TRUE, the form is force-saved and reloaded when field value changes', FALSE, NULL);
 	}
 
 	public function render() {
@@ -73,7 +72,6 @@ class Tx_Fed_ViewHelpers_Fce_Field_SelectViewHelper extends Tx_Fed_ViewHelpers_F
 		$config['mm'] = $this->arguments['mm'];
 		$config['showThumbs'] = $this->getFlexFormBoolean($this->argumetns['showThumbs']);
 		$config['itemsProcFunc'] = $this->arguments['itemsProcFunc'];
-		$config['requestUpdate'] = $this->arguments['requestUpdate'];
 		return $config;
 	}
 

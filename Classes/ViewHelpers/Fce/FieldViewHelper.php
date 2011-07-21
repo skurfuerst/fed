@@ -48,6 +48,8 @@ abstract class Tx_Fed_ViewHelpers_Fce_FieldViewHelper extends Tx_Fed_Core_ViewHe
 		$this->registerArgument('exclude', 'boolean', 'If TRUE, this field becomes an "exclude field" (see TYPO3 documentation about this)', FALSE, FALSE);
 		$this->registerArgument('wizards', 'array', 'FlexForm-style Wizard configuration array', FALSE, array());
 		$this->registerArgument('transform', 'boolean', 'If TRUE, transforms output values according to datatypes. Extbase objects supported', FALSE, TRUE);
+		$this->registerArgument('enabled', 'boolean', 'If FALSE, disables the field in the FlexForm', FALSE, TRUE);
+		$this->registerArgument('requestUpdate', 'boolean', 'If TRUE, the form is force-saved and reloaded when field value changes', FALSE, NULL);
 	}
 
 	/**
@@ -64,6 +66,8 @@ abstract class Tx_Fed_ViewHelpers_Fce_FieldViewHelper extends Tx_Fed_Core_ViewHe
 			'default' => $this->arguments['default'],
 			'required' => $this->getFlexFormBoolean($this->arguments['required']),
 			'repeat' => $this->arguments['repeat'],
+			'enabled' => $this->arguments['enabled'],
+			'requestUpdate' => $this->arguments['requestUpdate'],
 			'exclude' => $this->getFlexFormBoolean($this->arguments['exclude']),
 			'wizards' => array(),
 		);

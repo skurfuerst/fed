@@ -158,10 +158,14 @@ XML;
 	}
 
 	protected function getCheckConfiguration($config) {
+		if ($config['requestUpdate'] === TRUE) {
+			$onChange = "<onChange>reload</onChange>" . chr(10);
+		}
 		$wizards = $this->getWizardConfiguration($config);
 		$xml = <<< XML
 <label>{$config['label']}</label>
 <required>{$config['required']}</required>
+{$onChange}
 <config>
 	<type>{$config['type']}</type>
 	{$wizards}
