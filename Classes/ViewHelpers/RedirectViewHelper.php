@@ -60,6 +60,7 @@ setInterval(function() {
 	};
 }, 1000);
 SCRIPT;
+		$this->documentHead->includeHeader($script, 'js');
 		$counter = '<span id="fed-fce-counter">' . $this->arguments['timeout'] . '</span>';
 		$this->templateVariableContainer->add('timeoutCounter', $counter);
 		$content = $this->renderChildren();
