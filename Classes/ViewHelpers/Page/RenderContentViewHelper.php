@@ -32,11 +32,13 @@
  * @copyright Copyright belongs to the respective authors
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  * @package Fed
- * @subpackage ViewHelpers/Page/Field
+ * @subpackage ViewHelpers/Page
  */
 class Tx_Fed_ViewHelpers_Page_RenderContentViewHelper extends Tx_Fed_Core_ViewHelper_AbstractViewHelper {
 
-
+	/**
+	 * Initialize
+	 */
 	public function initializeArguments() {
 		$this->registerArgument('column', 'integer', 'Name of the column to render', FALSE, 0);
 		$this->registerArgument('as', 'string', 'If specified, adds template variable and assumes you manually iterate through {content}');
@@ -45,6 +47,11 @@ class Tx_Fed_ViewHelpers_Page_RenderContentViewHelper extends Tx_Fed_Core_ViewHe
 		$this->registerArgument('sortDirection', 'string', 'Optional sort direction of content elements', FALSE, 'ASC');
 	}
 
+	/**
+	 * Render method
+	 *
+	 * @return string
+	 */
 	public function render() {
 		if (TYPO3_MODE == 'BE') {
 			return '';
@@ -63,6 +70,11 @@ class Tx_Fed_ViewHelpers_Page_RenderContentViewHelper extends Tx_Fed_Core_ViewHe
 		return $html;
 	}
 
+	/**
+	 * Get content records based on column and pid
+	 *
+	 * @return array
+	 */
 	protected function getContentRecords() {
 		$pid = $GLOBALS['TSFE']->id;
 		$order = $this->arguments['order'] . ' ' . $this->arguments['sortDirection'];

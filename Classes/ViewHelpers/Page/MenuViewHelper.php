@@ -67,6 +67,14 @@ class Tx_Fed_ViewHelpers_Page_MenuViewHelper extends Tx_Fed_Core_ViewHelper_Abst
 		}
 		$menu = $this->pageSelect->getMenu($pageUid);
 		$menu = $this->parseMenu($menu, $rootLine);
+		$backupVars = array('menu', 'rootLine');
+		$backups = array();
+		foreach ($backupVars as $var) {
+			if ($this->templateVariableContainer->exists($var)) {
+				$backups[$var] = $this->templateVariableContainer->get($var);
+				$this->templateVariableContainer->remove($var);
+			}
+		}
 		$this->templateVariableContainer->add('menu', $menu);
 		$this->templateVariableContainer->add('rootLine', $rootLine);
 		$content = $this->renderChildren();
@@ -74,6 +82,11 @@ class Tx_Fed_ViewHelpers_Page_MenuViewHelper extends Tx_Fed_Core_ViewHelper_Abst
 		$this->templateVariableContainer->remove('rootLine');
 		if (strlen(trim($content)) === 0) {
 			$content = $this->autoRender($menu, $rootLine);
+		}
+		if (count($backups) > 0) {
+			foreach ($backups as $var=>$value) {
+				$this->templateVariableContainer->add($var, $value);
+			}
 		}
 		return $content;
 	}
@@ -88,7 +101,7 @@ class Tx_Fed_ViewHelpers_Page_MenuViewHelper extends Tx_Fed_Core_ViewHelper_Abst
 		$html = array('<ul>');
 		foreach ($menu as $page) {
 			$pageUid = $page['uid'];
-			$html[] = '<a href="' . $page['link'] . '" class="' . $page['class'] . '>' . $page['title'] . '</a>';
+			$html[] = '<li class="' . $page['class'] .'"><a href="' . $page['link'] . '" class="' . $page['class'] . '>' . $page['title'] . '</a></li>';
 		}
 		$html[] = '</ul>';
 		return implode(chr(10), $html);
@@ -99,8 +112,7 @@ class Tx_Fed_ViewHelpers_Page_MenuViewHelper extends Tx_Fed_Core_ViewHelper_Abst
 	 * @param array $rootLine
 	 */
 	protected function isCurrent($pageUid, $rootLine) {
-		$last = array_pop($rootLine);
-		return $last['uid'] == $pageUid;
+		return $pageUid == $GLOBALS['TSFE']->id;
 	}
 
 	/**
@@ -160,7 +172,7 @@ class Tx_Fed_ViewHelpers_Page_MenuViewHelper extends Tx_Fed_Core_ViewHelper_Abst
 	 * @param array $rootLine
 	 * @return array
 	 */
-	protected function parseMenu($menu) {
+	protected function parseMenu($menu, $rootLine) {
 		$filtered = array();
 		foreach ($menu as $page) {
 			$pageUid = $page['uid'];
