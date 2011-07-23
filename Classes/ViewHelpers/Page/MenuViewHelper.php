@@ -147,7 +147,7 @@ class Tx_Fed_ViewHelpers_Page_MenuViewHelper extends Tx_Fed_Core_ViewHelper_Abst
 		if ($pageRow['current']) {
 			$classes[] = $this->arguments['classCurrent'];
 		}
-		if (count($this->pageSelect->getMenu($pageRow['uid'])) > 0) {
+		if ($pageRow['hasSubPages']) {
 			$classes[] = $this->arguments['classHasSubpages'];
 		}
 		return implode(' ', $classes);
@@ -171,6 +171,7 @@ class Tx_Fed_ViewHelpers_Page_MenuViewHelper extends Tx_Fed_Core_ViewHelper_Abst
 			} else {
 				$page['active'] = $this->isActive($pageUid, $rootLine);
 				$page['current'] = $this->isCurrent($pageUid, $rootLine);
+				$page['hasSubPages'] = (count($this->pageSelect->getMenu($pageRow['uid'])) > 0);
 				$page['link'] = $this->getItemLink($pageUid);
 				$page['class'] = $this->getItemClass($page);
 				$filtered[] = $page;
