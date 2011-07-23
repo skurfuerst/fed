@@ -35,7 +35,7 @@
  * @package Fed
  * @subpackage ViewHelpers
  */
-class Tx_Fed_ViewHelpers_RedirectViewHelper extends Tx_Fluid_Core_ViewHelper_AbstractViewHelper {
+class Tx_Fed_ViewHelpers_RedirectViewHelper extends Tx_Fed_Core_ViewHelper_AbstractViewHelper {
 
 	/**
 	 * Inititlize
