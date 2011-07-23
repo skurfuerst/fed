@@ -53,7 +53,7 @@ class Tx_Fed_ViewHelpers_RedirectViewHelper extends Tx_Fed_Core_ViewHelper_Abstr
 		$script = <<< SCRIPT
 var remaining = parseInt({$this->arguments['timeout']});
 setInterval(function() {
-	document.getElementById('fed-fce-counter').innerHTML = remaining.toString();
+	document.getElementById('fed-timeout-counter').innerHTML = remaining.toString();
 	remaining -= 1;
 	if (remaining < 0) {
 		window.location.href = '{$this->arguments['location']}';
@@ -61,7 +61,7 @@ setInterval(function() {
 }, 1000);
 SCRIPT;
 		$this->documentHead->includeHeader($script, 'js');
-		$counter = '<span id="fed-fce-counter">' . $this->arguments['timeout'] . '</span>';
+		$counter = '<span id="fed-timeout-counter">' . $this->arguments['timeout'] . '</span>';
 		$this->templateVariableContainer->add('timeoutCounter', $counter);
 		$content = $this->renderChildren();
 		$this->templateVariableContainer->remove('timeoutCounter');
