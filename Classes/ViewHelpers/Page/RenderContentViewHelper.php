@@ -45,6 +45,7 @@ class Tx_Fed_ViewHelpers_Page_RenderContentViewHelper extends Tx_Fed_Core_ViewHe
 		$this->registerArgument('limit', 'integer', 'Optional limit to the number of content elements to render');
 		$this->registerArgument('order', 'string', 'Optional sort field of content elements - RAND() supported', FALSE, 'sorting');
 		$this->registerArgument('sortDirection', 'string', 'Optional sort direction of content elements', FALSE, 'ASC');
+		$this->registerArgument('pageUid', 'integer', 'If set, gets content from this page');
 	}
 
 	/**
@@ -76,7 +77,7 @@ class Tx_Fed_ViewHelpers_Page_RenderContentViewHelper extends Tx_Fed_Core_ViewHe
 	 * @return array
 	 */
 	protected function getContentRecords() {
-		$pid = $GLOBALS['TSFE']->id;
+		$pid = $this->arguments['pageUid'] ? $this->arguments['pageUid'] : $GLOBALS['TSFE']->id;
 		$order = $this->arguments['order'] . ' ' . $this->arguments['sortDirection'];
 		$colPos = $this->arguments['column'];
 		$conditions = "pid = '{$pid}' AND colPos = '{$colPos}' AND tx_fed_fcecontentarea = '' AND deleted = 0 AND hidden = 0";
