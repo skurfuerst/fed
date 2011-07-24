@@ -180,12 +180,15 @@ class Tx_Fed_ViewHelpers_JQuery_TabViewHelper extends Tx_Fed_Core_ViewHelper_Abs
 		$cookie = $this->getBooleanForJavascript('cookie');
 		$collapsible = $this->getBooleanForJavascript('collapsible');
 		$csvOfDisabledTabIndices = implode(',' ,$this->templateVariableContainer->get('disabledIndices'));
+		if ($this->arguments['animated'] === TRUE) {
+			$animation = '"fx" : { opacity : \'toggle\' },';
+		}
 		$script = <<< SCRIPT
 jQuery(document).ready(function() {
 	var options = {
 		"selected" : {$selectedIndex},
 		"disabled" : [{$csvOfDisabledTabIndices}],
-		"fx" : { opacity : 'toggle' },
+		{$animation}
 		"deselectable" : {$deselectable},
 		"cookie" : {$cookie},
 		"collapsible" : {$collapsible}

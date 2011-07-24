@@ -72,7 +72,7 @@ class Tx_Fed_ViewHelpers_JQuery_AccordionViewHelper extends Tx_Fed_Core_ViewHelp
 	public function initializeArguments() {
 		$this->registerUniversalTagAttributes();
 		$this->registerArgument('tagName', 'string', 'Tag name to use, default "div"');
-		$this->registerArgument('animated', 'string', 'String name of optional jQuery animation to use', FALSE, 'slide');
+		$this->registerArgument('animated', 'string', 'String name of optional jQuery animation to use.', FALSE, 'slide');
 		$this->registerArgument('active', 'boolean', 'Set this to TRUE to indicate which tab should be active - use only on a single tab');
 		$this->registerArgument('disabled', 'boolean', 'Set this to true to deactivate entire tab sets or individual tabs');
 		$this->registerArgument('autoHeight', 'boolean', 'Automatically adjust height of tabs');
@@ -174,6 +174,11 @@ class Tx_Fed_ViewHelpers_JQuery_AccordionViewHelper extends Tx_Fed_Core_ViewHelp
 		if ($selectedIndex === 0 && $this->arguments['collapsed'] === TRUE && $this->arguments['collapsible'] === TRUE) {
 			$selectedIndex = 'false';
 		}
+		if ($this->arguments['animated'] === 'FALSE') {
+			$animation = '"animated" : false,';
+		} else {
+			$animation = '"animated" : "'. $this->arguments['animated'] . '",';
+		}
 		$cookie = $this->getBooleanForJavascript('cookie');
 		$collapsible = $this->getBooleanForJavascript('collapsible');
 		$disabled = $this->getBooleanForJavascript('disabled');
@@ -184,7 +189,7 @@ class Tx_Fed_ViewHelpers_JQuery_AccordionViewHelper extends Tx_Fed_Core_ViewHelp
 		$script = <<< SCRIPT
 jQuery(document).ready(function() {
 	var options = {
-		"animated" : "{$this->arguments['animated']}",
+		{$animation}
 		"collapsible" : {$collapsible},
 		"active" : {$selectedIndex},
 		"disabled" : {$disabled},
