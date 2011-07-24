@@ -52,13 +52,16 @@ class Tx_Fed_ViewHelpers_RedirectViewHelper extends Tx_Fed_Core_ViewHelper_Abstr
 	public function render() {
 		$script = <<< SCRIPT
 var remaining = parseInt({$this->arguments['timeout']});
-setInterval(function() {
+var onInterval = function() {
 	document.getElementById('fed-timeout-counter').innerHTML = remaining.toString();
 	remaining -= 1;
-	if (remaining < 0) {
+	if (remaining == 0) {
 		window.location.href = '{$this->arguments['location']}';
+		clearTimeout(interval);
 	};
-}, 1000);
+};
+var interval = setInterval(onInterval, 1000);
+onInterval();
 SCRIPT;
 		$this->documentHead->includeHeader($script, 'js');
 		$counter = '<span id="fed-timeout-counter">' . $this->arguments['timeout'] . '</span>';
