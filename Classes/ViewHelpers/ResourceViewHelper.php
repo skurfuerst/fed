@@ -109,8 +109,8 @@ class Tx_Fed_ViewHelpers_ResourceViewHelper extends Tx_Fed_Core_ViewHelper_Abstr
 	 */
 	protected function sortFiles(array $files) {
 		$sorted = array();
-		foreach ($files as $file) {
-			$index = $this->getSortValue($file);
+		foreach ($files as $key=>$file) {
+			$index = $this->getSortValue($file, $key);
 			while (isset($sorted[$index])) {
 				$index = $this->findNewIndex($index);
 			}
@@ -139,9 +139,10 @@ class Tx_Fed_ViewHelpers_ResourceViewHelper extends Tx_Fed_Core_ViewHelper_Abstr
 	 * Gets the value used for sort index for this file
 	 *
 	 * @param string $src
+	 * @param mixed $index
 	 * @return mixed
 	 */
-	protected function getSortValue($src) {
+	protected function getSortValue($src, $index) {
 		$field = $this->arguments['sortBy'];
 		list ($field, $subfield) = explode(':', $field);
 		if ($src instanceof Tx_Fed_Resource_File) {
@@ -149,15 +150,16 @@ class Tx_Fed_ViewHelpers_ResourceViewHelper extends Tx_Fed_Core_ViewHelper_Abstr
 				case 'filesize': return $src->getSize();
 				case 'mofified': return $src->getModified()->getTimestamp();
 				case 'created': return $src->getCreated()->getTimestamp();
-				default: return $src->getBasename();
+				case 'filename': return $src->getBasename();
+				default: return $index;
 			}
 		} else {
 			switch ($field) {
 				case 'filesize': return (is_file(PATH_site . $src) ? filesize(PATH_site . $src) : 0);
 				case 'mofified': return (is_file(PATH_site . $src) ? filemtime(PATH_site . $src) : 0);
 				case 'created': return (is_file(PATH_site . $src) ? filectime(PATH_site . $src) : 0);
-				case 'filename':
-				default: return $src;
+				case 'filename': return $src;
+				default: return $index;
 			}
 		}
 	}

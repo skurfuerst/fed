@@ -55,7 +55,9 @@ class Tx_Fed_ViewHelpers_Resource_ImageViewHelper extends Tx_Fed_ViewHelpers_Res
 		// if no "as" argument and no child content, return linked list of files
 		// else, assign variable "as"
 		$pathinfo = pathinfo($this->arguments['path']);
-		if ($pathinfo['filename'] === '*') {
+		if ($this->arguments['files']) {
+			$files = $this->arguments['files'];
+		} else if ($pathinfo['filename'] === '*') {
 			$files = $this->documentHead->getFilenamesOfType($pathinfo['dirname'], $pathinfo['extension']);
 		} else if (is_dir($pathinfo['dirname'] . '/' . $pathinfo['basename'])) {
 			$files = scandir($pathinfo['dirname'] . '/' . $pathinfo['basename']);
