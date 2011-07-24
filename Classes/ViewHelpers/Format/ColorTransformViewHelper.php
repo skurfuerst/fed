@@ -86,10 +86,12 @@ class Tx_Fed_ViewHelpers_Format_ColorTransformViewHelper extends Tx_Fed_Core_Vie
 			);
 		}
 		foreach ($converted as $color) {
-			$hex .= dechex($color);
+			$hexColor = dechex($color);
+			$hexColor = str_pad($hexColor, 2, '0', STR_PAD_LEFT);
+			$hex .= $hexColor;
 		}
 		$hex = strtoupper($hex);
-		return "#" . $hex;
+		return $hex;
 	}
 
 	/**

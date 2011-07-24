@@ -1,0 +1,19 @@
+{namespace fed=Tx_Fed_ViewHelpers}
+
+<f:layout name="FCE" />
+
+<fed:fce id="redirect" label="Navigation: Redirect">
+	<fed:fce.field.input name="message" label="Short message, use ###TIMEOUT### to place dynamic countdown" default="You will be redirected in ###TIMEOUT### seconds" />
+	<fed:fce.field.input name="timeout" label="Timeout before redirect" default="10" eval="int" />
+	<fed:fce.field.group name="location" label="Page target for redirection" internalType="db" allowed="pages" minItems="1" maxItems="1" size="1" />
+</fed:fce>
+
+<f:section name="preview">
+
+</f:section>
+
+<f:section name="main">
+	<fed:redirect timeout="{timeout}" location="{f:uri.page(pageUid: location}}">
+		<fed:data.func func="str_replace" arguments="{0: '###TIMEOUT###', 1: timeoutCounter, 2: message}" />
+	</fed:redirect>
+</f:section>
