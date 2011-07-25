@@ -44,6 +44,7 @@ class Tx_Fed_ViewHelpers_Resource_FileViewHelper extends Tx_Fed_ViewHelpers_Reso
 		// initialization of arguments which relate to array('key' => 'filename')
 		// type resource ViewHelpers
 		parent::initializeArguments();
+		$this->registerArgument('file', 'string', 'If specified, takes precedense over "files"', FALSE, NULL);
 		$this->registerArgument('files', 'array', 'Array of files to process', FALSE, NULL);
 		$this->registerArgument('sql', 'string', 'SQL Query to fetch files, must return either just "filename" or "uid, filename" field in that order', FALSE, NULL);
 	}
@@ -62,6 +63,24 @@ class Tx_Fed_ViewHelpers_Resource_FileViewHelper extends Tx_Fed_ViewHelpers_Reso
 		}
 		if ($pathinfo['filename'] === '*') {
 			$files = $this->documentHead->getFilenamesOfType($pathinfo['dirname'], $pathinfo['extension']);
+		} else if ($this->arguments['file']) {
+			$files = array($this->arguments['path'] . $this->arguments['file']);
+			$files = $this->arrayToFileObjects($files);
+			$file = array_pop($files);
+			if ($this->arguments['as']) {
+				$this->templateVariableContainer->add($this->arguments['as'], $file);
+			} else if ($this->arguments['return'] === TRUE) {
+				return $file;
+			} else {
+				$this->templateVariableContainer->add('file', $file);
+				$content = $this->renderChildren();
+				$this->templateVariableContainer->remove('file');
+				if (strlen(trim($content)) === 0) {
+					return $this->renderFileList($files);
+				} else {
+					return $content;
+				}
+			}
 		} else if (is_array($this->arguments['files']) && count($this->arguments['files']) > 0) {
 			$files = $this->arguments['files'];
 			if ($this->arguments['path']) {

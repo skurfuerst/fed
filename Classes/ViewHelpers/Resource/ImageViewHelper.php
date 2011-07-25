@@ -55,7 +55,25 @@ class Tx_Fed_ViewHelpers_Resource_ImageViewHelper extends Tx_Fed_ViewHelpers_Res
 		// if no "as" argument and no child content, return linked list of files
 		// else, assign variable "as"
 		$pathinfo = pathinfo($this->arguments['path']);
-		if ($this->arguments['files']) {
+		if ($this->arguments['file']) {
+			$files = array($this->arguments['path'] . $this->arguments['file']);
+			$files = $this->arrayToFileObjects($files);
+			$file = array_pop($files);
+			if ($this->arguments['as']) {
+				$this->templateVariableContainer->add($this->arguments['as'], $file);
+			} else if ($this->arguments['return'] === TRUE) {
+				return $file;
+			} else {
+				$this->templateVariableContainer->add('image', $file);
+				$content = $this->renderChildren();
+				$this->templateVariableContainer->remove('image');
+				if (strlen(trim($content)) === 0) {
+					return $this->renderFileList($files);
+				} else {
+					return $content;
+				}
+			}
+		} else if ($this->arguments['files']) {
 			$files = $this->arguments['files'];
 		} else if ($pathinfo['filename'] === '*') {
 			$files = $this->documentHead->getFilenamesOfType($pathinfo['dirname'], $pathinfo['extension']);
@@ -77,12 +95,6 @@ class Tx_Fed_ViewHelpers_Resource_ImageViewHelper extends Tx_Fed_ViewHelpers_Res
 		}
 		$files = $this->arrayToFileObjects($files);
 		$files = $this->sortFiles($files);
-		if ($this->arguments['exif'] === TRUE) {
-			$files = $this->applyExifData($files);
-		}
-		if ($this->arguments['resolution'] === TRUE) {
-			$files = $this->applyResolutionData($files);
-		}
 
 		// rendering
 		$content = "";
@@ -101,6 +113,21 @@ class Tx_Fed_ViewHelpers_Resource_ImageViewHelper extends Tx_Fed_ViewHelpers_Res
 				return $content;
 			}
 		}
+	}
+
+	/**
+	 * @param array $files
+	 * @return array
+	 */
+	protected function arrayToFileObjects(array $files) {
+		$files = parent::arrayToFileObjects($files);
+		if ($this->arguments['exif'] === TRUE) {
+			$files = $this->applyExifData($files);
+		}
+		if ($this->arguments['resolution'] === TRUE) {
+			$files = $this->applyResolutionData($files);
+		}
+		return $files;
 	}
 
 	/**
