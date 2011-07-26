@@ -59,6 +59,7 @@ class Tx_Fed_ViewHelpers_TagCloudViewHelper extends Tx_Fed_Core_ViewHelper_Abstr
 		$this->registerArgument('merge', 'string', 'If "argument", prevents gathering tags from the contents of the fed:tagCloud template tag ("argument" requires the $tags argument or cloud will be empty!). If "both", combines $tags with tags rendered via renderChildren(). If "content" only tags rendered defined by other ViewHelpers are counted. You can use this to merge or switch between two tag sets on-the-fly. See manual.', FALSE, 'both');
 		$this->registerArgument('titleIsTag', 'boolean', 'If TRUE, makes the ViewHelper use the "title" property of each tag you register instead of the "tag" attribute or innerHTML. Use this if you are counting lists of model objects or UIDs for instance; and let "tag" be the UID/model object to register', FALSE, FALSE);
 		$this->registerArgument('divider', 'string', 'Piece of HTML to insert between rendered tags, used in HTML mode only');
+		$this->registerArgument('tagName', 'string', 'Tag name to use in HTML output', FALSE, 'div');
 	}
 
 	/**
@@ -68,6 +69,7 @@ class Tx_Fed_ViewHelpers_TagCloudViewHelper extends Tx_Fed_Core_ViewHelper_Abstr
 	 */
 	public function render() {
 
+		$this->tagName = $this->arguments['tagName'];
 		$this->setTagStorage(array());
 		$content = $this->renderChildren();
 		$tags = $this->processTags();
@@ -300,7 +302,6 @@ SCRIPT;
 <a href='{$href}' style='font-size: {$size}px; {$style}' rel='tag' title='{$title}'>{$text}</a>
 TAG;
 		}
-		#die($cloud);
 		return $cloud;
 	}
 
