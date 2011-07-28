@@ -24,7 +24,7 @@
 ***************************************************************/
 
 /**
- * Service for interacting with Page DomainObjects
+ * Service for interacting with Pages
  *
  * @package Fed
  * @subpackage Service
