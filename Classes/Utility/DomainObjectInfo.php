@@ -58,6 +58,11 @@ class Tx_Fed_Utility_DomainObjectInfo implements t3lib_Singleton {
 	protected $objectManager;
 
 	/**
+	 * @var Tx_Extbase_Persistence_Mapper_DataMapFactory
+	 */
+	protected $dataMapFactory;
+
+	/**
 	 * Inject a RecursionHandler instance
 	 * @param Tx_Fed_Utility_RecursionHandler $handler
 	 */
@@ -79,6 +84,13 @@ class Tx_Fed_Utility_DomainObjectInfo implements t3lib_Singleton {
 	 */
 	public function injectObjectManager(Tx_Extbase_Object_ObjectManager $manager) {
 		$this->objectManager = $manager;
+	}
+
+	/**
+	 * @param Tx_Extbase_Persistence_Mapper_DataMapFactory $dataMapFactory
+	 */
+	public function injectDataMapFactory(Tx_Extbase_Persistence_Mapper_DataMapFactory $dataMapFactory) {
+		$this->dataMapFactory = $dataMapFactory;
 	}
 
 	/**
@@ -388,6 +400,48 @@ class Tx_Fed_Utility_DomainObjectInfo implements t3lib_Singleton {
 		return $return;
 	}
 
+	/**
+	 * Returns an array of annotations for $propertyName on $object
+	 *
+	 * @param mixed $object
+	 * @param string $propertyName
+	 */
+	public function getAnnotationsByProperty($object, $propertyName) {
+		if (is_object($object)) {
+			$className = get_class($object);
+		} else {
+			$className = $object;
+			$object = $this->objectManager->get($className);
+		}
+		return $this->reflectionService->getPropertyTagsValues($className, $propertyName);
+	}
+
+	/**
+	 * Returns the values of a single $annotation of $propertyName on $object
+	 *
+	 * @param mixed $object
+	 * @param string $propertyName
+	 * @param string $annotationName
+	 * @return array
+	 */
+	public function getAnnotationValuesByProperty($object, $propertyName, $annotationName) {
+		$annotations = $this->getAnnotationsByProperty($object, $propertyName);
+		return $annotations[$annotationName];
+	}
+
+	/**
+	 * @param mixed $object
+	 */
+	public function getDatabaseTable($object) {
+		if (is_object($object)) {
+			$className = get_class($object);
+		} else {
+			$className = $object;
+			$object = $this->objectManager->get($className);
+		}
+		$map = $this->dataMapFactory->buildDataMap($className);
+		return $map->getTableName();
+	}
 
 }
 
