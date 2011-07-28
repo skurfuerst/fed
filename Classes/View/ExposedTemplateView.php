@@ -77,7 +77,12 @@ class Tx_Fed_View_ExposedTemplateView extends Tx_Fluid_View_StandaloneView {
 			}
 		}
 		$this->stopRendering();
-		return $value;
+
+		if ($value instanceof Tx_Fluid_Core_Parser_SyntaxTree_TextNode) {
+			return $value->getText();
+		} else {
+			return $value;
+		}
 	}
 
 }
