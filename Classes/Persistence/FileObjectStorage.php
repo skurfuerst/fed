@@ -131,12 +131,11 @@ class Tx_Fed_Persistence_FileObjectStorage extends SplObjectStorage {
 	 * @param string $propertyName Name of the property in which this object is contained
 	 */
 	public function setAssociatedDomainObject(Tx_Extbase_DomainObject_AbstractDomainObject $associatedDomainObject, $propertyName) {
-		$annotationValues = $this->infoService->getAnnotationValuesByProperty($associatedDomainObject, $propertyName, 'var');
-		$complexType = array_pop($annotationValues);
+		$annotationValues = $this->infoService->getAnnotationValuesByProperty($associatedDomainObject, $propertyName, 'file');
 		$table = $this->infoService->getDatabaseTable($associatedDomainObject);
 		$underscoredPropertyName = Tx_Extbase_Utility_Extension::convertCamelCaseToLowerCaseUnderscored($propertyName);
 		// use collected data to set necessary precursor variables
-		$this->objectType = $this->infoService->parseObjectStorageAnnotation($complexType);
+		$this->objectType = array_pop($annotationValues);
 		$this->associatedDomainObject = $associatedDomainObject;
 		$this->associatedPropertyName = $propertyName;
 		$this->basePath = $this->infoService->getUploadFolder($associatedDomainObject, $propertyName);
@@ -179,13 +178,22 @@ class Tx_Fed_Persistence_FileObjectStorage extends SplObjectStorage {
 		$this->infoService = $this->objectManager->get('Tx_Fed_Utility_DomainObjectInfo');
 		$this->fileService = $this->objectManager->get('Tx_Fed_Service_File');
 		if (is_string($possibleCsv)) {
-			foreach (explode(',', $possibleCsv) as $filename) {
-				$object = $this->objectManager->get($this->objectType, $this->basePath . $filename);
-				$this->attach($object);
-			}
+			$this->attachFromCsv($possibleCsv);
 		}
 		if (is_string($possibleAssociatedPropertyName)) {
 			$this->associatedPropertyName = $possibleAssociatedPropertyName;
+		}
+	}
+
+	/**
+	 * Sets storage objects by CSV relative to basePath
+	 *
+	 * @param string $csv
+	 */
+	public function attachFromCsv($csv) {
+		foreach (explode(',', $csv) as $filename) {
+			$object = $this->objectManager->get($this->objectType, $this->basePath . $filename);
+			$this->attach($object);
 		}
 	}
 
@@ -197,25 +205,9 @@ class Tx_Fed_Persistence_FileObjectStorage extends SplObjectStorage {
 	 * concatenated with paths, making this compatible with both upload folder and
 	 * direct file selection fields in the TYPO3 BE.
 	 *
-	 * Another note: if a serialization is performed a special check is made
-	 * to see if there is an HTTP upload event taking place. If there is, and if
-	 * this object has the $associatedPropertyName set, this looks for the file
-	 * in the upload array, uses $basePath and TYPO3 unique-filename methods to
-	 * simply upload the file and store the proper resulting filename instead.
-	 * This "tricks" the persistence layer in Extbase into uploading the files
-	 * for you exactly when it requests that the value of your DomainObject's
-	 * property containing Tx_Fed_Persistence_FileObjectStorage<Tx_Fed_Resource_File>
-	 * data for insertion into DB.
-	 *
-	 * This works as long as you have $associatedPropertyName; this is the hinge
-	 * that lets Tx_Fed_Persistence_FileObjectStorage detect file uploads. So
-	 * this should be set in either your DomainObject's constructor or the property's
-	 * setter method.
 	 * @return string
 	 */
 	public function __toString() {
-		#var_dump($this->basePath);
-		#exit();
 		$filenames = array();
 		foreach ($this as $fileObject) {
 			if ($this->basePath) {
@@ -224,10 +216,8 @@ class Tx_Fed_Persistence_FileObjectStorage extends SplObjectStorage {
 			} else {
 				$filename = $fileObject->getRelativePath();
 			}
-			#$filename = $fileObject->getRelativePath();
 			array_push($filenames, $filename);
 		}
-		#exit();
 		return implode(',', $filenames);
 	}
 

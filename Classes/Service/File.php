@@ -100,18 +100,12 @@ class Tx_Fed_Service_File implements t3lib_Singleton {
 			$source = $fileObject->getAbsolutePath();
 			$destination = $uploadFolder . DIRECTORY_SEPARATOR . $fileObject->getTargetFilename();
 			$newFilename = $this->move($source, $destination);
-			#var_dump($newFilename);
-			#exit();
 			$fileObject->setAbsolutePath(PATH_site . $newFilename);
-			#$fileObject->setBasePath($)
-			#var_dump($fileObject);
 			$uploadedFileObjectStorage->attach($fileObject);
 		}
 
 		$setter = 'set' . ucfirst($propertyName);
 		$valueToSet = (string) $uploadedFileObjectStorage;
-		#var_dump($valueToSet);
-		#exit();
 		$domainObject->$setter($valueToSet);
 		return TRUE;
 	}
@@ -171,17 +165,17 @@ class Tx_Fed_Service_File implements t3lib_Singleton {
 	/**
 	 * Moves $sourceFilename to $destinationFilename, returns boolean success/failure
 	 *
-	 * @param string $sourceFilename
-	 * @param string $destinationFilename
+	 * @param mixed $sourceFile FileObjectStorage, File Resource or string filename
+	 * @param string $destinationFilename Destination filename or path
 	 * @throws Exception
 	 * @return boolean
 	 * @api
 	 */
-	public function move($sourceFilename, $destinationFilename) {
-		$newFilename = $this->copy($sourceFilename, $destinationFilename);
+	public function move($sourceFile, $destinationFilename) {
+		$output = $this->copy($sourceFile, $destinationFilename);
 		if ($newFilename) {
-			$this->unlink($sourceFilename);
-			return $newFilename;
+			$this->unlink($sourceFile);
+			return $output;
 		} else {
 			throw new Exception('Could not move file ' . $sourceFilename . ' to ' . $destinationFilename, 1311895077);
 			return FALSE;
@@ -191,16 +185,28 @@ class Tx_Fed_Service_File implements t3lib_Singleton {
 	/**
 	 * Copies $sourceFilename to $destinationFilename, returns new filename
 	 *
-	 * @param mixed $sourceFilename
-	 * @param string $destinationFilename
+	 * @param mixed $sourceFile FileObjectStorage, File Resource or string filename
+	 * @param string $destinationFilename Destination filename or path
 	 * @throws Tx_Extbase_Exception
 	 * @return mixed
 	 * @api
 	 */
-	public function copy($sourceFilename, $destinationFilename) {
+	public function copy($sourceFile, $destinationFilename) {
+		$pathinfo = pathinfo($destinationFilename);
+		if ($sourceFile instanceof Tx_Fed_Persistence_FileObjectStorage) {
+			foreach ($sourceFile as $childFile) {
+				$this->copy($childFile, $pathinfo['dirname']);
+			}
+		} else if ($sourceFile instanceof Tx_Fed_Resource_File) {
+			$sourceFilename = $sourceFile->getAbsolutePath();
+		}
+		if (is_file($sourceFilename) === FALSE) {
+			$sourceFilename = PATH_site . $sourceFilename;
+		}
 		$fileFunctions = $this->objectManager->get('t3lib_basicFileFunctions');
 		$pathinfo = pathinfo($destinationFilename);
-		$newFilename = $fileFunctions->getUniqueName($pathinfo['basename'], $pathinfo['dirname']);
+		$desiredFilename = $pathinfo['basename'] != '' ? $pathinfo['basename'] : basename($sourceFilename);
+		$newFilename = $fileFunctions->getUniqueName($desiredFilename, $pathinfo['dirname']);
 		$targetFile = PATH_site . $newFilename;
 		$copied = copy($sourceFilename, $targetFile);
 		if ($copied === FALSE) {
@@ -224,6 +230,11 @@ class Tx_Fed_Service_File implements t3lib_Singleton {
 				$this->unlink($filename->getAbsolutePath());
 			}
 			return TRUE;
+		} else if ($fileOrFileObjectStorage instanceof Tx_Fed_Resource_File) {
+			$this->unlink($fileOrFileObjectStorage->getAbsolutePath());
+		} else if (is_file($fileOrFileObjectStorage) === FALSE) {
+			$fileOrFileObjectStorage = PATH_site . $fileOrFileObjectStorage;
+			$this->unlink($fileOrFileObjectStorage);
 		} else {
 			$unlinked = unlink($fileOrFileObjectStorage);
 			if ($unlinked === FALSE) {
