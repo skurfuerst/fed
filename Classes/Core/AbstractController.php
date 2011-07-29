@@ -71,6 +71,11 @@ abstract class Tx_Fed_Core_AbstractController extends Tx_Extbase_MVC_Controller_
 	protected $debugService;
 
 	/**
+	 * @var Tx_Fed_Service_File
+	 */
+	protected $fileService;
+
+	/**
 	 * @param Tx_Extbase_Property_Mapper $propertyMapper
 	 */
 	public function injectPropertyMapper(Tx_Extbase_Property_Mapper $propertyMapper) {
@@ -120,6 +125,13 @@ abstract class Tx_Fed_Core_AbstractController extends Tx_Extbase_MVC_Controller_
 	}
 
 	/**
+	 * @param Tx_Fed_Service_File $fileService
+	 */
+	public function injectFileService(Tx_Fed_Service_File $fileService) {
+		$this->fileService = $fileService;
+	}
+
+	/**
 	 * Clear the page cache for specified pages or current page
 	 *
 	 * @param mixed $pids
@@ -134,7 +146,7 @@ abstract class Tx_Fed_Core_AbstractController extends Tx_Extbase_MVC_Controller_
 			Tx_Extbase_Utility_Cache::clearPageCache($pids);
 		}
 	}
-
+	
 	/**
 	 * Get the flexform definition from the current cObj instance
 	 *

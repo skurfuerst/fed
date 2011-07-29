@@ -63,6 +63,11 @@ class Tx_Fed_Utility_DomainObjectInfo implements t3lib_Singleton {
 	protected $dataMapFactory;
 
 	/**
+	 * @var Tx_Extbase_Reflection_ObjectAccess
+	 */
+	protected $objectAccess;
+
+	/**
 	 * Inject a RecursionHandler instance
 	 * @param Tx_Fed_Utility_RecursionHandler $handler
 	 */
@@ -91,6 +96,13 @@ class Tx_Fed_Utility_DomainObjectInfo implements t3lib_Singleton {
 	 */
 	public function injectDataMapFactory(Tx_Extbase_Persistence_Mapper_DataMapFactory $dataMapFactory) {
 		$this->dataMapFactory = $dataMapFactory;
+	}
+
+	/**
+	 * @param Tx_Extbase_Reflection_ObjectAccess $objectAccess
+	 */
+	public function injectObjectAccess(Tx_Extbase_Reflection_ObjectAccess $objectAccess) {
+		$this->objectAccess = $objectAccess;
 	}
 
 	/**
@@ -411,7 +423,6 @@ class Tx_Fed_Utility_DomainObjectInfo implements t3lib_Singleton {
 			$className = get_class($object);
 		} else {
 			$className = $object;
-			$object = $this->objectManager->get($className);
 		}
 		return $this->reflectionService->getPropertyTagsValues($className, $propertyName);
 	}
@@ -437,13 +448,45 @@ class Tx_Fed_Utility_DomainObjectInfo implements t3lib_Singleton {
 			$className = get_class($object);
 		} else {
 			$className = $object;
-			$object = $this->objectManager->get($className);
 		}
 		$map = $this->dataMapFactory->buildDataMap($className);
 		return $map->getTableName();
 	}
 
-}
+	/**
+	 * Gets the TCA-defined uploadfolder for $object. If no propertyName, then
+	 * all all properties with uploadfolders are returned as keys along with
+	 * their respective upload folders as value
+	 * @param mixed $object
+	 * @param string $propertyName
+	 * @return mixed
+	 */
+	public function getUploadFolder($object, $propertyName=NULL) {
+		if (is_object($object)) {
+			$className = get_class($object);
+		} else {
+			$className = $object;
+			$object = $this->objectManager->get($className);
+		}
+		if ($propertyName === NULL) {
+			$properties = $this->objectAccess->getGettablePropertyNames($object);
+			$folders = array();
+			foreach ($properties as $propertyName) {
+				$uploadFolder = $this->getUploadFolder($object, $propertyName);
+				if (is_dir(PATH_site . $uploadFolder)) {
+					$folders[$propertyName] = $uploadFolder;
+				}
+			}
+			return $folders;
+		}
+		global $TCA;
+		$tableName = $this->getDatabaseTable($object);
+		t3lib_div::loadTCA($tableName);
+		$underscoredPropertyName = Tx_Extbase_Utility_Extension::convertCamelCaseToLowerCaseUnderscored($propertyName);
+		$uploadFolder = $TCA[$tableName]['columns'][$underscoredPropertyName]['config']['uploadfolder'];
+		return $uploadFolder;
+	}
 
+}
 
 ?>

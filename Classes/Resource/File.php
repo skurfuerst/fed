@@ -24,7 +24,9 @@
  ***************************************************************/
 
 /**
- *
+ * Resource: File - abstraction over a File in order to get sizes, paths, extension
+ * etc from a file. Used by Tx_Fed_Persistence_FileObjectStorage to allow OO for'
+ * files 100% compatible with the way TYPO3 treats files, upload folders and all.
  *
  * @author Claus Due, Wildside A/S
  * @version $Id$
@@ -39,6 +41,11 @@ class Tx_Fed_Resource_File {
 	 * @var string
 	 */
 	protected $filename;
+
+	/**
+	 * @var string
+	 */
+	protected $targetFilename;
 
 	/**
 	 * @var string
@@ -110,6 +117,20 @@ class Tx_Fed_Resource_File {
 	 */
 	public function setFilename($filename) {
 		$this->filename = $filename;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getTargetFilename() {
+		return $this->targetFilename;
+	}
+
+	/**
+	 * @param string $targetFilename
+	 */
+	public function setTargetFilename($targetFilename) {
+		$this->targetFilename = $targetFilename;
 	}
 
 	/**
