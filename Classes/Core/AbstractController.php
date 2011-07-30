@@ -146,7 +146,7 @@ abstract class Tx_Fed_Core_AbstractController extends Tx_Extbase_MVC_Controller_
 			Tx_Extbase_Utility_Cache::clearPageCache($pids);
 		}
 	}
-	
+
 	/**
 	 * Get the flexform definition from the current cObj instance
 	 *
@@ -221,6 +221,52 @@ abstract class Tx_Fed_Core_AbstractController extends Tx_Extbase_MVC_Controller_
 		}
 		$json = $this->jsonService->encode($errorArray);
 		echo $json;
+		exit();
+	}
+
+	/**
+	 * Handles uploads from plupload component. Immediately outputs response -
+	 * cannot persist objects!
+	 *
+	 * @param string $objectType
+	 * @param string $propertyName
+	 * @return string
+	 * @api
+	 */
+	public function uploadAction($objectType, $propertyName) {
+		try {
+			if (isset($_SERVER["HTTP_CONTENT_TYPE"])) {
+				$contentType = $_SERVER["HTTP_CONTENT_TYPE"];
+			} else if (isset($_SERVER["CONTENT_TYPE"])) {
+				$contentType = $_SERVER["CONTENT_TYPE"];
+			} else {
+				$contentType = 'application/octet-stream';
+			}
+			$sourceFilename = $_FILES['file']['tmp_name'];
+			$this->infoService->getUploadFolder($objectType, $propertyName);
+			$chunk = isset($_REQUEST["chunk"]) ? $_REQUEST["chunk"] : 0;
+			$chunks = isset($_REQUEST["chunks"]) ? $_REQUEST["chunks"] : 0;
+			$filename = isset($_REQUEST["name"]) ? $_REQUEST["name"] : '';
+			$filename = preg_replace('/[^\w\._]+/', '', $filename);
+			if ($chunks < 2 && file_exists($targetDir . DIRECTORY_SEPARATOR . $filename)) {
+				$ext = strrpos($filename, '.');
+				$filenameA = substr($filename, 0, $ext);
+				$filenameB = substr($filename, $ext);
+				$count = 1;
+				while (file_exists($targetDir . DIRECTORY_SEPARATOR . $filenameA . '_' . $count . $filenameB)) {
+					$count++;
+				}
+				$filename = $filenameA . '_' . $count . $filenameB;
+			}
+			if (strpos($contentType, "multipart") !== FALSE) {
+				$newFilename = $this->fileService->move($sourceFilename, $targetDir . DIRECTORY_SEPARATOR . $filename);
+			} else {
+				$newFilename = $this->fileService->copyChunk($sourceFilename, $targetDir, $filename, $chunk);
+			}
+			echo $this->jsonService->getRpcResponse($newFilename);
+		} catch (Exception $e) {
+			echo $this->jsonService->getRpcError($e);
+		}
 		exit();
 	}
 

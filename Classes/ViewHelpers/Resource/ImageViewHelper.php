@@ -75,6 +75,11 @@ class Tx_Fed_ViewHelpers_Resource_ImageViewHelper extends Tx_Fed_ViewHelpers_Res
 			}
 		} else if ($this->arguments['files']) {
 			$files = $this->arguments['files'];
+			if ($this->arguments['path']) {
+				foreach ($files as $k=>$file) {
+					$files[$k] = $this->arguments['path'] . $file;
+				}
+			}
 		} else if ($pathinfo['filename'] === '*') {
 			$files = $this->documentHead->getFilenamesOfType($pathinfo['dirname'], $pathinfo['extension']);
 		} else if (is_dir($pathinfo['dirname'] . '/' . $pathinfo['basename'])) {

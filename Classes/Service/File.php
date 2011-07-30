@@ -172,10 +172,10 @@ class Tx_Fed_Service_File implements t3lib_Singleton {
 	 * @api
 	 */
 	public function move($sourceFile, $destinationFilename) {
-		$output = $this->copy($sourceFile, $destinationFilename);
+		$newFilename = $this->copy($sourceFile, $destinationFilename);
 		if ($newFilename) {
 			$this->unlink($sourceFile);
-			return $output;
+			return $newFilename;
 		} else {
 			throw new Exception('Could not move file ' . $sourceFilename . ' to ' . $destinationFilename, 1311895077);
 			return FALSE;
@@ -199,6 +199,8 @@ class Tx_Fed_Service_File implements t3lib_Singleton {
 			}
 		} else if ($sourceFile instanceof Tx_Fed_Resource_File) {
 			$sourceFilename = $sourceFile->getAbsolutePath();
+		} else {
+			$sourceFilename = $sourceFile;
 		}
 		if (is_file($sourceFilename) === FALSE) {
 			$sourceFilename = PATH_site . $sourceFilename;
@@ -242,6 +244,39 @@ class Tx_Fed_Service_File implements t3lib_Singleton {
 			}
 			return $unlinked;
 		}
+	}
+
+	/**
+	 * @param string $sourceFilename
+	 * @param string $targetDir
+	 * @param string $filename The target filename to be written
+	 * @param integer $chunk If doing chunked read/write uses append mode if $chunk > 0
+	 * @return array
+	 */
+	public function getFileCopyPointers($sourceFileName, $targetDir, $filename, $chunk=0) {
+		$out = fopen($targetDir . DIRECTORY_SEPARATOR . $filename, $chunk == 0 ? "wb" : "ab");
+		$in = fopen($sourceFilename, "rb");
+		if ($out === FALSE) {
+			throw new Exception('Failed to open output stream', 102);
+		} else if ($in === FALSE) {
+			throw new Exception('Failed to open input stream', 101);
+		}
+		return array($in, $out);
+	}
+
+	/**
+	 * @param type $sourceFilename
+	 * @param type $targetDir
+	 * @param type $filename
+	 * @param type $chunk
+	 */
+	public function copyChunk($sourceFilename, $targetDir, $filename, $chunk) {
+		list ($in, $out) = $this->getFileCopyPointers($sourceFilename, $targetDir, $filename, $chunk);
+		while ($buff = fread($in, 4096)) {
+			fwrite($out, $buff);
+		}
+		fclose($in);
+		fclose($out);
 	}
 
 }

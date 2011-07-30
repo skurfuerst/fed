@@ -88,6 +88,35 @@ class Tx_Fed_Utility_JSON implements t3lib_Singleton {
 		return $decoded;
 	}
 
+	/**
+	 * @param Exception $e
+	 * @return string
+	 */
+	public function getRpcError(Exception $e) {
+		$data = array(
+			'jsonrpc' => '2.0',
+			'error' => array(
+				'code' => $e->getCode(),
+				'message' => $e->getMessage(),
+				'id' => 'id'
+			)
+		);
+		return $this->encode($data);
+	}
+
+	/**
+	 * @param mixed $payload Data for the response
+	 * @return string
+	 */
+	public function getRpcResponse($payload=NULL) {
+		$data = array(
+			'jsonrpc' => '2.0',
+			'result' => $payload,
+			'id' => 'id'
+		);
+		return $this->encode($data);;
+	}
+
 }
 
 ?>
