@@ -44,7 +44,12 @@ class Tx_Fed_ViewHelpers_Form_MultiUploadViewHelper extends Tx_Fluid_ViewHelpers
 	/**
 	 * @var string
 	 */
-	protected $uniqueId;
+	protected $uniqueId = 'plupload';
+
+	/**
+	 * @var string
+	 */
+	protected $editorId = 'pleditor';
 
 	/**
 	 * @var Tx_Fed_Utility_DomainObjectInfo
@@ -91,7 +96,7 @@ class Tx_Fed_ViewHelpers_Form_MultiUploadViewHelper extends Tx_Fluid_ViewHelpers
 	 */
 	public function initializeArguments() {
 		parent::initializeArguments();
-		$this->registerArgument('runtimes', 'string', 'CSV list of allowed runtimes - see plupload doc', FALSE, 'gears,flash,silverlight,browserplus,html5');
+		$this->registerArgument('runtimes', 'string', 'CSV list of allowed runtimes - see plupload doc', FALSE, 'html5,flash,gears,silverlight,browserplus,html4');
 		$this->registerArgument('url', 'string', 'If specified, overrides built-in uploader with one you created and placed at this URL');
 		$this->registerArgument('maxFileSize', 'string', 'Maxium allowed file size', FALSE, '10mb');
 		$this->registerArgument('chunkSize', 'string', 'Chunk size when uploading in chunks', FALSE, '1mb');
@@ -111,14 +116,42 @@ class Tx_Fed_ViewHelpers_Form_MultiUploadViewHelper extends Tx_Fluid_ViewHelpers
 	 * @return string
 	 */
 	public function render() {
-		$this->uniqueId = uniqid('plupload');
 		$name = $this->getName();
 		$value = $this->getValue();
 		$this->registerFieldNameForFormTokenGeneration($name);
 		$this->setErrorClassAttribute();
 		$html = array(
 			'<input id="' . $this->uniqueId . '-field" type="hidden" name="' . $name . '" value="' . $value . '" />',
-			'<div id="' . $this->uniqueId . '" class="fed-plupload"></div>'
+			'<div class="fed-plupload plupload_container">',
+				'<div id="' . $this->uniqueId . '" class=""></div>',
+			'</div>',
+			'<div class="fed-upload plupload_container">',
+				'<div class="plupload">',
+					'<div class="ui-state-default ui-widget-header plupload_header">',
+						'<div class="plupload_header_content">',
+							'<div class="plupload_header_title">Saved files</div>',
+							'<div class="plupload_header_text">You can drag and drop to sort the list</div>',
+						'</div>',
+					'</div>',
+					'<div class="fed-plupload">',
+						'<table class="plupload_filelist">',
+							'<tbody>',
+								'<tr class="ui-widget-header plupload_filelist_header">',
+									'<td class="plupload_cell plupload_file_name">Saved files</td>',
+									'<td class="plupload_cell plupload_file_status"></td>',
+									'<td class="plupload_cell plupload_file_size">Size</td>',
+									'<td class="plupload_cell plupload_file_action"></td>',
+								'</tr>',
+							'</tbody>',
+						'</table>',
+						'<div class="ui-widget-content plupload_scroll">',
+							'<table class="plupload_filelist_content">',
+							'<tbody id="' . $this->editorId . '"></tbody>',
+							'</table>',
+						'</div>',
+					'</div>',
+				'</div>',
+			'</div>',
 		);
 		$this->tag->setContent(implode(chr(10), $html));
 		$this->addScript();
@@ -137,20 +170,7 @@ class Tx_Fed_ViewHelpers_Form_MultiUploadViewHelper extends Tx_Fluid_ViewHelpers
 	 */
 	protected function getInitEventsJson() {
 		$events = $this->arguments['init'];
-		$events['UploadFile'] = <<< SCRIPT
-function(up, file, info) {
-	var field = jQuery('#{$this->uniqueId}-field');
-	var existing = field.val();
-	var arr;
-	if (existing != '') {
-		arr = existing.split(',');
-	} else {
-		arr = [];
-	};
-	arr.push(file.name);
-	field.val(arr.join(','));
-}
-SCRIPT;
+		$events['FileUploaded'] = "FED.FileListEditor.onFileUploaded";
 		return $this->getEventsJson($events);
 	}
 
@@ -176,16 +196,44 @@ SCRIPT;
 	 */
 	protected function addScript() {
 
-		$scriptFiles = array(
-			'http://bp.yahooapis.com/2.4.21/browserplus-min.js',
-			t3lib_extMgm::siteRelPath('fed') . 'Resources/Public/Javascript/com/plupload/gears_init.js',
-			t3lib_extMgm::siteRelPath('fed') . 'Resources/Public/Javascript/com/plupload/plupload.full.min.js',
-			t3lib_extMgm::siteRelPath('fed') . 'Resources/Public/Javascript/com/plupload/jquery.plupload.queue/jquery.plupload.queue.js',
-			t3lib_extMgm::siteRelPath('fed') . 'Resources/Public/Javascript/com/plupload/jquery.ui.plupload/jquery.ui.plupload.min.js',
+		$scriptPath = t3lib_extMgm::siteRelPath('fed') . 'Resources/Public/Javascript/';
+		$pluploadPath = $scriptPath . 'com/plupload/js/';
+		$value = $this->getPropertyValue();
+		$value = trim($value, ',');
+		if (strlen($value) > 0) {
+			$existingFiles = explode(',', trim($this->getPropertyValue(), ','));
+		} else {
+			$existingFiles = array();
+		}
+		$propertyName = $this->arguments['property'];
+		$formObject = $this->viewHelperVariableContainer->get('Tx_Fluid_ViewHelpers_FormViewHelper', 'formObject');
+		$uploadFolder = $this->infoService->getUploadFolder($formObject, $propertyName);
+
+		$files = array(
+			$scriptPath . 'GearsInit.js',
+			$pluploadPath . 'plupload.full.js',
+			$pluploadPath . 'jquery.plupload.queue/jquery.plupload.queue.js',
+			$pluploadPath . 'jquery.ui.plupload/jquery.ui.plupload.js',
+			$scriptPath . 'FileListEditor.js'
 		);
 
-		$flashFile = t3lib_extMgm::siteRelPath('fed') . 'Resources/Public/Javascript/com/plupload/plupload.flash.swf';
-		$silverLightFile = t3lib_extMgm::siteRelPath('fed') . 'Resources/Public/Javascript/com/plupload/plupload.silverlight.xap';
+		foreach ($files as $file) {
+			$contents = file_get_contents($file);
+			$this->documentHead->includeHeader($contents, 'js');
+		}
+
+		$this->documentHead->includeFiles(array(
+			t3lib_extMgm::siteRelPath('fed') . 'Resources/Public/Javascript/com/plupload/js/jquery.ui.plupload/css/jquery.ui.plupload.css',
+			t3lib_extMgm::siteRelPath('fed') . 'Resources/Public/Javascript/com/plupload/js/jquery.plupload.queue/css/jquery.plupload.queue.css',
+		));
+
+		foreach ($existingFiles as $k=>$file) {
+			$size = (string) intval(filesize(PATH_site . $uploadFolder . DIRECTORY_SEPARATOR . $file));
+			$existingFiles[$k] = "{id: 'f{$k}', name: '{$file}', size: {$size}, percent: 100, completed: {$size}, status: plupload.QUEUED, existing: true}";
+		}
+
+		$filesJson = "[" . implode(', ', $existingFiles) . "]";
+
 		if ($this->arguments['resizeWidth'] > 0 || $this->arguments['resizeHeight'] > 0) {
 			if ($this->arguments['resizeWidth'] > 0) {
 				$resizeWidth = "width : {$this->arguments['resizeWidth']},";
@@ -193,19 +241,51 @@ SCRIPT;
 			if ($this->arguments['resizeHeight'] > 0) {
 				$resizeHeight = "height : {$this->arguments['resizeHeight']},";
 			}
-			$resize = <<< RESIZE
-		resize : {
-			{$resizeWidth}
-			{$resizeHeight}
-			quality : {$this->arguments['resizeQuality']}
-		},
-RESIZE;
+			$resize = "resize : { width: {$resizeWidth}, height: {$resizeHeight}, quality : {$this->arguments['resizeQuality']}},";
 		}
+		$url = $this->getUrl();
+		$preinit = $this->getPreinitEventsJson();
+		$init = $this->getInitEventsJson();
 		$filterJson = $this->jsonService->encode($this->arguments['filters']);
-		$filters = <<< FILTERS
+		$this->documentHead->includeHeader("
+jQuery(document).ready(function() {
+	jQuery('#{$this->uniqueId}').plupload({
+		runtimes : '{$this->arguments['runtimes']}',
+		url : '{$url}',
+		max_file_size : '{$this->arguments['maxFileSize']}',
+		chunk_size : '{$this->arguments['chunkSize']}',
+		unique_names : false,
+		autostart: true,
+		buttons: {
+			browse: true,
+			start: false,
+			stop: false
+		},
 		filters : {$filterJson},
-FILTERS;
+		flash_swf_url : '{$flashFile}',
+		silverlight_xap_url : '{$silverLightFile}',
+		{$resize}
+		preinit: {$preinit},
+		init: {$init}
+	});
+	FED.FileListEditor.addFileToSavedList({$filesJson});
+	jQuery('#{$this->editorId} a.remove').click(FED.FileListEditor.removeFileFromSavedList);
+	//jQuery('#plupload_filelist').append(jQuery('#{$this->editorId}').parents('table:first'));
 
+});
+", 'js');
+
+		$style = <<< STYLE
+.fed-plupload { margin-bottom: 8px; }
+.fed-plupload td,
+.fed-plupload table { border-spacing: 0px !important; border-collapse: collapse !important; }
+.plupload_container { padding: 0px; }
+.plupload_header_content { padding-left: 8px; background-image: none !important; }
+STYLE;
+		$this->documentHead->includeHeader($style, 'css');
+	}
+
+	public function getUrl() {
 		$formObject = $this->viewHelperVariableContainer->get('Tx_Fluid_ViewHelpers_FormViewHelper', 'formObject');
 		$propertyName = $this->arguments['property'];
 		if ($this->arguments['url']) {
@@ -221,40 +301,11 @@ FILTERS;
 			);
 			$url = $this->controllerContext->getUriBuilder()
 				->uriFor('upload', $arguments, $controllerName, $extensionName, $pluginName);
-			$url = '/' . $url; // Why, O why, must baseUrl not be respected in browsers?
+			$url = '/' . $url; // Why, O why, must baseUrl not be respected in JS in browsers?
 		} else {
 			throw new Tx_Fluid_Exception('Multiupload ViewHelper requires either url argument or associated form object', 1312051527);
 		}
-
-		$preinit = $this->getPreinitEventsJson();
-		$init = $this->getInitEventsJson();
-		$script = <<< SCRIPT
-jQuery(document).ready(function() {
-    jQuery("#{$this->uniqueId}").plupload({
-        runtimes : '{$this->arguments['runtimes']}',
-        url : '{$url}',
-        max_file_size : '{$this->arguments['maxFileSize']}',
-        chunk_size : '{$this->arguments['chunkSize']}',
-        unique_names : true,
-        {$resize}
-		{$filter2s}
-        flash_swf_url : '{$flashFile}',
-        silverlight_xap_url : '{$silverLightFile}',
-		preinit: {$preinit},
-		init: {$init}
-    });
-});
-SCRIPT;
-		$style = <<< STYLE
-.fed-plupload { height: 330px; position: relative; }
-.fed-plupload td,
-.fed-plupload table { border-spacing: 2px !important; border-collapse: collapse !important; }
-STYLE;
-		$styleFile = t3lib_extMgm::siteRelPath('fed') . 'Resources/Public/Javascript/com/plupload/jquery.ui.plupload/css/jquery.ui.plupload.css';
-		$this->documentHead->includeFiles($scriptFiles);
-		$this->documentHead->includeFile($styleFile);
-		$this->documentHead->includeHeader($script, 'js');
-		$this->documentHead->includeHeader($style, 'css');
+		return $url;
 	}
 
 }

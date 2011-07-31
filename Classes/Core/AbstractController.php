@@ -239,11 +239,9 @@ abstract class Tx_Fed_Core_AbstractController extends Tx_Extbase_MVC_Controller_
 				$contentType = $_SERVER["HTTP_CONTENT_TYPE"];
 			} else if (isset($_SERVER["CONTENT_TYPE"])) {
 				$contentType = $_SERVER["CONTENT_TYPE"];
-			} else {
-				$contentType = 'application/octet-stream';
 			}
+			$targetDir = PATH_site . $this->infoService->getUploadFolder($objectType, $propertyName);
 			$sourceFilename = $_FILES['file']['tmp_name'];
-			$this->infoService->getUploadFolder($objectType, $propertyName);
 			$chunk = isset($_REQUEST["chunk"]) ? $_REQUEST["chunk"] : 0;
 			$chunks = isset($_REQUEST["chunks"]) ? $_REQUEST["chunks"] : 0;
 			$filename = isset($_REQUEST["name"]) ? $_REQUEST["name"] : '';
@@ -263,7 +261,7 @@ abstract class Tx_Fed_Core_AbstractController extends Tx_Extbase_MVC_Controller_
 			} else {
 				$newFilename = $this->fileService->copyChunk($sourceFilename, $targetDir, $filename, $chunk);
 			}
-			echo $this->jsonService->getRpcResponse($newFilename);
+			echo $this->jsonService->getRpcResponse(basename($newFilename));
 		} catch (Exception $e) {
 			echo $this->jsonService->getRpcError($e);
 		}

@@ -209,7 +209,7 @@ class Tx_Fed_Service_File implements t3lib_Singleton {
 		$pathinfo = pathinfo($destinationFilename);
 		$desiredFilename = $pathinfo['basename'] != '' ? $pathinfo['basename'] : basename($sourceFilename);
 		$newFilename = $fileFunctions->getUniqueName($desiredFilename, $pathinfo['dirname']);
-		$targetFile = PATH_site . $newFilename;
+		$targetFile = $newFilename;
 		$copied = copy($sourceFilename, $targetFile);
 		if ($copied === FALSE) {
 			throw new Exception('Could not copy file ' . $sourceFilename . ' to ' . $targetFile, 1311895454);
@@ -254,8 +254,8 @@ class Tx_Fed_Service_File implements t3lib_Singleton {
 	 * @return array
 	 */
 	public function getFileCopyPointers($sourceFileName, $targetDir, $filename, $chunk=0) {
-		$out = fopen($targetDir . DIRECTORY_SEPARATOR . $filename, $chunk == 0 ? "wb" : "ab");
 		$in = fopen($sourceFilename, "rb");
+		$out = fopen($targetDir . DIRECTORY_SEPARATOR . $filename, $chunk == 0 ? "wb" : "ab");
 		if ($out === FALSE) {
 			throw new Exception('Failed to open output stream', 102);
 		} else if ($in === FALSE) {
