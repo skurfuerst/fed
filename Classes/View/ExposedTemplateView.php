@@ -10,7 +10,11 @@ class Tx_Fed_View_ExposedTemplateView extends Tx_Fluid_View_StandaloneView {
 		$parsedTemplate = $this->templateParser->parse($this->templateSource);
 		$this->startRendering(Tx_Fluid_View_AbstractTemplateView::RENDERING_TEMPLATE, $parsedTemplate, $this->baseRenderingContext);
 		if ($parsedTemplate->getVariableContainer()->exists($name) === FALSE) {
-			return NULL;
+			if ($this->baseRenderingContext->getTemplateVariableContainer()->exists($name)) {
+				return $this->baseRenderingContext->getTemplateVariableContainer()->get($name);
+			} else {
+				return NULL;
+			}
 		}
 		$value = $parsedTemplate->getVariableContainer()->get($name);
 		if ($value instanceof Tx_Fluid_Core_Parser_SyntaxTree_ViewHelperNode) {
