@@ -179,7 +179,7 @@ class Tx_Fed_ViewHelpers_IfViewHelper extends Tx_Fluid_Core_ViewHelper_AbstractC
 		$evaluationCondition = $condition;
 		$evaluationCondition = trim($condition, ';');
 		$evaluationExpression = '$evaluation = (bool) (' . $evaluationCondition . ');';
-		eval($evaluationExpression);
+		@eval($evaluationExpression);
 		if ($evaluation === NULL) {
 			throw new Exception('Syntax error while analyzing computed IfViewHelper expression: ' . $evaluationExpression, 1309537403);
 			return $this->renderElseChild();

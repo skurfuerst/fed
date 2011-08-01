@@ -49,7 +49,7 @@ class Tx_Fed_ViewHelpers_MathViewHelper extends Tx_Fluid_ViewHelpers_ImageViewHe
 			$expression = $this->renderChildren();
 		}
 		$evalString = "\$number = floatval($expression);";
-		eval($evalString);
+		@eval($evalString);
 		if ($this->arguments['as']) {
 			if ($this->templateVariableContainer->exists($this->arguments['as'])) {
 				$this->templateVariableContainer->remove($this->arguments['as']);
