@@ -25,7 +25,7 @@ FED.FileListEditor = {
 			return true;
 		};
 		jQuery('#pleditor').append("<tr class='plupload_delete ui-state-default plupload_file'>" +
-			"<td class='plupload_cell plupload_file_name'>" + file.name + "</td>" +
+			"<td class='plupload_cell plupload_file_name'><span>" + file.name + "</span></td>" +
 			"<td class='plupload_cell plupload_file_status'>Uploaded</td>" +
 			"<td class='plupload_cell plupload_file_size'>" + plupload.formatSize(file.size) + "</td>" +
 			"<td class='plupload_cell'><div class='ui-icon ui-icon-circle-minus remove'></div></td>" +
@@ -40,7 +40,7 @@ FED.FileListEditor = {
 
 	removeFileFromSavedList: function() {
 		var row = jQuery(this).parents('tr:first');
-		var filename = row.find('.plupload_file_name').html().trim();
+		var filename = row.find('.plupload_file_name span').html().trim();
 		if (filename.length < 1) {
 			return false;
 		};

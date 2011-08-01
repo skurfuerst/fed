@@ -125,7 +125,7 @@ class Tx_Fed_ViewHelpers_Form_MultiUploadViewHelper extends Tx_Fluid_ViewHelpers
 			'<div class="fed-plupload plupload_container">',
 				'<div id="' . $this->uniqueId . '" class=""></div>',
 			'</div>',
-			'<div class="fed-upload">',
+			'<div class="fed-upload existing">',
 				'<div class="">',
 					'<div class="ui-state-default ui-widget-header">',
 						'<div class="plupload_header_content_list">',
@@ -136,12 +136,11 @@ class Tx_Fed_ViewHelpers_Form_MultiUploadViewHelper extends Tx_Fluid_ViewHelpers
 					'<div class="fed-plupload">',
 						'<table class="plupload_filelist">',
 							'<tbody>',
-								'<tr class="ui-widget-header plupload_filelist_header">',
+								'<tr class="ui-widget-header plupload_filelist_header plupload_file">',
 									'<td class="plupload_cell plupload_file_name">Saved files</td>',
 									'<td class="plupload_cell plupload_file_status">Status</td>',
 									'<td class="plupload_cell plupload_file_size">Size</td>',
-									'<td class="plupload_cell"></td>',
-									'<td class="plupload_cell"></td>',
+									'<td class="plupload_cell plupload_file_action"></td>',
 								'</tr>',
 							'</tbody>',
 						'</table>',
@@ -256,10 +255,10 @@ jQuery(document).ready(function() {
 		max_file_size : '{$this->arguments['maxFileSize']}',
 		chunk_size : '{$this->arguments['chunkSize']}',
 		unique_names : false,
-		autostart: true,
+		autostart: false,
 		buttons: {
 			browse: true,
-			start: false,
+			start: true,
 			stop: false
 		},
 		filters : {$filterJson},
@@ -270,8 +269,15 @@ jQuery(document).ready(function() {
 		init: {$init}
 	});
 	FED.FileListEditor.addFileToSavedList({$filesJson});
+	var tableHeader = jQuery('#{$this->uniqueId} .plupload_filelist:first');
+	tableHeader.find('.plupload_file_action').remove();
+	jQuery('#{$this->editorId}').parents('table:first').children().appendTo(tableHeader);
+	jQuery('.fed-upload.existing').hide();
 	jQuery('#{$this->editorId} .remove').click(FED.FileListEditor.removeFileFromSavedList);
-	//jQuery('#plupload_filelist').append(jQuery('#{$this->editorId}').parents('table:first'));
+	jQuery('.plupload_scroll').removeClass('plupload_scroll');
+	jQuery('#{$this->uniqueId} .plupload_filelist_header').append(\"<td class='plupload_cell plupload_file_delete'></td>\");
+	jQuery('#{$this->editorId}').removeAttribute('id');
+	tableHeader.setAttribute('id', '{$this->editorId}');
 
 });
 ", 'js');
@@ -280,7 +286,12 @@ jQuery(document).ready(function() {
 .fed-plupload { margin-bottom: 8px; }
 .fed-plupload td,
 .fed-plupload table { border-spacing: 0px !important; border-collapse: collapse !important; }
+.plupload_filelist_footer .plupload_file_size,
+.plupload_filelist_footer .plupload_file_status { display: none !important; }
+.plupload_buttons { white-space: nowrap; }
 .plupload_container { padding: 0px; }
+.plupload_file_name { overflow: visible; }
+.plupload_file_action { display: table-cell; width: 25px; }
 .plupload_header_content,
 .plupload_header_content_list { padding-left: 8px; background-image: none !important; min-height: 58px; color: #FFFFFF; }
 STYLE;
