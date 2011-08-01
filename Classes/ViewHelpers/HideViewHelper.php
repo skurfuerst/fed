@@ -36,13 +36,18 @@
  */
 class Tx_Fed_ViewHelpers_HideViewHelper extends Tx_Fluid_ViewHelpers_ImageViewHelper {
 
-
+	/**
+	 * Initialize
+	 */
 	public function initializeArguments() {
 		$this->registerArgument('disabled', 'boolean', 'If TRUE, renders content - use to quickly enable/disable Fluid code', FALSE, FALSE);
 	}
 
+	/**
+	 * @return string
+	 */
 	public function render() {
-		if ($this->arguments['disabled'] === FALSE) {
+		if ($this->arguments['disabled'] === TRUE) {
 			return $this->renderChildren();
 		} else {
 			$this->renderChildren();
