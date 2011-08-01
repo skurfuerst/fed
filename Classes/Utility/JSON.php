@@ -111,7 +111,9 @@ class Tx_Fed_Utility_JSON implements t3lib_Singleton {
 	public function getRpcResponse($payload=NULL) {
 		$data = array(
 			'jsonrpc' => '2.0',
-			'result' => $payload,
+			'result' => array(
+				'name' => basename($payload),
+			),
 			'id' => 'id'
 		);
 		return $this->encode($data);;

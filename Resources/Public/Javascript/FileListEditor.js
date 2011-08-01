@@ -5,6 +5,8 @@ if (typeof FED == 'undefined') {
 FED.FileListEditor = {
 
 	onFileUploaded: function(up, file, info) {
+		var response = jQuery.parseJSON(info.response).result;
+		file.name = response.name;
 		FED.FileListEditor.addFileToSavedList(file, info);
 		up.removeFile(file);
 		return true;
@@ -22,12 +24,12 @@ FED.FileListEditor = {
 			};
 			return true;
 		};
-		jQuery('#pleditor').append("<tr class='plupload_delete ui-state-default plupload_file'>\
-					<td class='plupload_cell plupload_file_name'>" + file.name + "</td>\
-					<td class='plupload_cell plupload_file_status'></td>\
-					<td class='plupload_cell plupload_file_size'>" + plupload.formatSize(file.size) + "</td>\
-					<td class='plupload_cell plupload_file_delete'><a href='javascript:;' class='remove'>REMOVE</a></td>\
-			</tr>");
+		jQuery('#pleditor').append("<tr class='plupload_delete ui-state-default plupload_file'>" +
+			"<td class='plupload_cell plupload_file_name'>" + file.name + "</td>" +
+			"<td class='plupload_cell plupload_file_status'>Uploaded</td>" +
+			"<td class='plupload_cell plupload_file_size'>" + plupload.formatSize(file.size) + "</td>" +
+			"<td class='plupload_cell'><div class='ui-icon ui-icon-circle-minus remove'></div></td>" +
+			"</tr>");
 		if (!file.existing) {
 			var files = FED.FileListEditor.getFieldValue();
 			files.push(file.name);
@@ -41,17 +43,17 @@ FED.FileListEditor = {
 		var filename = row.find('.plupload_file_name').html().trim();
 		if (filename.length < 1) {
 			return false;
-		}
+		};
 		var index;
 		var updated = [];
 		var existing = FED.FileListEditor.getFieldValue();
 		for (index in existing) {
 			if (existing[index] != filename) {
-				updated.push(filename);
-			}
-		}
+				updated.push(existing[index]);
+			};
+		};
 		FED.FileListEditor.setFieldValue(updated);
-		row.fadeOut(500);
+		row.fadeOut(250);
 		return true;
 	},
 

@@ -125,10 +125,10 @@ class Tx_Fed_ViewHelpers_Form_MultiUploadViewHelper extends Tx_Fluid_ViewHelpers
 			'<div class="fed-plupload plupload_container">',
 				'<div id="' . $this->uniqueId . '" class=""></div>',
 			'</div>',
-			'<div class="fed-upload plupload_container">',
-				'<div class="plupload">',
-					'<div class="ui-state-default ui-widget-header plupload_header">',
-						'<div class="plupload_header_content">',
+			'<div class="fed-upload">',
+				'<div class="">',
+					'<div class="ui-state-default ui-widget-header">',
+						'<div class="plupload_header_content_list">',
 							'<div class="plupload_header_title">Saved files</div>',
 							'<div class="plupload_header_text">You can drag and drop to sort the list</div>',
 						'</div>',
@@ -138,9 +138,10 @@ class Tx_Fed_ViewHelpers_Form_MultiUploadViewHelper extends Tx_Fluid_ViewHelpers
 							'<tbody>',
 								'<tr class="ui-widget-header plupload_filelist_header">',
 									'<td class="plupload_cell plupload_file_name">Saved files</td>',
-									'<td class="plupload_cell plupload_file_status"></td>',
+									'<td class="plupload_cell plupload_file_status">Status</td>',
 									'<td class="plupload_cell plupload_file_size">Size</td>',
-									'<td class="plupload_cell plupload_file_action"></td>',
+									'<td class="plupload_cell"></td>',
+									'<td class="plupload_cell"></td>',
 								'</tr>',
 							'</tbody>',
 						'</table>',
@@ -269,7 +270,7 @@ jQuery(document).ready(function() {
 		init: {$init}
 	});
 	FED.FileListEditor.addFileToSavedList({$filesJson});
-	jQuery('#{$this->editorId} a.remove').click(FED.FileListEditor.removeFileFromSavedList);
+	jQuery('#{$this->editorId} .remove').click(FED.FileListEditor.removeFileFromSavedList);
 	//jQuery('#plupload_filelist').append(jQuery('#{$this->editorId}').parents('table:first'));
 
 });
@@ -280,7 +281,8 @@ jQuery(document).ready(function() {
 .fed-plupload td,
 .fed-plupload table { border-spacing: 0px !important; border-collapse: collapse !important; }
 .plupload_container { padding: 0px; }
-.plupload_header_content { padding-left: 8px; background-image: none !important; }
+.plupload_header_content,
+.plupload_header_content_list { padding-left: 8px; background-image: none !important; min-height: 58px; color: #FFFFFF; }
 STYLE;
 		$this->documentHead->includeHeader($style, 'css');
 	}
