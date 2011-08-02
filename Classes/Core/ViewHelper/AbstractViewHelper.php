@@ -56,6 +56,11 @@ abstract class Tx_Fed_Core_ViewHelper_AbstractViewHelper extends Tx_Fluid_Core_V
 	protected $flexform;
 
 	/**
+	 * @var Tx_Extbase_Object_ObjectManager
+	 */
+	protected $objectManager;
+
+	/**
 	 * @var type
 	 */
 	private $registeredArguments = array();
@@ -87,6 +92,13 @@ abstract class Tx_Fed_Core_ViewHelper_AbstractViewHelper extends Tx_Fluid_Core_V
 	 */
 	public function injectFlexFormService(Tx_Fed_Utility_FlexForm $flexform) {
 		$this->flexform = $flexform;
+	}
+
+	/**
+	 * @param Tx_Extbase_Object_ObjectManager $objectManager
+	 */
+	public function injectObjectManager(Tx_Extbase_Object_ObjectManager $objectManager) {
+		$this->objectManager = $objectManager;
 	}
 
 	/**
