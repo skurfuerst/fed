@@ -8,4 +8,4 @@
 .plupload_file_name { overflow: visible; }
 .plupload_file_action { display: table-cell; width: 25px; }
 .plupload_header_content,
-.plupload_header_content_list { padding-left: 8px; background-image: none !important; min-height: 58px; color: #FFFFFF; }
+.plupload_header_content_list { padding-left: 8px; background-image: none !important; min-height: 58px; }
