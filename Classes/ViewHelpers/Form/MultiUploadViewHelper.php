@@ -108,6 +108,9 @@ class Tx_Fed_ViewHelpers_Form_MultiUploadViewHelper extends Tx_Fluid_ViewHelpers
 		$this->registerArgument('uploadfolder', 'string', 'If specified, uses this site relative path as target upload folder. If a form object exists and this argument is not present, TCA uploadfolder is used as defined in the named field\'s definition');
 		$this->registerArgument('preinit', 'array', 'Array of preinit event listener methods - see plupload documentation for reference. The default event which sets the contents of the hidden field is always fired.', FALSE, array());
 		$this->registerArgument('init', 'array', 'Array of init event listener methods - see plupload documentation for reference. The default event which sets the contents of the hidden field is always fired.', FALSE, array());
+		$this->registerArgument('header', 'boolean', 'If FALSE, suppresses the header which is normally added to the upload widget', FALSE, TRUE);
+		$this->registerArgument('headerTitle', 'string', 'Text for header title, if different from default');
+		$this->registerArgument('headerSubtitle', 'string', 'Text for header subtitle, if different from default');
 	}
 
 	/**
@@ -122,36 +125,7 @@ class Tx_Fed_ViewHelpers_Form_MultiUploadViewHelper extends Tx_Fluid_ViewHelpers
 		$this->setErrorClassAttribute();
 		$html = array(
 			'<input id="' . $this->uniqueId . '-field" type="hidden" name="' . $name . '" value="' . $value . '" />',
-			'<div class="fed-plupload plupload_container">',
-				'<div id="' . $this->uniqueId . '" class=""></div>',
-			'</div>',
-			'<div class="fed-upload existing">',
-				'<div class="">',
-					'<div class="ui-state-default ui-widget-header">',
-						'<div class="plupload_header_content_list">',
-							'<div class="plupload_header_title">Saved files</div>',
-							'<div class="plupload_header_text">You can drag and drop to sort the list</div>',
-						'</div>',
-					'</div>',
-					'<div class="fed-plupload">',
-						'<table class="plupload_filelist">',
-							'<tbody>',
-								'<tr class="ui-widget-header plupload_filelist_header plupload_file">',
-									'<td class="plupload_cell plupload_file_name">Saved files</td>',
-									'<td class="plupload_cell plupload_file_status">Status</td>',
-									'<td class="plupload_cell plupload_file_size">Size</td>',
-									'<td class="plupload_cell plupload_file_action"></td>',
-								'</tr>',
-							'</tbody>',
-						'</table>',
-						'<div class="ui-widget-content plupload_scroll">',
-							'<table class="plupload_filelist_content">',
-							'<tbody id="' . $this->editorId . '"></tbody>',
-							'</table>',
-						'</div>',
-					'</div>',
-				'</div>',
-			'</div>',
+			'<div id="' . $this->uniqueId . '" class="fed-plupload plupload_container"></div>',
 		);
 		$this->tag->setContent(implode(chr(10), $html));
 		$this->addScript();
@@ -193,9 +167,9 @@ class Tx_Fed_ViewHelpers_Form_MultiUploadViewHelper extends Tx_Fluid_ViewHelpers
 
 	/**
 	 * Adds necessary scripts to header
+	 * @return void
 	 */
 	protected function addScript() {
-
 		$scriptPath = t3lib_extMgm::siteRelPath('fed') . 'Resources/Public/Javascript/';
 		$pluploadPath = $scriptPath . 'com/plupload/js/';
 		$value = $this->getPropertyValue();
@@ -217,22 +191,25 @@ class Tx_Fed_ViewHelpers_Form_MultiUploadViewHelper extends Tx_Fluid_ViewHelpers
 			$scriptPath . 'FileListEditor.js'
 		);
 
-		foreach ($files as $file) {
-			$contents = file_get_contents($file);
-			$this->documentHead->includeHeader($contents, 'js');
-		}
+		$this->documentHead->includeFiles(array(
+			$scriptPath . 'GearsInit.js',
+			$pluploadPath . 'plupload.full.js',
+			$pluploadPath . 'jquery.plupload.queue/jquery.plupload.queue.js',
+			$pluploadPath . 'jquery.ui.plupload/jquery.ui.plupload.js',
+			$scriptPath . 'FileListEditor.js'
+		));
 
 		$this->documentHead->includeFiles(array(
 			t3lib_extMgm::siteRelPath('fed') . 'Resources/Public/Javascript/com/plupload/js/jquery.ui.plupload/css/jquery.ui.plupload.css',
 			t3lib_extMgm::siteRelPath('fed') . 'Resources/Public/Javascript/com/plupload/js/jquery.plupload.queue/css/jquery.plupload.queue.css',
+			t3lib_extMgm::siteRelPath('fed') . 'Resources/Public/Stylesheet/MultiUpload.css'
 		));
 
+		// create JSON objects for each existing file
 		foreach ($existingFiles as $k=>$file) {
 			$size = (string) intval(filesize(PATH_site . $uploadFolder . DIRECTORY_SEPARATOR . $file));
 			$existingFiles[$k] = "{id: 'f{$k}', name: '{$file}', size: {$size}, percent: 100, completed: {$size}, status: plupload.QUEUED, existing: true}";
 		}
-
-		$filesJson = "[" . implode(', ', $existingFiles) . "]";
 
 		if ($this->arguments['resizeWidth'] > 0 || $this->arguments['resizeHeight'] > 0) {
 			if ($this->arguments['resizeWidth'] > 0) {
@@ -243,9 +220,20 @@ class Tx_Fed_ViewHelpers_Form_MultiUploadViewHelper extends Tx_Fluid_ViewHelpers
 			}
 			$resize = "resize : { width: {$resizeWidth}, height: {$resizeHeight}, quality : {$this->arguments['resizeQuality']}},";
 		}
+		if ($this->arguments['header'] === FALSE) {
+			$disableHeader = "jQuery('.plupload_header').hide();";
+		}
+		if ($this->arguments['headerTitle']) {
+			$setHeaderTitle = "jQuery('#{$this->uniqueId} .plupload_header_title').html('{$this->arguments['headerTitle']}');";
+		}
+		if ($this->arguments['headerSubtitle']) {
+			$setHeaderSubtitle = "jQuery('#{$this->uniqueId} .plupload_header_text').html('{$this->arguments['headerSubtitle']}');";
+		}
+
 		$url = $this->getUrl();
 		$preinit = $this->getPreinitEventsJson();
 		$init = $this->getInitEventsJson();
+		$filesJson = "[" . implode(', ', $existingFiles) . "]";
 		$filterJson = $this->jsonService->encode($this->arguments['filters']);
 		$this->documentHead->includeHeader("
 jQuery(document).ready(function() {
@@ -255,49 +243,39 @@ jQuery(document).ready(function() {
 		max_file_size : '{$this->arguments['maxFileSize']}',
 		chunk_size : '{$this->arguments['chunkSize']}',
 		unique_names : false,
-		autostart: false,
-		buttons: {
+		autostart : true,
+		buttons : {
 			browse: true,
-			start: true,
+			start: false,
 			stop: false
 		},
 		filters : {$filterJson},
 		flash_swf_url : '{$flashFile}',
 		silverlight_xap_url : '{$silverLightFile}',
 		{$resize}
-		preinit: {$preinit},
-		init: {$init}
+		preinit : {$preinit},
+		init : {$init}
 	});
+	// add our existing files but inside the header so plupload doesn't clear them out on each refresh
+	var tableHeader = jQuery('#{$this->uniqueId} .plupload_filelist:first')
+		.attr('id', '{$this->editorId}')
+		.find('.remove').live('click', FED.FileListEditor.removeFileFromSavedList);
 	FED.FileListEditor.addFileToSavedList({$filesJson});
-	var tableHeader = jQuery('#{$this->uniqueId} .plupload_filelist:first');
-	tableHeader.find('.plupload_file_action').remove();
-	jQuery('#{$this->editorId}').parents('table:first').children().appendTo(tableHeader);
-	jQuery('.fed-upload.existing').hide();
-	jQuery('#{$this->editorId} .remove').click(FED.FileListEditor.removeFileFromSavedList);
-	jQuery('.plupload_scroll').removeClass('plupload_scroll');
+	jQuery('.plupload_scroll').removeClass('plupload_scroll'); // don't make our elements unnecessarily tall in the DOM, please!
+	// add an empty column to trick plupload into proper column alignment on existing file rows
 	jQuery('#{$this->uniqueId} .plupload_filelist_header').append(\"<td class='plupload_cell plupload_file_delete'></td>\");
-	jQuery('#{$this->editorId}').removeAttribute('id');
-	tableHeader.setAttribute('id', '{$this->editorId}');
-
+	{$disableHeader}
+	{$setHeaderTitle}
+	{$setHeaderSubtitle}
 });
 ", 'js');
-
-		$style = <<< STYLE
-.fed-plupload { margin-bottom: 8px; }
-.fed-plupload td,
-.fed-plupload table { border-spacing: 0px !important; border-collapse: collapse !important; }
-.plupload_filelist_footer .plupload_file_size,
-.plupload_filelist_footer .plupload_file_status { display: none !important; }
-.plupload_buttons { white-space: nowrap; }
-.plupload_container { padding: 0px; }
-.plupload_file_name { overflow: visible; }
-.plupload_file_action { display: table-cell; width: 25px; }
-.plupload_header_content,
-.plupload_header_content_list { padding-left: 8px; background-image: none !important; min-height: 58px; color: #FFFFFF; }
-STYLE;
-		$this->documentHead->includeHeader($style, 'css');
 	}
 
+	/**
+	 * Returns a URL appropriate for the current controller and Domain Object
+	 * to use the "upload" action
+	 * @return string
+	 */
 	public function getUrl() {
 		$formObject = $this->viewHelperVariableContainer->get('Tx_Fluid_ViewHelpers_FormViewHelper', 'formObject');
 		$propertyName = $this->arguments['property'];
