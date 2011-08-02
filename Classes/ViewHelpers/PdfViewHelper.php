@@ -76,7 +76,7 @@ class Tx_Fed_ViewHelpers_PdfViewHelper extends Tx_Fed_Core_ViewHelper_AbstractVi
 		$arguments = $this->pdfService->getViewHelperArguments();
 		$defined = array();
 		foreach ($arguments as $name=>$config) {
-			if ($this->arguments->hasArgument($name)) {
+			if ($this->arguments[$name]) {
 				$defined[$name] = $config;
 			}
 		}

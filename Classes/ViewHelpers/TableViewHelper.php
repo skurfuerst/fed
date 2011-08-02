@@ -118,8 +118,8 @@ class Tx_Fed_ViewHelpers_TableViewHelper extends Tx_Fed_Core_ViewHelper_Abstract
 		}
 
 		$headers = $this->arguments['headers'];
-		
-		if ($this->arguments->hasArgument('objects')) {
+
+		if ($this->arguments['objects']) {
 			$objects = $this->arguments['objects'];
 			if (is_array($objects) == FALSE) {
 				$objects = $objects->toArray();
@@ -151,7 +151,7 @@ class Tx_Fed_ViewHelpers_TableViewHelper extends Tx_Fed_Core_ViewHelper_Abstract
 			$tbody = $this->renderData($data, $properties);
 		} else if ($this->arguments['data']) {
 			$tbody = $this->renderData($this->arguments['data'], $properties);
-		} else if ($this->arguments->hasArgument('objects')) {
+		} else if ($this->arguments['objects']) {
 			$tbody = $this->renderObjects($objects);
 		} else {
 			$tbody = $this->renderChildren();
@@ -220,7 +220,7 @@ class Tx_Fed_ViewHelpers_TableViewHelper extends Tx_Fed_Core_ViewHelper_Abstract
 	 * @return string
 	 */
 	private function renderObjects($objects) {
-		if ($this->arguments->hasArgument('properties') === FALSE) {
+		if ($this->arguments['properties'] === FALSE) {
 			$properties = $this->arguments['properties'];
 		} else {
 			$values = $this->getValues($objects[key($objects)]);
@@ -383,7 +383,7 @@ class Tx_Fed_ViewHelpers_TableViewHelper extends Tx_Fed_Core_ViewHelper_Abstract
 		$bInfo = $this->jsBoolean($this->arguments['bInfo']);
 		$bSaveState = $this->jsBoolean($this->arguments['bSaveState']);
 		$oLanguage = json_encode($this->arguments['oLanguage']);
-		if ($this->arguments->hasArgument('instanceName')) {
+		if ($this->arguments['instanceName']) {
 			$instanceName = $this->arguments['instanceName'];
 			if ($instanceName == '') {
 				$instanceName = 'tableSorter';

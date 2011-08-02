@@ -98,7 +98,7 @@ class Tx_Fed_ViewHelpers_ImageViewHelper extends Tx_Fluid_ViewHelpers_ImageViewH
 		$pathinfo = pathinfo($this->arguments['src']);
 		if ($pathinfo['filename'] === '*') {
 			$images = $this->documentHead->getFilenamesOfType($pathinfo['dirname'], $pathinfo['extension']);
-		} else if ($this->arguments->hasArgument('path')) {
+		} else if ($this->arguments['path']) {
 			$src = trim(trim($this->arguments['src']), ',');
 			if (strlen($src) === 0) {
 				return '';
@@ -120,8 +120,8 @@ class Tx_Fed_ViewHelpers_ImageViewHelper extends Tx_Fluid_ViewHelpers_ImageViewH
 		if ($this->arguments['limit'] > 0) {
 			$images = array_slice($images, 0, $this->arguments['limit']);
 		}
-		
-		
+
+
 		if (count($images) === 0) {
 			return '';
 		}

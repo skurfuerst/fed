@@ -103,13 +103,13 @@ class Tx_Fed_ViewHelpers_SassViewHelper extends Tx_Fed_Core_ViewHelper_AbstractV
 	 */
 	public function render() {
 		$content = $this->renderChildren();
-		if ($this->arguments->hasArgument('path')) {
+		if ($this->arguments['path']) {
 			$GLOBALS['fedSASS']['path'] = $this->arguments['path'];
 		}
-		if ($this->arguments->hasArgument('ttl')) {
+		if ($this->arguments['ttl']) {
 			$GLOBALS['fedSASS']['ttl'] = $this->arguments['ttl'];
 		}
-		if ($this->arguments->hasArgument('target')) {
+		if ($this->arguments['target']) {
 			$GLOBALS['fedSASS']['target'] = $this->arguments['target'];
 		}
 		if ($this->arguments['mode'] === 'config') {

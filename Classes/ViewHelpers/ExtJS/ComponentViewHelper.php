@@ -56,7 +56,7 @@ class Tx_Fed_ViewHelpers_ExtJS_ComponentViewHelper extends Tx_Fed_Core_ViewHelpe
 		$this->templateVariableContainer->add('id', $this->arguments['id']);
 		$js = $this->renderChildren();
 		$this->templateVariableContainer->remove('id');
-		if ($this->arguments->hasArgument('src')) {
+		if ($this->arguments['src']) {
 			$this->documentHead->includeFile($this->arguments['src']);
 		}
 		if (strlen(trim($js)) > 0) {

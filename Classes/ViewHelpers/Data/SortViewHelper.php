@@ -56,7 +56,7 @@ class Tx_Fed_ViewHelpers_Data_SortViewHelper extends Tx_Fluid_Core_ViewHelper_Ab
 		} else {
 			throw new Exception('Nothing to sort, SortViewHelper has no purpose in life, performing LATE term self-abortion');
 		}
-		if ($this->arguments->hasArgument('as')) {
+		if ($this->arguments['as']) {
 			if ($this->templateVariableContainer->exists($this->arguments['as'])) {
 				$this->templateVariableContainer->remove($this->arguments['as']);
 			}

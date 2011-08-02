@@ -242,7 +242,7 @@ CSS;
 		$defs = $this->prepareArguments();
 		foreach ($defs as $def) {
 			$name = $def->getName();
-			if ($this->arguments->hasArgument($name)) {
+			if ($this->arguments[$name]) {
 				$args[$name] = $this->arguments[$name];
 			}
 		}
