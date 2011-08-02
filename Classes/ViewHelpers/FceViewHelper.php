@@ -58,7 +58,8 @@ implements Tx_Fluid_Core_ViewHelper_Facets_PostParseInterface {
 		if (is_object($viewHelperArguments['enabled'])) {
 			$object = $viewHelperArguments['enabled'];
 			if (method_exists($object, 'evaluate')) {
-				$enabled = $object->evaluate();
+				#$enabled = $object->evaluate($);
+				$enabled = TRUE;
 			} else if (method_exists($object, 'getText')) {
 				$enabled = $object->getText();
 			}
