@@ -17,9 +17,9 @@ td.spacer { width: 8px; height: 8px; }
 
 <table style="width: 100%; margin-top: 8px;" cellspacing="0" cellpadding="0">
 	<tbody>
-	<f:for each="{grid.rows}" as="gridrow" iteration="rowIteration">
+	<f:for each="{grid}" as="gridrow" iteration="rowIteration">
 		<tr>
-		<f:for each="{gridrow.columns}" as="gridcolumn" iteration="columnIteration">
+		<f:for each="{gridrow}" as="gridcolumn" iteration="columnIteration">
 			<td colspan="{gridcolumn.colspan}" rowspan="{gridcolumn.rowspan}" style="width: {gridcolumn.width};">
 			<f:for each="{gridcolumn.areas}" as="area">
 				<fed:be.contentArea area="{area.name}" row="{row}">

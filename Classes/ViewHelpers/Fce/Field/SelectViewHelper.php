@@ -37,6 +37,9 @@
 
 class Tx_Fed_ViewHelpers_Fce_Field_SelectViewHelper extends Tx_Fed_ViewHelpers_Fce_FieldViewHelper {
 
+	/**
+	 * Initialize
+	 */
 	public function initializeArguments() {
 		parent::initializeArguments();
 		$this->registerArgument('validate', 'string', 'FlexForm-type validation configuration for this input', FALSE, 'trim');
@@ -52,13 +55,18 @@ class Tx_Fed_ViewHelpers_Fce_Field_SelectViewHelper extends Tx_Fed_ViewHelpers_F
 		$this->registerArgument('itemsProcFunc', 'string', 'Optional class name of data provider to fill select options');
 	}
 
+	/**
+	 * Render method
+	 */
 	public function render() {
 		$config = $this->getFieldConfig();
-		return $config;
-		#$this->addField($config);
-		#$this->renderChildren();
+		$this->addField($config);
+		$this->renderChildren();
 	}
 
+	/**
+	 * @return array
+	 */
 	protected function getFieldConfig() {
 		$config = $this->getBaseConfig();
 		$config['type'] = 'select';

@@ -39,11 +39,11 @@ class Tx_Fed_Backend_DynamicFlexForm {
 	 */
 	protected $objectManager;
 
-
 	/**
-	 * @var Tx_Fed_Backend_FCEParser
+	 *
+	 * @var Tx_Fed_Configuration_ConfigurationManager
 	 */
-	protected $fceParser;
+	protected $configurationManager;
 
 	/**
 	 * @var Tx_Fed_Utility_FlexForm
@@ -55,15 +55,11 @@ class Tx_Fed_Backend_DynamicFlexForm {
 	 */
 	public function __construct() {
 		$this->objectManager = t3lib_div::makeInstance('Tx_Extbase_Object_ObjectManager');
-		$this->fceParser = $this->objectManager->get('Tx_Fed_Backend_FCEParser');
+		$this->configurationManager = $this->objectManager->get('Tx_Fed_Configuration_ConfigurationManager');
 		$this->flexform = $this->objectManager->get('Tx_Fed_Utility_FlexForm');
 	}
 
 	public function getFlexFormDS_postProcessDS(&$dataStructArray, $conf, &$row, $table, $fieldName) {
-		$configurationManager = t3lib_div::makeInstance('Tx_Extbase_Configuration_BackendConfigurationManager');
-		$config = $configurationManager->getTypoScriptSetup();
-		$config = Tx_Extbase_Utility_TypoScript::convertTypoScriptArrayToPlainArray($config);
-		$typoscript = $config['plugin']['tx_fed']['page'];
 		if ($table === 'pages') {
 			if ($row['layout'] < 255) {
 				return;
@@ -74,14 +70,21 @@ class Tx_Fed_Backend_DynamicFlexForm {
 			} else {
 				$extensionName = 'fed';
 			}
-			$paths = $typoscript[$extensionName];
+			$paths = $this->configurationManager->getContentConfiguration($extensionName);
 			$templatePath = $this->translatePath($paths['templateRootPath']);
 			$templateFile = PATH_site . $templatePath . '/Page/' . $action . '.html';
 			$this->readFlexFormFields($templateFile, array(), $paths, $dataStructArray, $conf, $row, $table, $fieldName);
 		} else if ($row['CType'] == 'fed_fce') {
-			$templateFile = PATH_site . $row['tx_fed_fcefile'];
+			list ($extensionName, $filename) = explode(':', $row['tx_fed_fcefile']);
 			$values = $this->flexform->convertFlexFormContentToArray($row['pi_flexform']);
-			$this->readFlexFormFields($templateFile, $values, $typoscript, $dataStructArray, $conf, $row, $table, $fieldName);
+			$paths = $this->configurationManager->getContentConfiguration($extensionName);
+			if ($paths) {
+				$filename = $paths['templateRootPath'] . $filename;
+				$filename = $this->translatePath($filename);
+			} else {
+				$filename = $row['tx_fed_fcefile'];
+			}
+			$this->readFlexFormFields($filename, $values, $typoscript, $dataStructArray, $conf, $row, $table, $fieldName);
 		} else if ($row['CType'] == 'fed_template') {
 			$templateFile = t3lib_extMgm::extPath('fed', 'Configuration/FlexForms/Template.xml');
 			$dataStructArray = t3lib_div::xml2array(file_get_contents($templateFile));
@@ -93,11 +96,14 @@ class Tx_Fed_Backend_DynamicFlexForm {
 	}
 
 	protected function readFlexFormFields($templateFile, $values, $paths, &$dataStructArray, $conf, &$row, $table, $fieldName) {
-		if (is_file($templateFile) === FALSE) {
-			$dataStructArray = array('ROOT' => array('type' => 'array', 'el' => array()));
+		if (is_file(PATH_site . $templateFile) === FALSE) {
+			$dataStructArray = array('ROOT' => array('type' => 'array', 'el' => array('void' => array('config' => 'input', 'default' => $templateFile))));
 			return;
 		}
-		$config = $this->fceParser->getFceDefinitionFromTemplate($templateFile, $values, $paths);
+
+		$view = $this->objectManager->get('Tx_Fed_View_ExposedTemplateView');
+		$view->setTemplatePathAndFilename(PATH_site . $templateFile);
+		$config = $view->getStoredVariable('Tx_Fed_ViewHelpers_FceViewHelper', 'storage', 'Configuration');
 		$flexformTemplateFile = t3lib_extMgm::extPath('fed', 'Resources/Private/Partials/AutoFlexForm.xml');
 		$template = $this->objectManager->get('Tx_Fluid_View_StandaloneView');
 		$template->setTemplatePathAndFilename($flexformTemplateFile);

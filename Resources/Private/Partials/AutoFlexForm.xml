@@ -6,13 +6,13 @@
 	<ROOT>
 	    <type>array</type>
 	    <el>
-	<f:for each="{fields}" as="field" key="name" iteration="iteration">
+	<f:for each="{fields}" as="field" iteration="iteration">
 		<f:if condition="{field.enabled}">
-			<{name}>
+			<{field.name}>
 			<TCEforms>
 				<fed:fce.renderField config="{field}" />
 			</TCEforms>
-			</{name}>
+			</{field.name}>
 		</f:if>
 	</f:for>
 	    </el>

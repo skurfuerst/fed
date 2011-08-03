@@ -2,48 +2,50 @@
 
 <f:layout name="FCE" />
 
-<fed:fce id="testfce" label="Test: General test" enabled="FALSE">
-	<fed:fce.field.input name="innerHeader" label="Inside heading" required="TRUE" />
-	<fed:fce.field.text name="basicText" label="Basic text area" rows="20" cols="40" />
-	<fed:fce.field.text name="formattedText" label="RTE text area" enableRichText="TRUE" />
-	<fed:fce.field.select name="select" label="Select box" items="{0: {0: 'value', 1: 'Label'}, 1: {0: 'value2', 1: 'Label2'}}" size="3" multiple="TRUE" />
-	<fed:fce.field.select name="selectForeign" label="Select box, foregin table" table="fe_users" condition="" />
-	<fed:fce.field.checkbox name="checkbox" label="Arbitrary checkbox" />
-	<fed:fce.field.group name="groupFile" label="Arbitraty filename" internalType="file" allowed="html,css,js" />
-	<fed:fce.field.userFunc name="codeEditor" label="Code editor" userFunc="Tx_Fed_Configuration_Wizard_FlexFormCodeEditor->renderField" />
-	<fed:fce.field.text name="tt_content.bodytext" label="tt_content Bodytext" />
+<f:section name="Configuration">
+	<fed:fce id="testfce" label="Test: General test" enabled="FALSE">
+		<fed:fce.field.input name="innerHeader" label="Inside heading" required="TRUE" />
+		<fed:fce.field.text name="basicText" label="Basic text area" rows="20" cols="40" />
+		<fed:fce.field.text name="formattedText" label="RTE text area" enableRichText="TRUE" />
+		<fed:fce.field.select name="select" label="Select box" items="{0: {0: 'value', 1: 'Label'}, 1: {0: 'value2', 1: 'Label2'}}" size="3" multiple="TRUE" />
+		<fed:fce.field.select name="selectForeign" label="Select box, foregin table" table="fe_users" condition="" />
+		<fed:fce.field.checkbox name="checkbox" label="Arbitrary checkbox" />
+		<fed:fce.field.group name="groupFile" label="Arbitraty filename" internalType="file" allowed="html,css,js" />
+		<fed:fce.field.userFunc name="codeEditor" label="Code editor" userFunc="Tx_Fed_Configuration_Wizard_FlexFormCodeEditor->renderField" />
+		<fed:fce.field.text name="tt_content.bodytext" label="tt_content Bodytext" />
 
-	<fed:fce.grid>
-		<fed:fce.grid.row>
-			<fed:fce.grid.column>
-				<fed:fce.content name="leftContent" label="Left header content" />
-			</fed:fce.grid.column>
-			<fed:fce.grid.column rowspan="2" width="25%" >
-				<fed:fce.content name="rightContent" label="Right column content" />
-			</fed:fce.grid.column>
-		</fed:fce.grid.row>
+		<fed:fce.grid>
+			<fed:fce.grid.row>
+				<fed:fce.grid.column>
+					<fed:fce.content name="leftContent" label="Left header content" />
+				</fed:fce.grid.column>
+				<fed:fce.grid.column rowspan="2" width="25%" >
+					<fed:fce.content name="rightContent" label="Right column content" />
+				</fed:fce.grid.column>
+			</fed:fce.grid.row>
 
-		<fed:fce.grid.row>
-			<fed:fce.grid.column>
-				<fed:fce.content name="leftSubContent" label="Left subparagraph column content" />
-			</fed:fce.grid.column>
-			<!-- column position taken by "rightContent" rowspan="2" -->
-		</fed:fce.grid.row>
+			<fed:fce.grid.row>
+				<fed:fce.grid.column>
+					<fed:fce.content name="leftSubContent" label="Left subparagraph column content" />
+				</fed:fce.grid.column>
+				<!-- column position taken by "rightContent" rowspan="2" -->
+			</fed:fce.grid.row>
 
-		<fed:fce.grid.row>
-			<fed:fce.grid.column colspan="2">
-				<fed:fce.content name="content" label="Content area" />
-			</fed:fce.grid.column>
-		</fed:fce.grid.row>
-	</fed:fce.grid>
+			<fed:fce.grid.row>
+				<fed:fce.grid.column colspan="2">
+					<fed:fce.content name="content" label="Content area" />
+				</fed:fce.grid.column>
+			</fed:fce.grid.row>
+		</fed:fce.grid>
 
-</fed:fce>
+	</fed:fce>
+</f:section>
 
-<f:section name="preview">
+<f:section name="Preview">
 
 </f:section>
 
-<f:section name="main">
+<f:section name="Main">
 	<fed:debug.variables />
 
 	<h1>Extended FCE Test</h1>

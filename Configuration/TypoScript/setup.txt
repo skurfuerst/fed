@@ -9,17 +9,15 @@ page.10 >
 
 [GLOBAL]
 plugin.tx_fed {
-	fce {
-		templatePaths {
-			fed = EXT:fed/Resources/Private/Elements/
-		}
+	fce.fed {
+		templateRootPath = EXT:fed/Resources/Private/Elements/
+		partialRootPath = EXT:fed/Resources/Private/Partials/
+		layoutRootPath = EXT:fed/Resources/Private/Layouts/
 	}
-	page {
-		fed {
-			templateRootPath = EXT:fed/Resources/Private/Templates/
-			partialRootPath = EXT:fed/Resources/Private/Partials/
-			layoutRootPath = EXT:fed/Resources/Private/Layouts/
-		}
+	page.fed {
+		templateRootPath = EXT:fed/Resources/Private/Pages/
+		partialRootPath = EXT:fed/Resources/Private/Partials/
+		layoutRootPath = EXT:fed/Resources/Private/Layouts/
 	}
 	view {
 		templateRootPath = {$plugin.tx_fed.view.templateRootPath}

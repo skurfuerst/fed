@@ -30,6 +30,9 @@
  */
 class Tx_Fed_Backend_PageLayoutSelector {
 
+	/**
+	 * @var array
+	 */
 	protected $recognizedFormats = array('html', 'xml', 'txt', 'json', 'js', 'css');
 
 	public function renderField(&$parameters, &$pObj) {
@@ -70,7 +73,7 @@ class Tx_Fed_Backend_PageLayoutSelector {
 
 	protected function getAvailablePageFormats() {
 		$typoscript = $this->getTyposcript();
-		$path = $typoscript['templateRootPath'] . 'Page/';
+		$path = $typoscript['templateRootPath'] . 'Page' . DIRECTORY_SEPARATOR;
 		$path = $this->translatePath($path);
 		$formats = array();
 		$dir = PATH_site . $path;
@@ -89,7 +92,7 @@ class Tx_Fed_Backend_PageLayoutSelector {
 		$typoscript = $this->getTyposcript();
 		$output = array();
 		foreach ($typoscript as $extensionName=>$group) {
-			$path = $group['templateRootPath'] . 'Page/';
+			$path = $group['templateRootPath'] . 'Page' . DIRECTORY_SEPARATOR;
 			$path = $this->translatePath($path);
 			$dir = PATH_site . $path;
 			$files = scandir($dir);
@@ -120,11 +123,8 @@ class Tx_Fed_Backend_PageLayoutSelector {
 
 	protected function getTyposcript() {
 		$objectManager = t3lib_div::makeInstance('Tx_Extbase_Object_ObjectManager');
-		$configManager = $objectManager->get('Tx_Extbase_Configuration_BackendConfigurationManager');
-		$config = $configManager->getTyposcriptSetup();
-		$config = Tx_Extbase_Utility_TypoScript::convertTypoScriptArrayToPlainArray($config);
-		$typoscript = $config['plugin']['tx_fed']['page'];
-		return $typoscript;
+		$configurationManager = $objectManager->get('Tx_Fed_Configuration_ConfigurationManager');
+		return $configurationManager->getPageConfiguration();
 	}
 
 }

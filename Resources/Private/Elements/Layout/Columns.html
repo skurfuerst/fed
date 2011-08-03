@@ -2,28 +2,33 @@
 
 <f:layout name="FCE" />
 
-<fed:comment comment="This part corrects column count and lets the FlexForm renderer
-	'feed back' on itself, rendering additional content area FCE definitions" />
-<fed:fce id="content-columns" label="Layout: Columns" enabled="TRUE">
-	<fed:fce.field.select name="columns" label="Number of columns"
-		items="{0: {0: 1}, 1: {0: 2}, 2: {0: 3}, 3: {0: 4}, 4: {0: 5}, 5: {0: 6}, 6: {0: 7}, 7: {0: 8}, 8: {0: 9}}" default="1" maxItems="1" />
-	<fed:fce.field.input name="id" label="Custom ID of element - use for special styles; must be unique on page" />
-	<fed:fce.field.userFunc name="style" label="Style editor" userFunc="Tx_Fed_Configuration_Wizard_FlexFormCodeEditor->renderField" default=""/>
-	<fed:fce.grid>
-		<fed:fce.grid.row>
-			<fed:data.func func="floor" as="gridColumnWidth"><fed:math>100/{columns}</fed:math></fed:data.func>
-			<fed:fce.grid.column width="{gridColumnWidth}%" repeat="{columns}">
-				<fed:fce.content name="column" label="Content column" />
-			</fed:fce.grid.column>
-		</fed:fce.grid.row>
-	</fed:fce.grid>
-</fed:fce>
+<f:section name="Configuration">
+	<fed:comment comment="This part corrects column count and lets the FlexForm renderer
+		'feed back' on itself, rendering additional content area FCE definitions" />
+	<f:if condition="{columns} < 1">
+		<fed:data.var name="columns" type="integer">1</fed:data.var>
+	</f:if>
+	<fed:fce id="content-columns" label="Layout: Columns" enabled="TRUE">
+		<fed:fce.field.select name="columns" label="Number of columns"
+			items="{0: {0: 1}, 1: {0: 2}, 2: {0: 3}, 3: {0: 4}, 4: {0: 5}, 5: {0: 6}, 6: {0: 7}, 7: {0: 8}, 8: {0: 9}}" default="1" maxItems="1" />
+		<fed:fce.field.input name="id" label="Custom ID of element - use for special styles; must be unique on page" />
+		<fed:fce.field.userFunc name="style" label="Style editor" userFunc="Tx_Fed_Configuration_Wizard_FlexFormCodeEditor->renderField" default=""/>
+		<fed:fce.grid>
+			<fed:fce.grid.row>
+				<fed:data.func func="floor" as="gridColumnWidth"><fed:math>100/{columns}</fed:math></fed:data.func>
+				<fed:fce.grid.column width="{gridColumnWidth}%" repeat="{columns}">
+					<fed:fce.content name="column{cycle}" label="Content column #{cycle}" />
+				</fed:fce.grid.column>
+			</fed:fce.grid.row>
+		</fed:fce.grid>
+	</fed:fce>
+</f:section>
 
-<f:section name="preview">
+<f:section name="Preview">
 	Content columns ({columns})
 </f:section>
 
-<f:section name="main">
+<f:section name="Main">
 	<fed:style>
 		<fed:raw>
 		.content-columns { width: 100%; }
@@ -44,7 +49,7 @@
 	<table class="content-columns" id="{id}">
 		<tr>
 		<fed:loop count="{columns}" iteration="iteration" minimum="1">
-			<td class="content-column w{columns} column{iteration.cycle}"><fed:fce.renderContent area="column1{iteration.cycle}" /></td>
+			<td class="content-column w{columns} column{iteration.cycle}"><fed:fce.renderContent area="column{iteration.cycle}" /></td>
 		</fed:loop>
 		</tr>
 	</table>

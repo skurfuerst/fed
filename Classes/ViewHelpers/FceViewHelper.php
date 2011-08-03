@@ -35,8 +35,7 @@
  * @subpackage ViewHelpers/Fce
  */
 class Tx_Fed_ViewHelpers_FceViewHelper
-extends Tx_Fed_Core_ViewHelper_AbstractFceViewHelper
-implements Tx_Fluid_Core_ViewHelper_Facets_PostParseInterface {
+extends Tx_Fed_Core_ViewHelper_AbstractFceViewHelper {
 
 	/**
 	 * Initialize arguments
@@ -48,36 +47,17 @@ implements Tx_Fluid_Core_ViewHelper_Facets_PostParseInterface {
 	}
 
 	/**
-	 * @param Tx_Fluid_Core_Parser_SyntaxTree_ViewHelperNode $syntaxTreeNode
-	 * @param array $viewHelperArguments
-	 * @param Tx_Fluid_Core_ViewHelper_TemplateVariableContainer $variableContainer
-	 * @return void
-	 */
-	static public function postParseEvent(Tx_Fluid_Core_Parser_SyntaxTree_ViewHelperNode $syntaxTreeNode, array $viewHelperArguments, Tx_Fluid_Core_ViewHelper_TemplateVariableContainer $variableContainer) {
-		$label = $viewHelperArguments['label'] ? $viewHelperArguments['label']->getText() : $viewHelperArguments['id'];
-		if (is_object($viewHelperArguments['enabled'])) {
-			$object = $viewHelperArguments['enabled'];
-			if (method_exists($object, 'evaluate')) {
-				#$enabled = $object->evaluate($);
-				$enabled = TRUE;
-			} else if (method_exists($object, 'getText')) {
-				$enabled = $object->getText();
-			}
-		} else {
-			$enabled = TRUE;
-		}
-		#$enabled = is_object($viewHelperArguments['enabled']) ? $viewHelperArguments['enabled']->getValue()
-		$variableContainer->add('FEDFCE', $syntaxTreeNode);
-		$variableContainer->add('FEDFCEID', $viewHelperArguments['id']->getText());
-		$variableContainer->add('FEDFCELABEL', $label);
-		$variableContainer->add('FEDFCEENABLED', $enabled);
-	}
-
-	/**
 	 * Render method
 	 */
 	public function render() {
-
+		$this->setStorage(array(
+			'label' => $this->arguments['label'],
+			'enabled' => $this->arguments['enabled'],
+			'id' => $this->arguments['id'],
+			'fields' => array(),
+		));
+		$this->renderChildren();
+		return '';
 	}
 
 }

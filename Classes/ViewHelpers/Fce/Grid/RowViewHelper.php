@@ -34,15 +34,21 @@
  */
 class Tx_Fed_ViewHelpers_Fce_Grid_RowViewHelper extends Tx_Fed_Core_ViewHelper_AbstractFceViewHelper {
 
+	/**
+	 * Initialize
+	 */
 	public function initializeArguments() {
-		$this->registerArgument('repeat', 'integer', 'number of times to repeat this row', FALSE, 1);
+		$this->registerArgument('repeat', 'integer', 'number of times to repeat this colum while appending $iteration to name', FALSE, 1);
 	}
-
+	
+	/**
+	 * Render method
+	 * @return type 
+	 */
 	public function render() {
-		return array(
-			'repeat' => $this->arguments['repeat'],
-			'columns' => array()
-		);
+		$this->addGridRow();
+		$this->renderChildren();
+		return '';
 	}
 
 }

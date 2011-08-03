@@ -43,11 +43,6 @@ class Tx_Fed_Backend_TCEMain {
 	protected $objectManager;
 
 	/**
-	 * @var Tx_Fed_Backend_FCEParser
-	 */
-	protected $fceParser;
-
-	/**
 	 *
 	 * @var Tx_Fed_Utility_FlexForm
 	 */
@@ -58,7 +53,6 @@ class Tx_Fed_Backend_TCEMain {
 	 */
 	public function __construct() {
 		$this->objectManager = t3lib_div::makeInstance('Tx_Extbase_Object_ObjectManager');
-		$this->fceParser = $this->objectManager->get('Tx_Fed_Backend_FCEParser');
 		$this->flexFormService = $this->objectManager->get('Tx_Fed_Utility_FlexForm');
 	}
 
@@ -109,8 +103,6 @@ class Tx_Fed_Backend_TCEMain {
 				$incomingFieldArray['tx_fed_fcecontentarea'] = $this->getFceContentAreaFromTable($table, $uid);
 				#$incomingFieldArray['pid'] = $pid ? $pid : $_GET['id'];
 			}
-			#var_dump($incomingFieldArray);
-			#exit();
 		}
 	}
 

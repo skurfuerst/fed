@@ -1,92 +1,120 @@
 <?php
+/***************************************************************
+*  Copyright notice
+*
+*  (c) 2010 Claus Due <claus@wildside.dk>, Wildside A/S
+*
+*  All rights reserved
+*
+*  This script is part of the TYPO3 project. The TYPO3 project is
+*  free software; you can redistribute it and/or modify
+*  it under the terms of the GNU General Public License as published by
+*  the Free Software Foundation; either version 2 of the License, or
+*  (at your option) any later version.
+*
+*  The GNU General Public License can be found at
+*  http://www.gnu.org/copyleft/gpl.html.
+*
+*  This script is distributed in the hope that it will be useful,
+*  but WITHOUT ANY WARRANTY; without even the implied warranty of
+*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+*  GNU General Public License for more details.
+*
+*  This copyright notice MUST APPEAR in all copies of the script!
+***************************************************************/
 
-
+/**
+ * ExposedTemplateView. Allows access to registered template and viewhelper
+ * variables from a Fluid template.
+ *
+ * @author Claus Due, Wildside A/S
+ * @version $Id$
+ * @copyright Copyright belongs to the respective authors
+ * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
+ * @package Fed
+ * @subpackage View
+ */
 class Tx_Fed_View_ExposedTemplateView extends Tx_Fluid_View_StandaloneView {
 
-	public function harvest($name) {
-		$this->templateSource = file_get_contents($this->templatePathAndFilename);
+	/**
+	 * @var Tx_Fluid_Core_Rendering_RenderingContextInterface
+	 */
+	public $baseRenderingContext;
+
+	/**
+	 * Get a variable stored in the Fluid template
+	 * @param string $viewHelperClassname Class name of the ViewHelper which stored the variable
+	 * @param string $name Name of the variable which the ViewHelper stored
+	 * @param string $sectionName Optional name of a section in which the ViewHelper was called
+	 * @return mixed
+	 */
+	public function getStoredVariable($viewHelperClassname, $name, $sectionName) {
 		$this->baseRenderingContext->setControllerContext($this->controllerContext);
 		$this->templateParser->setConfiguration($this->buildParserConfiguration());
-		$parsedTemplate = $this->templateParser->parse($this->templateSource);
+		$parsedTemplate = $this->getParsedTemplate();
+		$this->setRenderingContext($this->baseRenderingContext);
 		$this->startRendering(Tx_Fluid_View_AbstractTemplateView::RENDERING_TEMPLATE, $parsedTemplate, $this->baseRenderingContext);
-		if ($parsedTemplate->getVariableContainer()->exists($name) === FALSE) {
-			if ($this->baseRenderingContext->getTemplateVariableContainer()->exists($name)) {
-				return $this->baseRenderingContext->getTemplateVariableContainer()->get($name);
-			} else {
-				return NULL;
-			}
-		}
-		$value = $parsedTemplate->getVariableContainer()->get($name);
-		if ($value instanceof Tx_Fluid_Core_Parser_SyntaxTree_ViewHelperNode) {
-			$childNodes = $value->getChildNodes();
-			$value = array('fields' => array(), 'grid' => array(), 'preview' => NULL);
-			foreach ($childNodes as $node) {
-				if ($node instanceof Tx_Fluid_Core_Parser_SyntaxTree_ViewHelperNode === FALSE) {
-					continue;
-				}
-				$className = $node->getViewHelperClassName();
-				$dummy = $this->objectManager->get($className);
-				$config = $node->evaluate($this->baseRenderingContext);
-				$name = $config['name'];
-				if ($dummy instanceof Tx_Fed_ViewHelpers_Fce_FieldViewHelper) {
-					if ($config['repeat'] > 1) {
-						$label = $config['label'];
-						for ($f=0; $f<$config['repeat']; $f++) {
-							$num = $f+1;
-							$config['name'] = $name . $num;
-							$config['label'] = $label . ' #' . $num;
-							$value['fields'][$name . $num] = $config;
-						}
-					} else {
-						$value['fields'][$name] = $config;
-					}
-				} else if ($className == 'Tx_Fed_ViewHelpers_Fce_PreviewViewHelper') {
-					$value['preview'] = $config;
-				} else if ($className == 'Tx_Fed_ViewHelpers_Fce_GridViewHelper') {
-					$grid = $node->evaluate($this->baseRenderingContext);
-					foreach ($node->getChildNodes() as $rowNode) {
-						if ($rowNode instanceof Tx_Fluid_Core_Parser_SyntaxTree_ViewHelperNode === FALSE) {
-							continue;
-						}
-						$row = $rowNode->evaluate($this->baseRenderingContext);
-						for ($r=0; $r<$row['repeat']; $r++) {
-							$row = $rowNode->evaluate($this->baseRenderingContext);
-							foreach ($rowNode->getChildNodes() as $columnNode) {
-								if ($columnNode instanceof Tx_Fluid_Core_Parser_SyntaxTree_ViewHelperNode === FALSE) {
-									continue;
-								}
-								$column = $columnNode->evaluate($this->baseRenderingContext);
-								for ($i=0; $i<$column['repeat']; $i++) {
-									$areas = array();
-									foreach ($columnNode->getChildNodes() as $areaNode) {
-										if ($areaNode instanceof Tx_Fluid_Core_Parser_SyntaxTree_ViewHelperNode === FALSE) {
-											continue;
-										}
-										$area = $areaNode->evaluate($this->baseRenderingContext);
-										if ($column['repeat'] > 1 || $row['repeat'] > 1) {
-											$area['name'] .= ($r+1).($i+1);
-										}
-										$area['label'] .= ($row['repeat'] > 1 ? ' #' . ($r+1) : '') . ($column['repeat'] > 1 ? ' #' . ($i+1) : '');
-										$areas[$area['name']] = $area;
-									}
-									$column['areas'] = $areas;
-									$row['columns'][] = $column;
-								}
-							}
-							$grid['rows'][] = $row;
-						}
-					}
-					$value['grid'] = $grid;
-				}
-			}
-		}
+		$out = $this->renderSection($sectionName, array());
 		$this->stopRendering();
+		return $this->baseRenderingContext->getViewHelperVariableContainer()->get($viewHelperClassname, $name);
+	}
 
-		if ($value instanceof Tx_Fluid_Core_Parser_SyntaxTree_TextNode) {
-			return $value->getText();
+	/**
+	 * Get a parsed syntax tree for this current template
+	 * @return mixed
+	 */
+	public function getParsedTemplate() {
+		if (!$this->templateCompiler) {
+			$source = $this->getTemplateSource();
+			$parsedTemplate = $this->templateParser->parse($source);
+			return $parsedTemplate;
 		} else {
-			return $value;
+			$templateIdentifier = $this->getTemplateIdentifier();
+			if ($this->templateCompiler->has($templateIdentifier)) {
+				$parsedTemplate = $this->templateCompiler->get($templateIdentifier);
+			} else {
+				$source = $this->getTemplateSource();
+				$parsedTemplate = $this->templateParser->parse($source);
+				if ($parsedTemplate->isCompilable()) {
+					$this->templateCompiler->store($templateIdentifier, $parsedTemplate);
+				}
+			}
+			return $parsedTemplate;
 		}
+	}
+
+	/**
+	 * Exposition proxy for startRendering() method
+	 *
+	 * @param type $type
+	 * @param Tx_Fluid_Core_Parser_ParsedTemplateInterface $parsedTemplate
+	 * @param Tx_Fluid_Core_Rendering_RenderingContextInterface $renderingContext
+	 * @return type
+	 */
+	public function startRendering($type, Tx_Fluid_Core_Parser_ParsedTemplateInterface $parsedTemplate, Tx_Fluid_Core_Rendering_RenderingContextInterface $renderingContext) {
+		return parent::startRendering($type, $parsedTemplate, $renderingContext);
+	}
+
+	/**
+	 * Exposition proxy for stopRendering() method
+	 *
+	 * @return void
+	 */
+	public function stopRendering() {
+		return parent::stopRendering();
+	}
+
+	/**
+	 * Renders a section from the specified template w/o requring a call to the
+	 * main render() method - allows for cherry-picking sections to render.
+	 * @param string $sectionName
+	 * @param array $variables
+	 */
+	public function renderStandaloneSection($sectionName, $variables) {
+		$this->startRendering(Tx_Fluid_View_AbstractTemplateView::RENDERING_TEMPLATE, $this->getParsedTemplate(), $this->baseRenderingContext);
+		$content = $this->renderSection($sectionName, $variables);
+		$this->stopRendering();
+		return $content;
 	}
 
 }

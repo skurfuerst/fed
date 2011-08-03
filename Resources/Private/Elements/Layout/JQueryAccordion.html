@@ -2,44 +2,44 @@
 
 <f:layout name="FCE" />
 
-<fed:comment comment="This part corrects column count and lets the FlexForm renderer
-	'feed back' on itself, rendering additional content area FCE definitions" />
-<f:if condition="{columns} < 1">
-	<fed:data.var name="columns">1</fed:data.var>
-</f:if>
+<f:section name="Configuration">
+	<fed:fce id="jquery-accordion" label="Layout: JQuery Accordion" enabled="TRUE">
+		<fed:fce.field.select name="columns" label="Number of jQuery Accordion tabs" requestUpdate="TRUE"
+			items="{0: {0: 1}, 1: {0: 2}, 2: {0: 3}, 3: {0: 4}, 4: {0: 5}, 5: {0: 6}, 6: {0: 7}, 7: {0: 8}, 8: {0: 9}}" default="1" maxItems="1" />
+		<fed:fce.field.select name="active" label="The initially activated tab"
+			items="{0: {0: '-1', 1: 'none'}, 1: {0: 1}, 2: {0: 2}, 3: {0: 3}, 4: {0: 4}, 5: {0: 5}, 6: {0: 6}, 7: {0: 7}, 8: {0: 8}, 9: {0: 9}}" default="1" maxItems="1" />
+		<fed:fce.field.select name="disabled" label="Deactivated tabs"
+			items="{0: {0: 1}, 1: {0: 2}, 2: {0: 3}, 3: {0: 4}, 4: {0: 5}, 5: {0: 6}, 6: {0: 7}, 7: {0: 8}, 8: {0: 9}}" default="1" maxItems="9" size="9" />
+		<fed:fce.field.checkbox name="collapsible" label="Collapsible" />
+		<fed:fce.field.checkbox name="collapsed" label="Collapsed" />
 
-<fed:fce id="jquery-accordion" label="Layout: JQuery Accordion" enabled="TRUE">
-	<fed:fce.field.select name="columns" label="Number of jQuery Accordion tabs" requestUpdate="TRUE"
-		items="{0: {0: 1}, 1: {0: 2}, 2: {0: 3}, 3: {0: 4}, 4: {0: 5}, 5: {0: 6}, 6: {0: 7}, 7: {0: 8}, 8: {0: 9}}" default="1" maxItems="1" />
-	<fed:fce.field.select name="active" label="The initially activated tab"
-		items="{0: {0: '-1', 1: 'none'}, 1: {0: 1}, 2: {0: 2}, 3: {0: 3}, 4: {0: 4}, 5: {0: 5}, 6: {0: 6}, 7: {0: 7}, 8: {0: 8}, 9: {0: 9}}" default="1" maxItems="1" />
-	<fed:fce.field.select name="disabled" label="Deactivated tabs"
-		items="{0: {0: 1}, 1: {0: 2}, 2: {0: 3}, 3: {0: 4}, 4: {0: 5}, 5: {0: 6}, 6: {0: 7}, 7: {0: 8}, 8: {0: 9}}" default="1" maxItems="9" size="9" />
-	<fed:fce.field.checkbox name="collapsible" label="Collapsible" />
-	<fed:fce.field.checkbox name="collapsed" label="Collapsed" />
+		<fed:fce.grid>
+			<fed:fce.grid.row repeat="{columns}">
+				<fed:fce.grid.column>
+					<fed:fce.field.input name="title{cycle}" label="Tab title, tab #{cycle}" />
+					<fed:fce.content name="column{cycle}" label="Content in accordion tab #{cycle}" />
+				</fed:fce.grid.column>
+			</fed:fce.grid.row>
+		</fed:fce.grid>
+	</fed:fce>
+</f:section>
 
-	<fed:fce.field.input name="title" label="Tab title, tab" repeat="{columns}" />
-	<fed:fce.grid>
-		<fed:fce.grid.row repeat="{columns}">
-			<fed:fce.grid.column>
-				<fed:fce.content name="column" label="Content in accordion tab" />
-			</fed:fce.grid.column>
-		</fed:fce.grid.row>
-	</fed:fce.grid>
-</fed:fce>
 
-<f:section name="preview">
+<f:section name="Preview">
 
 </f:section>
 
-<f:section name="main">
+<f:section name="Main">
+	<f:if condition="{columns} < 1">
+		<fed:data.var name="columns">1</fed:data.var>
+	</f:if>
 	<fed:data.var name="disabledArray" type="array">{disabled}</fed:data.var>
 	<fed:jQuery.accordion collapsible="{collapsible}" collapsed="{collapsed}">
 		<fed:loop count="{columns}" iteration="iteration">
 			<fed:data.var name="title"><fed:data.var name="title{iteration.cycle}" /></fed:data.var>
 			<fed:data.func func="in_array" arguments="{0: iteration.cycle, 1: disabledArray}" as="isDisabled" />
 			<fed:jQuery.accordion title="{title}" active="{active} == {iteration.cycle}" disabled="{isDisabled}">
-				<fed:fce.renderContent area="column{iteration.cycle}1" />
+				<fed:fce.renderContent area="column{iteration.cycle}" />
 			</fed:jQuery.accordion>
 		</fed:loop>
 	</fed:jQuery.accordion>

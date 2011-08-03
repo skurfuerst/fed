@@ -52,7 +52,9 @@ class Tx_Fed_ViewHelpers_Fce_ContentViewHelper extends Tx_Fed_Core_ViewHelper_Ab
 			'name' => $this->arguments['name'],
 			'label' => $this->arguments['label']
 		);
-		return $area;
+		$this->addContentArea($area);
+		$this->renderChildren();
+		return '';
 	}
 
 }

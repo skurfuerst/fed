@@ -37,19 +37,28 @@
 
 class Tx_Fed_ViewHelpers_Fce_Field_InputViewHelper extends Tx_Fed_ViewHelpers_Fce_FieldViewHelper {
 
+	/**
+	 * Initialize
+	 */
 	public function initializeArguments() {
 		parent::initializeArguments();
 		$this->registerArgument('eval', 'string', 'FlexForm-type validation configuration for this input', FALSE, 'trim');
 		$this->registerArgument('size', 'integer', 'Size of field', FALSE, 32);
 	}
 
+	/**
+	 * Render method
+	 */
 	public function render() {
 		$config = $this->getBaseConfig();
-		return $config;
-		#$this->addField($config);
-		#$this->renderChildren();
+		$this->addField($config);
+		$this->renderChildren();
 	}
 
+	/**
+	 * Gets a basic array of field configuration
+	 * @return array
+	 */
 	protected function getBaseConfig() {
 		$config = parent::getBaseConfig();
 		$config['eval'] = $this->arguments['eval'];

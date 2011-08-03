@@ -2,15 +2,17 @@
 
 <f:layout name="FCE" />
 
-<fed:fce id="display-script" label="Resource: Script as Content Element">
-	<fed:fce.field.userFunc name="script" label="Code editor" userFunc="Tx_Fed_Configuration_Wizard_FlexFormCodeEditor->renderField" />
-</fed:fce>
+<f:section name="Configuration">
+	<fed:fce id="display-script" label="Resource: Script as Content Element">
+		<fed:fce.field.userFunc name="script" label="Code editor" userFunc="Tx_Fed_Configuration_Wizard_FlexFormCodeEditor->renderField" />
+	</fed:fce>
+</f:section>
 
-<f:section name="preview">
+<f:section name="Preview">
 
 </f:section>
 
-<f:section name="main">
+<f:section name="Main">
 	<fed:script>
 		{script}
 	</fed:script>

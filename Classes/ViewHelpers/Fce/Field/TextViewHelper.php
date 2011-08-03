@@ -39,6 +39,9 @@ class Tx_Fed_ViewHelpers_Fce_Field_TextViewHelper extends Tx_Fed_ViewHelpers_Fce
 
 	const RTE_DEFAULT = "richtext[*]:rte_transform[mode=ts_css]";
 
+	/**
+	 * Initialize
+	 */
 	public function initializeArguments() {
 		parent::initializeArguments();
 		$this->registerArgument('validate', 'string', 'FlexForm-type validation configuration for this input', FALSE, 'trim');
@@ -48,6 +51,9 @@ class Tx_Fed_ViewHelpers_Fce_Field_TextViewHelper extends Tx_Fed_ViewHelpers_Fce
 		$this->registerArgument('enableRichText', 'boolean', 'Shortcut for adding "richtext[*]:rte_transform[mode=ts_css]" to "defaultExtras"', FALSE, FALSE);
 	}
 
+	/**
+	 * Render method
+	 */
 	public function render() {
 		$config = $this->getBaseConfig();
 		$config['type'] = 'text';
@@ -59,9 +65,8 @@ class Tx_Fed_ViewHelpers_Fce_Field_TextViewHelper extends Tx_Fed_ViewHelpers_Fce
 		} else {
 			$config['defaultExtras'] = $this->arguments['defaultExtras'];
 		}
-		return $config;
-		#$this->addField($config);
-		#$this->renderChildren();
+		$this->addField($config);
+		$this->renderChildren();
 	}
 
 

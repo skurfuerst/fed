@@ -30,48 +30,58 @@
  */
 class Tx_Fed_Backend_FCESelector {
 
+	/**
+	 * @var Tx_Extbase_Object_ObjectManager
+	 */
+	protected $objectManager;
+
+	/**
+	 *
+	 * @var Tx_Fed_Configuration_ConfigurationManager
+	 */
+	protected $configurationManager;
+
+	/**
+	 * @var Tx_Fed_Utility_FlexForm
+	 */
+	protected $flexform;
+
+	/**
+	 * CONSTRUCTOR
+	 */
+	public function __construct() {
+		$this->objectManager = t3lib_div::makeInstance('Tx_Extbase_Object_ObjectManager');
+		$this->configurationManager = $this->objectManager->get('Tx_Fed_Configuration_ConfigurationManager');
+		$this->flexform = $this->objectManager->get('Tx_Fed_Utility_FlexForm');
+	}
+
 	public function renderField(&$parameters, &$pObj) {
-		$objectManager = t3lib_div::makeInstance('Tx_Extbase_Object_ObjectManager');
-		$configManager = $objectManager->get('Tx_Extbase_Configuration_BackendConfigurationManager');
-		$config = $configManager->getTyposcriptSetup();
-		$config = Tx_Extbase_Utility_TypoScript::convertTypoScriptArrayToPlainArray($config);
-		$typoscript = $config['plugin']['tx_fed']['fce'];
-		$paths = $typoscript['templatePaths'];
-		$gathered = array();
-		$gathered['standalone'] = array();
-		foreach ($paths as $path) {
-			if (strpos($path, 'EXT:') === 0) {
-				$slice = strpos($path, '/');
-				$extKey = array_pop(explode(':', substr($path, 0, $slice)));
-				$path = t3lib_extMgm::siteRelPath($extKey) . substr($path, $slice);
-				$gathered[$extKey] = $this->getFiles($path, TRUE);
-			} else {
-				$gathered['standalone'] = array_merge($gathered['standalone'], $this->getFiles($path, TRUE));
-			}
-		}
+		$allTemplatePaths = $this->configurationManager->getContentConfiguration();
 		$name = $parameters['itemFormElName'];
 		$value = $parameters['itemFormElValue'];
 		$select = "<div><select name='{$name}'  class='formField select' onchange='if (confirm(TBE_EDITOR.labels.onChangeAlert) && TBE_EDITOR.checkSubmit(-1)){ TBE_EDITOR.submitForm() };'>" . chr(10);
 		$select .= "<option value=''>(Select Fluid FCE type)</option>" . chr(10);
-		foreach ($gathered as $extKey=>$files) {
+		foreach ($allTemplatePaths as $key=>$templatePathSet) {
+			$templateRootPath = $templatePathSet['templateRootPath'];
+			$templateRootPath = $this->translatePath($templateRootPath);
+			$files = $this->getFiles($templateRootPath, TRUE);
 			if (count($files) > 0) {
-				if ($extKey == 'standalone') {
-					$label = 'Standalone Templates';
-				} else {
-					$label = 'EXT:' . $extKey;
-				}
-				$select .= "<optgroup label='{$label}'>" . chr(10);
+				$groupLabel = 'Group: ' . $key;
+				$select .= "<optgroup label='{$groupLabel}'>" . chr(10);
 				foreach ($files as $fileRelPath) {
-					$view = $objectManager->get('Tx_Fed_View_FlexibleContentElementView');
-					$view->setTemplatePathAndFilename(PATH_site . $fileRelPath);
-					$label = $view->harvest('FEDFCELABEL');
-					$enabled = $view->harvest('FEDFCEENABLED');
-					if ($enabled !== 'FALSE') {
+					$templateFilename = PATH_site . $templateRootPath . DIRECTORY_SEPARATOR . $fileRelPath;
+					$view = $this->objectManager->get('Tx_Fed_View_ExposedTemplateView');
+					$view->setTemplatePathAndFilename($templateFilename);
+					$config =  $view->getStoredVariable('Tx_Fed_ViewHelpers_FceViewHelper', 'storage', 'Configuration');
+					$enabled = $config['enabled'];
+					$label = $config['label'];
+					if ($enabled !== FALSE) {
+						$optionValue = $key . ':' . $fileRelPath;
 						if (!$label) {
-							$label = $fileRelPath;
+							$label = $optionValue;
 						}
-						$selected = ($fileRelPath == $value ? " selected='selected'" : "");
-						$select .= "<option value='{$fileRelPath}'{$selected}>{$label}</option>" .chr(10);
+						$selected = ($optionValue == $value ? " selected='selected'" : "");
+						$select .= "<option value='{$optionValue}'{$selected}>{$label}</option>" .chr(10);
 					}
 				}
 				$select .= "</optgroup>" . chr(10);
@@ -82,22 +92,31 @@ class Tx_Fed_Backend_FCESelector {
 
 	}
 
-	protected function getFiles($basePath, $recursive=FALSE) {
-		$files = scandir(PATH_site . $basePath);
+	protected function getFiles($basePath, $recursive=FALSE, $appendBasePath=NULL) {
+		$files = scandir(PATH_site . $basePath . $appendBasePath);
 		$addFiles = array();
 		foreach ($files as $index=>$file) {
 			if (substr($file, 0, 1) === '.') {
 				continue;
-			} else if (is_dir(PATH_site . $basePath . $file) && $recursive) {
-				foreach ($this->getFiles($basePath . $file . '/', $recursive) as $addFile) {
-					$addFiles[] = $addFile;
+			} else if (is_dir(PATH_site . $basePath . $appendBasePath . $file) && $recursive) {
+				foreach ($this->getFiles($basePath, $recursive, $appendBasePath . $file . DIRECTORY_SEPARATOR) as $addFile) {
+					$addFiles[] = $appendBasePath . $addFile;
 				}
-			} else if (is_file(PATH_site . $basePath . $file)) {
-				$addFiles[] = $basePath . $file;
+			} else if (is_file(PATH_site . $basePath . $appendBasePath . $file)) {
+				$addFiles[] = $appendBasePath . $file;
 			}
 		}
 		sort($addFiles);
 		return (array) $addFiles;
+	}
+
+	protected function translatePath($path) {
+		if (strpos($path, 'EXT:') === 0) {
+			$slice = strpos($path, DIRECTORY_SEPARATOR);
+			$extKey = array_pop(explode(':', substr($path, 0, $slice)));
+			$path = t3lib_extMgm::siteRelPath($extKey) . substr($path, $slice);
+		}
+		return $path;
 	}
 }
 ?>

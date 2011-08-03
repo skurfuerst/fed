@@ -37,16 +37,14 @@
 
 class Tx_Fed_ViewHelpers_Fce_Field_CheckboxViewHelper extends Tx_Fed_ViewHelpers_Fce_FieldViewHelper {
 
-	public function initializeArguments() {
-		parent::initializeArguments();
-	}
-
+	/**
+	 * Render method
+	 */
 	public function render() {
 		$config = $this->getBaseConfig();
 		$config['type'] = 'check';
-		return $config;
-		#$this->addField($config);
-		#$this->renderChildren();
+		$this->addField($config);
+		$this->renderChildren();
 	}
 
 

@@ -36,19 +36,23 @@
  */
 class Tx_Fed_ViewHelpers_Fce_Field_UserFuncViewHelper extends Tx_Fed_ViewHelpers_Fce_FieldViewHelper {
 
+	/**
+	 * Initialize
+	 */
 	public function initializeArguments() {
 		parent::initializeArguments();
 		$this->registerArgument('userFunc', 'string', 'Classname->function notation of UserFunc to be called, example "Tx_Fed_Configuration_Wizard_FlexFormCodeEditor->renderField" - Extbase classes need autoload registry for this', TRUE);
-
 	}
 
+	/**
+	 * Render method
+	 */
 	public function render() {
 		$config = $this->getBaseConfig();
 		$config['type'] = 'user';
 		$config['userFunc'] = $this->arguments['userFunc'];
-		return $config;
-		#$this->addField($config);
-		#$this->renderChildren();
+		$this->addField($config);
+		$this->renderChildren();
 	}
 
 }

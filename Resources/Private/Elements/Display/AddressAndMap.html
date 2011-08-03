@@ -2,44 +2,46 @@
 
 <f:layout name="FCE" />
 
-<fed:fce id="address-display" label="Display: Geocoded Address and Map" enabled="TRUE">
-	<fed:fce.field.checkbox name="jQuery" label="Load jQuery - in case your page does not include it. Uses Google's CDN Service" />
-	<fed:fce.field.checkbox name="displayHeaders" label="Display headers above address and map" requestUpdate="TRUE" />
-	<fed:fce.field.select name="headerType" label="Tagname of headers"
-		items="{0: {0:'h1'}, 1: {0:'h2'}, 2: {0:'h3'}, 3: {0:'h4'}, 4: {0:'h5'}}" enabled="{displayHeaders}" />
-	<fed:fce.field.checkbox name="displayAddress" label="Display the address" />
-	<fed:fce.field.checkbox name="displayMap" label="Display the map" requestUpdate="TRUE" />
-	<fed:fce.field.select name="mapPosition" label="Placement of map"
-		items="{0: {0: 'left'}, 1: {0: 'right'}, 2: {0: 'top'}, 3: {0: 'bottom'}}" />
-	<fed:fce.field.checkbox name="map.scaleControl" label="Enable scale controls in map" enabled="{displayMap}" />
-	<fed:fce.field.checkbox name="map.zoomControl" label="Enable zoom controls in map" enabled="{displayMap}" />
-	<fed:fce.field.checkbox name="map.panControl" label="Enable pan controls in map" enabled="{displayMap}" />
-	<fed:fce.field.checkbox name="map.mapTypeControl" label="Enable map type controls in map" enabled="{displayMap}" />
-	<fed:fce.field.input name="map.zoom" label="Zoom level on map - 1 to 20" eval="int" default="7" enabled="{displayMap}" />
-	<fed:fce.field.input name="map.width" label="Width of map element, fx '500px' or '100%'" enabled="{displayMap}" />
-	<fed:fce.field.input name="map.height" label="Height of map element, fx '400px' or '50%'" enabled="{displayMap}" />
-	<fed:fce.field.select name="map.mapTypeId" label="Type of map display" enabled="{displayMap}"
-		items="{0: {0: 'google.maps.MapTypeId.ROADMAP'}, 1: {0: 'google.maps.MapTypeId.SATELLITE'}, 2: {0: 'google.maps.MapTypeId.TERRAIN'}, 3: {0: 'google.maps.MapTypeId.HYBRID'}}"
-		default="google.maps.MapTypeId.ROADMAP" />
-	<fed:fce.field.group name="map.markerIcon" label="Optional marker icon file" internalType="file" allowed="png,gif,jpg" enabled="{displayMap}" />
-	<fed:fce.field.text name="address" label="Address to display" enableRichText="TRUE" />
-	<fed:fce.grid>
-		<fed:fce.grid.row>
-			<fed:fce.grid.column>
-				<fed:fce.content name="addressContent" label="Content under address" />
-			</fed:fce.grid.column>
-			<fed:fce.grid.column>
-				<fed:fce.content name="infoboxContent" label="InfoWindow Content" />
-			</fed:fce.grid.column>
-		</fed:fce.grid.row>
-	</fed:fce.grid>
-</fed:fce>
+<f:section name="Configuration">
+	<fed:fce id="address-display" label="Display: Geocoded Address and Map" enabled="TRUE">
+		<fed:fce.field.checkbox name="jQuery" label="Load jQuery - in case your page does not include it. Uses Google's CDN Service" />
+		<fed:fce.field.checkbox name="displayHeaders" label="Display headers above address and map" requestUpdate="TRUE" />
+		<fed:fce.field.select name="headerType" label="Tagname of headers"
+			items="{0: {0:'h1'}, 1: {0:'h2'}, 2: {0:'h3'}, 3: {0:'h4'}, 4: {0:'h5'}}" enabled="{displayHeaders}" />
+		<fed:fce.field.checkbox name="displayAddress" label="Display the address" />
+		<fed:fce.field.checkbox name="displayMap" label="Display the map" requestUpdate="TRUE" />
+		<fed:fce.field.select name="mapPosition" label="Placement of map"
+			items="{0: {0: 'left'}, 1: {0: 'right'}, 2: {0: 'top'}, 3: {0: 'bottom'}}" />
+		<fed:fce.field.checkbox name="map.scaleControl" label="Enable scale controls in map" enabled="{displayMap}" />
+		<fed:fce.field.checkbox name="map.zoomControl" label="Enable zoom controls in map" enabled="{displayMap}" />
+		<fed:fce.field.checkbox name="map.panControl" label="Enable pan controls in map" enabled="{displayMap}" />
+		<fed:fce.field.checkbox name="map.mapTypeControl" label="Enable map type controls in map" enabled="{displayMap}" />
+		<fed:fce.field.input name="map.zoom" label="Zoom level on map - 1 to 20" eval="int" default="7" enabled="{displayMap}" />
+		<fed:fce.field.input name="map.width" label="Width of map element, fx '500px' or '100%'" enabled="{displayMap}" />
+		<fed:fce.field.input name="map.height" label="Height of map element, fx '400px' or '50%'" enabled="{displayMap}" />
+		<fed:fce.field.select name="map.mapTypeId" label="Type of map display" enabled="{displayMap}"
+			items="{0: {0: 'google.maps.MapTypeId.ROADMAP'}, 1: {0: 'google.maps.MapTypeId.SATELLITE'}, 2: {0: 'google.maps.MapTypeId.TERRAIN'}, 3: {0: 'google.maps.MapTypeId.HYBRID'}}"
+			default="google.maps.MapTypeId.ROADMAP" />
+		<fed:fce.field.group name="map.markerIcon" label="Optional marker icon file" internalType="file" allowed="png,gif,jpg" enabled="{displayMap}" />
+		<fed:fce.field.text name="address" label="Address to display" enableRichText="TRUE" />
+		<fed:fce.grid>
+			<fed:fce.grid.row>
+				<fed:fce.grid.column>
+					<fed:fce.content name="addressContent" label="Content under address" />
+				</fed:fce.grid.column>
+				<fed:fce.grid.column>
+					<fed:fce.content name="infoboxContent" label="InfoWindow Content" />
+				</fed:fce.grid.column>
+			</fed:fce.grid.row>
+		</fed:fce.grid>
+	</fed:fce>
+</f:section>
 
-<f:section name="preview">
+<f:section name="Preview">
 	<fed:raw>{address}</fed:raw>
 </f:section>
 
-<f:section name="main">
+<f:section name="Main">
 	<!-- FCE data processing -->
 
 	<fed:comment comment="Geocodes an address and stores the result in a template variable" />

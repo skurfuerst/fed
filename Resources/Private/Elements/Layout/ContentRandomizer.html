@@ -2,21 +2,23 @@
 
 <f:layout name="FCE" />
 
-<fed:fce id="content-randomizer" label="Layout: Content Randomizer">
-	<fed:fce.field.input name="limit" label="Number of items to select randomly" eval="int" />
-	<fed:fce.grid>
-		<fed:fce.grid.row>
-			<fed:fce.grid.column>
-				<fed:fce.content name="content" label="Content to be randomized" />
-			</fed:fce.grid.column>
-		</fed:fce.grid.row>
-	</fed:fce.grid>
-</fed:fce>
+<f:section name="Configuration">
+	<fed:fce id="content-randomizer" label="Layout: Content Randomizer">
+		<fed:fce.field.input name="limit" label="Number of items to select randomly" eval="int" />
+		<fed:fce.grid>
+			<fed:fce.grid.row>
+				<fed:fce.grid.column>
+					<fed:fce.content name="content" label="Content to be randomized" />
+				</fed:fce.grid.column>
+			</fed:fce.grid.row>
+		</fed:fce.grid>
+	</fed:fce>
+</f:section>
 
-<f:section name="preview">
+<f:section name="Preview">
 
 </f:section>
 
-<f:section name="main">
+<f:section name="Main">
 	<fed:fce.renderContent area="content" limit="{limit}" order="RAND()" />
 </f:section>

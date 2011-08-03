@@ -37,21 +37,70 @@
 class Tx_Fed_Core_ViewHelper_AbstractFceViewHelper extends Tx_Fed_Core_ViewHelper_AbstractViewHelper {
 
 	/**
+	 * Render method
+	 */
+	public function render() {
+		$this->renderChildren();
+		return '';
+	}
+
+	/**
+	 * @param array $config
+	 * @return void
+	 */
+	protected function addField($config) {
+		$storage = $this->getStorage();
+		array_push($storage['fields'], $config);
+		$this->setStorage($storage);
+	}
+
+	/**
+	 * @param array $config
+	 * @return void
+	 */
+	protected function addContentArea($config) {
+		$storage = $this->getStorage();
+		$row = count($storage['grid']) - 1;
+		$col = count($storage['grid'][$row]) - 1;
+		array_push($storage['grid'][$row][$col]['areas'], $config);
+		$this->setStorage($storage);
+	}
+
+	/**
+	 * @return void
+	 */
+	protected function addGridRow() {
+		$storage = $this->getStorage();
+		array_push($storage['grid'], array());
+		$this->setStorage($storage);
+	}
+
+	/**
+	 * @param array $config
+	 * @return void
+	 */
+	protected function addGridColumn($config) {
+		$storage = $this->getStorage();
+		$row = count($storage['grid']) - 1;
+		array_push($storage['grid'][$row], $config);
+		$this->setStorage($storage);
+	}
+
+	/**
 	 * Get the internal FCE storage array
-	 *
 	 * @return array
 	 */
 	protected function getStorage() {
-		#return (array) $GLOBALS['FEDFCE'];
+		return $this->viewHelperVariableContainer->get('Tx_Fed_ViewHelpers_FceViewHelper', 'storage');
 	}
 
 	/**
 	 * Set the internal FCE storage array
-	 *
-	 * @param type $storage
+	 * @param a $storage
+	 * @return void
 	 */
 	protected function setStorage($storage) {
-		#$GLOBALS['FEDFCE'] = $storage;
+		$this->viewHelperVariableContainer->addOrUpdate('Tx_Fed_ViewHelpers_FceViewHelper', 'storage', $storage);
 	}
 
 }

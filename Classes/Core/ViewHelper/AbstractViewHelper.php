@@ -36,6 +36,11 @@
 abstract class Tx_Fed_Core_ViewHelper_AbstractViewHelper extends Tx_Fluid_Core_ViewHelper_AbstractTagBasedViewHelper {
 
 	/**
+	 * @var Tx_Fluid_Core_ViewHelper_TagBuilder
+	 */
+	protected $tag;
+	
+	/**
 	 * @var Tx_Fed_Utility_JSON
 	 */
 	protected $jsonService;
@@ -65,6 +70,18 @@ abstract class Tx_Fed_Core_ViewHelper_AbstractViewHelper extends Tx_Fluid_Core_V
 	 */
 	private $registeredArguments = array();
 
+	/**
+	 * Inject a TagBuilder
+	 *
+	 * @param Tx_Fluid_Core_ViewHelper_TagBuilder $tagBuilder Tag builder
+	 * @return void
+	 * @author Bastian Waidelich <bastian@typo3.org>
+	 * @todo DUPLICATED CODE from parent class. Injector does not fire from parent class, only here...
+	 */
+	public function injectTagBuilder(Tx_Fluid_Core_ViewHelper_TagBuilder $tagBuilder) {
+		$this->tag = $tagBuilder;
+	}
+	
 	/**
 	 * Inject JSON Service
 	 * @param Tx_Fed_Utility_JSON $service

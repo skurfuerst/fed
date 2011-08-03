@@ -2,41 +2,43 @@
 
 <f:layout name="FCE" />
 
-<fed:fce id="display-file-list" label="Display: Customizable File List" enabled="TRUE">
-	<fed:fce.field.checkbox name="jQuery" label="Load jQuery - in case your page does not include it. Uses Google's CDN Service" />
-	<fed:fce.field.input name="path" label="Site-relative path to dir containing files, remember trailing slash" />
-	<fed:fce.field.input name="dateFormat" label="Format for date, PHP date() syntax - ex. Y-m-d H:i" default="Y-m-d H:i" />
-	<fed:fce.field.checkbox name="downloadable" label="Add download links on file names" />
-	<fed:fce.field.checkbox name="headers" label="Show table column headers - necessary for sortable!" />
-	<fed:fce.field.select name="unit" label="Size unit to use" items="{0: {0: 'GB'}, 1: {0: 'MB'}, 2: {0: 'KB'}, 3: {0: 'B'}}" maxItems="1" />
-	<fed:fce.field.input name="decimals" label="Number of decimals to display in file sizes" default="2" />
-	<fed:fce.field.select name="fields" label="Fields to display"
-		items="{0: {0: 'iteration'}, 1: {0: 'filename'}, 2: {0: 'size'}, 3: {0: 'created'}, 4: {0: 'modified'}}"
-		minItems="1" maxItems="6" multiple="TRUE" size="6" />
-	<fed:fce.field.select name="resource.sortBy" label="Initially sort by field" maxItems="1"
-		items="{0: {0: 'iteration'}, 1: {0: 'filename'}, 2: {0: 'size'}, 3: {0: 'created'}, 4: {0: 'modified'}}" />
-	<fed:fce.field.select name="resource.sortDirection" label="Initial sorting direction" items="{0: {0: 'ASC'}, 1: {0: 'DESC'}}" maxItems="1" />
+<f:section name="Configuration">
+	<fed:fce id="display-file-list" label="Display: Customizable File List" enabled="TRUE">
+		<fed:fce.field.checkbox name="jQuery" label="Load jQuery - in case your page does not include it. Uses Google's CDN Service" />
+		<fed:fce.field.input name="path" label="Site-relative path to dir containing files, remember trailing slash" />
+		<fed:fce.field.input name="dateFormat" label="Format for date, PHP date() syntax - ex. Y-m-d H:i" default="Y-m-d H:i" />
+		<fed:fce.field.checkbox name="downloadable" label="Add download links on file names" />
+		<fed:fce.field.checkbox name="headers" label="Show table column headers - necessary for sortable!" />
+		<fed:fce.field.select name="unit" label="Size unit to use" items="{0: {0: 'GB'}, 1: {0: 'MB'}, 2: {0: 'KB'}, 3: {0: 'B'}}" maxItems="1" />
+		<fed:fce.field.input name="decimals" label="Number of decimals to display in file sizes" default="2" />
+		<fed:fce.field.select name="fields" label="Fields to display"
+			items="{0: {0: 'iteration'}, 1: {0: 'filename'}, 2: {0: 'size'}, 3: {0: 'created'}, 4: {0: 'modified'}}"
+			minItems="1" maxItems="6" multiple="TRUE" size="6" />
+		<fed:fce.field.select name="resource.sortBy" label="Initially sort by field" maxItems="1"
+			items="{0: {0: 'iteration'}, 1: {0: 'filename'}, 2: {0: 'size'}, 3: {0: 'created'}, 4: {0: 'modified'}}" />
+		<fed:fce.field.select name="resource.sortDirection" label="Initial sorting direction" items="{0: {0: 'ASC'}, 1: {0: 'DESC'}}" maxItems="1" />
 
-	<fed:fce.field.input name="table.cellpadding" label="Cell padding" default="2" eval="int" />
-	<fed:fce.field.input name="table.cellspacing" label="Cell spacing" default="2" eval="int" />
-	<fed:fce.field.input name="table.iDisplayLength" label="Items per page" default="20" eval="int" />
-	<fed:fce.field.select name="table.textExtraction" label="Cell text extraction method. Use 'complex' if your sorting misbehaves - can also be the name of a Javascript function"
-		items="{0: {0: 'simple'}, 1: {0: 'complex'}}" maxItems="1" />
-	<fed:fce.field.checkbox name="table.sortable" label="Enable sorting" default="1" />
-	<fed:fce.field.checkbox name="table.bPaginate" label="Enable pagination" default="1" />
-	<fed:fce.field.checkbox name="table.bSaveState" label="Save display state in user cookie" default="1" />
-	<fed:fce.field.checkbox name="table.bFilter" label="Add search capabilities" default="1" />
-	<fed:fce.field.checkbox name="table.bInfo" label="Enable additional info display" default="1" />
-	<fed:fce.field.select name="table.sPaginationType" label="Pagination type" items="{0: {0: 'full_numbers'}, 1: {0: 'two_buttons'}}" maxItems="1" />
-	<fed:fce.field.input name="table.instanceName" label="Instance name to set globally in Javascript" />
-	<fed:fce.field.input name="table.registerWith" label="Name of Javascript function this instance will be passed to after init" />
-</fed:fce>
+		<fed:fce.field.input name="table.cellpadding" label="Cell padding" default="2" eval="int" />
+		<fed:fce.field.input name="table.cellspacing" label="Cell spacing" default="2" eval="int" />
+		<fed:fce.field.input name="table.iDisplayLength" label="Items per page" default="20" eval="int" />
+		<fed:fce.field.select name="table.textExtraction" label="Cell text extraction method. Use 'complex' if your sorting misbehaves - can also be the name of a Javascript function"
+			items="{0: {0: 'simple'}, 1: {0: 'complex'}}" maxItems="1" />
+		<fed:fce.field.checkbox name="table.sortable" label="Enable sorting" default="1" />
+		<fed:fce.field.checkbox name="table.bPaginate" label="Enable pagination" default="1" />
+		<fed:fce.field.checkbox name="table.bSaveState" label="Save display state in user cookie" default="1" />
+		<fed:fce.field.checkbox name="table.bFilter" label="Add search capabilities" default="1" />
+		<fed:fce.field.checkbox name="table.bInfo" label="Enable additional info display" default="1" />
+		<fed:fce.field.select name="table.sPaginationType" label="Pagination type" items="{0: {0: 'full_numbers'}, 1: {0: 'two_buttons'}}" maxItems="1" />
+		<fed:fce.field.input name="table.instanceName" label="Instance name to set globally in Javascript" />
+		<fed:fce.field.input name="table.registerWith" label="Name of Javascript function this instance will be passed to after init" />
+	</fed:fce>
+</f:section>
 
-<f:section name="preview">
+<f:section name="Preview">
 
 </f:section>
 
-<f:section name="main">
+<f:section name="Main">
 	<fed:data.var name="fields" type="array">{fields}</fed:data.var>
 	<fed:resource.file path="{path}" as="files" sortBy="{resource.sortBy}" sortDirection="{resource.sortDirection}" />
 

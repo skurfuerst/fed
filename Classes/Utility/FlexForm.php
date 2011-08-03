@@ -192,7 +192,7 @@ class Tx_Fed_Utility_FlexForm implements t3lib_Singleton {
 		$settings = array();
 
 		$flexFormArray = t3lib_div::xml2array($flexFormContent);
-		$flexFormArray = (isset($flexFormArray['data']) ? $flexFormArray['data'] : array());
+		$flexFormArray = (isset($flexFormArray['data']) && is_array($flexFormArray['data']) ? $flexFormArray['data'] : array());
 		foreach(array_values($flexFormArray) as $languages) {
 			if (!is_array($languages[$languagePointer])) {
 				continue;

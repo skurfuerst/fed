@@ -2,20 +2,22 @@
 
 <f:layout name="FCE" />
 
-<f:if condition="{columns} < 1">
-	<fed:data.var name="columns">1</fed:data.var>
-</f:if>
-<fed:fce id="content-columns" label="Layout: Text Columnizer" enabled="FALSE">
-	<fed:fce.field.select name="columns" label="Number of columns for text splitting"
-		items="{0: {0: 1}, 1: {0: 2}, 2: {0: 3}, 3: {0: 4}, 4: {0: 5}, 5: {0: 6}, 6: {0: 7}, 7: {0: 8}, 8: {0: 9}}" default="1" maxItems="1" />
-	<fed:fce.field.text name="tt_content.bodytext" label="Text which is going to be split into columns" enableRichText="TRUE" />
-</fed:fce>
+<f:section name="Configuration">
+	<f:if condition="{columns} < 1">
+		<fed:data.var name="columns">1</fed:data.var>
+	</f:if>
+	<fed:fce id="content-columns" label="Layout: Text Columnizer" enabled="FALSE">
+		<fed:fce.field.select name="columns" label="Number of columns for text splitting"
+			items="{0: {0: 1}, 1: {0: 2}, 2: {0: 3}, 3: {0: 4}, 4: {0: 5}, 5: {0: 6}, 6: {0: 7}, 7: {0: 8}, 8: {0: 9}}" default="1" maxItems="1" />
+		<fed:fce.field.text name="tt_content.bodytext" label="Text which is going to be split into columns" enableRichText="TRUE" />
+	</fed:fce>
+</f:section>
 
-<f:section name="preview">
+<f:section name="Preview">
 
 </f:section>
 
-<f:section name="main">
+<f:section name="Main">
 	<fed:data.func func="strlen" as="strlen">{tt_content.bodytext}</fed:data.func>
 	<fed:data.func func="floor" as="chunksize"><fed:math>{strlen} / {columns}</fed:math></fed:data.func>
 	<fed:data.func func="array_fill" arguments="{0: '0', 1: columns, 2: ''}" as="columnArray" />

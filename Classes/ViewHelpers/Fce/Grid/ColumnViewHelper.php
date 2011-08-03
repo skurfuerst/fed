@@ -50,14 +50,20 @@ class Tx_Fed_ViewHelpers_Fce_Grid_ColumnViewHelper extends Tx_Fed_Core_ViewHelpe
 	 * @return array
 	 */
 	public function render() {
-		$column = array(
-			'colspan' => $this->arguments['colspan'],
-			'rowspan' => $this->arguments['rowspan'],
-			'width' => $this->arguments['width'],
-			'repeat' => $this->arguments['repeat'],
-			'areas' => array()
-		);
-		return $column;
+		for ($i=0; $i<=$this->arguments['repeat']; $i++) {
+			$column = array(
+				'colspan' => $this->arguments['colspan'],
+				'rowspan' => $this->arguments['rowspan'],
+				'width' => $this->arguments['width'],
+				'repeat' => $this->arguments['repeat'],
+				'areas' => array()
+			);
+			$this->addGridColumn($column);
+			$this->templateVariableContainer->add('cycle', $i+1);
+			$this->renderChildren();
+			$this->templateVariableContainer->remove('cycle');
+		}
+		return '';
 	}
 
 }

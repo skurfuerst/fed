@@ -34,23 +34,47 @@
  */
 class Tx_Fed_Controller_FlexibleContentElementController extends Tx_Fed_Core_AbstractController {
 
+
+
 	/**
 	 * Show template as defined in flexform
 	 * @return string
 	 */
 	public function showAction() {
-		$flexform = $this->flexform->getAll();
 		$cObj = $this->request->getContentObjectData();
-		$filename = PATH_site . $cObj['tx_fed_fcefile'];
-		$exposedView = $this->objectManager->get('Tx_Fed_View_ExposedTemplateView');
-		$exposedView->setTemplatePathAndFilename($filename);
-		$exposedView->setLayoutRootPath(t3lib_extMgm::extPath('fed', 'Resources/Private/Layouts/'));
-		$data = $exposedView->harvest('FEDFCE');
-		$flexform['page'] = $GLOBALS['TSFE']->page;
-		$flexform['record'] = $cObj;
-		$exposedView->assign('layout', 'FCE');
-		$exposedView->assignMultiple($flexform);
-		return $exposedView->render();
+		$configurationManager = $this->objectManager->get('Tx_Fed_Configuration_ConfigurationManager');
+		list ($extensionName, $filename) = explode(':', $cObj['tx_fed_fcefile']);
+		$templateVariables = $this->flexform->getAll();
+		$templateVariables['page'] = $GLOBALS['TSFE']->page;
+		$templateVariables['record'] = $cObj;
+		$this->view = $this->objectManager->get('Tx_Fed_View_ExposedTemplateView');
+		$this->view->setControllerContext($this->controllerContext);
+		if ($extensionName && $filename) {
+			$paths = $configurationManager->getContentConfiguration($extensionName);
+			$absolutePath = $this->translatePath($paths['templateRootPath']) . DIRECTORY_SEPARATOR . $filename;
+			$this->view->setLayoutRootPath($this->translatePath($paths['layoutRootPath']));
+			$this->view->setPartialRootPath($this->translatePath($paths['partialRootPath']));
+			$this->view->setTemplatePathAndFilename($absolutePath);
+		} else {
+			$absolutePath = PATH_site . $this->translatePath($paths['templateRootPath']) . DIRECTORY_SEPARATOR . $cObj['tx_fed_fcefile'];
+			$this->view->setTemplatePathAndFilename($absolutePath);
+		}
+		$content = $this->view->renderStandaloneSection('Main', $templateVariables);
+		return $content;
+	}
+
+	/**
+	 * Translates a TypoScript path into an absolute path
+	 * @param string $path
+	 * @return string
+	 */
+	protected function translatePath($path) {
+		if (strpos($path, 'EXT:') === 0) {
+			$slice = strpos($path, '/');
+			$extKey = array_pop(explode(':', substr($path, 0, $slice)));
+			$path = t3lib_extMgm::extPath($extKey, substr($path, $slice));
+		}
+		return $path;
 	}
 
 }

@@ -100,7 +100,7 @@ class Tx_Fed_Controller_PageController extends Tx_Fed_Core_AbstractController {
 		if (strpos($path, 'EXT:') === 0) {
 			$slice = strpos($path, '/');
 			$extKey = array_pop(explode(':', substr($path, 0, $slice)));
-			$path = t3lib_extMgm::siteRelPath($extKey) . substr($path, $slice);
+			$path = t3lib_extMgm::extPath($extKey, substr($path, $slice));
 		}
 		return $path;
 	}
@@ -115,7 +115,7 @@ class Tx_Fed_Controller_PageController extends Tx_Fed_Core_AbstractController {
 		$typoscript = $this->getTyposcript();
 		$output = array();
 		foreach ($typoscript as $extensionName=>$group) {
-			$path = $group['templateRootPath'] . 'Page/';
+			$path = $group['templateRootPath'];
 			$path = $this->translatePath($path);
 			$dir = PATH_site . $path;
 			$files = scandir($dir);
@@ -135,13 +135,14 @@ class Tx_Fed_Controller_PageController extends Tx_Fed_Core_AbstractController {
 		return $output;
 	}
 
+	/**
+	 * Get typoscript definition for Page Templates
+	 *
+	 * @return array
+	 */
 	protected function getTyposcript() {
-		$objectManager = t3lib_div::makeInstance('Tx_Extbase_Object_ObjectManager');
-		$configManager = $objectManager->get('Tx_Extbase_Configuration_BackendConfigurationManager');
-		$config = $configManager->getTyposcriptSetup();
-		$config = Tx_Extbase_Utility_TypoScript::convertTypoScriptArrayToPlainArray($config);
-		$typoscript = $config['plugin']['tx_fed']['page'];
-		return $typoscript;
+		$configManager = $this->objectManager->get('Tx_Fed_Configuration_ConfigurationManager');
+		return $configManager->getPageConfiguration();
 	}
 
 }

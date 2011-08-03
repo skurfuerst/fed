@@ -109,7 +109,6 @@ class Tx_Fed_ViewHelpers_TableViewHelper extends Tx_Fed_Core_ViewHelper_Abstract
 	 * @return string
 	 */
 	public function render() {
-
 		$this->uniqId = uniqid('fedtable_');
 		$this->addClassAttribute();
 		if ($this->arguments['sortable']) {

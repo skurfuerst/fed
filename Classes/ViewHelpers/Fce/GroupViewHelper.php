@@ -58,6 +58,7 @@ class Tx_Fed_ViewHelpers_Fce_GroupViewHelper extends Tx_Fed_Core_ViewHelper_Abst
 		array_push($storage, $group);
 		$this->setStorage($storage);
 		$this->renderChildren();
+		return '';
 	}
 
 }

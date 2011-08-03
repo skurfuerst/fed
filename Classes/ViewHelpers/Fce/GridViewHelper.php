@@ -36,10 +36,15 @@
  */
 class Tx_Fed_ViewHelpers_Fce_GridViewHelper extends Tx_Fed_Core_ViewHelper_AbstractFceViewHelper {
 
+	/**
+	 * Render method
+	 */
 	public function render() {
-		return array(
-			'rows' => array()
-		);
+		$storage = $this->getStorage();
+		$storage['grid'] = array();
+		$this->setStorage($storage);
+		$this->renderChildren();
+		return '';
 	}
 
 }
