@@ -73,18 +73,59 @@ class Tx_Fed_Utility_FlexForm implements t3lib_Singleton {
 	}
 
 	/**
-	 * Gets the value of the FlexForm field. As string. You must parse it
-	 * manually - for now. UNLESS your value is a DomainObject record reference or
-	 * a list of references to DomainObject records. In which case there's no
-	 * reason why not to turn the value into ObjectStorage<ModelObject> or
-	 * ModelObject:UID instances.
+	 * Uses "transform" property on each member of $fieldArrayContainingType to
+	 * properly type-cast each value before returning
 	 *
-	 * @param boolean $applyTransformations If TRUE, transforms according to datatype - Extbase objects supported
+	 * @param type $fieldArrayContainingTypes
+	 */
+	public function getAllAndTransform($fieldArrayContainingTypes, $prefix='') {
+		$all = $this->getAll();
+		foreach ($fieldArrayContainingTypes as $fieldConfiguration) {
+			$transformType = $fieldConfiguration['transform'];
+			if ($transformType) {
+				$fieldName = $fieldConfiguration['name'];
+				$this->digDownTransform($all, explode('.', $fieldName), $transformType);
+			}
+		}
+		return $all;
+	}
+
+	/**
+	 * Digs down path to transform final member to $dataType
+	 *
+	 * @param array $array
+	 * @param array $keysLeft
+	 * @param string $transformType
+	 * @return type
+	 */
+	protected function digDownTransform(&$array, $keysLeft, $transformType) {
+		$key = array_shift($keysLeft);
+		$value = $array[$key];
+		if (count($keysLeft) > 0) {
+			return $this->digDown($value, $keysLeft);
+		} else {
+			return $this->transform($value, $transformType);
+		}
+	}
+
+	/**
+	 * Transforms a single value to $dataType
+	 *
+	 * @param string $value
+	 * @param string $dataType
+	 */
+	protected function transform($value, $dataType) {
+		return $value;
+	}
+
+	/**
+	 * Gets the value of the FlexForm fields.
+	 *
 	 * @return string
 	 * @api
 	 */
-	public function getAll($applyTransformations=TRUE) {
-		return $this->get(NULL, $applyTransformations);
+	public function getAll() {
+		return $this->get(NULL);
 	}
 
 	/**
@@ -92,11 +133,10 @@ class Tx_Fed_Utility_FlexForm implements t3lib_Singleton {
 	 * getAll() is an alias of get() with no argument)
 	 *
 	 * @param string $key
-	 * @param boolean $applyTransformations If TRUE, transforms according to datatype - Extbase objects supported
 	 * @return mixed
 	 * @api
 	 */
-	public function get($key=NULL, $applyTransformations=TRUE) {
+	public function get($key=NULL) {
 		$cObj = $this->configuration->getContentObject();
 		$this->raw = $cObj->data['pi_flexform'];
 		if ($this->raw) {
@@ -143,40 +183,8 @@ class Tx_Fed_Utility_FlexForm implements t3lib_Singleton {
 		return FALSE;
 	}
 
-	/**
-	 * Returns the type of $key in the FlexForm. Returns Classname if relational
-	 * value and Tx_Extbase_Perstence_ObjectStorage<ClassName> for multirelations.
-	 *
-	 * @param string $key
-	 * @return string
-	 */
-	public function getFieldType($key) {
-
-	}
 
 	/**
-	 * Determines wether or not $key is a relation to a table known to Extbase
-	 *
-	 * @param string $key
-	 * @return boolean
-	 */
-	public function isExtbaseRelation($key) {
-		$type = $this->getFieldType($key);
-		if (class_exists($type)) {
-			// 1:1 relation
-			return (bool) TRUE;
-		}
-		if (class_exists($this->infoService->parseObjectStorageAnnotation($type))) {
-			return (bool) TRUE;
-		}
-		return (bool) FALSE;
-	}
-
-	public function transform($name) {
-		return $this->storage[$name];
-	}
-
-		/**
 	 * Parses the flexForm content and converts it to an array
 	 * The resulting array will be multi-dimensional, as a value "bla.blubb"
 	 * results in two levels, and a value "bla.blubb.bla" results in three levels.

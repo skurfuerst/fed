@@ -50,7 +50,7 @@ class Tx_Fed_ViewHelpers_Fce_Grid_ColumnViewHelper extends Tx_Fed_Core_ViewHelpe
 	 * @return array
 	 */
 	public function render() {
-		for ($i=0; $i<=$this->arguments['repeat']; $i++) {
+		for ($i=0; $i<$this->arguments['repeat']; $i++) {
 			$column = array(
 				'colspan' => $this->arguments['colspan'],
 				'rowspan' => $this->arguments['rowspan'],

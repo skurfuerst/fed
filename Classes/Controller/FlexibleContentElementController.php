@@ -44,9 +44,6 @@ class Tx_Fed_Controller_FlexibleContentElementController extends Tx_Fed_Core_Abs
 		$cObj = $this->request->getContentObjectData();
 		$configurationManager = $this->objectManager->get('Tx_Fed_Configuration_ConfigurationManager');
 		list ($extensionName, $filename) = explode(':', $cObj['tx_fed_fcefile']);
-		$templateVariables = $this->flexform->getAll();
-		$templateVariables['page'] = $GLOBALS['TSFE']->page;
-		$templateVariables['record'] = $cObj;
 		$this->view = $this->objectManager->get('Tx_Fed_View_ExposedTemplateView');
 		$this->view->setControllerContext($this->controllerContext);
 		if ($extensionName && $filename) {
@@ -59,6 +56,11 @@ class Tx_Fed_Controller_FlexibleContentElementController extends Tx_Fed_Core_Abs
 			$absolutePath = PATH_site . $this->translatePath($paths['templateRootPath']) . DIRECTORY_SEPARATOR . $cObj['tx_fed_fcefile'];
 			$this->view->setTemplatePathAndFilename($absolutePath);
 		}
+		$config = $this->view->getStoredVariable('Tx_Fed_ViewHelpers_FceViewHelper', 'storage', 'Configuration');
+		$templateVariables = $this->flexform->getAllAndTransform($config['fields']);
+		$templateVariables['page'] = $GLOBALS['TSFE']->page;
+		$templateVariables['record'] = $cObj;
+		$templateVariables['config'] = $config;
 		$content = $this->view->renderStandaloneSection('Main', $templateVariables);
 		return $content;
 	}

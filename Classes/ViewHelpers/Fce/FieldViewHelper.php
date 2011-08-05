@@ -47,11 +47,11 @@ abstract class Tx_Fed_ViewHelpers_Fce_FieldViewHelper extends Tx_Fed_Core_ViewHe
 		$this->registerArgument('repeat', 'integer', 'Number of times to repeat field while appending number to name', FALSE, 1);
 		$this->registerArgument('exclude', 'boolean', 'If TRUE, this field becomes an "exclude field" (see TYPO3 documentation about this)', FALSE, FALSE);
 		$this->registerArgument('wizards', 'array', 'FlexForm-style Wizard configuration array', FALSE, array());
-		$this->registerArgument('transform', 'boolean', 'If TRUE, transforms output values according to datatypes. Extbase objects supported', FALSE, TRUE);
+		$this->registerArgument('transform', 'string', 'Set this to transform your value to this type - integer, array (for csv values), float, DateTime, Tx_MyExt_Domain_Model_Object or ObjectStorage with type hint. Also supported are FED Resource classes.');
 		$this->registerArgument('enabled', 'boolean', 'If FALSE, disables the field in the FlexForm', FALSE, TRUE);
 		$this->registerArgument('requestUpdate', 'boolean', 'If TRUE, the form is force-saved and reloaded when field value changes', FALSE, NULL);
 	}
-	
+
 	/**
 	 * Get a base configuration containing all shared arguments and their values
 	 *

@@ -54,7 +54,7 @@ class Tx_Fed_View_ExposedTemplateView extends Tx_Fluid_View_StandaloneView {
 		$parsedTemplate = $this->getParsedTemplate();
 		$this->setRenderingContext($this->baseRenderingContext);
 		$this->startRendering(Tx_Fluid_View_AbstractTemplateView::RENDERING_TEMPLATE, $parsedTemplate, $this->baseRenderingContext);
-		$out = $this->renderSection($sectionName, array());
+		$out = $this->renderSection($sectionName, $this->baseRenderingContext->getTemplateVariableContainer()->getAll());
 		$this->stopRendering();
 		return $this->baseRenderingContext->getViewHelperVariableContainer()->get($viewHelperClassname, $name);
 	}
