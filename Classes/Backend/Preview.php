@@ -136,7 +136,7 @@ class Tx_Fed_Backend_Preview implements tx_cms_layout_tt_content_drawItemHook {
 		$stored = $view->getStoredVariable('Tx_Fed_ViewHelpers_FceViewHelper', 'storage', 'Configuration');
 		$label = $stored['label'];
 
-		$preview = $view->renderStandaloneSection('Preview', $stored);
+		$preview = $view->renderStandaloneSection('Preview', $flexform);
 
 		$this->view->assignMultiple($flexform);
 		$this->view->assignMultiple($stored);
