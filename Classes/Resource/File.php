@@ -35,7 +35,7 @@
  * @package Fed
  * @subpackage Resource
  */
-class Tx_Fed_Resource_File {
+class Tx_Fed_Resource_File extends Tx_Fed_Resource_AbstractResource {
 
 	/**
 	 * @var string
@@ -86,11 +86,6 @@ class Tx_Fed_Resource_File {
 	 * @var string
 	 */
 	protected $absolutePath;
-
-	/**
-	 * @var mixed
-	 */
-	protected $metadata;
 
 	/**
 	 * CONSTRUCTOR, takes absolute or relative path to file as only argument
@@ -258,20 +253,6 @@ class Tx_Fed_Resource_File {
 	 */
 	public function setRelativePath($relativePath) {
 		$this->relativePath = $relativePath;
-	}
-
-	/**
-	 * @return mixed
-	 */
-	public function getMetadata() {
-		return $this->metadata;
-	}
-
-	/**
-	 * @param mixed $metadata
-	 */
-	public function setMetadata($metadata) {
-		$this->metadata = $metadata;
 	}
 
 	/**

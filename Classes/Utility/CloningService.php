@@ -1,9 +1,9 @@
-<?php 
+<?php
 /***************************************************************
 *  Copyright notice
 *
 *  (c) 2010 Claus Due <claus@wildside.dk>, Wildside A/S
-*  			
+*
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -24,7 +24,11 @@
 ***************************************************************/
 
 /**
- * 
+ * Copies a DomainObject with treatment of relationship properties according to
+ * source code annotations - @copy ignore|clone|reference. Returns a completely
+ * fresh DomainObject with either copies of or references to the original
+ * related values.
+ *
  * @author Claus Due, Wildside A/S
  * @version $Id$
  * @copyright Copyright belongs to the respective authors
@@ -33,25 +37,25 @@
  * @subpackage Utility
  */
 class Tx_Fed_Utility_CloningService implements t3lib_Singleton {
-	
+
 	/**
 	 * RecursionHandler instance
 	 * @var Tx_Fed_Utility_RecursionHandler
 	 */
 	public $recursionHandler;
-	
+
 	/**
 	 * ReflectionService instance
 	 * @var Tx_Extbase_Reflection_Service $service
 	 */
 	protected $reflectionService;
-	
+
 	/**
 	 * ObjectManager instance
 	 * @var Tx_Extbase_Object_ObjectManager
 	 */
 	protected $objectManger;
-	
+
 	/**
 	 * Inject a RecursionHandler instance
 	 * @param Tx_Fed_Utility_RecursionHandler $handler
@@ -59,7 +63,7 @@ class Tx_Fed_Utility_CloningService implements t3lib_Singleton {
 	public function injectRecursionHandler(Tx_Fed_Utility_RecursionHandler $handler) {
 		$this->recursionHandler = $handler;
 	}
-	
+
 	/**
 	 * Inject a Reflection Service instance
 	 * @param Tx_Extbase_Reflection_Server $service
@@ -67,7 +71,7 @@ class Tx_Fed_Utility_CloningService implements t3lib_Singleton {
 	public function injectReflectionService(Tx_Extbase_Reflection_Service $service) {
 		$this->reflectionService = $service;
 	}
-	
+
 	/**
 	 * Inject a Reflection Service instance
 	 * @param Tx_Extbase_Object_ObjectManager $manager
@@ -75,10 +79,10 @@ class Tx_Fed_Utility_CloningService implements t3lib_Singleton {
 	public function injectObjectManager(Tx_Extbase_Object_ObjectManager $manager) {
 		$this->objectManager = $manager;
 	}
-	
+
 	/**
 	 * Copy a singe object based on field annotations about how to copy the object
-	 * 
+	 *
 	 * @return Tx_Extbase_DomainObject_AbstractDomainOject $copy
 	 */
 	public function copy($object) {
@@ -107,12 +111,12 @@ class Tx_Fed_Utility_CloningService implements t3lib_Singleton {
 		$this->recursionHandler->out();
 		return $copy;
 	}
-	
+
 	protected function copyAsReference($value) {
 		$objectManager = t3lib_div::makeInstance('Tx_Extbase_Object_ObjectManager');
 		if ($value instanceof Tx_Extbase_Persistence_ObjectStorage) {
 			// objectstorage; copy storage and attach items to this new storage
-			// if 1:n mapping is used, items are detached from their old storage - this is 
+			// if 1:n mapping is used, items are detached from their old storage - this is
 			// a limitation of this type of reference
 			$newStorage = $this->objectManager->get('Tx_Extbase_Persistence_ObjectStorage');
 			foreach ($value as $item) {
@@ -130,7 +134,7 @@ class Tx_Fed_Utility_CloningService implements t3lib_Singleton {
 			return $value;
 		}
 	}
-	
+
 	protected function copyAsClone($value) {
 		if ($value instanceof Tx_Extbase_Persistence_ObjectStorage) {
 			// objectstorage; copy storage and copy items, return new storage
@@ -151,7 +155,7 @@ class Tx_Fed_Utility_CloningService implements t3lib_Singleton {
 			return $value;
 		}
 	}
-	
+
 }
 
 ?>

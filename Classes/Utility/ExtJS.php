@@ -24,11 +24,15 @@
 ***************************************************************/
 
 /**
- * ExtJS integration service
+ * ExtJS integration service. Generates automatic models of DomainObjects usable
+ * directly in ExtJS(4) Stores and Components.
  *
- * @package TYPO3
- * @subpackage Fluid
- * @version
+ * @author Claus Due, Wildside A/S
+ * @version $Id$
+ * @copyright Copyright belongs to the respective authors
+ * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
+ * @package Fed
+ * @subpackage Utility
  */
 class Tx_Fed_Utility_ExtJS implements t3lib_Singleton {
 

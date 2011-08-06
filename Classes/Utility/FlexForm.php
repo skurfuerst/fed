@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2010 Claus Due <claus@wildside.dk>, Wildside A/S
+*  (c) 2011 Claus Due <claus@wildside.dk>, Wildside A/S
 *
 *  All rights reserved
 *
@@ -30,9 +30,12 @@
  * FlexForm field values if the type of field is a database relation and the
  * table it uses is one associated with Extbase.
  *
- * @package TYPO3
- * @subpackage Fluid
- * @version
+ * @author Claus Due, Wildside A/S
+ * @version $Id$
+ * @copyright Copyright belongs to the respective authors
+ * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
+ * @package Fed
+ * @subpackage Utility
  */
 class Tx_Fed_Utility_FlexForm implements t3lib_Singleton {
 
@@ -111,7 +114,9 @@ class Tx_Fed_Utility_FlexForm implements t3lib_Singleton {
 	 * Initialization
 	 */
 	public function initializeObject() {
-		$this->contentObjectData = $this->configuration->getContentObject();
+		$contentObject = $this->configuration->getContentObject();
+		$this->contentObjectData = $contentObject->data;
+		$this->raw = $this->contentObjectData['pi_flexform'];
 	}
 
 	/**
@@ -119,6 +124,7 @@ class Tx_Fed_Utility_FlexForm implements t3lib_Singleton {
 	 */
 	public function setContentObjectData($data) {
 		$this->contentObjectData = $data;
+		$this->raw = $this->contentObjectData['pi_flexform'];
 	}
 
 	/**
@@ -173,7 +179,7 @@ class Tx_Fed_Utility_FlexForm implements t3lib_Singleton {
 			return floatval($value);
 		} else if ($dataType == 'arary') {
 			return explode(',', $value);
-		} else if (strpos($dataType, '_Domain_Model_') !== FALSE) {
+		} else if (strpos($dataType, 'Tx_') === 0) {
 			return $this->getObjectOfType($dataType, $value);
 		} else {
 			return $value;
@@ -187,19 +193,37 @@ class Tx_Fed_Utility_FlexForm implements t3lib_Singleton {
 	 */
 	protected function getObjectOfType($dataType, $uids) {
 		$identifiers = explode(',', $uids);
-		list ($container, $object) = explode('<', trim($dataType, '>'));
-		if ($container && $object) {
-			$container = $this->objectManager->get($container);
-			$repository = $this->infoService->getRepositoryInstance($object);
-			foreach ($identifiers as $identifier) {
-				$member = $repository->findOneByUid($identifier);
-				$container->attach($member);
-			}
-			return $container;
-		} else {
+			// fast decisions
+		if (is_subclass_of($dataType, 'Tx_Fed_Resource_AbstractResource')) {
+			return $this->objectManager->get($dataType, $identifier);
+		} else if (strpos($dataType, '_Domain_Model_') !== FALSE && strpos($dataType, '<') === FALSE) {
 			$repository = $this->infoService->getRepositoryInstance($dataType);
 			$uid = array_pop($identifiers);
 			return $repository->findOneByUid($uid);
+		} else if (class_exists($dataType)) {
+				// using constructor value to support objects like DateTime
+			return $this->objectManager->get($dataType, $uids);
+		}
+			// slower decisions with support for type-hinted collection objects
+		list ($container, $object) = explode('<', trim($dataType, '>'));
+		if ($container && $object) {
+			$container = $this->objectManager->get($container);
+			if (strpos($object, '_Domain_Model_') !== FALSE) {
+				$repository = $this->infoService->getRepositoryInstance($object);
+				foreach ($identifiers as $identifier) {
+					$member = $repository->findOneByUid($identifier);
+					$container->attach($member);
+				}
+			} else if (is_subclass_of($object, 'Tx_Fed_Resource_AbstractResource')) {
+				foreach ($identifiers as $identifier) {
+					$member = $this->objectManager->get($object, $identifier);
+					$container->attach($member);
+				}
+			}
+			return $container;
+		} else {
+				// passthrough; not an object, nor a type hinted collection object
+			return $uids;
 		}
 	}
 
@@ -222,10 +246,6 @@ class Tx_Fed_Utility_FlexForm implements t3lib_Singleton {
 	 * @api
 	 */
 	public function get($key=NULL) {
-		$this->raw = $this->contentObjectData['pi_flexform'];
-		if (!$this->raw) {
-			$this->raw = $this->contentObjectData['tx_fed_page_flexform'];
-		}
 		$languagePointer = 'lDEF';
 		$valuePointer = 'vDEF';
 		$this->storage = $this->convertFlexFormContentToArray($this->raw, $languagePointer, $valuePointer);

@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2010 Claus Due <claus@wildside.dk>, Wildside A/S
+*  (c) 2011 Claus Due <claus@wildside.dk>, Wildside A/S
 *
 *  All rights reserved
 *
@@ -34,9 +34,12 @@
  *
  * Currently jQuery and jQueryUI plus hosted and custom themes are supported.
  *
- * @package TYPO3
- * @subpackage Fluid
- * @version
+ * @author Claus Due, Wildside A/S
+ * @version $Id$
+ * @copyright Copyright belongs to the respective authors
+ * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
+ * @package Fed
+ * @subpackage Utility
  */
 class Tx_Fed_Utility_CDN implements t3lib_Singleton {
 
