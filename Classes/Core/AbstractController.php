@@ -156,6 +156,8 @@ abstract class Tx_Fed_Core_AbstractController extends Tx_Extbase_MVC_Controller_
 	 */
 	public function getFlexForm($fallback=FALSE) {
 		if (!$fallback) {
+			$cObj = $this->request->getContentObjectData();
+			$this->flexform->setContentObjectData($cObj);
 			return $this->flexform->getAll();
 		}
 		$data = $this->request->getContentObjectData();

@@ -3,7 +3,7 @@
 *  Copyright notice
 *
 *  (c) 2011 Claus Due <claus@wildside.dk>, Wildside A/S
-*  
+*
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -26,7 +26,7 @@
 
 /**
  * Template Rendering Controller
- * 
+ *
  * @version $Id$
  * @copyright Copyright belongs to the respective authors
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
@@ -55,9 +55,15 @@ class Tx_Fed_Controller_TemplateController extends Tx_Fed_Core_AbstractControlle
 				$this->view->assign($k, $v);
 			}
 		}
-		return $this->view->render();
+		try {
+			$content = $this->view->render();
+		} catch (Exception $e) {
+			$content = 'Error rendering template: ' . $e->getMessage();
+		}
+
+		return $content;
 	}
 
 }
- 
+
 ?>

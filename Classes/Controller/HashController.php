@@ -56,7 +56,6 @@ class Tx_Fed_Controller_HashController extends Tx_Fed_Core_AbstractController {
 		$hash = $this->hashService->generateHash($fieldNames, $fieldNamePrefix);
 		echo $hash;
 		exit();
-		#die($hash);
 	}
 
 }
