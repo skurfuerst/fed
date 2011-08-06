@@ -72,16 +72,20 @@ class Tx_Fed_Backend_FCESelector {
 					$templateFilename = PATH_site . $templateRootPath . DIRECTORY_SEPARATOR . $fileRelPath;
 					$view = $this->objectManager->get('Tx_Fed_View_ExposedTemplateView');
 					$view->setTemplatePathAndFilename($templateFilename);
-					$config =  $view->getStoredVariable('Tx_Fed_ViewHelpers_FceViewHelper', 'storage', 'Configuration');
-					$enabled = $config['enabled'];
-					$label = $config['label'];
-					if ($enabled !== FALSE) {
-						$optionValue = $key . ':' . $fileRelPath;
-						if (!$label) {
-							$label = $optionValue;
+					try {
+						$config =  $view->getStoredVariable('Tx_Fed_ViewHelpers_FceViewHelper', 'storage', 'Configuration');
+						$enabled = $config['enabled'];
+						$label = $config['label'];
+						if ($enabled !== FALSE) {
+							$optionValue = $key . ':' . $fileRelPath;
+							if (!$label) {
+								$label = $optionValue;
+							}
+							$selected = ($optionValue == $value ? " selected='selected'" : "");
+							$select .= "<option value='{$optionValue}'{$selected}>{$label}</option>" .chr(10);
 						}
-						$selected = ($optionValue == $value ? " selected='selected'" : "");
-						$select .= "<option value='{$optionValue}'{$selected}>{$label}</option>" .chr(10);
+					} catch (Exception $e) {
+						$select .= "<option value=''>INVALID: " . $fileRelPath . "</option>" . chr(10);
 					}
 				}
 				$select .= "</optgroup>" . chr(10);

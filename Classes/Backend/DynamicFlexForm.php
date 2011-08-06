@@ -70,10 +70,11 @@ class Tx_Fed_Backend_DynamicFlexForm {
 			} else {
 				$extensionName = 'fed';
 			}
-			$paths = $this->configurationManager->getContentConfiguration($extensionName);
+			$paths = $this->configurationManager->getPageConfiguration($extensionName);
 			$templatePath = $this->translatePath($paths['templateRootPath']);
-			$templateFile = PATH_site . $templatePath . '/Page/' . $action . '.html';
-			$this->readFlexFormFields($templateFile, array(), $paths, $dataStructArray, $conf, $row, $table, $fieldName);
+			$templateFile = $templatePath . '/Page/' . $action . '.html';
+			$values = $this->flexform->convertFlexFormContentToArray($row['tx_fed_page_flexform']);
+			$this->readFlexFormFields($templateFile, $values, $paths, $dataStructArray, $conf, $row, $table, $fieldName);
 		} else if ($row['CType'] == 'fed_fce') {
 			list ($extensionName, $filename) = explode(':', $row['tx_fed_fcefile']);
 			$values = $this->flexform->convertFlexFormContentToArray($row['pi_flexform']);
@@ -96,23 +97,28 @@ class Tx_Fed_Backend_DynamicFlexForm {
 	}
 
 	protected function readFlexFormFields($templateFile, $values, $paths, &$dataStructArray, $conf, &$row, $table, $fieldName) {
+		$onInvalid = array('ROOT' => array('type' => 'array', 'el' => array('void' => array('config' => 'input', 'default' => $templateFile))));
 		if (is_file(PATH_site . $templateFile) === FALSE) {
-			$dataStructArray = array('ROOT' => array('type' => 'array', 'el' => array('void' => array('config' => 'input', 'default' => $templateFile))));
+			$dataStructArray = $onInvalid;
 			return;
 		}
-
-		$view = $this->objectManager->get('Tx_Fed_View_ExposedTemplateView');
-		$view->setTemplatePathAndFilename(PATH_site . $templateFile);
-		$config = $view->getStoredVariable('Tx_Fed_ViewHelpers_FceViewHelper', 'storage', 'Configuration');
-		$flexformTemplateFile = t3lib_extMgm::extPath('fed', 'Resources/Private/Partials/AutoFlexForm.xml');
-		$template = $this->objectManager->get('Tx_Fluid_View_StandaloneView');
-		$template->setTemplatePathAndFilename($flexformTemplateFile);
-		$template->setPartialRootPath($paths['partialRootPath']);
-		$template->setLayoutRootPath($paths['layoutRootPath']);
-		$template->assignMultiple($values);
-		$template->assignMultiple($config);
-		$flexformXml = $template->render();
-		$dataStructArray = t3lib_div::xml2array($flexformXml);
+		try {
+			$view = $this->objectManager->get('Tx_Fed_View_ExposedTemplateView');
+			$view->setTemplatePathAndFilename(PATH_site . $templateFile);
+			$view->assignMultiple($values);
+			$config = $view->getStoredVariable('Tx_Fed_ViewHelpers_FceViewHelper', 'storage', 'Configuration');
+			$flexformTemplateFile = t3lib_extMgm::extPath('fed', 'Resources/Private/Partials/AutoFlexForm.xml');
+			$template = $this->objectManager->get('Tx_Fluid_View_StandaloneView');
+			$template->setTemplatePathAndFilename($flexformTemplateFile);
+			$template->setPartialRootPath($paths['partialRootPath']);
+			$template->setLayoutRootPath($paths['layoutRootPath']);
+			$template->assignMultiple($values);
+			$template->assignMultiple($config);
+			$flexformXml = $template->render();
+			$dataStructArray = t3lib_div::xml2array($flexformXml);
+		} catch (Exception $e) {
+			$dataStructArray = $onInvalid;
+		}
 	}
 
 	protected function translatePath($path) {

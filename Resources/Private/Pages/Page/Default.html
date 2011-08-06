@@ -1,14 +1,15 @@
 {namespace fed=Tx_Fed_ViewHelpers}
 
-
 <f:layout name="Default" />
 
-<f:section name="main">
+<f:section name="Configuration">
 	<fed:page id="default">
 		<fed:page.field.input name="test" label="Testfield" />
 		<fed:page.field.input name="test2" label="Testfield 2" />
 	</fed:page>
+</f:section>
 
+<f:section name="main">
 
 	This is a page template, main section, in Default.html
 	<fed:comment comment="Using 'as', it is assumed that content is manually iterated.

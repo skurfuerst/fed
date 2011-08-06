@@ -62,7 +62,11 @@ class Tx_Fed_Configuration_ConfigurationManager extends Tx_Extbase_Configuration
 		$config = $this->getConfiguration(Tx_Extbase_Configuration_ConfigurationManagerInterface::CONFIGURATION_TYPE_FULL_TYPOSCRIPT);
 		$config = $config['plugin.']['tx_fed.']['page.'];
 		$config = Tx_Extbase_Utility_TypoScript::convertTypoScriptArrayToPlainArray($config);
-		return $config;
+		if ($extensionName) {
+			return $config[$extensionName];
+		} else {
+			return $config;
+		}
 	}
 
 }
