@@ -192,8 +192,7 @@ class Tx_Fed_Utility_DomainObjectInfo implements t3lib_Singleton {
 	 */
 	public function getRepositoryClassname($object) {
 		$className = is_object($object) ? get_class($object) : $object;
-		$name = str_replace('_Domain_Model_', '_Domain_Repository_', $className) . 'Repository';
-		return $name;
+		return str_replace('_Domain_Model_', '_Domain_Repository_', $className) . 'Repository';
 	}
 
 	/**

@@ -42,6 +42,11 @@ class Tx_Fed_Utility_FlexForm implements t3lib_Singleton {
 	protected $raw;
 
 	/**
+	 * @var array
+	 */
+	protected $contentObjectData;
+
+	/**
 	 * @var Tx_Fed_Utility_DomainObjectInfo
 	 */
 	protected $infoService;
@@ -51,6 +56,21 @@ class Tx_Fed_Utility_FlexForm implements t3lib_Singleton {
 	 * @var Tx_Extbase_Configuration_FrontendConfigurationManager
 	 */
 	protected $configuration;
+
+	/**
+	 * @var Tx_Extbase_Object_ObjectManager
+	 */
+	protected $objectManager;
+
+	/**
+	 * @var type Tx_Extbase_Property_Mapper
+	 */
+	protected $propertyMapper;
+
+	/**
+	 * @var Tx_Extbase_Reflection_Service
+	 */
+	protected $reflectionService;
 
 	/**
 	 * @param Tx_Fed_Utility_DomainObjectInfo $infoService
@@ -67,9 +87,38 @@ class Tx_Fed_Utility_FlexForm implements t3lib_Singleton {
 	}
 
 	/**
+	 * @param Tx_Extbase_Object_ObjectManager $objectManager
+	 */
+	public function injectObjectManager(Tx_Extbase_Object_ObjectManager $objectManager) {
+		$this->objectManager = $objectManager;
+	}
+
+	/**
+	 * @param Tx_Extbase_Property_Mapper $propertyMapper
+	 */
+	public function injectPropertyMapper(Tx_Extbase_Property_Mapper $propertyMapper) {
+		$this->propertyMapper = $propertyMapper;
+	}
+
+	/**
+	 * @param Tx_Extbase_Reflection_Service $reflectionService
+	 */
+	public function injectReflectionService(Tx_Extbase_Reflection_Service $reflectionService) {
+		$this->reflectionService = $reflectionService;
+	}
+
+	/**
 	 * Initialization
 	 */
 	public function initializeObject() {
+		$this->contentObjectData = $this->configuration->getContentObject();
+	}
+
+	/**
+	 * @param array $data
+	 */
+	public function setContentObjectData($data) {
+		$this->contentObjectData = $data;
 	}
 
 	/**
@@ -84,7 +133,12 @@ class Tx_Fed_Utility_FlexForm implements t3lib_Singleton {
 			$transformType = $fieldConfiguration['transform'];
 			if ($transformType) {
 				$fieldName = $fieldConfiguration['name'];
-				$this->digDownTransform($all, explode('.', $fieldName), $transformType);
+				$path = explode('.', $fieldName);
+				$current =& $all;
+				while ($key = array_shift($path)) {
+					$current =& $current[$key];
+				}
+				$current = $this->digDownTransform($all, explode('.', $fieldName), $transformType);
 			}
 		}
 		return $all;
@@ -93,19 +147,17 @@ class Tx_Fed_Utility_FlexForm implements t3lib_Singleton {
 	/**
 	 * Digs down path to transform final member to $dataType
 	 *
-	 * @param array $array
+	 * @param mixed $value
 	 * @param array $keysLeft
 	 * @param string $transformType
 	 * @return type
 	 */
-	protected function digDownTransform(&$array, $keysLeft, $transformType) {
-		$key = array_shift($keysLeft);
-		$value = $array[$key];
-		if (count($keysLeft) > 0) {
-			return $this->digDown($value, $keysLeft);
-		} else {
-			return $this->transform($value, $transformType);
+	protected function digDownTransform($all, $keysLeft, $transformType) {
+		$current =& $all;
+		while ($key = array_shift($keysLeft)) {
+			$current =& $current[$key];
 		}
+		return $this->transform($current, $transformType);
 	}
 
 	/**
@@ -115,7 +167,40 @@ class Tx_Fed_Utility_FlexForm implements t3lib_Singleton {
 	 * @param string $dataType
 	 */
 	protected function transform($value, $dataType) {
-		return $value;
+		if ($dataType == 'int' || $dataType == 'integer') {
+			return intval($value);
+		} else if ($dataType == 'float') {
+			return floatval($value);
+		} else if ($dataType == 'arary') {
+			return explode(',', $value);
+		} else if (strpos($dataType, '_Domain_Model_') !== FALSE) {
+			return $this->getObjectOfType($dataType, $value);
+		} else {
+			return $value;
+		}
+	}
+
+	/**
+	 * Gets a DomainObject or ObjectStorage of $dataType
+	 * @param type $dataType
+	 * @param type $uids
+	 */
+	protected function getObjectOfType($dataType, $uids) {
+		$identifiers = explode(',', $uids);
+		list ($container, $object) = explode('<', trim($dataType, '>'));
+		if ($container && $object) {
+			$container = $this->objectManager->get($container);
+			$repository = $this->infoService->getRepositoryInstance($object);
+			foreach ($identifiers as $identifier) {
+				$member = $repository->findOneByUid($identifier);
+				$container->attach($member);
+			}
+			return $container;
+		} else {
+			$repository = $this->infoService->getRepositoryInstance($dataType);
+			$uid = array_pop($identifiers);
+			return $repository->findOneByUid($uid);
+		}
 	}
 
 	/**
@@ -137,15 +222,13 @@ class Tx_Fed_Utility_FlexForm implements t3lib_Singleton {
 	 * @api
 	 */
 	public function get($key=NULL) {
-		$cObj = $this->configuration->getContentObject();
-		$this->raw = $cObj->data['pi_flexform'];
-		if ($this->raw) {
-			$languagePointer = 'lDEF';
-			$valuePointer = 'vDEF';
-			$this->storage = $this->convertFlexFormContentToArray($this->raw, $languagePointer, $valuePointer);
-		} else {
-			return NULL;
+		$this->raw = $this->contentObjectData['pi_flexform'];
+		if (!$this->raw) {
+			$this->raw = $this->contentObjectData['tx_fed_page_flexform'];
 		}
+		$languagePointer = 'lDEF';
+		$valuePointer = 'vDEF';
+		$this->storage = $this->convertFlexFormContentToArray($this->raw, $languagePointer, $valuePointer);
 		if ($key === NULL) {
 			$arr = $this->storage;
 			foreach ($arr as $k=>$v) {
@@ -153,11 +236,7 @@ class Tx_Fed_Utility_FlexForm implements t3lib_Singleton {
 			}
 			return $arr;
 		}
-		if ($applyTransformations) {
-			return $this->transform($key);
-		} else {
-			return $this->storage[$key];
-		}
+		return $this->storage[$key];
 	}
 
 	/**

@@ -3,7 +3,7 @@
 <f:layout name="FCE" />
 
 <f:section name="Configuration">
-	<fed:fce id="testfce" label="Test: General test" enabled="FALSE">
+	<fed:fce id="testfce" label="Test: General test" enabled="TRUE">
 		<fed:fce.field.input name="innerHeader" label="Inside heading" required="TRUE" />
 		<fed:fce.field.text name="basicText" label="Basic text area" rows="20" cols="40" />
 		<fed:fce.field.text name="formattedText" label="RTE text area" enableRichText="TRUE" />
@@ -13,6 +13,8 @@
 		<fed:fce.field.group name="groupFile" label="Arbitraty filename" internalType="file" allowed="html,css,js" />
 		<fed:fce.field.userFunc name="codeEditor" label="Code editor" userFunc="Tx_Fed_Configuration_Wizard_FlexFormCodeEditor->renderField" />
 		<fed:fce.field.text name="tt_content.bodytext" label="tt_content Bodytext" />
+		<fed:fce.field.group name="datasources" label="DataSources, transformed to proper DomainObjects by Uid selection" maxItems="10"
+			 internalType="db" allowed="tx_fed_domain_model_datasource" transform="Tx_Extbase_Persistence_ObjectStorage<Tx_Fed_Domain_Model_DataSource>" />
 
 		<fed:fce.grid>
 			<fed:fce.grid.row>
@@ -46,7 +48,10 @@
 </f:section>
 
 <f:section name="Main">
-	<fed:debug.variables />
+	<f:debug>{datasources}</f:debug>
+	<f:for each="{datasources}" as="datasource" iteration="iteration">
+		Datasource #{iteration.cycle}: {datasource.name}
+	</f:for>
 
 	<h1>Extended FCE Test</h1>
 	<p>Should have a flattened group/sheet structure due to having just a single group/sheet.</p>
@@ -86,3 +91,4 @@
 	<h2>Testing content area output</h2>
 	<fed:fce.renderContent area="content" />
 </f:section>
+
