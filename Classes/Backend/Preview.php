@@ -133,17 +133,22 @@ class Tx_Fed_Backend_Preview implements tx_cms_layout_tt_content_drawItemHook {
 
 		$view->setTemplatePathAndFilename($fceTemplateFile);
 		$view->assignMultiple($flexform);
-		$stored = $view->getStoredVariable('Tx_Fed_ViewHelpers_FceViewHelper', 'storage', 'Configuration');
-		$label = $stored['label'];
+		try {
+			$stored = $view->getStoredVariable('Tx_Fed_ViewHelpers_FceViewHelper', 'storage', 'Configuration');
+			$label = $stored['label'];
 
-		$preview = $view->renderStandaloneSection('Preview', $flexform);
+			$preview = $view->renderStandaloneSection('Preview', $flexform);
 
-		$this->view->assignMultiple($flexform);
-		$this->view->assignMultiple($stored);
-		$this->view->assign('label', $label);
-		$this->view->assign('row', $row);
-		$this->view->assign('preview', $preview);
-		$itemContent = $this->view->render();
+			$this->view->assignMultiple($flexform);
+			$this->view->assignMultiple($stored);
+			$this->view->assign('label', $label);
+			$this->view->assign('row', $row);
+			$this->view->assign('preview', $preview);
+			$itemContent = $this->view->render();
+		} catch (Exception $e) {
+			$itemContent = 'INVALID: ' . $extensionName . ' ' . basename($fceTemplateFile) . '<br />' . chr(10);
+			$itemContent .= 'Error: ' . $e->getMessage();
+		}
 	}
 
 	protected function translatePath($path) {
