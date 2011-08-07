@@ -6,7 +6,7 @@
 	<f:if condition="{columns} < 1">
 		<fed:data.var name="columns" type="integer">1</fed:data.var>
 	</f:if>
-	<fed:fce id="jquery-tabs" label="Layout: JQuery Tabs">
+	<fed:fce id="jquery-tabs" label="Layout: JQuery Tabs" enabled="TRUE">
 		<fed:fce.field.select name="columns" label="Number of jQuery tabs" requestUpdate="TRUE"
 			items="{0: {0: 1}, 1: {0: 2}, 2: {0: 3}, 3: {0: 4}, 4: {0: 5}, 5: {0: 6}, 6: {0: 7}, 7: {0: 8}, 8: {0: 9}}" default="1" maxItems="1" />
 		<fed:fce.field.select name="active" label="The initially activated tab"
