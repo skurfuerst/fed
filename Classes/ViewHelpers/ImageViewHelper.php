@@ -149,10 +149,10 @@ class Tx_Fed_ViewHelpers_ImageViewHelper extends Tx_Fluid_ViewHelpers_ImageViewH
 		$setup = array(
 			'width' => $this->arguments['width'],
 			'height' => $this->arguments['height'],
-			'minW' => $this->arguments['minW'],
-			'minH' => $this->arguments['minH'],
-			'maxW' => $this->arguments['maxW'],
-			'maxH' => $this->arguments['maxH'],
+			'minW' => $this->arguments['minWidth'],
+			'minH' => $this->arguments['minHeight'],
+			'maxW' => $this->arguments['maxWidth'],
+			'maxH' => $this->arguments['maxHeight'],
 		);
 		if ($this->arguments['clickenlarge'] === TRUE) {
 			$this->addScript();

@@ -53,6 +53,7 @@ class Tx_Fed_ViewHelpers_ScriptViewHelper extends Tx_Fed_Core_ViewHelper_Abstrac
 		$cache = $this->arguments['cache'];
 		$concat = $this->arguments['concat'];
 		$compress = $this->arguments['compress'];
+		$index = $this->arguments['index'];
 		if ($src === NULL) {
 			$js = $this->renderChildren();
 			$this->documentHead->includeHeader($js, 'js', NULL, $index);
