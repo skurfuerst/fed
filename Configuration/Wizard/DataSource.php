@@ -51,7 +51,7 @@ class Tx_Fed_Configuration_Wizard_DataSource {
 
 		$wizardItems['plugins_tx_fed_datasource'] = array(
 			'icon' => t3lib_extMgm::extRelPath('fed') . 'Resources/Public/Icons/Plugin.png',
-			'title' => 'FED DataSource Display',
+			'title' => 'DataSource Display',
 			'description' => 'Displays a DataSource using a custom Fluid Template',
 			'params' => '&defVals[tt_content][CType]=list&defVals[tt_content][list_type]=fed_datasource'
 		);

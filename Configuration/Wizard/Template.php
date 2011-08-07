@@ -43,7 +43,7 @@ class Tx_Fed_Configuration_Wizard_Template {
 
 		$wizardItems['plugins_tx_fed_template'] = array(
 			'icon' => t3lib_extMgm::extRelPath('fed') . 'Resources/Public/Icons/Plugin.png',
-			'title' => 'FED Template Display',
+			'title' => 'Fluid Template Display',
 			'description' => 'Displays any custom Fluid Template along with custom FluidVars',
 			'params' => '&defVals[tt_content][CType]=list&defVals[tt_content][list_type]=fed_template'
 		);
@@ -66,4 +66,4 @@ class Tx_Fed_Configuration_Wizard_Template {
 
 
 
-?>	
+?>

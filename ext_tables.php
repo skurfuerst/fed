@@ -11,13 +11,13 @@ $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['extbase']['extensions']['fed']['plugins'
 Tx_Extbase_Utility_Extension::registerPlugin(
 	$_EXTKEY,
 	'Page',
-	'FED Page Renderer'
+	'Fluid Page'
 );
 
 Tx_Extbase_Utility_Extension::registerPlugin(
 	$_EXTKEY,
 	'Fce',
-	'Fluid Flexible Content Element'
+	'Fluid Content Element'
 );
 
 Tx_Extbase_Utility_Extension::registerPlugin(
@@ -45,9 +45,9 @@ Tx_Extbase_Utility_Extension::registerPlugin(
 );
 
 
-t3lib_extMgm::addPlugin(array('FED Flexible Content Element', 'fed_fce'), 'CType');
-t3lib_extMgm::addPlugin(array('FED Template Display', 'fed_template'), 'CType');
-t3lib_extMgm::addPlugin(array('FED DataSource Display', 'fed_datasource'), 'CType');
+t3lib_extMgm::addPlugin(array('Fluid Content Element', 'fed_fce'), 'CType');
+t3lib_extMgm::addPlugin(array('Fluid Template Display', 'fed_template'), 'CType');
+t3lib_extMgm::addPlugin(array('DataSource Display', 'fed_datasource'), 'CType');
 
 t3lib_div::loadTCA('pages');
 t3lib_div::loadTCA('tt_content');
@@ -68,7 +68,7 @@ t3lib_extMgm::addStaticFile($_EXTKEY, 'Configuration/TypoScript', 'FED Fluid Ext
 $TCA['tt_content']['types']['fed_fce']['showitem'] = '
 --palette--;LLL:EXT:cms/locallang_ttc.xml:palette.general;general,
 --palette--;LLL:EXT:cms/locallang_ttc.xml:palette.header;header,
---div--;Flexible Content Element, tx_fed_fcefile, pi_flexform;Flexible Content Element Fields,
+--div--;Flexible Content Element, tx_fed_fcefile, pi_flexform;Flexible Content Element,
 --div--;LLL:EXT:cms/locallang_ttc.xml:tabs.appearance,
 --palette--;LLL:EXT:cms/locallang_ttc.xml:palette.frames;frames,
 --div--;LLL:EXT:cms/locallang_ttc.xml:tabs.access,

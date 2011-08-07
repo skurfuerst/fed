@@ -109,10 +109,10 @@ t3lib_extMgm::addTypoScript($_EXTKEY,'setup',
 
 
 t3lib_extMgm::addPageTSConfig('
-	TCEFORM.pages.layout.addItems.255 = FED Fluid Page
+	TCEFORM.pages.layout.addItems.255 = Fluid Page
 	mod.wizards.newContentElement.wizardItems.special.elements.fed_fce {
 		icon = ../typo3conf/ext/fed/Resources/Public/Icons/Plugin.png
-		title = Fluid Flexible Content Element
+		title = Fluid Content Element
 		description = Flexible Content Element using a Fluid template
 		tt_content_defValues {
 			CType = fed_fce

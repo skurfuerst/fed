@@ -16,11 +16,11 @@
 			<label index="tx_fed_domain_model_datasource.template_file">Template File</label>
 			<label index="tx_fed_domain_model_datasource.template_source">Template Source</label>
 			<label index="tt_content.tx_fed_fcecontentarea">FED FCE Content area position, $contentArea:$ttContentUid</label>
-			<label index="tt_content.tx_fed_fcefile">FED FCE Type</label>
-			<label index="pages.tx_fed_page_controller_action">FED Fluid Page Layout - this page</label>
-			<label index="pages.tx_fed_page_controller_action_sub">FED Fluid Page Layout - subpages</label>
-			<label index="pages.tx_fed_page_format">FED Fluid Page Format</label>
-			<label index="pages.tx_fed_page_flexform">FED Page configuration</label>
+			<label index="tt_content.tx_fed_fcefile">Fluid Content Element Type</label>
+			<label index="pages.tx_fed_page_controller_action">Fluid Page Layout - this page</label>
+			<label index="pages.tx_fed_page_controller_action_sub">Fluid Page Layout - subpages</label>
+			<label index="pages.tx_fed_page_format">Fluid Page Format</label>
+			<label index="pages.tx_fed_page_flexform">Fluid Page Configuration</label>
 		</languageKey>
 	</data>
 </T3locallang>
