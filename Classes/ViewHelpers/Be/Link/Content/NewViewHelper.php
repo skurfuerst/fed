@@ -51,7 +51,7 @@ class Tx_Fed_ViewHelpers_Be_Link_Content_NewViewHelper extends Tx_Fed_Core_ViewH
 		}
 		$sign = $after ? '-' : '';
 		$icon = $this->getIcon('actions-document-new', 'Insert new content element in this position');
-		$uri = '/typo3/sysext/cms/layout/db_new_content_el.php?id=' . $pid
+		$uri = 'db_new_content_el.php?id=' . $pid
 			. '&defVals[someVar]=test'
 			. '&returnUrl=' . $returnUri
 			. '&uid_pid=' . $sign . $uid
