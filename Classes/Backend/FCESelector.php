@@ -116,7 +116,7 @@ class Tx_Fed_Backend_FCESelector {
 
 	protected function translatePath($path) {
 		if (strpos($path, 'EXT:') === 0) {
-			$slice = strpos($path, DIRECTORY_SEPARATOR);
+			$slice = strpos($path, '/');
 			$extKey = array_pop(explode(':', substr($path, 0, $slice)));
 			$path = t3lib_extMgm::siteRelPath($extKey) . substr($path, $slice);
 		}
