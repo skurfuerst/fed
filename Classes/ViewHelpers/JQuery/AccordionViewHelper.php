@@ -113,7 +113,7 @@ class Tx_Fed_ViewHelpers_JQuery_AccordionViewHelper extends Tx_Fed_Core_ViewHelp
 		// uniq DOM id for this accordion
 		$this->uniqId = uniqid('fedjqueryaccordion');
 		$tabs = $this->renderTabs();
-		$html = ($tabs . chr(10) . $content . chr(10));
+		$html = ($tabs . LF . $content . LF);
 		$this->addScript();
 		$this->tag->setContent($html);
 		$this->tag->addAttribute('class', 'fed-accordion-group');
@@ -128,8 +128,8 @@ class Tx_Fed_ViewHelpers_JQuery_AccordionViewHelper extends Tx_Fed_Core_ViewHelp
 	protected function renderTabs() {
 		$html = "";
 		foreach ($this->templateVariableContainer->get('tabs') as $tab) {
-			$html .= '<h3><a href="#">' . $tab['title'] . '</a></h3>' . chr(10);
-			$html .= '<div>' . $tab['content'] . '</div>' . chr(10);
+			$html .= '<h3><a href="#">' . $tab['title'] . '</a></h3>' . LF;
+			$html .= '<div>' . $tab['content'] . '</div>' . LF;
 		}
 		return $html;
 	}

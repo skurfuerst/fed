@@ -60,7 +60,7 @@ abstract class Tx_Fed_Core_ViewHelper_AbstractBackendViewHelper extends Tx_Fed_C
 	 * @return string
 	 */
 	protected function wrapLink($inner, $uri) {
-		return '<a href="' . $uri . '">' . $inner . '</a>' . chr(10);
+		return '<a href="' . $uri . '">' . $inner . '</a>' . LF;
 	}
 
 	/**

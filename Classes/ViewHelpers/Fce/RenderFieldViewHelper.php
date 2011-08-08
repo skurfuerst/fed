@@ -50,21 +50,21 @@ class Tx_Fed_ViewHelpers_Fce_RenderFieldViewHelper extends Tx_Fed_ViewHelpers_Fc
 		if (count($config['wizards']) == 0) {
 			return NULL;
 		}
-		$xml = "<wizards type='array'>" . chr(10);
+		$xml = "<wizards type='array'>" . LF;
 		foreach ($config['wizards'] as $name=>$wizard) {
 			$xml .= "<{$name} type='array'>";
 			if (is_array($wizard) === FALSE) {
 				$xml .= $wizard;
 			} else {
-				$xml .= chr(10);
+				$xml .= LF;
 				foreach ($wizard as $fieldName=>$fieldValue) {
-					$xml .= "<{$fieldName}>{$fieldValue}</{$fieldName}>" . chr(10);
+					$xml .= "<{$fieldName}>{$fieldValue}</{$fieldName}>" . LF;
 				}
-				$xml .= chr(10);
+				$xml .= LF;
 			}
-			$xml .= "</{$name}>" .chr(10);
+			$xml .= "</{$name}>" .LF;
 		}
-		$xml .= "</wizards>" . chr(10);
+		$xml .= "</wizards>" . LF;
 		return $xml;
 	}
 
@@ -97,28 +97,28 @@ XML;
 	protected function getSelectConfiguration($config, $addedConfig=NULL) {
 		$wizards = $this->getWizardConfiguration($config);
 		if ($config['items']) {
-			$switchedConfig = '<items type="array">' . chr(10);
+			$switchedConfig = '<items type="array">' . LF;
 			foreach ($config['items'] as $iteration=>$set) {
 				if (is_array($set) === FALSE) {
 					$set = array($set, $set);
 				} else if (count($set) == 1) {
 					$set[1] = $set[0]; // option value becomes label
 				}
-				$switchedConfig .= '<numIndex type="array" index="' . $iteration . '">' . chr(10);
-				$switchedConfig .= '	<numIndex index="0">' . $set[1] . '</numIndex>' . chr(10);
-				$switchedConfig .= '	<numIndex index="1">' . $set[0] . '</numIndex>' . chr(10);
-				$switchedConfig .= '</numIndex>' . chr(10);
+				$switchedConfig .= '<numIndex type="array" index="' . $iteration . '">' . LF;
+				$switchedConfig .= '	<numIndex index="0">' . $set[1] . '</numIndex>' . LF;
+				$switchedConfig .= '	<numIndex index="1">' . $set[0] . '</numIndex>' . LF;
+				$switchedConfig .= '</numIndex>' . LF;
 			}
-			$switchedConfig .= '</items>' . chr(10);
+			$switchedConfig .= '</items>' . LF;
 		} else if ($config['table']) {
-			$switchedConfig = implode(chr(10), array(
+			$switchedConfig = implode(LF, array(
 				"<foreign_table>{$config['table']}</foreign_table>",
 				"<foreign_table_where>{$config['condition']}</foreign_table_where>",
 				"<MM>{$config['mm']}</MM>",
 			));
 		}
 		if ($config['requestUpdate'] === TRUE) {
-			$onChange = "<onChange>reload</onChange>" . chr(10);
+			$onChange = "<onChange>reload</onChange>" . LF;
 		}
 		$xml = <<< XML
 <label>{$config['label']}</label>
@@ -159,7 +159,7 @@ XML;
 
 	protected function getCheckConfiguration($config) {
 		if ($config['requestUpdate'] === TRUE) {
-			$onChange = "<onChange>reload</onChange>" . chr(10);
+			$onChange = "<onChange>reload</onChange>" . LF;
 		}
 		$wizards = $this->getWizardConfiguration($config);
 		$xml = <<< XML

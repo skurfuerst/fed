@@ -100,7 +100,7 @@ class Tx_Fed_ViewHelpers_ExtJS_AppViewHelper extends Tx_Fed_ViewHelpers_RenderVi
 		} else {
 			$this->includeFile($this->arguments['template']);
 		}
-		$element = '<' . $tag . ' id="' . $this->arguments['id'] . '"><span>&nbsp;</span></' . $tag . '>' . chr(10);
+		$element = '<' . $tag . ' id="' . $this->arguments['id'] . '"><span>&nbsp;</span></' . $tag . '>' . LF;
 		return $element;
 	}
 }

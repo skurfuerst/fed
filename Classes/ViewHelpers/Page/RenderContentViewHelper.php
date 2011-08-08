@@ -65,7 +65,7 @@ class Tx_Fed_ViewHelpers_Page_RenderContentViewHelper extends Tx_Fed_Core_ViewHe
 		} else {
 			$html = "";
 			foreach ($content as $contentRecord) {
-				$html .= $contentRecord . chr(10);
+				$html .= $contentRecord . LF;
 			}
 		}
 		return $html;

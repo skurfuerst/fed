@@ -59,15 +59,15 @@ class Tx_Fed_Backend_FCESelector {
 		$allTemplatePaths = $this->configurationManager->getContentConfiguration();
 		$name = $parameters['itemFormElName'];
 		$value = $parameters['itemFormElValue'];
-		$select = "<div><select name='{$name}'  class='formField select' onchange='if (confirm(TBE_EDITOR.labels.onChangeAlert) && TBE_EDITOR.checkSubmit(-1)){ TBE_EDITOR.submitForm() };'>" . chr(10);
-		$select .= "<option value=''>(Select Fluid FCE type)</option>" . chr(10);
+		$select = "<div><select name='{$name}'  class='formField select' onchange='if (confirm(TBE_EDITOR.labels.onChangeAlert) && TBE_EDITOR.checkSubmit(-1)){ TBE_EDITOR.submitForm() };'>" . LF;
+		$select .= "<option value=''>(Select Fluid FCE type)</option>" . LF;
 		foreach ($allTemplatePaths as $key=>$templatePathSet) {
 			$templateRootPath = $templatePathSet['templateRootPath'];
 			$templateRootPath = $this->translatePath($templateRootPath);
 			$files = $this->getFiles($templateRootPath, TRUE);
 			if (count($files) > 0) {
 				$groupLabel = 'Group: ' . $key;
-				$select .= "<optgroup label='{$groupLabel}'>" . chr(10);
+				$select .= "<optgroup label='{$groupLabel}'>" . LF;
 				foreach ($files as $fileRelPath) {
 					$templateFilename = PATH_site . $templateRootPath . DIRECTORY_SEPARATOR . $fileRelPath;
 					$view = $this->objectManager->get('Tx_Fed_View_ExposedTemplateView');
@@ -82,16 +82,16 @@ class Tx_Fed_Backend_FCESelector {
 								$label = $optionValue;
 							}
 							$selected = ($optionValue == $value ? " selected='selected'" : "");
-							$select .= "<option value='{$optionValue}'{$selected}>{$label}</option>" .chr(10);
+							$select .= "<option value='{$optionValue}'{$selected}>{$label}</option>" .LF;
 						}
 					} catch (Exception $e) {
-						$select .= "<option value=''>INVALID: " . $fileRelPath . "</option>" . chr(10);
+						$select .= "<option value=''>INVALID: " . $fileRelPath . "</option>" . LF;
 					}
 				}
-				$select .= "</optgroup>" . chr(10);
+				$select .= "</optgroup>" . LF;
 			}
 		}
-		$select .= "</select></div>" . chr(10);
+		$select .= "</select></div>" . LF;
 		return $select;
 
 	}

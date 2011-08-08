@@ -63,7 +63,7 @@ HTML;
 	private function getCookieOptions() {
 		$html = '';
 		foreach ($_COOKIE as $name=>$value) {
-			$html .= "<option value='{$name}'>{$name}</option>" . chr(10);
+			$html .= "<option value='{$name}'>{$name}</option>" . LF;
 		}
 		return $html;
 	}

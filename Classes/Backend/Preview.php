@@ -146,7 +146,7 @@ class Tx_Fed_Backend_Preview implements tx_cms_layout_tt_content_drawItemHook {
 			$this->view->assign('preview', $preview);
 			$itemContent = $this->view->render();
 		} catch (Exception $e) {
-			$itemContent = 'INVALID: ' . $extensionName . ' ' . basename($fceTemplateFile) . '<br />' . chr(10);
+			$itemContent = 'INVALID: ' . $extensionName . ' ' . basename($fceTemplateFile) . '<br />' . LF;
 			$itemContent .= 'Error: ' . $e->getMessage();
 		}
 	}

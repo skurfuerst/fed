@@ -66,10 +66,10 @@ class Tx_Fed_ViewHelpers_LoopViewHelper extends Tx_Fluid_ViewHelpers_ImageViewHe
 					$this->templateVariableContainer->remove('iteration');
 				}
 				$this->templateVariableContainer->add($this->arguments['iteration'], $iteration);
-				$content .= $this->renderChildren() . chr(10);
+				$content .= $this->renderChildren() . LF;
 				$this->templateVariableContainer->remove($this->arguments['iteration']);
 			} else {
-				$content .= $this->renderChildren() . chr(10);
+				$content .= $this->renderChildren() . LF;
 			}
 			$i++;
 		}

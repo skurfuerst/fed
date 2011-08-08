@@ -40,18 +40,18 @@ class Tx_Fed_Backend_PageLayoutSelector {
 		$value = $parameters['itemFormElValue'];
 		$format = 'html';
 		$availableTemplates = $this->getAvailablePageTemplates($format);
-		$selector = '<select name="' . $name . '" class="formField select">' . chr(10);
+		$selector = '<select name="' . $name . '" class="formField select">' . LF;
 		foreach ($availableTemplates as $extension=>$group) {
-			$selector .= '<optgroup label="Extension: ' . $extension . '">' . chr(10);
+			$selector .= '<optgroup label="Extension: ' . $extension . '">' . LF;
 			foreach ($group as $template) {
 				$optionValue = $extension . '->' . $template;
 				$selected = ($optionValue == $value ? ' selected="formField selected"' : '');
 				$option = '<option value="' . $optionValue . '"' . $selected . '>' . $optionValue . '</option>';
-				$selector .= $option . chr(10);
+				$selector .= $option . LF;
 			}
-			$selector .= '</optgroup>' . chr(10);
+			$selector .= '</optgroup>' . LF;
 		}
-		$selector .= '</select>' . chr(10);
+		$selector .= '</select>' . LF;
 		return $selector;
 	}
 
@@ -59,15 +59,15 @@ class Tx_Fed_Backend_PageLayoutSelector {
 		$name = $parameters['itemFormElName'];
 		$value = $parameters['itemFormElValue'];
 		$selector = '<select name="' . $name . '" class="formField select"
-			onchange="if (confirm(TBE_EDITOR.labels.onChangeAlert) && TBE_EDITOR.checkSubmit(-1)){ TBE_EDITOR.submitForm() };">' . chr(10);
+			onchange="if (confirm(TBE_EDITOR.labels.onChangeAlert) && TBE_EDITOR.checkSubmit(-1)){ TBE_EDITOR.submitForm() };">' . LF;
 		$availableFormats = $this->getAvailablePageFormats();
 		foreach ($availableFormats as $format) {
 			$format = strtoupper($format);
 			$selected = ($format == $value ? ' selected="selected"' : '');
 			$option = '<option value="' . $format . '"' . $selected . '>' . $format . '</option>';
-			$selector .= $option . chr(10);
+			$selector .= $option . LF;
 		}
-		$selector .= '</select>' . chr(10);
+		$selector .= '</select>' . LF;
 		return $selector;
 	}
 

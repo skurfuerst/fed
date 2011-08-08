@@ -63,7 +63,7 @@ HTML;
 			if (is_array($value)) {
 				$html .= $this->getSessionOptions($value, $html, $path != '' ? $path.'.'.$name : $name);
 			} else {
-				$html .= "<option value='{$path}'>{$pad}{$name}</option>" . chr(10);
+				$html .= "<option value='{$path}'>{$pad}{$name}</option>" . LF;
 			}
 		}
 	}

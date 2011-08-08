@@ -94,7 +94,7 @@ class Tx_Fed_ViewHelpers_Page_BreadCrumbViewHelper extends Tx_Fed_Core_ViewHelpe
 			$html[] = '<li><a href="' . $link . '">' . $page['title'] . '</a></li>';
 		}
 		$html[] = '</ul>';
-		return implode(chr(10), $html);
+		return implode(LF, $html);
 	}
 
 	/**

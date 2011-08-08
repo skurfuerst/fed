@@ -108,7 +108,7 @@ class Tx_Fed_ViewHelpers_JQuery_TabViewHelper extends Tx_Fed_Core_ViewHelper_Abs
 		$this->uniqId = uniqid('fedjquerytabs');
 		$tabSelector = $this->renderTabSelector();
 		$tabs = $this->renderTabs();
-		$html = ($tabSelector . chr(10) . $tabs . chr(10) . $content . chr(10));
+		$html = ($tabSelector . LF . $tabs . LF . $content . LF);
 		$this->addScript();
 		$this->tag->setContent($html);
 		$this->tag->addAttribute('class', 'fed-tab-group');
@@ -121,12 +121,12 @@ class Tx_Fed_ViewHelpers_JQuery_TabViewHelper extends Tx_Fed_Core_ViewHelper_Abs
 	}
 
 	protected function renderTabSelector() {
-		$html = "<ul>" . chr(10);
+		$html = "<ul>" . LF;
 		foreach ($this->templateVariableContainer->get('tabs') as $tab) {
 			$lid = md5($tab['title']);
-			$html .= '<li><a href="#' . $lid . '">' . $tab['title'] . '</a></li>' . chr(10);
+			$html .= '<li><a href="#' . $lid . '">' . $tab['title'] . '</a></li>' . LF;
 		}
-		$html .= "</ul>" . chr(10);
+		$html .= "</ul>" . LF;
 		return $html;
 	}
 
@@ -134,7 +134,7 @@ class Tx_Fed_ViewHelpers_JQuery_TabViewHelper extends Tx_Fed_Core_ViewHelper_Abs
 		$html = "";
 		foreach ($this->templateVariableContainer->get('tabs') as $tab) {
 			$lid = md5($tab['title']);
-			$html .= '<div id="' . $lid . '">' . $tab['content'] . '</div>' . chr(10);
+			$html .= '<div id="' . $lid . '">' . $tab['content'] . '</div>' . LF;
 		}
 		return $html;
 	}

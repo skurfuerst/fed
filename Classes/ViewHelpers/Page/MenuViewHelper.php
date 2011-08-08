@@ -104,7 +104,7 @@ class Tx_Fed_ViewHelpers_Page_MenuViewHelper extends Tx_Fed_Core_ViewHelper_Abst
 			$html[] = '<li class="' . $page['class'] .'"><a href="' . $page['link'] . '" class="' . $page['class'] . '">' . $page['title'] . '</a></li>';
 		}
 		$html[] = '</ul>';
-		return implode(chr(10), $html);
+		return implode(LF, $html);
 	}
 
 	/**

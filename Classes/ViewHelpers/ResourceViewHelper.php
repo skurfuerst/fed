@@ -68,12 +68,12 @@ class Tx_Fed_ViewHelpers_ResourceViewHelper extends Tx_Fed_Core_ViewHelper_Abstr
 	 * @return string
 	 */
 	public function renderFileList(array $files) {
-		$html = "<ol>" . chr(10);
+		$html = "<ol>" . LF;
 		foreach ($files as $file) {
 			$relPath = $file->getRelativePath();
-			$html .= "<li><a href='{$relPath}'>{$file}</a></li>" . chr(10);
+			$html .= "<li><a href='{$relPath}'>{$file}</a></li>" . LF;
 		}
-		$html .= "</ol>" . chr(10);
+		$html .= "</ol>" . LF;
 		return $html;
 	}
 

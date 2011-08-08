@@ -165,7 +165,7 @@ class Tx_Fed_ViewHelpers_SassViewHelper extends Tx_Fed_Core_ViewHelper_AbstractV
 	 * @return void
 	 */
 	protected function writeStyleRuleFiles() {
-		$string = implode($GLOBALS['fedSASS']['styles'], chr(10));
+		$string = implode($GLOBALS['fedSASS']['styles'], LF);
 		$name = md5($string);
 		$path = $this->getPath();
 		$targetFile = "{$path}/{$name}.scss";

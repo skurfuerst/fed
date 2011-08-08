@@ -127,7 +127,7 @@ class Tx_Fed_ViewHelpers_Form_MultiUploadViewHelper extends Tx_Fluid_ViewHelpers
 			'<input id="' . $this->uniqueId . '-field" type="hidden" name="' . $name . '" value="' . $value . '" />',
 			'<div id="' . $this->uniqueId . '" class="fed-plupload plupload_container"></div>',
 		);
-		$this->tag->setContent(implode(chr(10), $html));
+		$this->tag->setContent(implode(LF, $html));
 		$this->addScript();
 		return $this->tag->render();
 	}
