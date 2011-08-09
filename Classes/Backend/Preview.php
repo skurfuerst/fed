@@ -86,7 +86,7 @@ class Tx_Fed_Backend_Preview implements tx_cms_layout_tt_content_drawItemHook {
 	 */
 	public function preProcess(tx_cms_layout &$parentObject, &$drawItem, &$headerContent, &$itemContent, array &$row) {
 		switch ($row['CType']) {
-			case 'fed_fce': $this->preProcessFlexibleContentElement($drawItem, $itemContent, $row); break;
+			case 'fed_fce': $this->preProcessFlexibleContentElement($drawItem, $itemContent, $headerContent, $row); break;
 			case 'fed_template': $this->preProcessTemplateDisplay($drawItem, $itemContent, $row); break;
 			default: break;
 		}
@@ -116,7 +116,7 @@ class Tx_Fed_Backend_Preview implements tx_cms_layout_tt_content_drawItemHook {
 		#$itemContent = $this->view->render();
 	}
 
-	public function preProcessFlexibleContentElement(&$drawItem, &$itemContent, array &$row) {
+	public function preProcessFlexibleContentElement(&$drawItem, &$itemContent, &$headerContent, array &$row) {
 		$fceTemplateFile = $row['tx_fed_fcefile'];
 		$view = $this->objectManager->get('Tx_Fed_View_ExposedTemplateView');
 		list ($extensionName, $filename) = explode(':', $fceTemplateFile);
@@ -145,6 +145,8 @@ class Tx_Fed_Backend_Preview implements tx_cms_layout_tt_content_drawItemHook {
 			$this->view->assign('row', $row);
 			$this->view->assign('preview', $preview);
 			$itemContent = $this->view->render();
+			$headerContent = '<strong>' . $stored['label'] . '</strong> <i>' . $row['header'] . '</i> ';
+			$drawItem = FALSE;
 		} catch (Exception $e) {
 			$itemContent = 'INVALID: ' . $extensionName . ' ' . basename($fceTemplateFile) . '<br />' . LF;
 			$itemContent .= 'Error: ' . $e->getMessage();
