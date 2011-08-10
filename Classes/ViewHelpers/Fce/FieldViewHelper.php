@@ -69,7 +69,7 @@ abstract class Tx_Fed_ViewHelpers_Fce_FieldViewHelper extends Tx_Fed_Core_ViewHe
 			'enabled' => $this->arguments['enabled'],
 			'requestUpdate' => $this->arguments['requestUpdate'],
 			'exclude' => $this->getFlexFormBoolean($this->arguments['exclude']),
-			'wizards' => array(),
+			'wizards' => $this->arguments['wizards'],
 		);
 	}
 

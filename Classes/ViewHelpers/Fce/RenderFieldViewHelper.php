@@ -126,11 +126,11 @@ XML;
 {$onChange}
 <config>
 	<type>{$config['type']}</type>
-	<minitems>{$config['minItems']}</minitems>
-	<maxitems>{$config['maxItems']}</maxitems>
+	<minitems>{$config['mintems']}</minitems>
+	<maxitems>{$config['maxtems']}</maxitems>
 	<size>{$config['size']}</size>
 	<multiple>{$config['multiple']}</multiple>
-	<show_thumbs>{$config['showThumbs']}</show_thumbs>
+	<show_thumbs>{$config['show_thumbs']}</show_thumbs>
 	<itemsProcFunc>{$config['itemsProcFunc']}</itemsProcFunc>
 	{$switchedConfig}
 	{$addedConfig}
@@ -177,11 +177,9 @@ XML;
 	protected function getGroupConfiguration($config) {
 		$added = <<< XML
 	<allowed>{$config['allowed']}</allowed>
-	<internal_type>{$config['internalType']}</internal_type>
+	<internal_type>{$config['internal_type']}</internal_type>
 XML;
 		$xml = $this->getSelectConfiguration($config, $added);
-	#header("content-type: text/plain");
-	#die($xml);
 		return $xml;
 	}
 

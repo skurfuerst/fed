@@ -52,7 +52,7 @@ class Tx_Fed_ViewHelpers_Fce_Field_GroupViewHelper extends Tx_Fed_ViewHelpers_Fc
 	public function render() {
 		$config = $this->getFieldConfig();
 		$config['type'] = 'group';
-		$config['internalType'] = $this->arguments['internalType'];
+		$config['internal_type'] = $this->arguments['internalType'];
 		$config['allowed'] = $this->arguments['allowed'];
 		$this->addField($config);
 		$this->renderChildren();

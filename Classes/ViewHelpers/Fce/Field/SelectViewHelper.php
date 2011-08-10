@@ -72,13 +72,13 @@ class Tx_Fed_ViewHelpers_Fce_Field_SelectViewHelper extends Tx_Fed_ViewHelpers_F
 		$config['type'] = 'select';
 		$config['items'] = $this->arguments['items'];
 		$config['size'] = $this->arguments['size'];
-		$config['minItems'] = $this->arguments['minItems'];
-		$config['maxItems'] = $this->arguments['maxItems'];
+		$config['minitems'] = $this->arguments['minItems'];
+		$config['maxitems'] = $this->arguments['maxItems'];
 		$config['multiple'] = $this->arguments['multiple'] ? 1 : 0;
 		$config['table'] = $this->arguments['table'];
 		$config['condition'] = $this->arguments['condition'];
 		$config['mm'] = $this->arguments['mm'];
-		$config['showThumbs'] = $this->getFlexFormBoolean($this->argumetns['showThumbs']);
+		$config['show_thumbs'] = $this->getFlexFormBoolean($this->arguments['showThumbs']);
 		$config['itemsProcFunc'] = $this->arguments['itemsProcFunc'];
 		return $config;
 	}
