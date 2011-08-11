@@ -58,6 +58,14 @@ abstract class Tx_Fed_ViewHelpers_Fce_FieldViewHelper extends Tx_Fed_Core_ViewHe
 	 * @return array
 	 */
 	protected function getBaseConfig() {
+		if ($this->viewHelperVariableContainer->exists('Tx_Fed_ViewHelpers_FceViewHelper', 'group')) {
+			$group = $this->viewHelperVariableContainer->get('Tx_Fed_ViewHelpers_FceViewHelper', 'group');
+		} else {
+			$group = array(
+				'name' => 'options',
+				'label' => 'Options',
+			);
+		}
 		return array(
 			'name' => $this->arguments['name'],
 			'transform' => $this->arguments['transform'],
@@ -70,6 +78,7 @@ abstract class Tx_Fed_ViewHelpers_Fce_FieldViewHelper extends Tx_Fed_Core_ViewHe
 			'requestUpdate' => $this->arguments['requestUpdate'],
 			'exclude' => $this->getFlexFormBoolean($this->arguments['exclude']),
 			'wizards' => $this->arguments['wizards'],
+			'group' => $group
 		);
 	}
 

@@ -107,6 +107,19 @@ class Tx_Fed_Backend_DynamicFlexForm {
 			$view->setTemplatePathAndFilename(PATH_site . $templateFile);
 			$view->assignMultiple($values);
 			$config = $view->getStoredVariable('Tx_Fed_ViewHelpers_FceViewHelper', 'storage', 'Configuration');
+			$groups = array();
+			foreach ($config['fields'] as $field) {
+				$groupKey = $field['group']['name'];
+				$groupLabel = $field['group']['label'];
+				if (is_array($groups[$groupKey]) === FALSE) {
+					$groups[$groupKey] = array(
+						'name' => $groupKey,
+						'label' => $groupLabel,
+						'fields' => array()
+					);
+				}
+				array_push($groups[$groupKey]['fields'], $field);
+			}
 			$flexformTemplateFile = t3lib_extMgm::extPath('fed', 'Resources/Private/Partials/AutoFlexForm.xml');
 			$template = $this->objectManager->get('Tx_Fluid_View_StandaloneView');
 			$template->setTemplatePathAndFilename($flexformTemplateFile);
@@ -114,6 +127,7 @@ class Tx_Fed_Backend_DynamicFlexForm {
 			$template->setLayoutRootPath($paths['layoutRootPath']);
 			$template->assignMultiple($values);
 			$template->assignMultiple($config);
+			$template->assign('groups', $groups);
 			$flexformXml = $template->render();
 			$dataStructArray = t3lib_div::xml2array($flexformXml);
 		} catch (Exception $e) {
