@@ -294,7 +294,7 @@ abstract class Tx_Fed_Core_AbstractController extends Tx_Extbase_MVC_Controller_
 	 * PURELY INTERNAL - CAN BE OVERRIDDEN
 	 * @return stdClas
 	 */
-	private function performRestCreate() {
+	protected function performRestCreate() {
 		$data = $this->fetchRestBodyData();
 		$object = $this->fetchRestObject();
 		$repository = $this->infoService->getRepositoryInstance($object);
@@ -313,7 +313,7 @@ abstract class Tx_Fed_Core_AbstractController extends Tx_Extbase_MVC_Controller_
 	 * PURELY INTERNAL - CAN BE OVERRIDDEN
 	 * @return mixed
 	 */
-	private function performRestRead() {
+	protected function performRestRead() {
 		$object = $this->fetchRestObject();
 		$repository = $this->infoService->getRepositoryInstance($object);
 		$all = $repository->findAll()->toArray();
@@ -325,7 +325,7 @@ abstract class Tx_Fed_Core_AbstractController extends Tx_Extbase_MVC_Controller_
 	 * PURELY INTERNAL - CAN BE OVERRIDDEN
 	 * @return stdClas
 	 */
-	private function performRestUpdate() {
+	protected function performRestUpdate() {
 		$data = $this->fetchRestBodyData();
 		$object = $this->fetchRestObject();
 		$repository = $this->infoService->getRepositoryInstance($object);
@@ -339,7 +339,7 @@ abstract class Tx_Fed_Core_AbstractController extends Tx_Extbase_MVC_Controller_
 	 * PURELY INTERNAL - CAN BE OVERRIDDEN
 	 * @return void
 	 */
-	private function performRestDestroy() {
+	protected function performRestDestroy() {
 		$data = $this->fetchRestBodyData();
 		$object = $this->fetchRestObject();
 		$repository = $this->infoService->getRepositoryInstance($object);
