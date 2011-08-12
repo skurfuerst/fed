@@ -126,8 +126,8 @@ XML;
 {$onChange}
 <config>
 	<type>{$config['type']}</type>
-	<minitems>{$config['mintems']}</minitems>
-	<maxitems>{$config['maxtems']}</maxitems>
+	<minitems>{$config['minitems']}</minitems>
+	<maxitems>{$config['maxitems']}</maxitems>
 	<size>{$config['size']}</size>
 	<multiple>{$config['multiple']}</multiple>
 	<show_thumbs>{$config['show_thumbs']}</show_thumbs>
