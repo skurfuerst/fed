@@ -44,6 +44,7 @@ class Tx_Fed_ViewHelpers_Fce_Field_SelectViewHelper extends Tx_Fed_ViewHelpers_F
 		parent::initializeArguments();
 		$this->registerArgument('validate', 'string', 'FlexForm-type validation configuration for this input', FALSE, 'trim');
 		$this->registerArgument('items', 'array', 'Items for the selector multidimensional, matching FlexForm/TCA', FALSE, array());
+		$this->registerArgument('commaSeparatedItems', 'string', 'CSV list of item values which are both labels and values', FALSE);
 		$this->registerArgument('size', 'integer', 'Size of the selector box', FALSE, 1);
 		$this->registerArgument('multiple', 'boolean', 'If TRUE, allows multiple selections', FALSE, FALSE);
 		$this->registerArgument('minItems', 'integer', 'Minimum required number of items to be selected', FALSE, 0);
@@ -70,7 +71,15 @@ class Tx_Fed_ViewHelpers_Fce_Field_SelectViewHelper extends Tx_Fed_ViewHelpers_F
 	protected function getFieldConfig() {
 		$config = $this->getBaseConfig();
 		$config['type'] = 'select';
-		$config['items'] = $this->arguments['items'];
+		if ($this->arguments['commaSeparatedItems']) {
+			$config['items'] = array();
+			$itemNames = explode(',', $this->arguments['commaSeparatedItems']);
+			foreach ($itemNames as $itemName) {
+				array_push($config['items'], array($itemName, $itemName));
+			}
+		} else {
+			$config['items'] = $this->arguments['items'];
+		}
 		$config['size'] = $this->arguments['size'];
 		$config['minitems'] = $this->arguments['minItems'];
 		$config['maxitems'] = $this->arguments['maxItems'];

@@ -177,7 +177,7 @@ class Tx_Fed_Utility_FlexForm implements t3lib_Singleton {
 			return intval($value);
 		} else if ($dataType == 'float') {
 			return floatval($value);
-		} else if ($dataType == 'arary') {
+		} else if ($dataType == 'array') {
 			return explode(',', $value);
 		} else if (strpos($dataType, 'Tx_') === 0) {
 			return $this->getObjectOfType($dataType, $value);

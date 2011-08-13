@@ -129,14 +129,31 @@ class Tx_Fed_Backend_Preview implements tx_cms_layout_tt_content_drawItemHook {
 			$fceTemplateFile = PATH_site . $fceTemplateFile;
 			$view->setLayoutRootPath(t3lib_extMgm::extPath('fed', 'Resources/Private/Layouts/'));
 		}
-		$flexform = $this->flexform->convertFlexFormContentToArray($row['pi_flexform']);
-
-		$view->setTemplatePathAndFilename($fceTemplateFile);
-		$view->assignMultiple($flexform);
 		try {
-			$stored = $view->getStoredVariable('Tx_Fed_ViewHelpers_FceViewHelper', 'storage', 'Configuration');
-			$label = $stored['label'];
 
+			$this->flexform->setContentObjectData($row);
+			$view->setTemplatePathAndFilename($fceTemplateFile);
+			$flexform = $this->flexform->getAll();
+			$view->assignMultiple($flexform);
+			$stored = $view->getStoredVariable('Tx_Fed_ViewHelpers_FceViewHelper', 'storage', 'Configuration');
+			$flexform = $this->flexform->getAllAndTransform($stored['fields']);
+
+			$groups = array();
+			foreach ($stored['fields'] as $field) {
+				$groupKey = $field['group']['name'];
+				$groupLabel = $field['group']['label'];
+				if (is_array($groups[$groupKey]) === FALSE) {
+					$groups[$groupKey] = array(
+						'name' => $groupKey,
+						'label' => $groupLabel,
+						'fields' => array()
+					);
+				}
+				array_push($groups[$groupKey]['fields'], $field);
+			}
+			$stored['groups'] = $groups;
+			$flexform['config'] = $stored;
+			$label = $stored['label'];
 			$preview = $view->renderStandaloneSection('Preview', $flexform);
 
 			$this->view->assignMultiple($flexform);

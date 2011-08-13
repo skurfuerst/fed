@@ -25,37 +25,17 @@
  * ************************************************************* */
 
 /**
- *
+ * Proxy for FCE GroupViewHelper - exact same feature
  *
  * @author Claus Due, Wildside A/S
  * @version $Id$
  * @copyright Copyright belongs to the respective authors
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  * @package Fed/Fce
- * @subpackage ViewHelpers/Fce
+ * @subpackage ViewHelpers/Page
  */
-class Tx_Fed_ViewHelpers_Fce_GroupViewHelper extends Tx_Fed_Core_ViewHelper_AbstractFceViewHelper {
+class Tx_Fed_ViewHelpers_Page_GroupViewHelper extends Tx_Fed_ViewHelpers_Fce_GroupViewHelper {
 
-	/**
-	 * Initialize arguments
-	 */
-	public function initializeArguments() {
-		$this->registerArgument('name', 'string', 'Name of the group, used as FlexForm sheet name, must be FlexForm XML-valid tag name string', FALSE);
-		$this->registerArgument('label', 'string', 'Label for the field group - used as tab name in FlexForm', TRUE);
-	}
-
-	/**
-	 * Render method
-	 */
-	public function render() {
-		$group = array(
-			'name' => $this->arguments['name'],
-			'label' => $this->arguments['label'],
-		);
-		$this->viewHelperVariableContainer->addOrUpdate('Tx_Fed_ViewHelpers_FceViewHelper', 'group', $group);
-		$this->renderChildren();
-		$this->viewHelperVariableContainer->remove('Tx_Fed_ViewHelpers_FceViewHelper', 'group');
-	}
 
 }
 

@@ -44,7 +44,7 @@ class Tx_Fed_ViewHelpers_Data_VarViewHelper extends Tx_Fed_Core_ViewHelper_Abstr
 		if ($value === NULL) {
 			$value = $this->renderChildren();
 		}
-		if (trim($value) === '') {
+		if (@trim($value) === '') {
 			// we are echoing a variable
 			if (strpos($name, '.')) {
 				$parts = explode('.', $name);
@@ -101,7 +101,9 @@ class Tx_Fed_ViewHelpers_Data_VarViewHelper extends Tx_Fed_Core_ViewHelper_Abstr
 				break;
 			case 'array':
 				// cheat a bit; assume CSV
-				$value = explode(',', $value);
+				if (is_array($value) === FALSE) {
+					$value = explode(',', $value);
+				}
 				break;
 			case 'string':
 			default:
