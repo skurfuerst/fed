@@ -90,11 +90,11 @@
 <f:section name="Main">
 	<f:if condition="{url}">
 		<f:else>
-			<fed:data.var name="url"><fed:page.absoluteUrl /></fed:data.var>
+			<fed:data.var name="url" value="{fed:page.absoluteUrl()}" />
 		</f:else>
 	</f:if>
 	<f:for each="{order}" as="key" iteration="iteration">
-		<fed:data.var name="component" value="{fed:data.var(name: key)}" />
+		<fed:hide><fed:data.var name="component" value="{fed:data.var(name: key)}" /></fed:hide>
 		<f:if condition="{component.enabled}">
 			<fed:switch value="{key}">
 				<fed:case case="facebook.like" break="TRUE">
@@ -104,13 +104,13 @@
 						layout="{component.layout}"
 						font="{component.font}"
 						width="{component.width}"
-						locale="{locale}"></fed:social.facebook.like>
+						locale="{locale}" />
 				</fed:case>
 				<fed:case case="facebook.share" break="TRUE">
 					<fed:social.facebook.share
 						shareUrl="{url}"
 						loadJs="{component.loadJs}"
-						type="{component.type}">Share</fed:social.facebook.share>
+						type="{component.type}" />
 				</fed:case>
 				<fed:case case="facebook.comment" break="TRUE">
 					<fed:social.facebook.comment
@@ -145,7 +145,7 @@
 						datalang="{component.datalang}">{component.text}</fed:social.twitter>
 				</fed:case>
 			</fed:switch>
-			<f:if condition="{iteration.isLast" then="" else="{divider}" />
+			<f:if condition="{iteration.isLast}" then="" else="{divider}" />
 		</f:if>
 	</f:for>
 </f:section>

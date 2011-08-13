@@ -34,33 +34,25 @@
  */
 class Tx_Fed_ViewHelpers_Data_VarViewHelper extends Tx_Fed_Core_ViewHelper_AbstractViewHelper {
 
+	public function initializeArguments() {
+		$this->registerArgument('name', 'string', 'Name of the variable to get or set', TRUE, NULL, TRUE);
+		$this->registerArgument('value', 'mixed', 'If specified, takes value from content of this argument', FALSE, NULL, TRUE);
+		$this->registerArgument('type', 'string', 'Data-type for this variable. Empty means string', FALSE, NULL, TRUE);
+	}
+
 	/**
 	 * Get or set a variable
-	 * @param string $name
-	 * @param mixed $value
-	 * @param string $type
+	 * @return mixed
 	 */
-	public function render($name, $value=NULL, $type=NULL) {
+	public function render() {
+		$name = $this->arguments['name'];
+		$value = $this->arguments['value'];
+		$type = $this->arguments['type'];
 		if ($value === NULL) {
 			$value = $this->renderChildren();
 		}
-		if (@trim($value) === '') {
-			// we are echoing a variable
-			if (strpos($name, '.')) {
-				$parts = explode('.', $name);
-				$name = array_shift($parts);
-			}
-			if ($this->templateVariableContainer->exists($name)) {
-				$value = $this->templateVariableContainer->get($name);
-				if (is_array($parts) && count($parts) > 0) {
-					$value = $this->recursiveValueRead($value, $parts);
-				}
-				return $value;
-			} else {
-				return NULL;
-			}
-		} else {
-			// we are setting a variable
+		if ($value) {
+				// we are setting a variable
 			if ($type === NULL) {
 				if (is_object($value)) {
 					$type = 'object';
@@ -79,8 +71,24 @@ class Tx_Fed_ViewHelpers_Data_VarViewHelper extends Tx_Fed_Core_ViewHelper_Abstr
 				$this->templateVariableContainer->remove($name);
 			}
 			$this->templateVariableContainer->add($name, $value);
+			return NULL;
+		} else {
+				// we are echoing a variable
+			if (strpos($name, '.')) {
+				$parts = explode('.', $name);
+				$name = array_shift($parts);
+			}
+			if ($this->templateVariableContainer->exists($name)) {
+				$value = $this->templateVariableContainer->get($name);
+				if (is_array($parts) && count($parts) > 0) {
+					$value = $this->recursiveValueRead($value, $parts);
+				}
+				return $value;
+			} else {
+				return NULL;
+			}
 		}
-		return '';
+		return NULL;
 	}
 
 	/**
