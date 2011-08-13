@@ -19,7 +19,7 @@
 			<fed:fce.field.checkbox name="twitter.enabled" label="Twitter" requestUpdate="TRUE" />
 		</fed:fce.group>
 		<f:if condition="{facebook.like.enabled}">
-			<fed:fce.group name="facebook" label="Facebook Like">
+			<fed:fce.group name="facebook.like" label="Facebook Like">
 				<fed:fce.field.input name="facebook.like.javaScript" label="Custom FaceBook 'Like' JavaScript. Leave blank for default script" />
 				<fed:fce.field.select name="facebook.like.layout" label="Layout for 'Like' link"
 					commaSeparatedItems="standard,button_count,box_count" />
@@ -29,14 +29,14 @@
 			</fed:fce.group>
 		</f:if>
 		<f:if condition="{facebook.share.enabled}">
-			<fed:fce.group name="facebook" label="Facebook Share">
+			<fed:fce.group name="facebook.share" label="Facebook Share">
 				<fed:fce.field.select name="facebook.share.type" label="Type of 'Share' component"
 					commaSeparatedItems="standard,button_count,box_count" />
 				<fed:fce.field.checkbox name="facebook.share.loadJs" label="Load FaceBook 'Share' JavaScript" />
 			</fed:fce.group>
 		</f:if>
 		<f:if condition="{facebook.comment.enabled}">
-			<fed:fce.group name="facebook" label="Facebook Comment">
+			<fed:fce.group name="facebook.comment" label="Facebook Comment">
 				<fed:fce.field.checkbox name="facebook.comment.publishFeed" label="Publish FaceBook comment feed" />
 				<fed:fce.field.input name="facebook.comment.width" label="Width of 'Comment' plugin" default="450" />
 				<fed:fce.field.select name="facebook.comment.numposts" label="Number of comments to display"
@@ -104,13 +104,13 @@
 						layout="{component.layout}"
 						font="{component.font}"
 						width="{component.width}"
-						locale="{locale}" />
+						locale="{locale}"></fed:social.facebook.like>
 				</fed:case>
 				<fed:case case="facebook.share" break="TRUE">
 					<fed:social.facebook.share
 						shareUrl="{url}"
 						loadJs="{component.loadJs}"
-						type="{component.type}" />
+						type="{component.type}"></fed:social.facebook.share>
 				</fed:case>
 				<fed:case case="facebook.comment" break="TRUE">
 					<fed:social.facebook.comment
@@ -118,7 +118,7 @@
 						href="{url}"
 						width="{component.width}"
 						numposts="{component.numposts}"
-						locale="{locale}" />
+						locale="{locale}">Share</fed:social.facebook.comment>
 				</fed:case>
 				<fed:case case="disqus" break="TRUE">
 					<fed:social.disqus
@@ -133,7 +133,7 @@
 						href="{url}"
 						count="{f:if(condition: component.count, then: 'true', else: 'false')}"
 						jsCode="{component.jsCode}"
-						locale="{locale}" />
+						locale="{locale}"></fed:social.googlePlus>
 				</fed:case>
 				<fed:case case="twitter" break="TRUE">
 					<fed:social.twitter
@@ -145,7 +145,7 @@
 						datalang="{component.datalang}">{component.text}</fed:social.twitter>
 				</fed:case>
 			</fed:switch>
-			<f:if condition="{iteration.isLast}" then="" else="{divider}" />
+			<f:if condition="{iteration.isLast}" else="{divider}" />
 		</f:if>
 	</f:for>
 </f:section>
