@@ -92,6 +92,16 @@ class Tx_Fed_Backend_DynamicFlexForm {
 		} else if ($row['CType'] == 'fed_datasource') {
 			$templateFile = t3lib_extMgm::extPath('fed', 'Configuration/FlexForms/DataSource.xml');
 			$dataStructArray = t3lib_div::xml2array(file_get_contents($templateFile));
+		} else {
+				// check for registered Fluid FlexForms based on cType first, then plugin list_type
+			$flexFormConfiguration = Tx_Fed_Core::getRegisteredFlexForms('contentObject', $row['cType']);
+			if (!$flexFormConfiguration) {
+				$flexFormConfiguration = Tx_Fed_Core::getRegisteredFlexForms('plugin', $row['list_type']);
+			}
+			if ($flexFormConfiguration) {
+				$values = $this->flexform->convertFlexFormContentToArray($row['pi_flexform']);
+				$this->readFlexFormFields($flexFormConfiguration['templateFilename'], $values, $paths, $dataStructArray, $conf, $row, $table, $fieldName);
+			}
 		}
 
 	}
