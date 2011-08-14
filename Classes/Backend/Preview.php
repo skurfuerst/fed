@@ -125,53 +125,44 @@ class Tx_Fed_Backend_Preview implements tx_cms_layout_tt_content_drawItemHook {
 		#$itemContent = $this->view->render();
 	}
 
-	public function drawPreview(&$drawItem, &$itemContent, &$headerContent, array &$row, $templatePathAndFilename, array $variables) {
-		$headerContent = '<strong>' . $stored['label'] . '</strong> <i>' . $row['header'] . '</i> ';
-		$view = $this->objectManager->get('Tx_Fed_View_ExposedTemplateView');
-		$view->setTemplatePathAndFilename($templatePathAndFilename);
-		#$this->view->assignMultiple($variables);
-		$itemContent = $view->renderStandaloneSection('Preview', $variables);
-		$drawItem = FALSE;
-	}
-
-	public function preProcessExtbasePlugin(&$drawItem, &$itemContent, &$headerContent, array &$row, array $configuration) {
-		#var_dump($configuration);
-		#exit();
-		$variables = (array) $configuration['variables'];
-		$templatePathAndFilename = PATH_site . $configuration['templateFilename'];
-		$this->flexform->setContentObjectData($row);
-		$itemContent = 'Buh';
-		$this->drawPreview($drawItem, $itemContent, $headerContent, $row, $templatePathAndFilename, $variables);
-	}
-
-	public function preProcessFlexibleContentElement(&$drawItem, &$itemContent, &$headerContent, array &$row) {
-		$this->flexform->setContentObjectData($row);
-		$fceTemplateFile = $row['tx_fed_fcefile'];
-		list ($extensionName, $filename) = explode(':', $fceTemplateFile);
-		$paths = array();
-		if ($filename) {
-			$paths = $this->configurationManager->getContentConfiguration($extensionName);
-			$fceTemplateFile = PATH_site . $this->translatePath($paths['templateRootPath']) . $filename;
-
-			$paths['partialRootPath'] = PATH_site . $this->translatePath($paths['partialRootPath']);
-			$paths['layoutRootPath'] = PATH_site . $this->translatePath($paths['layoutRootPath']);
-		} else {
-			$fceTemplateFile = PATH_site . $fceTemplateFile;
-			$paths['layoutRootPath'] = t3lib_extMgm::extPath('fed', 'Resources/Private/Layouts/');
-		}
+	public function drawPreview(&$drawItem, &$itemContent, &$headerContent, array &$row, $templatePathAndFilename, array $variables, array $paths=array()) {
 		try {
-
-			$stored = $this->getFlexFormConfiguration($fceTemplateFile, NULL, $paths);
-			$variables = $this->flexform->getAllAndTransform($stored['fields']);
-			$variables = array_merge($stored, $variables);
+			$this->flexform->setContentObjectData($row);
+			$stored = $this->getFlexFormConfiguration($templatePathAndFilename, NULL, $paths);
+			$variables = array_merge($stored, $variables, $this->flexform->getAllAndTransform($stored['fields']));
 			$variables['label'] = $stored['label'];
 			$variables['config'] = $stored;
 			$variables['row'] = $row;
-			$this->drawPreview($drawItem, $itemContent, $headerContent, $row, $fceTemplateFile, $variables);
+			$variables['preview'] = $this->renderFluidPreview($templatePathAndFilename, $variables);
+			$this->view->assignMultiple($variables);
+			$itemContent = $this->view->render();
+			$headerContent = '<strong>' . $stored['label'] . '</strong> <i>' . $row['header'] . '</i> ';
+			$drawItem = FALSE;
 		} catch (Exception $e) {
 			$itemContent = 'INVALID: ' . $extensionName . ' ' . basename($fceTemplateFile) . '<br />' . LF;
 			$itemContent .= 'Error: ' . $e->getMessage();
 		}
+	}
+
+	public function preProcessExtbasePlugin(&$drawItem, &$itemContent, &$headerContent, array &$row, array $configuration) {
+		$templatePathAndFilename = PATH_site . $configuration['templateFilename'];
+		$this->drawPreview($drawItem, $itemContent, $headerContent, $row, $templatePathAndFilename, (array) $configuration['variables']);
+	}
+
+	public function preProcessFlexibleContentElement(&$drawItem, &$itemContent, &$headerContent, array &$row) {
+		$templatePathAndFilename = $row['tx_fed_fcefile'];
+		list ($extensionName, $filename) = explode(':', $templatePathAndFilename);
+		$paths = array();
+		if ($filename) {
+			$paths = $this->configurationManager->getContentConfiguration($extensionName);
+			$templatePathAndFilename = PATH_site . $this->translatePath($paths['templateRootPath']) . $filename;
+			$paths['partialRootPath'] = PATH_site . $this->translatePath($paths['partialRootPath']);
+			$paths['layoutRootPath'] = PATH_site . $this->translatePath($paths['layoutRootPath']);
+		} else {
+			$templatePathAndFilename = PATH_site . $templatePathAndFilename;
+			$paths['layoutRootPath'] = t3lib_extMgm::extPath('fed', 'Resources/Private/Layouts/');
+		}
+		$this->drawPreview($drawItem, $itemContent, $headerContent, $row, $templatePathAndFilename, array(), $paths);
 	}
 
 	protected function getFlexFormConfiguration($templatePathAndFilename, $variables, array $paths=array()) {
@@ -181,31 +172,26 @@ class Tx_Fed_Backend_Preview implements tx_cms_layout_tt_content_drawItemHook {
 		$view->assignMultiple($flexform);
 		$view->assignMultiple((array) $variables);
 		$stored = $view->getStoredVariable('Tx_Fed_ViewHelpers_FceViewHelper', 'storage', 'Configuration');
-		$groups = array();
+		$stored['groups'] = array();
 		foreach ($stored['fields'] as $field) {
 			$groupKey = $field['group']['name'];
 			$groupLabel = $field['group']['label'];
-			if (is_array($groups[$groupKey]) === FALSE) {
-				$groups[$groupKey] = array(
+			if (is_array($stored['groups'][$groupKey]) === FALSE) {
+				$stored['groups'][$groupKey] = array(
 					'name' => $groupKey,
 					'label' => $groupLabel,
 					'fields' => array()
 				);
 			}
-			array_push($groups[$groupKey]['fields'], $field);
+			array_push($stored['groups'][$groupKey]['fields'], $field);
 		}
-		$stored['groups'] = $groups;
 		return $stored;
-		#$flexform = $this->flexform->getAllAndTransform($stored['fields']);
 	}
 
 	protected function renderFluidPreview($templatePathAndFilename, $variables) {
 		$view = $this->objectManager->get('Tx_Fed_View_ExposedTemplateView');
-		$view->setTemplatePathAndFilename($templateFilename);
-		$view->assignMultiple((array) $variables);
-		$variables['preview'] = $view->renderStandaloneSection('Preview', $flexform);
-		$this->view->assignMultiple($variables);
-		return $preview;
+		$view->setTemplatePathAndFilename($templatePathAndFilename);
+		return $view->renderStandaloneSection('Preview', (array) $variables);
 	}
 
 	protected function translatePath($path) {
