@@ -95,7 +95,7 @@ class Tx_Fed_Backend_DynamicFlexForm {
 		} else {
 				// check for registered Fluid FlexForms based on cType first, then plugin list_type
 			$flexFormConfiguration = Tx_Fed_Core::getRegisteredFlexForms('contentObject', $row['cType']);
-			if (!$flexFormConfiguration) {
+			if (!$flexFormConfiguration && $row['list_type']) {
 				$flexFormConfiguration = Tx_Fed_Core::getRegisteredFlexForms('plugin', $row['list_type']);
 			}
 			if ($flexFormConfiguration) {
@@ -103,7 +103,6 @@ class Tx_Fed_Backend_DynamicFlexForm {
 				$this->readFlexFormFields($flexFormConfiguration['templateFilename'], $values, $paths, $dataStructArray, $conf, $row, $table, $fieldName);
 			}
 		}
-
 	}
 
 	protected function readFlexFormFields($templateFile, $values, $paths, &$dataStructArray, $conf, &$row, $table, $fieldName) {
