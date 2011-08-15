@@ -59,7 +59,7 @@ class Tx_Fed_ViewHelpers_MapViewHelper extends Tx_Fed_Core_ViewHelper_AbstractVi
 	 * @param string $backgroundColor Color used for the background of the Map div. This color will be visible when tiles have not yet loaded as the user pans. This option can only be set when the map is initialized.
 	 * @param boolean $disableDefaultUI Enables/disables all default UI. May be overridden individually.
 	 * @param boolean $disableDoubleClickZoom Enables/disables zoom and center on double click. Enabled by default.
-	 * @param boolean $draggable If false, prevents the map from being dragged. Dragging is enabled by default.
+	 * @param boolean $draggable If TRUE, enables cursor(s) to be dragged around on the map. Dragging is disabled by default.
 	 * @param string $draggableCursor The name or url of the cursor to display on a draggable object.
 	 * @param string $draggingCursor The name or url of the cursor to display when an object is dragging.
 	 * @param string $keyboardShortcuts If false, prevents the map from being controlled by the keyboard. Keyboard shortcuts are enabled by default.
@@ -87,7 +87,7 @@ class Tx_Fed_ViewHelpers_MapViewHelper extends Tx_Fed_Core_ViewHelper_AbstractVi
 			$backgroundColor=NULL,
 			$disableDefaultUi=FALSE,
 			$disableDoubleClickZoom=TRUE,
-			$draggable=TRUE,
+			$draggable=FALSE,
 			$draggableCursor=NULL,
 			$draggingCursor=NULL,
 			$keyboardShortcuts=TRUE,
