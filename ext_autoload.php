@@ -8,6 +8,7 @@ return array(
 	'tx_extbase_service_typoscriptservice' => $extbaseClassesPath . "Service/TypoScriptService.php",
 
 	'tx_fed_tests_unit_basetestcase' => $extensionPath . 'Tests/Unit/BaseTestCase.php',
+	'tx_fed_core' => $extensionClassesPath . 'Core.php',
 	'tx_fed_core_bootstrap' => $extensionClassesPath . 'Core/Bootstrap.php',
 	'tx_fed_configuration_configurationmanager' => $extensionClassesPath . 'Configuration/ConfigurationManager.php',
 	'tx_fed_core_abstractcontroller' => $extensionClassesPath . 'Core/AbstractController.php',
