@@ -40,7 +40,11 @@ class Tx_Fed_Backend_PageLayoutSelector {
 		$value = $parameters['itemFormElValue'];
 		$format = 'html';
 		$availableTemplates = $this->getAvailablePageTemplates($format);
-		$selector = '<select name="' . $name . '" class="formField select">' . LF;
+		if (strpos($name, 'tx_fed_controller_action_sub') === FALSE) {
+			$onChange = 'onchange="if (confirm(TBE_EDITOR.labels.onChangeAlert) && TBE_EDITOR.checkSubmit(-1)){ TBE_EDITOR.submitForm() };"';
+		}
+		$selector = '<select name="' . $name . '" class="formField select" ' . $onChange . '>' . LF;
+		$selector .= '<option value=""></option>' . LF;
 		foreach ($availableTemplates as $extension=>$group) {
 			$selector .= '<optgroup label="Extension: ' . $extension . '">' . LF;
 			foreach ($group as $template) {

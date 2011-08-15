@@ -64,7 +64,12 @@ class Tx_Fed_Backend_DynamicFlexForm {
 			if ($row['layout'] < 255) {
 				return;
 			}
-			$action = $row['tx_fed_page_controller_action'] ? $row['tx_fed_page_controller_action'] : 'Default';
+			if ($row['tx_fed_page_controller_action'] != '') {
+				$configuration = $row;
+			} else {
+				$configuration = $this->getPageTemplateConfiguration($row['uid']);
+			}
+			$action = $configuration['tx_fed_page_controller_action'] ? $configuration['tx_fed_page_controller_action'] : 'Default';
 			if (strpos($action, '->')) {
 				list ($extensionName, $action) = explode('->', $action);
 			} else {
@@ -73,7 +78,8 @@ class Tx_Fed_Backend_DynamicFlexForm {
 			$paths = $this->configurationManager->getPageConfiguration($extensionName);
 			$templatePath = $this->translatePath($paths['templateRootPath']);
 			$templateFile = $templatePath . '/Page/' . $action . '.html';
-			$values = $this->flexform->convertFlexFormContentToArray($row['tx_fed_page_flexform']);
+			$pageFlexFormSource = $this->getPageFlexFormSource($row);
+			$values = $this->flexform->convertFlexFormContentToArray($pageFlexFormSource);
 			$this->readFlexFormFields($templateFile, $values, $paths, $dataStructArray, $conf, $row, $table, $fieldName);
 		} else if ($row['CType'] == 'fed_fce') {
 			list ($extensionName, $filename) = explode(':', $row['tx_fed_fcefile']);
@@ -103,6 +109,32 @@ class Tx_Fed_Backend_DynamicFlexForm {
 				$this->readFlexFormFields($flexFormConfiguration['templateFilename'], $values, $paths, $dataStructArray, $conf, $row, $table, $fieldName);
 			}
 		}
+	}
+
+	protected function getPageTemplateConfiguration($id) {
+		$pageSelect = new t3lib_pageSelect();
+		$rootLine = $pageSelect->getRootLine($id);
+		$rootLine = array_reverse($rootLine);
+		foreach ($rootLine as $row) {
+			if ($row['tx_fed_page_controller_action'] != '') {
+				return $row;
+			}
+			if ($row['tx_fed_page_controller_action_sub'] != '') {
+				$row['tx_fed_page_controller_action'] = $row['tx_fed_controller_action_sub'];
+				return $row;
+			}
+		}
+	}
+
+	protected function getPageFlexFormSource($row) {
+		if ($row['tx_fed_page_flexform'] != '') {
+			return $row['tx_fed_page_flexform'];
+		}
+		if ($row['pid'] > 0) {
+			$parent = $GLOBALS['TYPO3_DB']->exec_SELECTgetSingleRow('*', 'pages', "uid = '{$row['pid']}'");
+			return $this->getPageFlexFormSource($parent);
+		}
+		return NULL;
 	}
 
 	protected function readFlexFormFields($templateFile, $values, $paths, &$dataStructArray, $conf, &$row, $table, $fieldName) {

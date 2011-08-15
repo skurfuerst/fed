@@ -57,8 +57,6 @@ class Tx_Fed_Backend_TCEMain {
 	}
 
 	/**
-	 * This method is called by a hook in the TYPO3 Core Engine (TCEmain).
-	 *
 	 * @param	string		$status: The TCEmain operation status, fx. 'update'
 	 * @param	string		$table: The table TCEmain is currently processing
 	 * @param	string		$id: The records id (if any)
@@ -72,10 +70,6 @@ class Tx_Fed_Backend_TCEMain {
 	}
 
 	/**
-	 * This method is called by a hook in the TYPO3 Core Engine (TCEmain). If a tt_content record is
-	 * going to be processed, this function saves the "incomingFieldArray" for later use in some
-	 * post processing functions (see other functions below).
-	 *
 	 * @param	array		$incomingFieldArray: The original field names and their values before they are processed
 	 * @param	string		$table: The table TCEmain is currently processing
 	 * @param	string		$id: The records id (if any)
@@ -84,7 +78,7 @@ class Tx_Fed_Backend_TCEMain {
 	 * @access	public
 	 */
 	public function processDatamap_preProcessFieldArray(array &$incomingFieldArray, $table, $id, t3lib_TCEmain &$reference) {
-		if ($table == 'tt_content') {
+		if ($table === 'tt_content') {
 			$targetRelative = $incomingFieldArray['pid'];
 			$before = $targetRelative < 0;
 			$uid = abs($targetRelative);
@@ -101,17 +95,11 @@ class Tx_Fed_Backend_TCEMain {
 				$incomingFieldArray['pid'] = $this->getPageUidFromTable($table, $uid);
 			} else if ($uid > 0) {
 				$incomingFieldArray['tx_fed_fcecontentarea'] = $this->getFceContentAreaFromTable($table, $uid);
-				#$incomingFieldArray['pid'] = $pid ? $pid : $_GET['id'];
 			}
 		}
 	}
 
 	/**
-	 * This method is called by a hook in the TYPO3 Core Engine (TCEmain).
-	 *
-	 * If a record from table "pages" is created or updated with a new DS but no TO is selected, this function
-	 * tries to find a suitable TO and adds it to the fieldArray.
-	 *
 	 * @param	string		$status: The TCEmain operation status, fx. 'update'
 	 * @param	string		$table: The table TCEmain is currently processing
 	 * @param	string		$id: The records id (if any)
@@ -127,9 +115,6 @@ class Tx_Fed_Backend_TCEMain {
 	}
 
 	/**
-	 * This function is called by TCEmain after a new record has been inserted into the database.
-	 * If a new content element has been created, we make sure that it is referenced by its page.
-	 *
 	 * @param	string		$status: The command which has been sent to processDatamap
 	 * @param	string		$table:	The table we're dealing with
 	 * @param	mixed		$id: Either the record UID or a string if a new record has been created

@@ -58,13 +58,13 @@ class Tx_Fed_Controller_PageController extends Tx_Fed_Core_AbstractController {
 	 * @return string
 	 */
 	public function listAction() {
-		$flexform = $this->flexform->convertFlexFormContentToArray($GLOBALS['TSFE']->page['tx_fed_page_flexform']);
+		$configuration = $this->getPageTemplateConfiguration($GLOBALS['TSFE']->id);
+		$flexFormSource = $configuration['tx_fed_page_flexform'];
+		$flexform = $this->flexform->convertFlexFormContentToArray($flexFormSource);
 		$config = $this->configurationManager->getConfiguration(Tx_Extbase_Configuration_ConfigurationManagerInterface::CONFIGURATION_TYPE_FULL_TYPOSCRIPT);
 		$config = Tx_Extbase_Utility_TypoScript::convertTypoScriptArrayToPlainArray($config);
 		$typoscript = $config['plugin']['tx_fed']['page'];
 		$view = $this->objectManager->get('Tx_Fluid_View_TemplateView');
-		$rootline = array();
-		$configuration = $this->getPageTemplateConfiguration($GLOBALS['TSFE']->id, $rootline);
 		if (strpos($configuration['tx_fed_page_controller_action'], '->')) {
 			list ($extensionName, $action) = explode('->', $configuration['tx_fed_page_controller_action']);
 		} else {
@@ -88,12 +88,19 @@ class Tx_Fed_Controller_PageController extends Tx_Fed_Core_AbstractController {
 		return $view->render($action);
 	}
 
-	protected function getPageTemplateConfiguration($id, $rootline) {
-		$page = $GLOBALS['TSFE']->page;
-		return array(
-			'tx_fed_page_controller_action' => $page['tx_fed_page_controller_action'],
-			'tx_fed_page_format' => $page['tx_fed_page_layout']
-		);
+	protected function getPageTemplateConfiguration($id) {
+		$pageSelect = new t3lib_pageSelect();
+		$rootLine = $pageSelect->getRootLine($id);
+		foreach ($rootLine as $row) {
+			if ($row['tx_fed_page_controller_action'] != '') {
+				return $row;
+			}
+			if ($row['tx_fed_page_controller_action_sub'] != '') {
+				$row['tx_fed_page_controller_action'] = $row['tx_fed_controller_action_sub'];
+				return $row;
+			}
+
+		}
 	}
 
 	protected function translatePath($path) {
