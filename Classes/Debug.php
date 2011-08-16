@@ -2,8 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2010 Claus Due <claus@wildside.dk>, Wildside A/S
-*
+*  (c) 2011 Claus Due, Wildside A/S <claus@wildside.dk>
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -24,44 +23,29 @@
 ***************************************************************/
 
 /**
+ * FED DEBUG
+ *
+ * Quick-access Alias methods for accessing FED's debugging features
  *
  * @author Claus Due, Wildside A/S
  * @version $Id$
  * @copyright Copyright belongs to the respective authors
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  * @package Fed
- * @subpackage ViewHelpers\Debug
  */
-class Tx_Fed_ViewHelpers_Debug_DumpViewHelper extends Tx_Fed_Core_ViewHelper_AbstractViewHelper {
-
-	public function initializeArguments() {
-		$this->registerArgument('as', 'string', 'Which datatype to force when dumping. NULL is default meaning auto-detect', FALSE, NULL);
-		$this->registerArgument('subject', 'mixed', 'The data to debug - if not specified, taken from renderChildren()', FALSE, NULL);
-	}
+abstract class Tx_Fed_Debug {
 
 	/**
-	 * Render method
+	 * Dumps a variable - second parameter returns the dump as string rather
+	 * than echo to browser.
 	 *
-	 * @return string
+	 * @param mixed $variable Variable to dump
+	 * @param string $return
+	 * @api
 	 */
-	public function render() {
-		$subject = $this->arguments['subject'];
-		$as = $this->arguments['as'];
-		if ($subject === NULL) {
-			$subject = $this->renderChildren();
-		}
-
-		switch ($as) {
-			case 'string':
-				return (string) $subject;
-				break;
-			default:
-				return Tx_Fed_Debug::dump($subject, TRUE);
-				break;
-		}
-
-		return NULL;
+	public static function dump($variable, $return=FALSE) {
+		return Tx_Fed_Error_Debugger::var_export($variable, $return);
 	}
-}
 
+}
 ?>
