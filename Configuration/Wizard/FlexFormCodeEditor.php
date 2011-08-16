@@ -31,10 +31,14 @@
 class Tx_Fed_Configuration_Wizard_FlexFormCodeEditor {
 
 	public function renderField(&$parameters, &$pObj) {
+		$fallback = '<textarea cols="85" rows="40" name="' . $parameters['itemFormElName'] . '">' . $parameters['itemFormElValue'] . '</textarea>' . LF;
+		if (t3lib_extMgm::isLoaded('t3editor') === FALSE) {
+			return $fallback;
+		}
 		$t3editorWizard = t3lib_extMgm::extPath('t3editor' , 'classes/class.tx_t3editor_tceforms_wizard.php');
 		if (is_file($t3editorWizard) === FALSE) {
-			// version of t3editor not supported.
-			return NULL;
+			// version of t3editor not supported; missing wizard class
+			return $fallback;
 		}
 		require_once $t3editorWizard;
 		$t3editor = t3lib_div::makeInstance('tx_t3editor');
