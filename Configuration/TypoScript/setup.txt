@@ -19,6 +19,10 @@ plugin.tx_fed {
 		partialRootPath = EXT:fed/Resources/Private/Partials/
 		layoutRootPath = EXT:fed/Resources/Private/Layouts/
 	}
+	fluid {
+		allowedFunctions = pow,exp,abs,sin,cos,tan,strlen,substr,strpos,stripos,strstr,stristr,trim
+		disallowedConstructs = print,echo,require,include,require_once,if,else,while,for,switch,exit,break,die
+	}
 	view {
 		templateRootPath = {$plugin.tx_fed.view.templateRootPath}
 		partialRootPath = {$plugin.tx_fed.view.partialRootPath}

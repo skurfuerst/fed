@@ -54,7 +54,7 @@ t3lib_div::loadTCA('tt_content');
 $TCA['tt_content']['types']['list']['subtypes_addlist']['fed_fce'] = 'pi_flexform';
 $TCA['tt_content']['types']['list']['subtypes_addlist']['fed_sandbox'] = 'pi_flexform';
 
-$before = '--div--;Fluid,layout,--palette--;Fluid layout;fluid,tx_fed_page_flexform,--div--;LLL:EXT:cms/locallang_tca.xml:pages.palettes.standard,';
+$before = '--div--;Fluid,layout,--palette--;Fluid layout;fluid,tx_fed_page_flexform,--div--;LLL:EXT:cms/locallang_tca.xml:pages.tabs.options,';
 $TCA['pages']['types'][1]['showitem'] = $before . $TCA['pages']['types'][1]['showitem'];
 $TCA['pages']['palettes']['fluid']['showitem'] = 'tx_fed_page_controller_action,tx_fed_page_controller_action_sub,--linebreak--,
 	backend_layout;LLL:EXT:cms/locallang_tca.xml:pages.backend_layout_formlabel,backend_layout_next_level;LLL:EXT:cms/locallang_tca.xml:pages.backend_layout_next_level_formlabel';

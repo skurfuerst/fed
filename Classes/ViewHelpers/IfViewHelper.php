@@ -158,11 +158,16 @@ class Tx_Fed_ViewHelpers_IfViewHelper extends Tx_Fluid_Core_ViewHelper_AbstractC
 		if (($singleQuoteCount-$escapedSingleQuoteCount) % 2 != 0) {
 			throw new Exception('Syntax error in IfViewHelper condition, mismatched number of unescaped single quotes', 1309490125);
 		}
-		$goodFunctions = array('pow', 'exp', 'abs', 'sin', 'cos', 'tan', 'strlen', 'substr', 'strpos', 'stripos', 'strstr', 'stristr', 'trim');
-		$languageConstructs = explode(',', 'print,echo,require,include,require_once,if,else,while,for,switch,exit,break,die');
+		$objectManager = t3lib_div::makeInstance('Tx_Extbase_Object_ObjectManager');
+		$configurationManager = $objectManager->get('Tx_Fed_Configuration_ConfigurationManager');
+		$typoscript = $configurationManager->getConfiguration(Tx_Extbase_Configuration_ConfigurationManager::CONFIGURATION_TYPE_FULL_TYPOSCRIPT);
+		$settings = $typoscript['plugin.']['tx_fed.'];
+		$settings = Tx_Extbase_Utility_TypoScript::convertTypoScriptArrayToPlainArray($settings);
+		$allowedFunctions = explode(',', $settings['fluid']['allowedFunctions']);
+		$languageConstructs = explode(',', $settings['fluid']['disallowedConstructs']);
 		$functions = get_defined_functions();
 		$functions = array_merge($languageConstructs, $functions['internal'], $functions['user']);
-		$functions = array_diff($functions, $goodFunctions);
+		$functions = array_diff($functions, $allowedFunctions);
 		$conditionLength = strlen($condition);
 		$conditionHasUnderscore = strpos($condition, '_');
 		foreach ($functions as $evilFunction) {
