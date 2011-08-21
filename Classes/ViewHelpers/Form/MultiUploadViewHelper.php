@@ -32,7 +32,7 @@
  * @copyright Copyright belongs to the respective authors
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  * @package Fed
- * @subpackage ViewHelpers/Fce
+ * @subpackage ViewHelpers/Form
  */
 class Tx_Fed_ViewHelpers_Form_MultiUploadViewHelper extends Tx_Fluid_ViewHelpers_Form_UploadViewHelper {
 
