@@ -145,6 +145,12 @@ class Tx_Fed_ViewHelpers_MapViewHelper extends Tx_Fed_Core_ViewHelper_AbstractVi
 			$register = "{$registerWith}({$instanceName}, {$instanceName}markers);";
 		}
 
+		if (is_numeric($width)) {
+			$width .= 'px';
+		}
+		if (is_numeric($height)) {
+			$height .= 'px';
+		}
 		$js = <<< INIT
 var {$instanceName};
 var {$instanceName}markers = [];
