@@ -117,24 +117,22 @@ class Tx_Fed_ViewHelpers_TableViewHelper extends Tx_Fed_Core_ViewHelper_Abstract
 		}
 
 		$headers = $this->arguments['headers'];
-
-		if ($this->arguments['objects']) {
-			$objects = $this->arguments['objects'];
-			if (is_array($objects) == FALSE) {
-				$objects = $objects->toArray();
-			}
+		$properties = $this->argumets['properties'];
+		$objects = $this->arguments['objects'];
+		$source = $this->arguments['dataSource'];
+		$data = $this->arguments['data'];
+		if ($objects instanceof Tx_Extbase_Persistence_ObjectStorage) {
+			$objects = $objects->toArray();
 		}
-		$properties = count($this->arguments['properties']) > 0 ? $this->arguments['properties'] : array_keys($this->arguments['data']);
-
-		if ($this->arguments['dataSource']) {
-			$source = $this->arguments['dataSource'];
+		
+		if ($source) {
 			$parser = $this->objectManager->get('Tx_Fed_Utility_DataSourceParser');
 			$sourceRepository = $this->objectManager->get('Tx_Fed_Domain_Repository_DataSourceRepository');
 			if ($source instanceof Tx_Fed_Domain_Model_DataSource === FALSE) {
-				$source = $sourceRepository->searchOneByName($source);
-			}
-			if ($source) {
-				$source = $sourceRepository->findOneByUid($this->arguments['dataSource']);
+				$source = $sourceRepository->findOneByUid($source);
+				if (!$source) {
+					$source = $sourceRepository->searchOneByName($source);
+				}
 			}
 			if (!$source) {
 				throw new Exception('Invalid data source selected in TableViewHelper');
@@ -148,16 +146,16 @@ class Tx_Fed_ViewHelpers_TableViewHelper extends Tx_Fed_Core_ViewHelper_Abstract
 				$headers = $this->translatePropertyNames($properties, $properties);
 			}
 			$tbody = $this->renderData($data, $properties);
-		} else if ($this->arguments['data']) {
-			$tbody = $this->renderData($this->arguments['data'], $properties);
-		} else if ($this->arguments['objects']) {
+		} else if ($data) {
+			$tbody = $this->renderData($data, $properties);
+		} else if ($objects) {
 			$tbody = $this->renderObjects($objects);
 		} else {
 			$tbody = $this->renderChildren();
 		}
-
-		$thead = $this->renderHeaders($headers);
-		if ($thead) {
+		
+		if ($headers) {
+			$thead = $this->renderHeaders($headers);
 			$content = "{$thead}{$tbody}";
 		} else {
 			$content = "{$tbody}";
