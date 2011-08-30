@@ -59,9 +59,9 @@ class Tx_Fed_ViewHelpers_Page_RenderContentViewHelper extends Tx_Fed_Core_ViewHe
 		}
 		$content = $this->getContentRecords();
 		if ($this->arguments['as']) {
-			$this->templateVariableContainer->add('content', $content);
+			$this->templateVariableContainer->add($this->arguments['as'], $content);
 			$html = $this->renderChildren();
-			$this->templateVariableContainer->remove('content');
+			$this->templateVariableContainer->remove($this->arguments['as']);
 		} else {
 			$html = "";
 			foreach ($content as $contentRecord) {
