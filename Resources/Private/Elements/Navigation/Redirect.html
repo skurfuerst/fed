@@ -15,7 +15,7 @@
 </f:section>
 
 <f:section name="Main">
-	<fed:redirect timeout="{timeout}" location="{f:uri.page(pageUid: location}}">
+	<fed:redirect timeout="{timeout}" location="{f:uri.page(pageUid: location)}">
 		<fed:data.func func="str_replace" arguments="{0: '###TIMEOUT###', 1: timeoutCounter, 2: message}" />
 	</fed:redirect>
 </f:section>
