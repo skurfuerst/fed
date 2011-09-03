@@ -37,6 +37,11 @@
 class Tx_Fed_ViewHelpers_Page_MenuViewHelper extends Tx_Fed_Core_ViewHelper_AbstractViewHelper {
 
 	/**
+	 * @var string
+	 */
+	protected $tagName = 'ul';
+
+	/**
 	 * @var t3lib_pageSelect
 	 */
 	protected $pageSelect;
@@ -45,6 +50,9 @@ class Tx_Fed_ViewHelpers_Page_MenuViewHelper extends Tx_Fed_Core_ViewHelper_Abst
 	 * Initialize
 	 */
 	public function initializeArguments() {
+		$this->registerUniversalTagAttributes();
+		$this->registerArgument('tagName', 'string', 'Tag name to use for enclsing container', FALSE, 'ul');
+		$this->registerArgument('tagNameChildren', 'string', 'Tag name to use for child nodes surrounding links', FALSE, 'li');
 		$this->registerArgument('entryLevel', 'integer', 'Optional entryLevel TS equivalent of the menu', FALSE, 0);
 		$this->registerArgument('pageUid', 'integer', 'Optional parent page UID to use as top level of menu. If left out will be detected from rootLine using $entryLevel', FALSE, NULL);
 		$this->registerArgument('classActive', 'string', 'Optional class name to add to active links', FALSE, 'active');
@@ -58,6 +66,7 @@ class Tx_Fed_ViewHelpers_Page_MenuViewHelper extends Tx_Fed_Core_ViewHelper_Abst
 	 * @return string
 	 */
 	public function render() {
+		$this->tagName = $this->arguments['tagName'];
 		$this->pageSelect = new t3lib_pageSelect();
 		$pageUid = $this->arguments['pageUid'];
 		$entryLevel = $this->arguments['entryLevel'];
@@ -82,6 +91,8 @@ class Tx_Fed_ViewHelpers_Page_MenuViewHelper extends Tx_Fed_Core_ViewHelper_Abst
 		$this->templateVariableContainer->remove('rootLine');
 		if (strlen(trim($content)) === 0) {
 			$content = $this->autoRender($menu, $rootLine);
+			$this->tag->setContent($content);
+			$content = $this->tag->render();
 		}
 		if (count($backups) > 0) {
 			foreach ($backups as $var=>$value) {
@@ -98,12 +109,13 @@ class Tx_Fed_ViewHelpers_Page_MenuViewHelper extends Tx_Fed_Core_ViewHelper_Abst
 	 * @param array $rootLine
 	 */
 	protected function autoRender($menu, $rootLine) {
-		$html = array('<ul>');
+		$tagName = $this->arguments['tagNameChildren'];
+		$html = array();
 		foreach ($menu as $page) {
 			$pageUid = $page['uid'];
-			$html[] = '<li class="' . $page['class'] .'"><a href="' . $page['link'] . '" class="' . $page['class'] . '">' . $page['title'] . '</a></li>';
+			$class = $page['class'] ? ' class="' . $page['class'] . '"' : '';
+			$html[] = '<' . $tagName . $class .'><a href="' . $page['link'] . '"' . $class . '>' . $page['title'] . '</a></' . $tagName . '>';
 		}
-		$html[] = '</ul>';
 		return implode(LF, $html);
 	}
 

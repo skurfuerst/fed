@@ -37,6 +37,11 @@
 class Tx_Fed_ViewHelpers_Page_BreadCrumbViewHelper extends Tx_Fed_Core_ViewHelper_AbstractViewHelper {
 
 	/**
+	 * @var string
+	 */
+	protected $tagName = 'ul';
+
+	/**
 	 * @var t3lib_pageSelect
 	 */
 	protected $pageSelect;
@@ -45,6 +50,9 @@ class Tx_Fed_ViewHelpers_Page_BreadCrumbViewHelper extends Tx_Fed_Core_ViewHelpe
 	 * Initialize
 	 */
 	public function initializeArguments() {
+		$this->registerUniversalTagAttributes();
+		$this->registerArgument('tagName', 'string', 'Tag name to use for enclsing container', FALSE, 'ul');
+		$this->registerArgument('tagNameChildren', 'string', 'Tag name to use for child nodes surrounding links', FALSE, 'li');
 		$this->registerArgument('entryLevel', 'integer', 'Optional entryLevel TS equivalent of the breadcrumb trail', FALSE, 0);
 		$this->registerArgument('pageUid', 'integer', 'Optional parent page UID to use as start of breadcrumbtrail/rootline - if left out, $GLOBALS[TSFE]->id is used', FALSE, NULL);
 	}
@@ -53,6 +61,7 @@ class Tx_Fed_ViewHelpers_Page_BreadCrumbViewHelper extends Tx_Fed_Core_ViewHelpe
 	 * @return string
 	 */
 	public function render() {
+		$this->tagName = $this->arguments['tagName'];
 		$this->pageSelect = new t3lib_pageSelect();
 		$pageUid = $this->arguments['pageUid'];
 		$entryLevel = $this->arguments['entryLevel'];
@@ -72,6 +81,8 @@ class Tx_Fed_ViewHelpers_Page_BreadCrumbViewHelper extends Tx_Fed_Core_ViewHelpe
 		$this->templateVariableContainer->remove('rootLine');
 		if (strlen(trim($content)) === 0) {
 			$content = $this->autoRender($rootLine);
+			$this->tag->setContent($content);
+			$content = $this->tag->render();
 		}
 		if (count($backups) > 0) {
 			foreach ($backups as $var=>$value) {
@@ -88,12 +99,13 @@ class Tx_Fed_ViewHelpers_Page_BreadCrumbViewHelper extends Tx_Fed_Core_ViewHelpe
 	 * @return string
 	 */
 	protected function autoRender($rootLine) {
-		$html = array('<ul>');
+		$tagName = $this->arguments['tagNameChildren'];
+		$html = array();
 		foreach ($rootLine as $page) {
 			$link = $this->getItemLink($page['uid']);
-			$html[] = '<li><a href="' . $link . '">' . $page['title'] . '</a></li>';
+			$class = $page['class'] ? ' class="' . $page['class'] . '"' : '';
+			$html[] = '<' . $tagName . $class .'><a href="' . $link . '"' . $class . '>' . $page['title'] . '</a></' . $tagName . '>';
 		}
-		$html[] = '</ul>';
 		return implode(LF, $html);
 	}
 
