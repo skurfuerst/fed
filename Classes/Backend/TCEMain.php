@@ -87,12 +87,11 @@ class Tx_Fed_Backend_TCEMain {
 			if ($_GET['id'] > 0) {
 				$pid = $_GET['id'];
 			} else {
-				$pid = key($_GET['edit']['tt_content']);
+				$pid = $incomingFieldArray['pid'];
 			}
 			if ($rpos > 0 && $uid) {
 				$area = substr($url, 1 - (strlen($url)-$rpos));
-				$incomingFieldArray['tx_fed_fcecontentarea'] = $area . ':' . $uid;
-				$incomingFieldArray['pid'] = $this->getPageUidFromTable($table, $uid);
+				$incomingFieldArray['tx_fed_fcecontentarea'] = $area;
 			} else if ($uid > 0) {
 				$incomingFieldArray['tx_fed_fcecontentarea'] = $this->getFceContentAreaFromTable($table, $uid);
 			}

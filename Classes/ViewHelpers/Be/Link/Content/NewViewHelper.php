@@ -47,14 +47,13 @@ class Tx_Fed_ViewHelpers_Be_Link_Content_NewViewHelper extends Tx_Fed_Core_ViewH
 		$colPos = $this->arguments['row']['colPos'];
 		$returnUri = $this->getReturnUri($pid);
 		if ($area) {
-			$returnUri .= '%23' . $area;
+			$returnUri .= '%23' . $area . '%3A' . $uid;
 		}
 		$sign = $after ? '-' : '';
 		$icon = $this->getIcon('actions-document-new', 'Insert new content element in this position');
 		$uri = 'db_new_content_el.php?id=' . $pid
-			. '&defVals[someVar]=test'
 			. '&returnUrl=' . $returnUri
-			. '&uid_pid=' . $sign . $uid
+			. '&uid_pid=' . $sign . $pid
 			. '&colPos=' . $colPos
 			. '&sys_language_uid=0'
 			;
