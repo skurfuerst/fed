@@ -143,7 +143,7 @@ class Tx_Fed_Utility_DocumentHead implements t3lib_Singleton {
 		}
 		if ($saveToFile) {
 			$md5 = md5(implode('', $files));
-			$contents = $this->saveToTempFile($contents, $md5, $extension);
+			$contents = $this->saveContentToTempFile($contents, $md5, $extension);
 		}
 		return $contents;
 	}
@@ -183,7 +183,7 @@ class Tx_Fed_Utility_DocumentHead implements t3lib_Singleton {
 			$type = 'js'; // assume Javascript for unknown files - this may change later on...
 		}
 		if ($concat === TRUE) {
-			$file = $this->concatenate($filenames, $cache, $type);
+			$file = $this->concatenateFiles($filenames, $cache, $type);
 			if ($cache === TRUE) {
 				$this->includeFile($file, $cache, $compress);
 			} else {
@@ -228,7 +228,7 @@ class Tx_Fed_Utility_DocumentHead implements t3lib_Singleton {
 			$packed = $this->pack($contents);
 			$md5 = md5($filename);
 			if ($cache === TRUE) {
-				$cachedFile = $this->saveToTempFile($contents, $uniqid, $type);
+				$cachedFile = $this->saveContentToTempFile($contents, $uniqid, $type);
 				$code = $this->wrap(NULL, $cachedFile, $type);
 			} else {
 				$code = $this->wrap($contents, NULL, $type);
