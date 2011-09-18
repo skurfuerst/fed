@@ -68,6 +68,11 @@ class Tx_Fed_Utility_DomainObjectInfo implements t3lib_Singleton {
 	protected $objectAccess;
 
 	/**
+	 * @var Tx_Fed_Configuration_ConfigurationManager
+	 */
+	protected $configurationManager;
+
+	/**
 	 * Inject a RecursionHandler instance
 	 * @param Tx_Fed_Utility_RecursionHandler $handler
 	 */
@@ -103,6 +108,13 @@ class Tx_Fed_Utility_DomainObjectInfo implements t3lib_Singleton {
 	 */
 	public function injectObjectAccess(Tx_Extbase_Reflection_ObjectAccess $objectAccess) {
 		$this->objectAccess = $objectAccess;
+	}
+
+	/**
+	 * @param Tx_Fed_Configuration_ConfigurationManager $configurationManager
+	 */
+	public function injectConfigurationManager(Tx_Fed_Configuration_ConfigurationManager $configurationManager) {
+		$this->configurationManager = $configurationManager;
 	}
 
 	/**
@@ -143,6 +155,23 @@ class Tx_Fed_Utility_DomainObjectInfo implements t3lib_Singleton {
 	public function getControllerName($object) {
 		$className = is_object($object) ? get_class($object) : $object;
 		return array_pop(explode('_', $className));
+	}
+
+	/**
+	 * Resolve a backend controller className for $object
+	 *
+	 * @param mixed $object
+	 * @return string
+	 */
+	public function getBackendControllerClassName($object) {
+		$className = is_object($object) ? get_class($object) : $object;
+		$controllerName = $this->getControllerName($object);
+		$extensionName = $this->getExtensionName($object);
+		$className = 'Tx_' . $extensionName . '_Controller_Backend_' . $controllerName . 'Controller';
+		if (class_exists($className)) {
+			return $className;
+		}
+		return NULL;
 	}
 
 	/**
@@ -453,6 +482,53 @@ class Tx_Fed_Utility_DomainObjectInfo implements t3lib_Singleton {
 	}
 
 	/**
+	 * @param string $table
+	 * @return string
+	 */
+	public function getObjectType($table) {
+		$typoscript = $this->configurationManager->getConfiguration(Tx_Extbase_Configuration_ConfigurationManagerInterface::CONFIGURATION_TYPE_FULL_TYPOSCRIPT);
+		$configuration = $typoscript['config.']['tx_extbase.']['persistence.']['classes.'];
+		$configuration = Tx_Extbase_Utility_TypoScript::convertTypoScriptArrayToPlainArray($configuration);
+		foreach ($configuration as $objectType=>$definition) {
+			if ($definition['tableName'] === $table) {
+				return $objectType;
+			}
+		}
+		return NULL;
+	}
+
+	/**
+	 * @param mixed $subject
+	 * @return mixed
+	 */
+	public function convertLowerCaseUnderscoredToLowerCamelCase($subject) {
+		if (is_array($subject)) {
+			foreach ($subject as $k=>$value) {
+				$subject[$k] = $this->convertLowerCaseUnderscoredToLowerCamelCase($value);
+			}
+		} else {
+			$subject = Tx_Extbase_Utility_Extension::convertLowerUnderscoreToUpperCamelCase($subject);
+			$subject{0} = strtolower($subject{0});
+		}
+		return $subject;
+	}
+
+	/**
+	 * @param mixed $subject
+	 * @return mixed
+	 */
+	public function convertCamelCaseToLowerCaseUnderscored($subject) {
+		if (is_array($subject)) {
+			foreach ($subject as $k=>$value) {
+				$subject[$k] = $this->convertCamelCaseToLowerCaseUnderscored($value);
+			}
+		} else {
+			$subject = Tx_Extbase_Utility_Extension::convertCamelCaseToLowerCaseUnderscored($subject);
+		}
+		return $subject;
+	}
+
+	/**
 	 * Gets the TCA-defined uploadfolder for $object. If no propertyName, then
 	 * all all properties with uploadfolders are returned as keys along with
 	 * their respective upload folders as value
@@ -481,7 +557,7 @@ class Tx_Fed_Utility_DomainObjectInfo implements t3lib_Singleton {
 		global $TCA;
 		$tableName = $this->getDatabaseTable($object);
 		t3lib_div::loadTCA($tableName);
-		$underscoredPropertyName = Tx_Extbase_Utility_Extension::convertCamelCaseToLowerCaseUnderscored($propertyName);
+		$underscoredPropertyName = $this->convertCamelCaseToLowerCaseUnderscored($propertyName);
 		$uploadFolder = $TCA[$tableName]['columns'][$underscoredPropertyName]['config']['uploadfolder'];
 		return $uploadFolder;
 	}

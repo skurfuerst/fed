@@ -38,42 +38,18 @@ class Tx_Fed_Domain_Model_Page extends Tx_Extbase_DomainObject_AbstractEntity {
 
 	/**
 	 * @var string
-	 * @ExtJS
-	 * @validate NotEmpty
-	 * @validate Text
 	 */
 	protected $title;
 
 	/**
 	 * @var type
-	 * @ExtJS
-	 * @validate Text
 	 */
 	protected $subtitle;
 
 	/**
-	 * @var Tx_Extbase_Persistence_ObjectStorage<Tx_Fed_Domain_Model_Page>
-	 * @lazy
-	 */
-	protected $subpages;
-
-	/**
-	 * @var Tx_Extbase_Persistence_ObjectStorage<Tx_Fed_Domain_Model_ContentElement>
-	 * @lazy
-	 */
-	protected $contentElements;
-
-	/**
-	 * @var Tx_Fed_Domain_Model_BackendLayout
-	 */
-	protected $backendLayout;
-
-	/**
-	 * CONSTRUCTOR
+	 * 
 	 */
 	public function __construct() {
-		$this->subpages = t3lib_div::makeInstance('Tx_Extbase_Persistence_ObjectStorage');
-		$this->contentElements = t3lib_div::makeInstance('Tx_Extbase_Persistence_ObjectStorage');
 	}
 
 	/**
@@ -104,69 +80,6 @@ class Tx_Fed_Domain_Model_Page extends Tx_Extbase_DomainObject_AbstractEntity {
 		$this->subtitle = $subtitle;
 	}
 
-	/**
-	 * @param Tx_Extbase_Persistence_ObjectStorage<Tx_Fed_Domain_Model_Page> $subpages
-	 */
-	public function setSubpages(Tx_Extbase_Persistence_ObjectStorage $subpages) {
-		$this->subpages = $subpages;
-	}
-
-	/**
-	 * @param Tx_Fed_Domain_Model_Page $page
-	 */
-	public function addPage(Tx_Fed_Domain_Model_Page $page) {
-		$this->pages->attach($page);
-	}
-
-	/**
-	 * @param Tx_Fed_Domain_Model_Page $page
-	 */
-	public function removePage(Tx_Fed_Domain_Model_Page $page) {
-		$this->pages->detach($page);
-	}
-
-	/**
-	 * @param Tx_Extbase_Persistence_ObjectStorage<Tx_Fed_Domain_Model_ContentElement> $contentElements
-	 */
-	public function setContentElements(Tx_Extbase_Persistence_ObjectStorage $contentElements) {
-		$this->contentElements = $contentElements;
-	}
-
-	/**
-	 *
-	 * @return Tx_Extbase_Persistence_ObjectStorage<Tx_Fed_Domain_Model_ContentElement>
-	 */
-	public function getContentElements() {
-		return $this->contentElements;
-	}
-
-	/**
-	 * @param Tx_Fed_Domain_Model_ContentElement $contentElement
-	 */
-	public function addContentElement(Tx_Fed_Domain_Model_ContentElement $contentElement) {
-		$this->contentElements->attach($contentElement);
-	}
-
-	/**
-	 * @param Tx_Fed_Domain_Model_ContentElement $contentElement
-	 */
-	public function removeContentElement(Tx_Fed_Domain_Model_ContentElement $contentElement) {
-		$this->contentElements->detach($contentElement);
-	}
-
-	/**
-	 * @return Tx_Fed_Domain_Model_BackendLayout
-	 */
-	public function getBackendLayout() {
-		return $this->backendLayout;
-	}
-
-	/**
-	 * @param Tx_Fed_Domain_Model_BackendLayout $backendLayout
-	 */
-	public function setBackendLayout(Tx_Fed_Domain_Model_BackendLayout $backendLayout) {
-		$this->backendLayout = $backendLayout;
-	}
 
 }
 
