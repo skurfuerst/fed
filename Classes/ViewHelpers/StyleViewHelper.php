@@ -41,6 +41,7 @@ class Tx_Fed_ViewHelpers_StyleViewHelper extends Tx_Fed_Core_ViewHelper_Abstract
 		$this->registerArgument('concat', 'boolean', 'If true, files are concatenated (makes sense if $file is array)', FALSE, FALSE);
 		$this->registerArgument('compress', 'boolean', 'If true, files are compressed using JSPacker', FALSE, FALSE);
 		$this->registerArgument('index', 'int', 'Which index to take in additionalHeaderData - pushes current resident DOWN', FALSE, -1);
+		$this->registerArgument('media', 'string', 'Attributes of the stylesheet file', FALSE, NULL);
 	}
 
 	/**
@@ -55,11 +56,12 @@ class Tx_Fed_ViewHelpers_StyleViewHelper extends Tx_Fed_Core_ViewHelper_Abstract
 		$concat = $this->arguments['concat'];
 		$compress = $this->arguments['compress'];
 		$index = $this->arguments['index'];
+		$attributes = $this->arguments['media'] ? array('media' => $this->arguments['media']) : NULL;
 		if ($href) {
-			$this->documentHead->includeFile($href, $cache, $concat, $compress, $index);
+			$this->documentHead->includeFile($href, $cache, $concat, $compress, $index, $attributes);
 		} else if ($href === NULL) {
 			$css = $this->renderChildren();
-			$this->documentHead->includeHeader($css, 'css', NULL, $index);
+			$this->documentHead->includeHeader($css, 'css', NULL, $index, $attributes);
 		}
 	}
 }

@@ -70,11 +70,12 @@ class Tx_Fed_Utility_DocumentHead implements t3lib_Singleton {
 	 * @param string $type Optional, if left out we assume the code is already wrapped
 	 * @param string $key Optional key for referencing later through $GLOBALS['TSFE']->additionalHeaderData, defaults to md5 cheksum of tag
 	 * @param int $index Position to take in additionalHeaderData; pushes current resident DOWN
+	 * @param array $attributes Attributes of tag
 	 * @api
 	 */
-	public function includeHeader($code, $type=NULL, $key=NULL, $index=-1) {
+	public function includeHeader($code, $type=NULL, $key=NULL, $index=-1, $attributes=NULL) {
 		if ($type !== NULL) {
-			$code = $this->wrap($code, NULL, $type);
+			$code = $this->wrap($code, NULL, $type, $attributes);
 		}
 		if ($key === NULL) {
 			$key = md5($code);
@@ -105,10 +106,11 @@ class Tx_Fed_Utility_DocumentHead implements t3lib_Singleton {
 	 * @param string $code The code, JS or CSS, to be wrapped
 	 * @param string $filename If specified, file is used instead of source inject
 	 * @param string $type Type of wrapping (css/js)
+	 * @param array $attributes Attributes of tag
 	 * @return string
 	 * @api
 	 */
-	public function wrap($code=NULL, $file=NULL, $type=NULL) {
+	public function wrap($code=NULL, $file=NULL, $type=NULL, $attributes=NULL) {
 		if ($type == self::TYPE_JAVASCRIPT) {
 			if ($file) {
 				return '<script type="text/javascript" src="' . $file . '"></script>';
@@ -116,10 +118,11 @@ class Tx_Fed_Utility_DocumentHead implements t3lib_Singleton {
 				return '<script type="text/javascript">' . $code . '</script>';
 			}
 		} else if ($type == self::TYPE_STYLESHEET) {
+			$media = $attributes['media'] ? 'media="' . $attributes['media'] . '"' : '';
 			if ($file) {
-				return '<link rel="stylesheet" type="text/css" href="' . $file . '" />';
+				return '<link rel="stylesheet" type="text/css" href="' . $file . '" ' . $media . '/>';
 			} else {
-				return '<style type="text/css">' . $code . '</style>';
+				return '<style type="text/css" ' . $media . '>' . $code . '</style>';
 			}
 		} else {
 			return $code;
@@ -173,10 +176,11 @@ class Tx_Fed_Utility_DocumentHead implements t3lib_Singleton {
 	 * @param boolean $concat If true, files are concatenated
 	 * @param boolean $compress If true, files are compressed
 	 * @param int $index The position in additionalHeaderData to take; pushes current resident DOWN
+	 * @param array $attributes Attributes of tag
 	 * @return string The MD5 checksum of files (which is also the additionalHeaderData array key if you $concat = TRUE)
 	 * @api
 	 */
-	public function includeFiles(array $filenames, $cache=FALSE, $concat=FALSE, $compress=FALSE, $index=-1) {
+	public function includeFiles(array $filenames, $cache=FALSE, $concat=FALSE, $compress=FALSE, $index=-1, $attributes=NULL) {
 		$pathinfo = pathinfo($filename);
 		$type = $pathinfo['extension'];
 		if ($type !== 'css' && $type !== 'js') {
@@ -185,14 +189,14 @@ class Tx_Fed_Utility_DocumentHead implements t3lib_Singleton {
 		if ($concat === TRUE) {
 			$file = $this->concatenateFiles($filenames, $cache, $type);
 			if ($cache === TRUE) {
-				$this->includeFile($file, $cache, $compress);
+				$this->includeFile($file, $cache, $concat, FALSE, -1, $attributes);
 			} else {
-				$code = $this->wrap(NULL, $file); // will be added as header code
+				$code = $this->wrap(NULL, $file, NULL, $arguments); // will be added as header code
 				$this->includeHeader($code, $type);
 			}
 		} else {
 			foreach ($filenames as $file) {
-				$this->includeFile($file, $cache, $compress);
+				$this->includeFile($file, $cache, $concat, FALSE, -1, $attributes);
 			}
 		}
 	}
@@ -205,16 +209,17 @@ class Tx_Fed_Utility_DocumentHead implements t3lib_Singleton {
 	 * @param boolean $concata If true and wildcard filename used, concats all files
 	 * @param boolean $compress If true, files are compressed
 	 * @param int $index Position to take in additionalHeaderData; pushes current resident DOWN
+	 * @param array $attributes Attributes of tag
 	 * @return void
 	 * @api
 	 */
-	public function includeFile($filename, $cache=FALSE, $concat=FALSE, $compress=FALSE, $index=-1) {
+	public function includeFile($filename, $cache=FALSE, $concat=FALSE, $compress=FALSE, $index=-1, $attributes=NULL) {
 		$pathinfo = pathinfo($filename);
 		$type = $pathinfo['extension'];
 		if ($pathinfo['filename'] === '*') {
 			$files = $this->getFilenamesOfType($pathinfo['dirname'], $pathinfo['extension']);
 			if ($files) {
-				$this->includeFiles($files, $cache, $concat, $compress, $index);
+				$this->includeFiles($files, $cache, $concat, $compress, $index, $attributes);
 			}
 			return;
 		}
@@ -222,19 +227,19 @@ class Tx_Fed_Utility_DocumentHead implements t3lib_Singleton {
 			$type = 'js'; // assume Javascript for unknown files - this may change later on...
 		}
 		if ($cache === FALSE && $compress === FALSE) {
-			$code = $this->wrap(NULL, $filename, $type);
+			$code = $this->wrap(NULL, $filename, $type, $attributes);
 		} else if ($compress === TRUE) {
 			$contents = file_get_contents(PATH_site . $filename);
 			$packed = $this->pack($contents);
 			$md5 = md5($filename);
 			if ($cache === TRUE) {
 				$cachedFile = $this->saveContentToTempFile($contents, $uniqid, $type);
-				$code = $this->wrap(NULL, $cachedFile, $type);
+				$code = $this->wrap(NULL, $cachedFile, $type, $attributes);
 			} else {
-				$code = $this->wrap($contents, NULL, $type);
+				$code = $this->wrap($contents, NULL, $type, $attributes);
 			}
 		} else {
-			$code = $this->wrap(NULL, $filename, $type);
+			$code = $this->wrap(NULL, $filename, $type, $attributes);
 		}
 		$this->includeHeader($code, NULL, NULL, $index);
 	}
@@ -246,10 +251,11 @@ class Tx_Fed_Utility_DocumentHead implements t3lib_Singleton {
 	 *
 	 * @param string $filename Name of file to include at index $index
 	 * @param string $index Position to hijack (push resident DOWN) in additionalHeaderData. Assumes you want the TOP position ;)
+	 * @param array $attributes Attributes of tag
 	 * @api
 	 */
-	public function includeFileAt($filename, $index=0) {
-		return $this->includeFile($filename, FALSE, FALSE, FALSE, $index);
+	public function includeFileAt($filename, $index=0, $attributes=NULL) {
+		return $this->includeFile($filename, FALSE, FALSE, FALSE, $index, $attributes);
 	}
 
 	/**
