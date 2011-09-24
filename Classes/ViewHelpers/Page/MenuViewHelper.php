@@ -58,6 +58,9 @@ class Tx_Fed_ViewHelpers_Page_MenuViewHelper extends Tx_Fed_Core_ViewHelper_Abst
 		$this->registerArgument('classActive', 'string', 'Optional class name to add to active links', FALSE, 'active');
 		$this->registerArgument('classCurrent', 'string', 'Optional class name to add to current link', FALSE, 'current');
 		$this->registerArgument('classHasSubpages', 'string', 'Optional class name to add to links which have subpages', FALSE, 'sub');
+		$this->registerArgument('useShortcutTarget', 'boolean', 'Optional param for using shortcut target instead of shortcut itself for current link', FALSE, FALSE);
+		$this->registerArgument('classFirst', 'string', 'Optional class name for the first menu elment', FALSE, '');
+		$this->registerArgument('classLast', 'string', 'Optional class name for the last menu elment', FALSE, '');
 	}
 
 	/**
@@ -110,11 +113,22 @@ class Tx_Fed_ViewHelpers_Page_MenuViewHelper extends Tx_Fed_Core_ViewHelper_Abst
 	 */
 	protected function autoRender($menu, $rootLine) {
 		$tagName = $this->arguments['tagNameChildren'];
+		$classFirst = $this->arguments['classFirst'];
+		$classLast = $this->arguments['classLast'];
 		$html = array();
+		$i = 1;
+		$length = count($menu);
 		foreach ($menu as $page) {
+			if($i == 0 && $classFirst) {
+				array_push($page['class'], $classFirst);
+			}
+			if($i == $length && $classLast) {
+				array_push($page['class'], $classLast);
+			}
 			$pageUid = $page['uid'];
-			$class = $page['class'] ? ' class="' . $page['class'] . '"' : '';
+			$class = $page['class'] ? ' class="' . implode(' ', $page['class']) . '"' : '';
 			$html[] = '<' . $tagName . $class .'><a href="' . $page['link'] . '"' . $class . '>' . $page['title'] . '</a></' . $tagName . '>';
+			$i++;
 		}
 		return implode(LF, $html);
 	}
@@ -145,9 +159,14 @@ class Tx_Fed_ViewHelpers_Page_MenuViewHelper extends Tx_Fed_Core_ViewHelper_Abst
 	 *
 	 * @param integer $pageUid
 	 * @param array $rootLine
+	 * @param integer $stortcut
+	 * @param integer $doktype
 	 * @return string
 	 */
-	protected function getItemLink($pageUid, $rootLine) {
+	protected function getItemLink($pageUid, $rootLine, $shortcut, $doktype) {
+		if ($this->arguments['useShortcutTarget'] && ($doktype == constant('t3lib_pageSelect::DOKTYPE_SHORTCUT') || $doktype == constant('t3lib_pageSelect::DOKTYPE_LINK'))) {
+			$pageUid = $shortcut;
+		}
 		$config = array(
 			'parameter' => $pageUid,
 			'returnLast' => 'url',
@@ -161,7 +180,7 @@ class Tx_Fed_ViewHelpers_Page_MenuViewHelper extends Tx_Fed_Core_ViewHelper_Abst
 	 * Get the combined item CSS class based on menu item state and VH arguments
 	 *
 	 * @param array $pageRow
-	 * @return string
+	 * @return array
 	 */
 	protected function getItemClass($pageRow) {
 		$classes = array();
@@ -174,7 +193,22 @@ class Tx_Fed_ViewHelpers_Page_MenuViewHelper extends Tx_Fed_Core_ViewHelper_Abst
 		if ($pageRow['hasSubPages']) {
 			$classes[] = $this->arguments['classHasSubpages'];
 		}
-		return implode(' ', $classes);
+		return $classes;
+	}
+
+
+	/**
+	 * Get a list from allowed doktypes for pages
+	 *
+	 * @return array
+	 */
+	protected function allowedDoktypeList() {
+		return array(
+			constant('t3lib_pageSelect::DOKTYPE_DEFAULT'),
+			constant('t3lib_pageSelect::DOKTYPE_LINK'),
+			constant('t3lib_pageSelect::DOKTYPE_SHORTCUT'),
+			constant('t3lib_pageSelect::DOKTYPE_MOUNTPOINT')
+		);
 	}
 
 	/**
@@ -188,15 +222,17 @@ class Tx_Fed_ViewHelpers_Page_MenuViewHelper extends Tx_Fed_Core_ViewHelper_Abst
 		$filtered = array();
 		foreach ($menu as $page) {
 			$pageUid = $page['uid'];
+			$doktype = $page['doktype'];
+			$shortcut = ($doktype == constant('t3lib_pageSelect::DOKTYPE_SHORTCUT')) ? $page['shortcut'] : $page['url'];
 			if ($page['hidden'] == 1) {
 
 			} else if ($page['nav_hide'] == 1) {
 
-			} else {
+			} else if (in_array($doktype, $this->allowedDoktypeList())) {
 				$page['active'] = $this->isActive($pageUid, $rootLine);
 				$page['current'] = $this->isCurrent($pageUid, $rootLine);
 				$page['hasSubPages'] = (count($this->pageSelect->getMenu($pageUid)) > 0) ? 1 : 0;
-				$page['link'] = $this->getItemLink($pageUid, $rootLine);
+				$page['link'] = $this->getItemLink($pageUid, $rootLine, $shortcut, $doktype);
 				$page['class'] = $this->getItemClass($page);
 				$filtered[] = $page;
 			}
