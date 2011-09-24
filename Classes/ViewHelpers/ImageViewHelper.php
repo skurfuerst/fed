@@ -87,6 +87,8 @@ class Tx_Fed_ViewHelpers_ImageViewHelper extends Tx_Fluid_ViewHelpers_ImageViewH
 		$this->registerArgument('clickenlarge', 'boolean', 'Change to FALSE if you do not want actions and script added if large version is rendered', FALSE, TRUE);
 		$this->registerArgument('limit', 'integer', 'Specify to limit the number of images which may be rendered');
 		$this->registerArgument('lightbox', 'boolean', 'If TRUE, creates a lightbox from the tag content', FALSE, FALSE);
+		$this->registerArgument('mouseoverSuffix', 'string', 'Suffix for the mouseover image. The picture must be in the same folder like the default image.', FALSE, '');
+
 	}
 
 	/**
@@ -157,6 +159,7 @@ class Tx_Fed_ViewHelpers_ImageViewHelper extends Tx_Fluid_ViewHelpers_ImageViewH
 		if ($this->arguments['clickenlarge'] === TRUE) {
 			$this->addScript();
 		}
+
 		if ($this->arguments['id']) {
 			$uniqid = $this->arguments['id'];
 		} else {
@@ -180,20 +183,24 @@ class Tx_Fed_ViewHelpers_ImageViewHelper extends Tx_Fluid_ViewHelpers_ImageViewH
 			$this->tag->addAttribute('height', $this->arguments['largeHeight']);
 			$this->tag->addAttribute('class', 'large ' . $this->arguments['largePosition']);
 			$this->tag->addAttribute('id', $uniqid);
-			$this->tag->addAttribute('src', $convertedImageFilename);
+			$this->tag->addAttribute('src', $convertedImageFilename[0]);
 			$lines[] = $this->tag->render();
 			$this->tag->removeAttribute('id');
 		}
 		foreach ($images as $k=>$image) {
 			$convertedImageFilename = $this->renderImage($image, $setup);
-			$imagesize = getimagesize(PATH_site . $convertedImageFilename);
+			$imagesize = getimagesize(PATH_site . $convertedImageFilename[0]);
 			$this->tag->addAttribute('width', $imagesize[0]);
 			$this->tag->addAttribute('height', $imagesize[1]);
-			$this->tag->addAttribute('src', $convertedImageFilename);
+			$this->tag->addAttribute('src', $convertedImageFilename[0]);
 			if ($large && $this->arguments['clickenlarge'] === TRUE) {
 				$this->tag->addAttribute('onclick', "fedImgXL('{$uniqid}', '{$large[$k]}');");
 				$this->tag->addAttribute('class', 'small');
 				$this->tag->removeAttribute('id'); // avoid DOM ID collisions
+			}
+			if ($this->arguments['mouseoverSuffix'] != '') {
+				$this->tag->addAttribute('onmouseover', "this.src='{$convertedImageFilename[1]}'");
+				$this->tag->addAttribute('onmouseout', "this.src='{$convertedImageFilename[0]}'");
 			}
 			$lines[] = $this->tag->render();
 		}
@@ -224,6 +231,12 @@ class Tx_Fed_ViewHelpers_ImageViewHelper extends Tx_Fluid_ViewHelpers_ImageViewH
 		return array_values($sorted);
 	}
 
+	/**
+	 * Support for sortImages - finds new index for array
+	 *
+	 * @param mixed $index
+	 * @return mixed
+	 */
 	protected function findNewIndex($index) {
 		if (is_numeric($index)) {
 			return $index+1;
@@ -298,12 +311,16 @@ class Tx_Fed_ViewHelpers_ImageViewHelper extends Tx_Fluid_ViewHelpers_ImageViewH
 		if (TYPO3_MODE === 'BE' && substr($src, 0, 3) === '../') {
 			$src = substr($src, 3);
 		}
+
 		$imageInfo = $this->contentObject->getImgResource($src, $setup);
+
 		$GLOBALS['TSFE']->lastImageInfo = $imageInfo;
 		if (!is_array($imageInfo)) {
 			throw new Tx_Fluid_Core_ViewHelper_Exception('Could not get image resource for "' . htmlspecialchars($src) . '".' , 1253191060);
 		}
+
 		$imageInfo[3] = t3lib_div::png_to_gif_by_imagemagick($imageInfo[3]);
+
 		$GLOBALS['TSFE']->imagesOnPage[] = $imageInfo[3];
 
 		$imageSource = $GLOBALS['TSFE']->absRefPrefix . t3lib_div::rawUrlEncodeFP($imageInfo[3]);
@@ -311,7 +328,23 @@ class Tx_Fed_ViewHelpers_ImageViewHelper extends Tx_Fluid_ViewHelpers_ImageViewH
 			$imageSource = '../' . $imageSource;
 			$this->resetFrontendEnvironment();
 		}
-		return $imageSource;
+
+		if($this->arguments['mouseoverSuffix'] != '') {
+			$srcImg = explode('.',$src);
+			$srcMouseoverImg = $srcImg[0].$this->arguments['mouseoverSuffix'].'.'.$srcImg[1];
+			$imageInfoMouseover = $this->contentObject->getImgResource($srcMouseoverImg, $setup);
+			if (!is_array($imageInfoMouseover)) {
+				throw new Tx_Fluid_Core_ViewHelper_Exception('Could not get image resource for "' . htmlspecialchars($srcMouseoverImg) . '".' , 1253191060);
+			}
+			$imageInfoMouseover[3] = t3lib_div::png_to_gif_by_imagemagick($imageInfoMouseover[3]);
+			$GLOBALS['TSFE']->imagesOnPage[] = $imageInfoMouseover[3];
+			$imageSourceOver = $GLOBALS['TSFE']->absRefPrefix . t3lib_div::rawUrlEncodeFP($imageInfoMouseover[3]);
+			if (TYPO3_MODE === 'BE') {
+				$imageSourceOver = '../' . $imageSourceOver;
+				$this->resetFrontendEnvironment();
+			}
+		}
+		return array($imageSource,$imageSourceOver);
 	}
 
 	/**
