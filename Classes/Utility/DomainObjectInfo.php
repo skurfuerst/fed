@@ -267,7 +267,7 @@ class Tx_Fed_Utility_DomainObjectInfo implements t3lib_Singleton {
 	 */
 	public function getResourcePath($object) {
 		$extensionName = $this->getExtensionName($object);
-		$extensionName = strtolower($extensionName);
+		$extensionName = $this->convertCamelCaseToLowerCaseUnderscored($extensionName);
 		return t3lib_extMgm::extPath($extensionName, 'Resources/');
 	}
 
@@ -279,7 +279,7 @@ class Tx_Fed_Utility_DomainObjectInfo implements t3lib_Singleton {
 	 */
 	public function getResourcePathRel($object) {
 		$extensionName = $this->getExtensionName($object);
-		$extensionName = strtolower($extensionName);
+		$extensionName = $this->convertCamelCaseToLowerCaseUnderscored($extensionName);
 		return t3lib_extMgm::siteRelPath($extensionName) . 'Resources/';
 	}
 
