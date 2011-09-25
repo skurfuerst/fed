@@ -64,6 +64,7 @@ HTML;
 		$html = '';
 		foreach ($_COOKIE as $name=>$value) {
 			$html .= "<option value='{$name}'>{$name}</option>" . LF;
+			unset($value);
 		}
 		return $html;
 	}

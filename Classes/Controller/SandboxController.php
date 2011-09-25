@@ -71,9 +71,8 @@ class Tx_Fed_Controller_SandboxController extends Tx_Fed_Core_AbstractController
 		}
 		// add a dummy DataSource used as new object and to expose Model from Fluid
 		$dummy = $this->objectManager->get('Tx_Fed_Domain_Model_DataSource');
-		$model = $this->extJSService->expose($dummy, 123581322, NULL, 'Fed.'); // typeNum from ext_typoscript_setup.txt
+		$this->extJSService->expose($dummy, 123581322, NULL, 'Fed.'); // typeNum from ext_typoscript_setup.txt
 		// these next include statements are all duplicated in the Fluid tempalte - without collisions
-		#$this->documentHead->includeHeader($model, 'js');
 		#$this->documentHead->includeFile('fileadmin/FedSite/Resources/Public/Javascript/ExtJS/ext-all.js');
 		#$this->documentHead->includeFile('fileadmin/FedSite/Resources/Public/Javascript/ExtJS/resources/css/ext-all.css');
 		#$this->documentHead->includeFile('typo3conf/ext/fed/Resources/Public/Javascript/SandboxComponent.js');

@@ -85,7 +85,7 @@ class Tx_Fed_Backend_FCESelector {
 							$select .= "<option value='{$optionValue}'{$selected}>{$label}</option>" .LF;
 						}
 					} catch (Exception $e) {
-						$select .= "<option value=''>INVALID: " . $fileRelPath . "</option>" . LF;
+						$select .= "<option value=''>INVALID: " . $fileRelPath . " (Exception # " . $e->getCode() . ")</option>" . LF;
 					}
 				}
 				$select .= "</optgroup>" . LF;
@@ -99,7 +99,7 @@ class Tx_Fed_Backend_FCESelector {
 	protected function getFiles($basePath, $recursive=FALSE, $appendBasePath=NULL) {
 		$files = scandir(PATH_site . $basePath . $appendBasePath);
 		$addFiles = array();
-		foreach ($files as $index=>$file) {
+		foreach ($files as $file) {
 			if (substr($file, 0, 1) === '.') {
 				continue;
 			} else if (is_dir(PATH_site . $basePath . $appendBasePath . $file) && $recursive) {

@@ -42,14 +42,20 @@ class Tx_Fed_ViewHelpers_Be_Link_Content_PasteViewHelper extends Tx_Fed_Core_Vie
 	public function render() {
 		$pid = $this->arguments['row']['pid'];
 		$uid = $this->arguments['row']['uid'];
-		$sysLang = $this->arguments['row']['sys_language_uid'];
-		$colPos = 255;
 		$returnUri = $this->getReturnUri($pid);
 		$token = $this->getFormToken();
 		$vC = $this->getLinkChecksum();
-		$sign = $after ? '-' : '';
+		$sign = '-';
 		$icon = $this->getIcon('actions-document-paste-after', 'Paste content element after this element');
-		$uri = '/typo3/tce_db.php?&vC=' . $vc . '&prErr=1&uPT=1&CB[paste]=tt_content%7C' . $sign . $uid . '&CB[pad]=normal&formToken=' . $token . '&redirect=' . $returnUri;
+		$uri = '/typo3/tce_db.php?&vC=';
+		$uri .= $vC;
+		$uri .= '&prErr=1&uPT=1&CB[paste]=tt_content%7C';
+		$uri .= $sign;
+		$uri .= $uid;
+		$uri .= '&CB[pad]=normal&formToken=';
+		$uri .= $token;
+		$uri .= '&redirect=';
+		$uri .= $returnUri;
 		return $this->wrapLink($icon, $uri);
 	}
 }

@@ -70,11 +70,11 @@ class Tx_Fed_ViewHelpers_Fce_RenderFieldViewHelper extends Tx_Fed_ViewHelpers_Fc
 
 	protected function getCustomizedConfiguration($config) {
 		$type = $config['type'];
-		$method = "get" . ucfirst($config['type']) . "Configuration";
+		$method = "get" . ucfirst($type) . "Configuration";
 		if (method_exists($this, $method)) {
 			return call_user_func_array(array($this, $method), array($config));
 		} else {
-			throw new Exception('Unsupported field type in Fluid FCE: ' . $config['type']);
+			throw new Exception('Unsupported field type in Fluid FCE: ' . $type);
 		}
 	}
 

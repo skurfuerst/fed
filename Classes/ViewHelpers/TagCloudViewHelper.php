@@ -217,7 +217,7 @@ class Tx_Fed_ViewHelpers_TagCloudViewHelper extends Tx_Fed_Core_ViewHelper_Abstr
 	protected function renderHTMLTagCloud($tags) {
 		$html = "";
 		$num = 1;
-		foreach ($tags as $name=>$tag) {
+		foreach ($tags as $tag) {
 			if (is_object($tag)) {
 				$tag = $this->objToArray($tag);
 			}
@@ -250,7 +250,7 @@ class Tx_Fed_ViewHelpers_TagCloudViewHelper extends Tx_Fed_Core_ViewHelper_Abstr
 	 */
 	protected function renderFlashTagCloud($tags) {
 		$elementId = uniqid('wpcumulus_');
-		$instance = $this->arguments['instanceName'];
+		#$instance = $this->arguments['instanceName'];
 		$movie = t3lib_extMgm::siteRelPath('fed') . 'Resources/Public/Flash/com.roytanck.wpcumulus.swf';
 		$tagcloud = $this->renderTags($tags);
 		$tagcloud = str_replace( "&nbsp;", " ", $tagcloud);

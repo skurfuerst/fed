@@ -51,7 +51,7 @@ class Tx_Fed_ViewHelpers_Debug_BeginViewHelper extends Tx_Fed_Core_ViewHelper_Ab
 	 * @return void
 	 */
 	public function render() {
-		$this->templateVariableContainer->add('fedDebugSubsessionName', $name);
+		$this->templateVariableContainer->add('fedDebugSubsessionName', $this->arguments['name']);
 		$content = $this->renderChildren();
 		if (strlen(trim($content)) > 0) {
 			$data = $content;

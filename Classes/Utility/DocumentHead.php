@@ -230,10 +230,12 @@ class Tx_Fed_Utility_DocumentHead implements t3lib_Singleton {
 			$code = $this->wrap(NULL, $filename, $type, $attributes);
 		} else if ($compress === TRUE) {
 			$contents = file_get_contents(PATH_site . $filename);
-			$packed = $this->pack($contents);
+			if ($compress) {
+				$contents = $this->pack($contents);
+			}
 			$md5 = md5($filename);
 			if ($cache === TRUE) {
-				$cachedFile = $this->saveContentToTempFile($contents, $uniqid, $type);
+				$cachedFile = $this->saveContentToTempFile($contents, $md5, $type);
 				$code = $this->wrap(NULL, $cachedFile, $type, $attributes);
 			} else {
 				$code = $this->wrap($contents, NULL, $type, $attributes);

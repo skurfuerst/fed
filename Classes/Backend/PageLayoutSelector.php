@@ -82,7 +82,7 @@ class Tx_Fed_Backend_PageLayoutSelector {
 		$formats = array();
 		$dir = PATH_site . $path;
 		$files = scandir($dir);
-		foreach ($files as $k=>$file) {
+		foreach ($files as $file) {
 			$pathinfo = pathinfo($dir . $file);
 			$extension = $pathinfo['extension'];
 			if (in_array($extension, $this->recognizedFormats)) {

@@ -59,7 +59,7 @@ class Tx_Fed_ViewHelpers_Profile_MeasureViewHelper extends Tx_Fed_Core_ViewHelpe
 
 		$duration = number_format(($stop - $now) * 1000, 0);
 		$memUsed = number_format(($memAfter - $mem) / 1024, 2, '.', ',');
-		$size = number_format(strlen($content) / 1024, 2, '.', ',');
+		$size = number_format($length / 1024, 2, '.', ',');
 
 		$summary = "{$label}: {$duration} ms, {$size} KB content, {$memUsed} KB memory consumed.";
 

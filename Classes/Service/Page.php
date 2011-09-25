@@ -65,7 +65,6 @@ class Tx_Fed_Service_Page implements t3lib_Singleton {
 	 * @param integer $columnPosition
 	 */
 	public function getContentElementsByColumnPosition(Tx_Fed_Domain_Model_Page $page, $columnPosition) {
-		$columns = $this->getColumnConfiguration($page);
 		$pid = $page->getUid();
 		return $this->contentElementRepository->findAllByPidAndColPos($pid, $columnPosition);
 	}

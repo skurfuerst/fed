@@ -176,7 +176,9 @@ class Tx_Fed_Core_ViewHelper_AbstractExtbaseViewHelper extends Tx_Fed_Core_ViewH
 	 * @return void
 	 */
 	public function setObject(Tx_Extbase_DomainObject_AbstractEntity $object) {
-		list ($prefix, $extensionName, $subPackageDomain, $subPackageModel, $controllerName) = explode('_', get_class($object));;
+		$parts = explode('_', get_class($object));
+		$extensionName = $parts[1];
+		$controllerName = array_pop($controllerName);
 		$controllerName = str_replace('Controller', '', $controllerName);
 		$pluginName = Tx_Extbase_Utility_Extension::getPluginNameByAction($extensionName, $controllerName, $this->getAction());
 		$this->setPluginName($pluginName);

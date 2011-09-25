@@ -123,10 +123,8 @@ class Tx_Fed_Backend_TCEMain {
 				}
 			}
 		} catch (Exception $e) {
-			#return var_dump($e->getMessage());
+			unset($e);
 		}
-		#var_dump($record);
-		#exit();
 		return $record;
 	}
 

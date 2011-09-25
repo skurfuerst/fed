@@ -64,7 +64,6 @@ class Tx_Fed_ViewHelpers_Social_Facebook_LikeViewHelper extends Tx_Fed_Core_View
 	 * @return void
 	 */
 	public function initializeArguments() {
-		$this->registerTagAttribute('href', 'string', 'Given url - note: FED Page/AbsoluteUrlViewHelper can be used to generate a full, absolute URL', TRUE);
 		$this->registerTagAttribute('layout', 'string', 'Either: standard, button_count or box_count');
 		$this->registerTagAttribute('width', 'integer', 'With of widget, default none');
 		$this->registerTagAttribute('font', 'string', 'Font, options are: arial, lucidia grande, segoe ui, tahoma, trebuchet ms, verdana');
@@ -79,7 +78,6 @@ class Tx_Fed_ViewHelpers_Social_Facebook_LikeViewHelper extends Tx_Fed_Core_View
 	 */
 	public function render() {
 		$code = '';
-		$url = $this->arguments['href'];
 			// -1 means no JS
 		if ($this->arguments['javaScript'] == '' || $this->arguments['javaScript'] == '-1') {
 			$locale = $this->arguments['locale'];

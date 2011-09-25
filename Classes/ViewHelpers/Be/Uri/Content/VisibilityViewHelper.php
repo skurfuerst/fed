@@ -40,17 +40,7 @@ class Tx_Fed_ViewHelpers_Be_Uri_Content_VisibilityViewHelper extends Tx_Fed_Core
 	 * @return string
 	 */
 	public function render() {
-		$pid = $this->arguments['row']['pid'];
-		$uid = $this->arguments['row']['uid'];
-		$sysLang = $this->arguments['row']['sys_language_uid'];
-		$colPos = 255;
-
-		$uri = '/typo3/alt_doc.php?edit[tt_content][' . $pid . ']=new&defVals[tt_content][colPos]=' . $colPos
-			. '&defVals[tt_content][sys_language_uid]=' . $sysLang
-			. '&returnUrl=%2Ftypo3%2Fsysext%2Fcms%2Flayout%2Fdb_layout.php%3Fid%3D' . $pid
-			;
-			#. '&defVals[tt_content][CType]=text&defVals[tt_content][tx_fed_fcecontentarea]=' . $area . '%3A' . $uid
-		return $uri;
+		return '';
 	}
 }
 

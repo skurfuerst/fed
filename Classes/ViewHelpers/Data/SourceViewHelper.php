@@ -49,7 +49,7 @@ class Tx_Fed_ViewHelpers_Data_SourceViewHelper extends Tx_Fluid_Core_ViewHelper_
 		$repository = $this->objectManager->get('Tx_Fed_Domain_Repository_DataSourceRepository');
 		$parser = $this->objectManager->get('Tx_Fed_Utility_DataSourceParser');
 		if (is_array($source)) {
-			$sources = $respository->findByUids($source);
+			$sources = $repository->findByUids($source);
 		} else {
 			$sources = $repository->searchByName($source)->toArray();
 			if (count($source) == 0) {

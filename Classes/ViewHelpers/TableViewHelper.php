@@ -124,7 +124,7 @@ class Tx_Fed_ViewHelpers_TableViewHelper extends Tx_Fed_Core_ViewHelper_Abstract
 		if ($objects instanceof Tx_Extbase_Persistence_ObjectStorage) {
 			$objects = $objects->toArray();
 		}
-		
+
 		if ($source) {
 			$parser = $this->objectManager->get('Tx_Fed_Utility_DataSourceParser');
 			$sourceRepository = $this->objectManager->get('Tx_Fed_Domain_Repository_DataSourceRepository');
@@ -153,7 +153,7 @@ class Tx_Fed_ViewHelpers_TableViewHelper extends Tx_Fed_Core_ViewHelper_Abstract
 		} else {
 			$tbody = $this->renderChildren();
 		}
-		
+
 		if ($headers) {
 			$thead = $this->renderHeaders($headers);
 			$content = "{$thead}{$tbody}";
@@ -163,11 +163,11 @@ class Tx_Fed_ViewHelpers_TableViewHelper extends Tx_Fed_Core_ViewHelper_Abstract
 
 		$this->tag->setContent($content);
 
-		if ($cellspacing !== FALSE) {
+		if ($this->arguments['cellspacing'] !== FALSE) {
 			$this->tag->addAttribute('cellspacing', $this->arguments['cellspacing']);
 		}
 
-		if ($cellpadding !== FALSE) {
+		if ($this->arguments['cellpadding'] !== FALSE) {
 			$this->tag->addAttribute('cellpadding', $this->arguments['cellpadding']);
 		}
 
@@ -280,7 +280,7 @@ class Tx_Fed_ViewHelpers_TableViewHelper extends Tx_Fed_Core_ViewHelper_Abstract
 		} else if ($value instanceof Tx_Extbase_Persistence_ObjectStorage) {
 			// render the value as a CSV list of names based on labelField argument
 			$names = array();
-			foreach ($value as $child) {
+			while (next($value) !== FALSE) {
 				array_push($names, $this->renderValue($value, $labelField));
 			}
 			$value = implode(', ', $names);
@@ -323,7 +323,7 @@ class Tx_Fed_ViewHelpers_TableViewHelper extends Tx_Fed_Core_ViewHelper_Abstract
 	 */
 	public function getValues(Tx_Extbase_DomainObject_DomainObjectInterface $object) {
 		$annotationName = $this->arguments['annotationName'];
-		$annotaionValue = $this->arguments['annotationValue'];
+		$annotationValue = $this->arguments['annotationValue'];
 		if (!$annotationName) {
 			$annotationName = "var";
 			if (!$annotationValue) {

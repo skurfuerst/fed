@@ -57,7 +57,7 @@ class Tx_Fed_ViewHelpers_Style_LinkViewHelper extends Tx_Fluid_Core_ViewHelper_A
 	 * @return string
 	 */
 	public function render() {
-		return $rendered;
+		return '';
 	}
 }
 

@@ -132,8 +132,6 @@ class Tx_Fed_Persistence_FileObjectStorage extends SplObjectStorage {
 	 */
 	public function setAssociatedDomainObject(Tx_Extbase_DomainObject_AbstractDomainObject $associatedDomainObject, $propertyName) {
 		$annotationValues = $this->infoService->getAnnotationValuesByProperty($associatedDomainObject, $propertyName, 'file');
-		$table = $this->infoService->getDatabaseTable($associatedDomainObject);
-		$underscoredPropertyName = Tx_Extbase_Utility_Extension::convertCamelCaseToLowerCaseUnderscored($propertyName);
 		// use collected data to set necessary precursor variables
 		$this->objectType = array_pop($annotationValues);
 		$this->associatedDomainObject = $associatedDomainObject;

@@ -94,7 +94,10 @@ class Tx_Fed_Service_File implements t3lib_Singleton {
 		$uploadedFileObjectStorage->setBasePath($uploadFolder);
 
 		$objectType = array_pop($this->infoService->getAnnotationValuesByProperty($domainObject, $propertyName, 'file'));
-		$fileObjectStorage = $this->getUploadedFiles($domainObject, $propertyName);
+		if (!$objectType) {
+			$objectType = 'Tx_Fed_Resource_File';
+		}
+		$fileObjectStorage = $this->getUploadedFiles($domainObject, $propertyName, $objectType);
 
 		foreach ($fileObjectStorage as $fileObject) {
 			$source = $fileObject->getAbsolutePath();
@@ -254,7 +257,7 @@ class Tx_Fed_Service_File implements t3lib_Singleton {
 	 * @return array
 	 */
 	public function getFileCopyPointers($sourceFileName, $targetDir, $filename, $chunk=0) {
-		$in = fopen($sourceFilename, "rb");
+		$in = fopen($sourceFileName, "rb");
 		$out = fopen($targetDir . DIRECTORY_SEPARATOR . $filename, $chunk == 0 ? "wb" : "ab");
 		if ($out === FALSE) {
 			throw new Exception('Failed to open output stream', 102);
@@ -265,13 +268,13 @@ class Tx_Fed_Service_File implements t3lib_Singleton {
 	}
 
 	/**
-	 * @param type $sourceFilename
+	 * @param type $sourceFileName
 	 * @param type $targetDir
 	 * @param type $filename
 	 * @param type $chunk
 	 */
-	public function copyChunk($sourceFilename, $targetDir, $filename, $chunk) {
-		list ($in, $out) = $this->getFileCopyPointers($sourceFilename, $targetDir, $filename, $chunk);
+	public function copyChunk($sourceFileName, $targetDir, $filename, $chunk) {
+		list ($in, $out) = $this->getFileCopyPointers($sourceFileName, $targetDir, $filename, $chunk);
 		while ($buff = fread($in, 4096)) {
 			fwrite($out, $buff);
 		}

@@ -63,7 +63,6 @@ class Tx_Fed_Controller_PageController extends Tx_Fed_Core_AbstractController {
 		$flexform = $this->flexform->convertFlexFormContentToArray($flexFormSource);
 		$config = $this->configurationManager->getConfiguration(Tx_Extbase_Configuration_ConfigurationManagerInterface::CONFIGURATION_TYPE_FULL_TYPOSCRIPT);
 		$config = Tx_Extbase_Utility_TypoScript::convertTypoScriptArrayToPlainArray($config);
-		$typoscript = $config['plugin']['tx_fed']['page'];
 		$view = $this->objectManager->get('Tx_Fluid_View_TemplateView');
 		if (strpos($configuration['tx_fed_page_controller_action'], '->')) {
 			list ($extensionName, $action) = explode('->', $configuration['tx_fed_page_controller_action']);
