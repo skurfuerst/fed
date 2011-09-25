@@ -24,17 +24,15 @@
 ***************************************************************/
 
 /**
- * ExposedTemplateView. Allows access to registered template and viewhelper
- * variables from a Fluid template.
+ * BackendController
  *
- * @author Claus Due, Wildside A/S
  * @version $Id$
  * @copyright Copyright belongs to the respective authors
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  * @package Fed
- * @subpackage MVC/View
+ * @subpackage MVC/Controller
  */
-class Tx_Fed_View_ExposedTemplateView extends Tx_Fed_MVC_View_ExposedTemplateView {
+abstract class Tx_Fed_MVC_Controller_AbstractBackendController extends Tx_Extbase_MVC_Controller_ActionController {
 
 }
 

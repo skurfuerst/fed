@@ -8,6 +8,20 @@ page.5.pluginName = Page
 page.10 >
 
 [GLOBAL]
+config.tx_extbase.persistence.classes {
+	Tx_Fed_Domain_Model_ContentElement {
+		tableName = tt_content
+		recordType = Tx_Fed_Domain_Model_ContentElement
+	}
+	Tx_Fed_Domain_Model_Page {
+		tableName = pages
+		recordType = Tx_Fed_Domain_Model_Page
+	}
+	Tx_Fed_Domain_Model_BackendLayout {
+		tableName = be_layout
+		recordType = Tx_Fed_Domain_Model_BackendLayout
+	}
+}
 plugin.tx_fed {
 	fce.fed {
 		templateRootPath = EXT:fed/Resources/Private/Elements/
