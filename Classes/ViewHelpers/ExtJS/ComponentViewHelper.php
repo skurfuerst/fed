@@ -64,6 +64,7 @@ class Tx_Fed_ViewHelpers_ExtJS_ComponentViewHelper extends Tx_Fed_Core_ViewHelpe
 		}
 		$this->tag->addAttribute('id', $this->arguments['id']);
 		$this->tag->setContent('');
+		$this->tag->forceClosingTag(TRUE);
 		return $this->tag->render();
 	}
 }
