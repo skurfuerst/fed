@@ -488,10 +488,12 @@ class Tx_Fed_Utility_DomainObjectInfo implements t3lib_Singleton {
 	public function getObjectType($table) {
 		$typoscript = $this->configurationManager->getConfiguration(Tx_Extbase_Configuration_ConfigurationManagerInterface::CONFIGURATION_TYPE_FULL_TYPOSCRIPT);
 		$configuration = $typoscript['config.']['tx_extbase.']['persistence.']['classes.'];
-		$configuration = Tx_Extbase_Utility_TypoScript::convertTypoScriptArrayToPlainArray($configuration);
-		foreach ($configuration as $objectType=>$definition) {
-			if ($definition['tableName'] === $table) {
-				return $objectType;
+		if (is_array($configuration)) {
+			$configuration = Tx_Extbase_Utility_TypoScript::convertTypoScriptArrayToPlainArray($configuration);
+			foreach ($configuration as $objectType=>$definition) {
+				if ($definition['tableName'] === $table) {
+					return $objectType;
+				}
 			}
 		}
 		return NULL;
