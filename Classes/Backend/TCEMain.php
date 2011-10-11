@@ -59,11 +59,6 @@ class Tx_Fed_Backend_TCEMain {
 	protected $reflectionService;
 
 	/**
-	 * @var Tx_Extbase_Property_PropertyMapper
-	 */
-	protected $propertyMapper;
-
-	/**
 	 * CONSTRUCTOR
 	 */
 	public function __construct() {
@@ -71,7 +66,6 @@ class Tx_Fed_Backend_TCEMain {
 		$this->flexFormService = $this->objectManager->get('Tx_Fed_Utility_FlexForm');
 		$this->infoService = $this->objectManager->get('Tx_Fed_Utility_DomainObjectInfo');
 		$this->reflectionService = $this->objectManager->get('Tx_Extbase_Reflection_Service');
-		$this->propertyMapper = $this->objectManager->get('Tx_Extbase_Property_PropertyMapper');
 	}
 
 	/**
