@@ -68,6 +68,9 @@ class Tx_Fed_ViewHelpers_Resource_FileViewHelper extends Tx_Fed_ViewHelpers_Reso
 			$files = $this->arrayToFileObjects($files);
 			$file = array_pop($files);
 			if ($this->arguments['as']) {
+				if ($this->templateVariableContainer->exists($this->arguments['as'])) {
+					$this->templateVariableContainer->remove($this->arguments['as']);
+				}
 				$this->templateVariableContainer->add($this->arguments['as'], $file);
 			} else if ($this->arguments['return'] === TRUE) {
 				return $file;
@@ -108,6 +111,9 @@ class Tx_Fed_ViewHelpers_Resource_FileViewHelper extends Tx_Fed_ViewHelpers_Reso
 		$files = $this->sortFiles($files);
 		// rendering
 		if ($this->arguments['as']) {
+			if ($this->templateVariableContainer->exists($this->arguments['as'])) {
+				$this->templateVariableContainer->remove($this->arguments['as']);
+			}
 			$this->templateVariableContainer->add($this->arguments['as'], $files);
 		} else if ($this->arguments['return'] === TRUE) {
 			return $files;
