@@ -1,0 +1,8 @@
+  # cat=basic/enable; type=boolean; label=Backend: Enable integrated Backend Layouts. Enables Fluid Page template files to contain their own BE layout definition without requiring a BE layout record to be even present. However, overrides all current BE layout integrations IF using Fluid Page templates - otherwise, nothing is affected. Use this only if you are sure your template files are configured to support this!
+enableIntegratedBackendLayouts = 0
+
+  # cat=basic/enable; type=boolean; label=Fluid Page Templates: Enable the Fluid Page template features.
+enableFluidPageTemplates = 1
+
+  # cat=basic/enable; type=boolean; label=Fluid Content Elements: Enable the Fluid Content Element features.
+enableFluidContentElements = 1
