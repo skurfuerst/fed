@@ -71,19 +71,9 @@ if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['fed']['setup']['enableFluidPageTempl
 	$TCA['pages']['palettes']['fluid']['showitem'] = 'tx_fed_page_controller_action,tx_fed_page_controller_action_sub';
 
 	t3lib_extMgm::addTCAcolumns('pages', array(
-		'tx_fed_page_format' => Array (
-			'exclude' => 1,
-			'label' => 'LLL:EXT:fed/Resources/Private/Language/locallang_db.xml:pages.tx_fed_page_format',
-			'displayCond' => 'FIELD:layout:=:255',
-			'config' => Array (
-				'type' => 'user',
-				'userFunc' => 'Tx_Fed_Backend_PageLayoutSelector->renderFormatField'
-			)
-		),
 		'tx_fed_page_controller_action' => Array (
 			'exclude' => 1,
 			'label' => 'LLL:EXT:fed/Resources/Private/Language/locallang_db.xml:pages.tx_fed_page_controller_action',
-			'displayCond' => 'FIELD:layout:=:255',
 			'config' => Array (
 				'type' => 'user',
 				'userFunc' => 'Tx_Fed_Backend_PageLayoutSelector->renderField'
@@ -92,7 +82,6 @@ if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['fed']['setup']['enableFluidPageTempl
 		'tx_fed_page_controller_action_sub' => Array (
 			'exclude' => 1,
 			'label' => 'LLL:EXT:fed/Resources/Private/Language/locallang_db.xml:pages.tx_fed_page_controller_action_sub',
-			'displayCond' => 'FIELD:layout:=:255',
 			'config' => Array (
 				'type' => 'user',
 				'userFunc' => 'Tx_Fed_Backend_PageLayoutSelector->renderField'
@@ -101,7 +90,6 @@ if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['fed']['setup']['enableFluidPageTempl
 		'tx_fed_page_flexform' => Array (
 			'exclude' => 1,
 			'label' => 'LLL:EXT:fed/Resources/Private/Language/locallang_db.xml:pages.tx_fed_page_flexform',
-			'displayCond' => 'FIELD:layout:=:255',
 			'config' => Array (
 				'type' => 'flex',
 			)

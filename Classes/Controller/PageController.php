@@ -72,9 +72,9 @@ class Tx_Fed_Controller_PageController extends Tx_Fed_Core_AbstractController {
 		}
 		$templates = $this->getTyposcript();
 		$paths = $templates[$extensionName];
-		$templateRootPath = $this->translatePath($paths['templateRootPath']);
-		$layoutRootPath = $this->translatePath($paths['layoutRootPath']);
-		$partialRootPath = $this->translatePath($paths['partialRootPath']);
+		$templateRootPath = Tx_Fed_Utility_Path::translatePath($paths['templateRootPath']);
+		$layoutRootPath = Tx_Fed_Utility_Path::translatePath($paths['layoutRootPath']);
+		$partialRootPath = Tx_Fed_Utility_Path::translatePath($paths['partialRootPath']);
 		$view->setControllerContext($this->controllerContext);
 		$view->setTemplateRootPath($templateRootPath);
 		$view->setLayoutRootPath($layoutRootPath);
@@ -102,15 +102,6 @@ class Tx_Fed_Controller_PageController extends Tx_Fed_Core_AbstractController {
 		}
 	}
 
-	protected function translatePath($path) {
-		if (strpos($path, 'EXT:') === 0) {
-			$slice = strpos($path, '/');
-			$extKey = array_pop(explode(':', substr($path, 0, $slice)));
-			$path = t3lib_extMgm::extPath($extKey, substr($path, $slice));
-		}
-		return $path;
-	}
-
 	/**
 	 *
 	 * @TODO This is duplicated code. Should be moved to a Service in the future
@@ -122,7 +113,7 @@ class Tx_Fed_Controller_PageController extends Tx_Fed_Core_AbstractController {
 		$output = array();
 		foreach ($typoscript as $extensionName=>$group) {
 			$path = $group['templateRootPath'];
-			$path = $this->translatePath($path);
+			$path = Tx_Fed_Utility_Path::translatePath($path);
 			$dir = PATH_site . $path;
 			$files = scandir($dir);
 			$output[$extensionName] = array();

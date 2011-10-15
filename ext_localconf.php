@@ -65,7 +65,6 @@ $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['fed']['setup'] = unserialize($_EXTCONF);
 
 
 if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['fed']['setup']['enableFluidPageTemplates']) {
-	t3lib_extMgm::addPageTSConfig('TCEFORM.pages.layout.addItems.255 = Fluid Page');
 	t3lib_extMgm::addTypoScript($_EXTKEY,'setup',
 		'[GLOBAL]
 		page = PAGE
