@@ -66,6 +66,16 @@ $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['fed']['setup'] = unserialize($_EXTCONF);
 
 if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['fed']['setup']['enableFluidPageTemplates']) {
 	t3lib_extMgm::addPageTSConfig('TCEFORM.pages.layout.addItems.255 = Fluid Page');
+	t3lib_extMgm::addTypoScript($_EXTKEY,'setup',
+		'[GLOBAL]
+		page = PAGE
+		page.typeNum = 0
+		page.5 = USER
+		page.5.userFunc = tx_fed_core_bootstrap->run
+		page.5.extensionName = Fed
+		page.5.pluginName = Page
+		page.10 >
+	', TRUE);
 	Tx_Extbase_Utility_Extension::configurePlugin(
 		$_EXTKEY,
 		'Page',
