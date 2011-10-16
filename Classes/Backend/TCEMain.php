@@ -59,6 +59,11 @@ class Tx_Fed_Backend_TCEMain {
 	protected $reflectionService;
 
 	/**
+	 * @var Tx_Fed_Service_Content
+	 */
+	protected $contentService;
+
+	/**
 	 * CONSTRUCTOR
 	 */
 	public function __construct() {
@@ -66,6 +71,7 @@ class Tx_Fed_Backend_TCEMain {
 		$this->flexFormService = $this->objectManager->get('Tx_Fed_Utility_FlexForm');
 		$this->infoService = $this->objectManager->get('Tx_Fed_Utility_DomainObjectInfo');
 		$this->reflectionService = $this->objectManager->get('Tx_Extbase_Reflection_Service');
+		$this->contentService = $this->objectManager->get('Tx_Fed_Service_Content');
 	}
 
 	/**
@@ -78,7 +84,7 @@ class Tx_Fed_Backend_TCEMain {
 	protected function executeBackendControllerCommand($table, $action, $record, $arguments=array()) {
 		$objectType = $this->infoService->getObjectType($table);
 		try {
-			if ($objectType) {
+			if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['fed']['setup']['enableBackendRecordController'] && $objectType) {
 				$keys = array_keys($record);
 				$controllerClassName = $this->infoService->getBackendControllerClassName($objectType);
 				if ($controllerClassName) {
@@ -123,13 +129,21 @@ class Tx_Fed_Backend_TCEMain {
 	 * @param	string		$command: The TCEmain operation status, fx. 'update'
 	 * @param	string		$table: The table TCEmain is currently processing
 	 * @param	string		$id: The records id (if any)
-	 * @param	array		$fieldArray: The field names and their values to be processed
+	 * @param	array		$relativeTo: Filled if command is relative to another element
 	 * @param	object		$reference: Reference to the parent object (TCEmain)
 	 * @return	void
 	 * @access	public
 	 */
-	public function processCmdmap_preProcess (&$command, $table, $id, $value, t3lib_TCEmain &$reference) {
-
+	public function processCmdmap_preProcess (&$command, $table, $id, $relativeTo, t3lib_TCEmain &$reference) {
+		if ($table === 'tt_content') {
+			switch ($command) {
+				case 'move':
+					$area = $this->contentService->getFlexibleContentElementArea(array('pid' => $relativeTo));
+					$GLOBALS['TYPO3_DB']->exec_UPDATEquery($table, "uid = '" . $id . "'", array('tx_fed_fcecontentarea' => $area));
+					break;
+				default:
+			}
+		}
 	}
 
 	/**
@@ -145,6 +159,10 @@ class Tx_Fed_Backend_TCEMain {
 			$action = 'read';
 		} else {
 			$action = 'create';
+		}
+		if ($table === 'tt_content') {
+			$area = $this->contentService->getFlexibleContentElementArea($incomingFieldArray);
+			$incomingFieldArray['tx_fed_fcecontentarea'] = $area;
 		}
 		$incomingFieldArray = $this->executeBackendControllerCommand($table, $action, $incomingFieldArray);
 	}

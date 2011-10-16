@@ -77,6 +77,9 @@ class Tx_Fed_Backend_DynamicFlexForm {
 				$paths = $this->configurationManager->getPageConfiguration($extensionName);
 				$templatePath = $this->translatePath($paths['templateRootPath']);
 				$templateFile = $templatePath . '/Page/' . $action . '.html';
+				if (file_exists($templateFile) === FALSE) {
+					throw new Exception('Invalid template file selected - file does not exist: ' . $templateFile, 1318783138);
+				}
 				$pageFlexFormSource = $this->getPageFlexFormSource($row);
 				$values = $this->flexform->convertFlexFormContentToArray($pageFlexFormSource);
 				$this->readFlexFormFields($templateFile, $values, $paths, $dataStructArray, $conf, $row, $table, $fieldName);
