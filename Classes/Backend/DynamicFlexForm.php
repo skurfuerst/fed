@@ -59,28 +59,28 @@ class Tx_Fed_Backend_DynamicFlexForm {
 		$this->flexform = $this->objectManager->get('Tx_Fed_Utility_FlexForm');
 	}
 
+	/**
+	 * Hook for generating dynamic FlexForm source code
+	 *
+	 * @param array $dataStructArray
+	 * @param array $conf
+	 * @param array $row
+	 * @param string $table
+	 * @param string $fieldName
+	 */
 	public function getFlexFormDS_postProcessDS(&$dataStructArray, $conf, &$row, $table, $fieldName) {
-		if ($table === 'pages') {
-			if ($row['layout'] < 255) {
-				return;
-			}
-			if ($row['tx_fed_page_controller_action'] != '') {
-				$configuration = $row;
-			} else {
-				$configuration = $this->getPageTemplateConfiguration($row['uid']);
-			}
-			$action = $configuration['tx_fed_page_controller_action'] ? $configuration['tx_fed_page_controller_action'] : 'Default';
-			if (strpos($action, '->')) {
+		if ($table === 'pages' && $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['fed']['setup']['enableFluidPageTemplates']) {
+			$configuration = $this->getPageTemplateConfiguration($row['uid']);
+			if ($configuration['tx_fed_page_controller_action']) {
+				$action = $configuration['tx_fed_page_controller_action'];
 				list ($extensionName, $action) = explode('->', $action);
-			} else {
-				$extensionName = 'fed';
+				$paths = $this->configurationManager->getPageConfiguration($extensionName);
+				$templatePath = $this->translatePath($paths['templateRootPath']);
+				$templateFile = $templatePath . '/Page/' . $action . '.html';
+				$pageFlexFormSource = $this->getPageFlexFormSource($row);
+				$values = $this->flexform->convertFlexFormContentToArray($pageFlexFormSource);
+				$this->readFlexFormFields($templateFile, $values, $paths, $dataStructArray, $conf, $row, $table, $fieldName);
 			}
-			$paths = $this->configurationManager->getPageConfiguration($extensionName);
-			$templatePath = $this->translatePath($paths['templateRootPath']);
-			$templateFile = $templatePath . '/Page/' . $action . '.html';
-			$pageFlexFormSource = $this->getPageFlexFormSource($row);
-			$values = $this->flexform->convertFlexFormContentToArray($pageFlexFormSource);
-			$this->readFlexFormFields($templateFile, $values, $paths, $dataStructArray, $conf, $row, $table, $fieldName);
 		} else if ($row['CType'] == 'fed_fce') {
 			list ($extensionName, $filename) = explode(':', $row['tx_fed_fcefile']);
 			$values = $this->flexform->convertFlexFormContentToArray($row['pi_flexform']);
@@ -111,15 +111,23 @@ class Tx_Fed_Backend_DynamicFlexForm {
 		}
 	}
 
+	/**
+	 * Process RootLine to find first usable, configured Fluid Page Template.
+	 * WARNING: do NOT use the output of this feature to overwrite $row - the
+	 * record returned may or may not be the same recod as defined in $id.
+	 *
+	 * @param integer $id
+	 * @return array
+	 */
 	protected function getPageTemplateConfiguration($id) {
 		$pageSelect = new t3lib_pageSelect();
 		$rootLine = $pageSelect->getRootLine($id);
 		$rootLine = array_reverse($rootLine);
 		foreach ($rootLine as $row) {
-			if ($row['tx_fed_page_controller_action'] != '') {
+			if (strpos($row['tx_fed_page_controller_action'], '->')) {
 				return $row;
 			}
-			if ($row['tx_fed_page_controller_action_sub'] != '') {
+			if (strpos($row['tx_fed_page_controller_action_sub'], '->')) {
 				$row['tx_fed_page_controller_action'] = $row['tx_fed_controller_action_sub'];
 				return $row;
 			}
@@ -137,7 +145,21 @@ class Tx_Fed_Backend_DynamicFlexForm {
 		return NULL;
 	}
 
-	protected function readFlexFormFields($templateFile, $values, $paths, &$dataStructArray, $conf, &$row, $table, $fieldName) {
+	/**
+	 * Updates $dataStructArray by reference, filling it with a proper data structure
+	 * based on the selected template file.
+	 *
+	 * @param string $templateFile
+	 * @param array $values
+	 * @param array $paths
+	 * @param array $dataStructArray
+	 * @param arrat $conf
+	 * @param array $row
+	 * @param string $table
+	 * @param string $fieldName
+	 * @return void
+	 */
+	protected function readFlexFormFields($templateFile, $values, $paths, &$dataStructArray, $conf, $row, $table, $fieldName) {
 		$onInvalid = array('ROOT' => array('type' => 'array', 'el' => array('void' => array('config' => 'input', 'default' => $templateFile))));
 		if (is_file(PATH_site . $templateFile) === FALSE) {
 			$dataStructArray = $onInvalid;

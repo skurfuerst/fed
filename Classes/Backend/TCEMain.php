@@ -86,10 +86,7 @@ class Tx_Fed_Backend_TCEMain {
 						$object = $this->objectManager->get($objectType);
 					} else {
 						$repository = $this->infoService->getRepositoryInstance($objectType);
-						$query = $repository->createQuery();
-						$query->getQuerySettings()->setRespectEnableFields(FALSE);
-						$query->getQuerySettings()->setRespectStoragePage(FALSE);
-						$object = $query->execute()->getFirst();
+						$object = $repository->findByUid($record['uid']);
 					}
 					$translatedKeys = $this->infoService->convertLowerCaseUnderscoredToLowerCamelCase($keys);
 					$translatedRecordValues = array_combine($translatedKeys, $record);
