@@ -15,6 +15,8 @@ return array(
 	'tx_fed_configuration_configurationmanager' => $extensionClassesPath . 'Configuration/ConfigurationManager.php',
 	'tx_fed_core_abstractcontroller' => $extensionClassesPath . 'Core/AbstractController.php',
 	'tx_fed_controller_pagecontroller' => $extensionClassesPath . 'Controller/PageController.php',
+	'tx_fed_service_content' => $extensionClassesPath . 'Service/Content.php',
+	'tx_fed_service_page' => $extensionClassesPath . 'Service/Page.php',
 	'tx_fed_utility_pdf' => $extensionClassesPath . 'Utility/PDF.php',
 	'tx_fed_utility_extjs' => $extensionClassesPath . 'Utility/ExtJS.php',
 	'tx_fed_utility_recursionhandler' => $extensionClassesPath . 'Utility/RecursionHandler.php',
