@@ -31,15 +31,34 @@
 class Tx_Fed_Backend_PageLayoutSelector {
 
 	/**
+	 * @var Tx_Fed_Configuration_ConfigurationManager
+	 */
+	protected $configurationManager;
+
+	/**
 	 * @var array
 	 */
 	protected $recognizedFormats = array('html', 'xml', 'txt', 'json', 'js', 'css');
 
+	/**
+	 * CONSTRUCTOR
+	 */
+	public function __construct() {
+		$objectManager = t3lib_div::makeInstance('Tx_Extbase_Object_ObjectManager');
+		$this->configurationManager = $objectManager->get('Tx_Fed_Configuration_ConfigurationManager');
+	}
+
+	/**
+	 * Renders a Fluid Page Layout file selector
+	 *
+	 * @param array $parameters
+	 * @param mixed $pObj
+	 * @return string
+	 */
 	public function renderField(&$parameters, &$pObj) {
 		$name = $parameters['itemFormElName'];
 		$value = $parameters['itemFormElValue'];
-		$format = 'html';
-		$availableTemplates = $this->getAvailablePageTemplates($format);
+		$availableTemplates = $this->configurationManager->getAvailablePageTemplateFiles();
 		if (strpos($name, 'tx_fed_controller_action_sub') === FALSE) {
 			$onChange = 'onchange="if (confirm(TBE_EDITOR.labels.onChangeAlert) && TBE_EDITOR.checkSubmit(-1)){ TBE_EDITOR.submitForm() };"';
 		}
@@ -59,77 +78,6 @@ class Tx_Fed_Backend_PageLayoutSelector {
 		return $selector;
 	}
 
-	public function renderFormatField(&$parameters, &$pObj) {
-		$name = $parameters['itemFormElName'];
-		$value = $parameters['itemFormElValue'];
-		$selector = '<select name="' . $name . '" class="formField select"
-			onchange="if (confirm(TBE_EDITOR.labels.onChangeAlert) && TBE_EDITOR.checkSubmit(-1)){ TBE_EDITOR.submitForm() };">' . LF;
-		$availableFormats = $this->getAvailablePageFormats();
-		foreach ($availableFormats as $format) {
-			$format = strtoupper($format);
-			$selected = ($format == $value ? ' selected="selected"' : '');
-			$option = '<option value="' . $format . '"' . $selected . '>' . $format . '</option>';
-			$selector .= $option . LF;
-		}
-		$selector .= '</select>' . LF;
-		return $selector;
-	}
-
-	protected function getAvailablePageFormats() {
-		$typoscript = $this->getTyposcript();
-		$path = $typoscript['templateRootPath'] . 'Page' . DIRECTORY_SEPARATOR;
-		$path = $this->translatePath($path);
-		$formats = array();
-		$dir = PATH_site . $path;
-		$files = scandir($dir);
-		foreach ($files as $file) {
-			$pathinfo = pathinfo($dir . $file);
-			$extension = $pathinfo['extension'];
-			if (in_array($extension, $this->recognizedFormats)) {
-				$formats[$extension] = $extension;
-			}
-		}
-		return $formats;
-	}
-
-	protected function getAvailablePageTemplates($format) {
-		$typoscript = $this->getTyposcript();
-		$output = array();
-		foreach ($typoscript as $extensionName=>$group) {
-			$path = $group['templateRootPath'] . 'Page' . DIRECTORY_SEPARATOR;
-			$path = $this->translatePath($path);
-			$dir = PATH_site . $path;
-			$files = scandir($dir);
-			$output[$extensionName] = array();
-			foreach ($files as $k=>$file) {
-				$pathinfo = pathinfo($dir . $file);
-				$extension = $pathinfo['extension'];
-				if (substr($file, 0, 1) === '.') {
-					unset($files[$k]);
-				} else if (strtolower($extension) != strtolower($format)) {
-					unset($files[$k]);
-				} else {
-					$output[$extensionName][] = $pathinfo['filename'];
-				}
-			}
-		}
-		return $output;
-	}
-
-	protected function translatePath($path) {
-		if (strpos($path, 'EXT:') === 0) {
-			$slice = strpos($path, '/');
-			$extKey = array_pop(explode(':', substr($path, 0, $slice)));
-			$path = t3lib_extMgm::siteRelPath($extKey) . substr($path, $slice);
-		}
-		return $path;
-	}
-
-	protected function getTyposcript() {
-		$objectManager = t3lib_div::makeInstance('Tx_Extbase_Object_ObjectManager');
-		$configurationManager = $objectManager->get('Tx_Fed_Configuration_ConfigurationManager');
-		return $configurationManager->getPageConfiguration();
-	}
-
 }
+
 ?>

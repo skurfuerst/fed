@@ -69,6 +69,35 @@ class Tx_Fed_Configuration_ConfigurationManager extends Tx_Extbase_Configuration
 		}
 	}
 
+	/**
+	 * Gets a list of usable Page Templates from defined page template TypoScript
+	 *
+	 * @param string $format
+	 * @return array
+	 */
+	public function getAvailablePageTemplateFiles($format='html') {
+		$typoScript = $this->getPageConfiguration();
+		$output = array();
+		foreach ($typoScript as $extensionName=>$group) {
+			$path = $group['templateRootPath'] . 'Page' . DIRECTORY_SEPARATOR;
+			$path = Tx_Fed_Utility_Path::translatePath($path);
+			$files = scandir($path);
+			$output[$extensionName] = array();
+			foreach ($files as $k=>$file) {
+				$pathinfo = pathinfo($path . $file);
+				$extension = $pathinfo['extension'];
+				if (substr($file, 0, 1) === '.') {
+					unset($files[$k]);
+				} else if (strtolower($extension) != strtolower($format)) {
+					unset($files[$k]);
+				} else {
+					$output[$extensionName][] = $pathinfo['filename'];
+				}
+			}
+		}
+		return $output;
+	}
+
 }
 
 ?>
