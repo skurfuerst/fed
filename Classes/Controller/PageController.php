@@ -50,14 +50,6 @@ class Tx_Fed_Controller_PageController extends Tx_Fed_Core_AbstractController {
 	 * @return string
 	 */
 	public function renderAction() {
-
-	}
-
-	/**
-	 *
-	 * @return string
-	 */
-	public function listAction() {
 		$configManager = $this->objectManager->get('Tx_Fed_Configuration_ConfigurationManager');
 		$configuration = $this->pageService->getPageTemplateConfiguration($GLOBALS['TSFE']->id);
 		$flexFormSource = $this->pageService->getPageFlexFormSource($GLOBALS['TSFE']->id);

@@ -6,7 +6,6 @@ if (!defined ('TYPO3_MODE')){
 $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['extbase']['extensions']['fed']['plugins']['fed_template']['pluginType'] = 'CType';
 $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['extbase']['extensions']['fed']['plugins']['fed_datasource']['pluginType'] = 'CType';
 
-
 Tx_Extbase_Utility_Extension::registerPlugin(
 	$_EXTKEY,
 	'Template',
@@ -32,17 +31,13 @@ $TCA['tt_content']['types']['list']['subtypes_addlist']['fed_sandbox'] = 'pi_fle
 
 $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['fed']['setup'] = unserialize($_EXTCONF);
 if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['fed']['setup']['enableFluidContentElements']) {
-
 	$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['extbase']['extensions']['fed']['plugins']['fed_fce']['pluginType'] = 'CType';
-
 	Tx_Extbase_Utility_Extension::registerPlugin(
 		$_EXTKEY,
 		'Fce',
 		'Fluid Content Element'
 	);
-
 	t3lib_extMgm::addPlugin(array('Fluid Content Element', 'fed_fce'), 'CType');
-
 	t3lib_div::loadTCA('tt_content');
 	$TCA['tt_content']['types']['list']['subtypes_addlist']['fed_fce'] = 'pi_flexform';
 	$TCA['tt_content']['types']['fed_fce']['showitem'] = '
@@ -59,17 +54,10 @@ if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['fed']['setup']['enableFluidContentEl
 }
 
 if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['fed']['setup']['enableFluidPageTemplates']) {
-
-	Tx_Extbase_Utility_Extension::registerPlugin(
-		$_EXTKEY,
-		'Page',
-		'Fluid Page'
-	);
 	t3lib_div::loadTCA('pages');
 	$before = '--div--;Fluid,--palette--;Fluid layout;fluid,tx_fed_page_flexform,--div--;LLL:EXT:cms/locallang_tca.xml:pages.tabs.options,';
 	$TCA['pages']['types'][1]['showitem'] = $before . $TCA['pages']['types'][1]['showitem'];
 	$TCA['pages']['palettes']['fluid']['showitem'] = 'tx_fed_page_controller_action,tx_fed_page_controller_action_sub';
-
 	t3lib_extMgm::addTCAcolumns('pages', array(
 		'tx_fed_page_controller_action' => Array (
 			'exclude' => 1,

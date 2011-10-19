@@ -72,18 +72,9 @@ if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['fed']['setup']['enableFluidPageTempl
 		page.5 = USER
 		page.5.userFunc = tx_fed_core_bootstrap->run
 		page.5.extensionName = Fed
-		page.5.pluginName = Page
+		page.5.pluginName = API
 		page.10 >
 	', TRUE);
-	Tx_Extbase_Utility_Extension::configurePlugin(
-		$_EXTKEY,
-		'Page',
-		array(
-			'Page' => 'list,render',
-		),
-		array(
-		)
-	);
 	$GLOBALS['TYPO3_CONF_VARS']['FE']['addRootLineFields'] .= ($GLOBALS['TYPO3_CONF_VARS']['FE']['addRootLineFields'] == '' ? '' : ',') . 'tx_fed_page_controller_action,tx_fed_page_controller_action_sub,tx_fed_page_flexform,';
 }
 
