@@ -35,15 +35,15 @@
 class Tx_Fed_Controller_PageController extends Tx_Fed_Core_AbstractController {
 
 	/**
-	 * @var Tx_Fed_Utility_PageLayout
+	 * @var Tx_Fed_Service_Page
 	 */
-	protected $pageLayout;
+	protected $pageService;
 
 	/**
-	 * @param Tx_Fed_Utility_PageLayout $pageLayout
+	 * @param Tx_Fed_Service_Page $pageLayout
 	 */
-	public function injectPageLayout(Tx_Fed_Utility_PageLayout $pageLayout) {
-		$this->pageLayout = $pageLayout;
+	public function injectPageService(Tx_Fed_Service_Page $pageService) {
+		$this->pageService = $pageService;
 	}
 
 	/**
@@ -58,88 +58,26 @@ class Tx_Fed_Controller_PageController extends Tx_Fed_Core_AbstractController {
 	 * @return string
 	 */
 	public function listAction() {
-		$configuration = $this->getPageTemplateConfiguration($GLOBALS['TSFE']->id);
-		$flexFormSource = $configuration['tx_fed_page_flexform'];
-		$flexform = $this->flexform->convertFlexFormContentToArray($flexFormSource);
-		$config = $this->configurationManager->getConfiguration(Tx_Extbase_Configuration_ConfigurationManagerInterface::CONFIGURATION_TYPE_FULL_TYPOSCRIPT);
-		$config = Tx_Extbase_Utility_TypoScript::convertTypoScriptArrayToPlainArray($config);
-		$view = $this->objectManager->get('Tx_Fluid_View_TemplateView');
-		if (strpos($configuration['tx_fed_page_controller_action'], '->')) {
-			list ($extensionName, $action) = explode('->', $configuration['tx_fed_page_controller_action']);
-		} else {
-			$extensionName = 'fed';
-			$action = $configuration['tx_fed_page_controller_action'];
-		}
-		$templates = $this->getTyposcript();
-		$paths = $templates[$extensionName];
+		$configManager = $this->objectManager->get('Tx_Fed_Configuration_ConfigurationManager');
+		$configuration = $this->pageService->getPageTemplateConfiguration($GLOBALS['TSFE']->id);
+		$flexFormSource = $this->pageService->getPageFlexFormSource($GLOBALS['TSFE']->id);
+		$flexformData = $this->flexform->convertFlexFormContentToArray($flexFormSource);
+		list ($extensionName, $action) = explode('->', $configuration['tx_fed_page_controller_action']);
+		$paths = $configManager->getPageConfiguration($extensionName);
 		$templateRootPath = Tx_Fed_Utility_Path::translatePath($paths['templateRootPath']);
 		$layoutRootPath = Tx_Fed_Utility_Path::translatePath($paths['layoutRootPath']);
 		$partialRootPath = Tx_Fed_Utility_Path::translatePath($paths['partialRootPath']);
+		$view = $this->objectManager->get('Tx_Fluid_View_TemplateView');
 		$view->setControllerContext($this->controllerContext);
 		$view->setTemplateRootPath($templateRootPath);
 		$view->setLayoutRootPath($layoutRootPath);
 		$view->setPartialRootPath($partialRootPath);
-		$view->assignMultiple($flexform);
+		$view->assignMultiple($flexformData);
 		$view->assign('page', $GLOBALS['TSFE']->page);
 		$view->assign('user', $GLOBALS['TSFE']->fe_user->user);
 		$view->assign('cookies', $_COOKIE);
 		$view->assign('session', $_SESSION);
 		return $view->render($action);
-	}
-
-	protected function getPageTemplateConfiguration($id) {
-		$pageSelect = new t3lib_pageSelect();
-		$rootLine = $pageSelect->getRootLine($id);
-		foreach ($rootLine as $row) {
-			if ($row['tx_fed_page_controller_action'] != '') {
-				return $row;
-			}
-			if ($row['tx_fed_page_controller_action_sub'] != '') {
-				$row['tx_fed_page_controller_action'] = $row['tx_fed_controller_action_sub'];
-				return $row;
-			}
-
-		}
-	}
-
-	/**
-	 *
-	 * @TODO This is duplicated code. Should be moved to a Service in the future
-	 * @param type $format
-	 * @return type
-	 */
-	protected function getAvailablePageTemplates($format) {
-		$typoscript = $this->getTyposcript();
-		$output = array();
-		foreach ($typoscript as $extensionName=>$group) {
-			$path = $group['templateRootPath'];
-			$path = Tx_Fed_Utility_Path::translatePath($path);
-			$dir = PATH_site . $path;
-			$files = scandir($dir);
-			$output[$extensionName] = array();
-			foreach ($files as $k=>$file) {
-				$pathinfo = pathinfo($dir . $file);
-				$extension = $pathinfo['extension'];
-				if (substr($file, 0, 1) === '.') {
-					unset($files[$k]);
-				} else if (strtolower($extension) != strtolower($format)) {
-					unset($files[$k]);
-				} else {
-					$output[$extensionName][] = $pathinfo['filename'];
-				}
-			}
-		}
-		return $output;
-	}
-
-	/**
-	 * Get typoscript definition for Page Templates
-	 *
-	 * @return array
-	 */
-	protected function getTyposcript() {
-		$configManager = $this->objectManager->get('Tx_Fed_Configuration_ConfigurationManager');
-		return $configManager->getPageConfiguration();
 	}
 
 }
