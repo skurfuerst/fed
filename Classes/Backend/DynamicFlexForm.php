@@ -75,7 +75,7 @@ class Tx_Fed_Backend_DynamicFlexForm {
 				$action = $configuration['tx_fed_page_controller_action'];
 				list ($extensionName, $action) = explode('->', $action);
 				$paths = $this->configurationManager->getPageConfiguration($extensionName);
-				$templatePath = $this->translatePath($paths['templateRootPath']);
+				$templatePath = Tx_Fed_Utility_Path::translatePath($paths['templateRootPath']);
 				$templateFile = $templatePath . '/Page/' . $action . '.html';
 				if (file_exists($templateFile) === FALSE) {
 					throw new Exception('Invalid template file selected - file does not exist: ' . $templateFile, 1318783138);
@@ -90,7 +90,7 @@ class Tx_Fed_Backend_DynamicFlexForm {
 			$paths = $this->configurationManager->getContentConfiguration($extensionName);
 			if ($paths) {
 				$filename = $paths['templateRootPath'] . $filename;
-				$filename = $this->translatePath($filename);
+				$filename = Tx_Fed_Utility_Path::translatePath($filename);
 			} else {
 				$filename = $row['tx_fed_fcefile'];
 			}
@@ -202,16 +202,6 @@ class Tx_Fed_Backend_DynamicFlexForm {
 		}
 	}
 
-	protected function translatePath($path) {
-		if (strpos($path, 'EXT:') === 0) {
-			$slice = strpos($path, '/');
-			$extKey = array_pop(explode(':', substr($path, 0, $slice)));
-			$path = t3lib_extMgm::siteRelPath($extKey) . substr($path, $slice);
-		}
-		return $path;
-	}
-
 }
-
 
 ?>
