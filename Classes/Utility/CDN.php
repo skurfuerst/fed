@@ -96,10 +96,10 @@ class Tx_Fed_Utility_CDN implements t3lib_Singleton {
 		$file = $this->buildPackageUri('jquery', $jQueryVersion, 'jquery.min.js');
 		$returns = array();
 		$returns[] = $this->documentHead->includeFileAt($file);
-		if ($jQueryVersion !== FALSE) {
+		if ($jQueryVersion) {
 			$returns[] = $this->includeJQueryUI($jQueryUIVersion, $return);
 		}
-		if ($jQueryUITheme !== FALSE) {
+		if ($jQueryUITheme) {
 			$returns[] = $this->includeJQueryUITheme($jQueryUITheme, $return);
 		}
 		if ($compatibility) {
