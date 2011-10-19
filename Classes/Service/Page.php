@@ -105,6 +105,46 @@ class Tx_Fed_Service_Page implements t3lib_Singleton {
 		return $columns;
 	}
 
+	/**
+	 * Process RootLine to find first usable, configured Fluid Page Template.
+	 * WARNING: do NOT use the output of this feature to overwrite $row - the
+	 * record returned may or may not be the same recod as defined in $id.
+	 *
+	 * @param integer $pageUid
+	 * @return array
+	 */
+	public function getPageTemplateConfiguration($pageUid) {
+		$pageSelect = new t3lib_pageSelect();
+		$rootLine = $pageSelect->getRootLine($pageUid);
+		$rootLine = array_reverse($rootLine);
+		foreach ($rootLine as $row) {
+			if (strpos($row['tx_fed_page_controller_action'], '->')) {
+				return $row;
+			}
+			if (strpos($row['tx_fed_page_controller_action_sub'], '->')) {
+				$row['tx_fed_page_controller_action'] = $row['tx_fed_controller_action_sub'];
+				return $row;
+			}
+		}
+	}
+
+	/**
+	 * Get a usable page configuration flexform from rootline
+	 *
+	 * @param integer $pageUid
+	 * @return string
+	 */
+	public function getPageFlexFormSource($pageUid) {
+		$pageSelect = new t3lib_pageSelect();
+		$rootLine = $pageSelect->getRootLine($pageUid);
+		foreach ($rootLine as $row) {
+			if (!empty($row['tx_fed_page_flexform'])) {
+				return $row['tx_fed_page_flexform'];
+			}
+		}
+		return NULL;
+	}
 
 }
+
 ?>

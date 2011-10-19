@@ -282,6 +282,59 @@ class Tx_Fed_Utility_FlexForm implements t3lib_Singleton {
 		return FALSE;
 	}
 
+	/**
+	 * Updates $dataStructArray by reference, filling it with a proper data structure
+	 * based on the selected template file.
+	 *
+	 * @param string $templateFile
+	 * @param array $values
+	 * @param array $paths
+	 * @param array $dataStructArray
+	 * @param arrat $conf
+	 * @param array $row
+	 * @param string $table
+	 * @param string $fieldName
+	 * @return void
+	 */
+	public function convertFlexFormContentToDataStructure($templateFile, $values, $paths, &$dataStructArray, $conf, $row, $table, $fieldName) {
+		$onInvalid = array('ROOT' => array('type' => 'array', 'el' => array('void' => array('config' => 'input', 'default' => $templateFile))));
+		if (is_file($templateFile) === FALSE) {
+			$dataStructArray = $onInvalid;
+			return;
+		}
+		try {
+			$view = $this->objectManager->get('Tx_Fed_View_ExposedTemplateView');
+			$view->setTemplatePathAndFilename($templateFile);
+			$view->assignMultiple($values);
+			$config = $view->getStoredVariable('Tx_Fed_ViewHelpers_FceViewHelper', 'storage', 'Configuration');
+			$groups = array();
+			foreach ($config['fields'] as $field) {
+				$groupKey = $field['group']['name'];
+				$groupLabel = $field['group']['label'];
+				if (is_array($groups[$groupKey]) === FALSE) {
+					$groups[$groupKey] = array(
+						'name' => $groupKey,
+						'label' => $groupLabel,
+						'fields' => array()
+					);
+				}
+				array_push($groups[$groupKey]['fields'], $field);
+			}
+			$flexformTemplateFile = t3lib_extMgm::extPath('fed', 'Resources/Private/Partials/AutoFlexForm.xml');
+			$template = $this->objectManager->get('Tx_Fluid_View_StandaloneView');
+			$template->setTemplatePathAndFilename($flexformTemplateFile);
+			$template->setPartialRootPath($paths['partialRootPath']);
+			$template->setLayoutRootPath($paths['layoutRootPath']);
+			$template->assignMultiple($values);
+			$template->assignMultiple($config);
+			$template->assign('groups', $groups);
+			$flexformXml = $template->render();
+			$dataStructArray = t3lib_div::xml2array($flexformXml);
+		} catch (Exception $e) {
+			$dataStructArray = $onInvalid;
+			unset($e);
+		}
+	}
 
 	/**
 	 * Parses the flexForm content and converts it to an array

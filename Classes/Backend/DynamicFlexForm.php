@@ -51,12 +51,18 @@ class Tx_Fed_Backend_DynamicFlexForm {
 	protected $flexform;
 
 	/**
+	 * @var Tx_Fed_Service_Page
+	 */
+	protected $pageService;
+
+	/**
 	 * CONSTRUCTOR
 	 */
 	public function __construct() {
 		$this->objectManager = t3lib_div::makeInstance('Tx_Extbase_Object_ObjectManager');
 		$this->configurationManager = $this->objectManager->get('Tx_Fed_Configuration_ConfigurationManager');
 		$this->flexform = $this->objectManager->get('Tx_Fed_Utility_FlexForm');
+		$this->pageService = $this->objectManager->get('Tx_Fed_Service_Page');
 	}
 
 	/**
@@ -70,7 +76,7 @@ class Tx_Fed_Backend_DynamicFlexForm {
 	 */
 	public function getFlexFormDS_postProcessDS(&$dataStructArray, $conf, &$row, $table, $fieldName) {
 		if ($table === 'pages' && $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['fed']['setup']['enableFluidPageTemplates']) {
-			$configuration = $this->getPageTemplateConfiguration($row['uid']);
+			$configuration = $this->pageService->getPageTemplateConfiguration($row['uid']);
 			if ($configuration['tx_fed_page_controller_action']) {
 				$action = $configuration['tx_fed_page_controller_action'];
 				list ($extensionName, $action) = explode('->', $action);
@@ -80,9 +86,9 @@ class Tx_Fed_Backend_DynamicFlexForm {
 				if (file_exists($templateFile) === FALSE) {
 					throw new Exception('Invalid template file selected - file does not exist: ' . $templateFile, 1318783138);
 				}
-				$pageFlexFormSource = $this->getPageFlexFormSource($row['uid']);
+				$pageFlexFormSource = $this->pageService->getPageFlexFormSource($row['uid']);
 				$values = $this->flexform->convertFlexFormContentToArray($pageFlexFormSource);
-				$this->readFlexFormFields($templateFile, $values, $paths, $dataStructArray, $conf, $row, $table, $fieldName);
+				$this->flexform->convertFlexFormContentToDataStructure($templateFile, $values, $paths, $dataStructArray, $conf, $row, $table, $fieldName);
 			}
 		} else if ($row['CType'] == 'fed_fce') {
 			list ($extensionName, $filename) = explode(':', $row['tx_fed_fcefile']);
@@ -94,7 +100,7 @@ class Tx_Fed_Backend_DynamicFlexForm {
 			} else {
 				$filename = $row['tx_fed_fcefile'];
 			}
-			$this->readFlexFormFields($filename, $values, $paths, $dataStructArray, $conf, $row, $table, $fieldName);
+			$this->flexForm->convertFlexFormContentToDataStructure($filename, $values, $paths, $dataStructArray, $conf, $row, $table, $fieldName);
 		} else if ($row['CType'] == 'fed_template') {
 			$templateFile = t3lib_extMgm::extPath('fed', 'Configuration/FlexForms/Template.xml');
 			$dataStructArray = t3lib_div::xml2array(file_get_contents($templateFile));
@@ -111,100 +117,6 @@ class Tx_Fed_Backend_DynamicFlexForm {
 				$values = $this->flexform->convertFlexFormContentToArray($row['pi_flexform']);
 				$this->readFlexFormFields($flexFormConfiguration['templateFilename'], $values, $paths, $dataStructArray, $conf, $row, $table, $fieldName);
 			}
-		}
-	}
-
-	/**
-	 * Process RootLine to find first usable, configured Fluid Page Template.
-	 * WARNING: do NOT use the output of this feature to overwrite $row - the
-	 * record returned may or may not be the same recod as defined in $id.
-	 *
-	 * @param integer $pageUid
-	 * @return array
-	 */
-	protected function getPageTemplateConfiguration($pageUid) {
-		$pageSelect = new t3lib_pageSelect();
-		$rootLine = $pageSelect->getRootLine($pageUid);
-		$rootLine = array_reverse($rootLine);
-		foreach ($rootLine as $row) {
-			if (strpos($row['tx_fed_page_controller_action'], '->')) {
-				return $row;
-			}
-			if (strpos($row['tx_fed_page_controller_action_sub'], '->')) {
-				$row['tx_fed_page_controller_action'] = $row['tx_fed_controller_action_sub'];
-				return $row;
-			}
-		}
-	}
-
-	/**
-	 * Get a usable page configuration flexform from rootline
-	 *
-	 * @param integer $pageUid
-	 * @return string
-	 */
-	protected function getPageFlexFormSource($pageUid) {
-		$pageSelect = new t3lib_pageSelect();
-		$rootLine = $pageSelect->getRootLine($pageUid);
-		foreach ($rootLine as $row) {
-			if (!empty($row['tx_fed_page_flexform'])) {
-				return $row['tx_fed_page_flexform'];
-			}
-		}
-		return NULL;
-	}
-
-	/**
-	 * Updates $dataStructArray by reference, filling it with a proper data structure
-	 * based on the selected template file.
-	 *
-	 * @param string $templateFile
-	 * @param array $values
-	 * @param array $paths
-	 * @param array $dataStructArray
-	 * @param arrat $conf
-	 * @param array $row
-	 * @param string $table
-	 * @param string $fieldName
-	 * @return void
-	 */
-	protected function readFlexFormFields($templateFile, $values, $paths, &$dataStructArray, $conf, $row, $table, $fieldName) {
-		$onInvalid = array('ROOT' => array('type' => 'array', 'el' => array('void' => array('config' => 'input', 'default' => $templateFile))));
-		if (is_file($templateFile) === FALSE) {
-			$dataStructArray = $onInvalid;
-			return;
-		}
-		try {
-			$view = $this->objectManager->get('Tx_Fed_View_ExposedTemplateView');
-			$view->setTemplatePathAndFilename($templateFile);
-			$view->assignMultiple($values);
-			$config = $view->getStoredVariable('Tx_Fed_ViewHelpers_FceViewHelper', 'storage', 'Configuration');
-			$groups = array();
-			foreach ($config['fields'] as $field) {
-				$groupKey = $field['group']['name'];
-				$groupLabel = $field['group']['label'];
-				if (is_array($groups[$groupKey]) === FALSE) {
-					$groups[$groupKey] = array(
-						'name' => $groupKey,
-						'label' => $groupLabel,
-						'fields' => array()
-					);
-				}
-				array_push($groups[$groupKey]['fields'], $field);
-			}
-			$flexformTemplateFile = t3lib_extMgm::extPath('fed', 'Resources/Private/Partials/AutoFlexForm.xml');
-			$template = $this->objectManager->get('Tx_Fluid_View_StandaloneView');
-			$template->setTemplatePathAndFilename($flexformTemplateFile);
-			$template->setPartialRootPath($paths['partialRootPath']);
-			$template->setLayoutRootPath($paths['layoutRootPath']);
-			$template->assignMultiple($values);
-			$template->assignMultiple($config);
-			$template->assign('groups', $groups);
-			$flexformXml = $template->render();
-			$dataStructArray = t3lib_div::xml2array($flexformXml);
-		} catch (Exception $e) {
-			$dataStructArray = $onInvalid;
-			unset($e);
 		}
 	}
 
