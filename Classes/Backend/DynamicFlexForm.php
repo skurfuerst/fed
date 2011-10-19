@@ -80,7 +80,7 @@ class Tx_Fed_Backend_DynamicFlexForm {
 				if (file_exists($templateFile) === FALSE) {
 					throw new Exception('Invalid template file selected - file does not exist: ' . $templateFile, 1318783138);
 				}
-				$pageFlexFormSource = $this->getPageFlexFormSource($row);
+				$pageFlexFormSource = $this->getPageFlexFormSource($row['uid']);
 				$values = $this->flexform->convertFlexFormContentToArray($pageFlexFormSource);
 				$this->readFlexFormFields($templateFile, $values, $paths, $dataStructArray, $conf, $row, $table, $fieldName);
 			}
@@ -119,12 +119,12 @@ class Tx_Fed_Backend_DynamicFlexForm {
 	 * WARNING: do NOT use the output of this feature to overwrite $row - the
 	 * record returned may or may not be the same recod as defined in $id.
 	 *
-	 * @param integer $id
+	 * @param integer $pageUid
 	 * @return array
 	 */
-	protected function getPageTemplateConfiguration($id) {
+	protected function getPageTemplateConfiguration($pageUid) {
 		$pageSelect = new t3lib_pageSelect();
-		$rootLine = $pageSelect->getRootLine($id);
+		$rootLine = $pageSelect->getRootLine($pageUid);
 		$rootLine = array_reverse($rootLine);
 		foreach ($rootLine as $row) {
 			if (strpos($row['tx_fed_page_controller_action'], '->')) {
@@ -137,13 +137,19 @@ class Tx_Fed_Backend_DynamicFlexForm {
 		}
 	}
 
-	protected function getPageFlexFormSource($row) {
-		if ($row['tx_fed_page_flexform'] != '') {
-			return $row['tx_fed_page_flexform'];
-		}
-		if ($row['pid'] > 0) {
-			$parent = $GLOBALS['TYPO3_DB']->exec_SELECTgetSingleRow('*', 'pages', "uid = '{$row['pid']}'");
-			return $this->getPageFlexFormSource($parent);
+	/**
+	 * Get a usable page configuration flexform from rootline
+	 *
+	 * @param integer $pageUid
+	 * @return string
+	 */
+	protected function getPageFlexFormSource($pageUid) {
+		$pageSelect = new t3lib_pageSelect();
+		$rootLine = $pageSelect->getRootLine($pageUid);
+		foreach ($rootLine as $row) {
+			if (!empty($row['tx_fed_page_flexform'])) {
+				return $row['tx_fed_page_flexform'];
+			}
 		}
 		return NULL;
 	}
@@ -164,13 +170,13 @@ class Tx_Fed_Backend_DynamicFlexForm {
 	 */
 	protected function readFlexFormFields($templateFile, $values, $paths, &$dataStructArray, $conf, $row, $table, $fieldName) {
 		$onInvalid = array('ROOT' => array('type' => 'array', 'el' => array('void' => array('config' => 'input', 'default' => $templateFile))));
-		if (is_file(PATH_site . $templateFile) === FALSE) {
+		if (is_file($templateFile) === FALSE) {
 			$dataStructArray = $onInvalid;
 			return;
 		}
 		try {
 			$view = $this->objectManager->get('Tx_Fed_View_ExposedTemplateView');
-			$view->setTemplatePathAndFilename(PATH_site . $templateFile);
+			$view->setTemplatePathAndFilename($templateFile);
 			$view->assignMultiple($values);
 			$config = $view->getStoredVariable('Tx_Fed_ViewHelpers_FceViewHelper', 'storage', 'Configuration');
 			$groups = array();
