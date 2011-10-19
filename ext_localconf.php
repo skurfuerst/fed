@@ -22,7 +22,7 @@ Tx_Extbase_Utility_Extension::configurePlugin(
 	$_EXTKEY,
 	'Fce',
 	array(
-		'FlexibleContentElement' => 'show',
+		'FlexibleContentElement' => 'render',
 	),
 	array(
 	)
