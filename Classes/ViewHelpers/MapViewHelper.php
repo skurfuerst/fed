@@ -112,15 +112,7 @@ class Tx_Fed_ViewHelpers_MapViewHelper extends Tx_Fed_Core_ViewHelper_AbstractVi
 		$max = 999999;
 		$elementId = 'gm' . rand($min, $max);
 
-		$alphabet = "abcdefghijklmnopqrstuvwxyz";
-		if ($instanceName == '') {
-			$instanceName = 'map';
-			for ($i=0; $i<8; $i++) {
-				$index = rand(0, 25);
-				$instanceName .= $alphabet{$index};
-			}
-		}
-		$this->instanceName = $instanceName;
+		$this->instanceName = uniqid('map');
 
 		$this->options['mapTypeId'] = $mapTypeId;
 

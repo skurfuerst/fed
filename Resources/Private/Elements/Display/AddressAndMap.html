@@ -45,7 +45,7 @@
 	<!-- FCE data processing -->
 
 	<fed:comment comment="Geocodes an address and stores the result in a template variable" />
-	<fed:map.geocode as="gps">{address}</fed:map.geocode>
+	<fed:map.geocode as="gps"><fed:raw>{address}</fed:raw></fed:map.geocode>
 
 	<f:if condition="{jQuery}">
 		<fed:jQuery.cdn jQueryVersion="1" jQueryUIVersion="1" />

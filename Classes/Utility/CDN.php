@@ -155,7 +155,7 @@ class Tx_Fed_Utility_CDN implements t3lib_Singleton {
 	 */
 	public function buildPackageUri($package='jquery', $version=NULL, $file='jquery.min.js') {
 		$uri = $this->patternUrlJQuery;
-		if ($version === NULL) {
+		if ($version == NULL) {
 			$uri = str_replace('@version/', '', $uri);
 		} else {
 			$uri = str_replace('@version', $version, $uri);

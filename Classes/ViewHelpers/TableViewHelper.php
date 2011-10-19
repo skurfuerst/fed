@@ -52,7 +52,7 @@ class Tx_Fed_ViewHelpers_TableViewHelper extends Tx_Fed_Core_ViewHelper_Abstract
 	 * @return void
 	 */
 	public function initializeArguments() {
-		$imagePath = t3lib_extMgm::extRelPath('fed') . 'Resources/Public/Images/';
+		$imagePath = t3lib_extMgm::siteRelPath('fed') . 'Resources/Public/Images/';
 		$i18n = array(
 			'oPaginate' => array(
 				'sFirst' => "First",
@@ -374,7 +374,7 @@ class Tx_Fed_ViewHelpers_TableViewHelper extends Tx_Fed_Core_ViewHelper_Abstract
 	 * @return void
 	 */
 	private function addScripts() {
-		$scriptFile1 = t3lib_extMgm::extRelPath('fed') . 'Resources/Public/Javascript/com/jquery/plugins/jquery.dataTables.min.js';
+		$scriptFile1 = t3lib_extMgm::siteRelPath('fed') . 'Resources/Public/Javascript/com/jquery/plugins/jquery.dataTables.min.js';
 		$bPaginate = $this->jsBoolean($this->arguments['bPaginate']);
 		$bFilter = $this->jsBoolean($this->arguments['bFilter']);
 		$bInfo = $this->jsBoolean($this->arguments['bInfo']);
