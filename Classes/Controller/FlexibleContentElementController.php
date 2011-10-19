@@ -45,7 +45,7 @@ class Tx_Fed_Controller_FlexibleContentElementController extends Tx_Fed_Core_Abs
 		$this->flexform->setContentObjectData($cObj);
 		$configurationManager = $this->objectManager->get('Tx_Fed_Configuration_ConfigurationManager');
 		list ($extensionName, $filename) = explode(':', $cObj['tx_fed_fcefile']);
-		$this->view = $this->objectManager->get('Tx_Fed_View_ExposedTemplateView');
+		$this->view = $this->objectManager->get('Tx_Fed_MVC_View_ExposedTemplateView');
 		$this->view->setControllerContext($this->controllerContext);
 		if ($extensionName && $filename) {
 			$paths = $configurationManager->getContentConfiguration($extensionName);

@@ -303,7 +303,7 @@ class Tx_Fed_Utility_FlexForm implements t3lib_Singleton {
 			return;
 		}
 		try {
-			$view = $this->objectManager->get('Tx_Fed_View_ExposedTemplateView');
+			$view = $this->objectManager->get('Tx_Fed_MVC_View_ExposedTemplateView');
 			$view->setTemplatePathAndFilename($templateFile);
 			$view->assignMultiple($values);
 			$config = $view->getStoredVariable('Tx_Fed_ViewHelpers_FceViewHelper', 'storage', 'Configuration');

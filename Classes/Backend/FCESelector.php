@@ -70,7 +70,7 @@ class Tx_Fed_Backend_FCESelector {
 				$select .= "<optgroup label='{$groupLabel}'>" . LF;
 				foreach ($files as $fileRelPath) {
 					$templateFilename = PATH_site . $templateRootPath . DIRECTORY_SEPARATOR . $fileRelPath;
-					$view = $this->objectManager->get('Tx_Fed_View_ExposedTemplateView');
+					$view = $this->objectManager->get('Tx_Fed_MVC_View_ExposedTemplateView');
 					$view->setTemplatePathAndFilename($templateFilename);
 					try {
 						$config =  $view->getStoredVariable('Tx_Fed_ViewHelpers_FceViewHelper', 'storage', 'Configuration');

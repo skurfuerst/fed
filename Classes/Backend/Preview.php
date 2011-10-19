@@ -157,9 +157,9 @@ class Tx_Fed_Backend_Preview implements tx_cms_layout_tt_content_drawItemHook {
 		$paths = array();
 		if ($filename) {
 			$paths = $this->configurationManager->getContentConfiguration($extensionName);
-			$templatePathAndFilename = PATH_site . $this->translatePath($paths['templateRootPath']) . $filename;
-			$paths['partialRootPath'] = PATH_site . $this->translatePath($paths['partialRootPath']);
-			$paths['layoutRootPath'] = PATH_site . $this->translatePath($paths['layoutRootPath']);
+			$templatePathAndFilename = Tx_Fed_Utility_Path::translatePath($paths['templateRootPath']) . $filename;
+			$paths['partialRootPath'] = Tx_Fed_Utility_Path::translatePath($paths['partialRootPath']);
+			$paths['layoutRootPath'] = Tx_Fed_Utility_Path::translatePath($paths['layoutRootPath']);
 		} else {
 			$templatePathAndFilename = PATH_site . $templatePathAndFilename;
 			$paths['layoutRootPath'] = t3lib_extMgm::extPath('fed', 'Resources/Private/Layouts/');
@@ -168,7 +168,7 @@ class Tx_Fed_Backend_Preview implements tx_cms_layout_tt_content_drawItemHook {
 	}
 
 	protected function getFlexFormConfiguration($templatePathAndFilename, $variables, array $paths=array()) {
-		$view = $this->objectManager->get('Tx_Fed_View_ExposedTemplateView');
+		$view = $this->objectManager->get('Tx_Fed_MVC_View_ExposedTemplateView');
 		$view->setTemplatePathAndFilename($templatePathAndFilename);
 		$flexform = $this->flexform->getAll();
 		$view->assignMultiple($flexform);
@@ -191,7 +191,7 @@ class Tx_Fed_Backend_Preview implements tx_cms_layout_tt_content_drawItemHook {
 	}
 
 	protected function renderFluidPreview($templatePathAndFilename, $variables) {
-		$view = $this->objectManager->get('Tx_Fed_View_ExposedTemplateView');
+		$view = $this->objectManager->get('Tx_Fed_MVC_View_ExposedTemplateView');
 		$view->setTemplatePathAndFilename($templatePathAndFilename);
 		return $view->renderStandaloneSection('Preview', (array) $variables);
 	}

@@ -50,7 +50,6 @@ class Tx_Fed_Backend_TemplaVoilaPreview extends tx_templavoila_preview_default {
 		$realPreviewer = t3lib_div::makeInstance('Tx_Fed_Backend_Preview');
 		$realPreviewer->preProcessFlexibleContentElement($drawItem, $content, $row);
 		return $content;
-		#return '<strong>' . $GLOBALS['LANG']->sL(t3lib_BEfunc::getLabelFromItemlist('tt_content', 'CType', $row['CType'])) . '</strong>';
 	}
 }
 
