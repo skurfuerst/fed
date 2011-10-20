@@ -6,7 +6,6 @@ $extbaseClassesPath = t3lib_extMgm::extPath('extbase', 'Classes/');
 return array(
 	'tx_extbase_service_cacheservice' => $extbaseClassesPath . "Service/CacheService.php",
 	'tx_extbase_service_typoscriptservice' => $extbaseClassesPath . "Service/TypoScriptService.php",
-
 	'tx_fed_tests_unit_basetestcase' => $extensionPath . 'Tests/Unit/BaseTestCase.php',
 	'tx_fed_core' => $extensionClassesPath . 'Core.php',
 	'tx_fed_debug' => $extensionClassesPath . 'Debug.php',
@@ -29,6 +28,7 @@ return array(
 	'tx_fed_utility_debug' => $extensionClassesPath . 'Utility/Debug.php',
 	'tx_fed_utility_datacomparison' => $extensionClassesPath . 'Utility/DataComparison.php',
 	'tx_fed_utility_propertymapper' => $extensionClassesPath . 'Utility/PropertyMapper.php',
+	'tx_fed_utility_path' => $extensionClassesPath . 'Utility/Path.php',
 	'tx_fed_extjs_modelgenerator' => $extensionClassesPath . 'ExtJS/ModelGenerator.php',
 	'tx_fed_mvc_view_exposedtemplateview' => $extensionClassesPath . 'MVC/View/ExposedTemplateView.php',
 	'tx_fed_persistence_repository' => $extensionClassesPath . 'Persistence/Repository.php',
@@ -56,8 +56,6 @@ return array(
 	'tx_fed_viewhelpers_fce_field_groupviewhelper' => $extensionClassesPath . 'ViewHelpers/Fce/Field/GroupViewHelper.php',
 	'tx_fed_viewhelpers_fce_field_selectviewhelper' => $extensionClassesPath . 'ViewHelpers/Fce/Field/SelectViewHelper.php',
 	'tx_fed_viewhelpers_fce_fieldviewhelper' => $extensionClassesPath . 'ViewHelpers/Fce/FieldViewHelper.php',
-
 );
-
 
 ?>
