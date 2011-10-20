@@ -44,6 +44,9 @@ class Tx_Fed_Configuration_ConfigurationManager extends Tx_Extbase_Configuration
 	public function getContentConfiguration($extensionName=NULL) {
 		$typoscript = $this->getConfiguration(Tx_Extbase_Configuration_ConfigurationManagerInterface::CONFIGURATION_TYPE_FULL_TYPOSCRIPT);
 		$paths = $typoscript['plugin.']['tx_fed.']['fce.'];
+		if (is_array($paths) === FALSE) {
+			return NULL;
+		}
 		$paths = Tx_Extbase_Utility_TypoScript::convertTypoScriptArrayToPlainArray($paths);
 		if ($extensionName) {
 			return $paths[$extensionName];
@@ -61,6 +64,9 @@ class Tx_Fed_Configuration_ConfigurationManager extends Tx_Extbase_Configuration
 	public function getPageConfiguration($extensionName=NULL) {
 		$config = $this->getConfiguration(Tx_Extbase_Configuration_ConfigurationManagerInterface::CONFIGURATION_TYPE_FULL_TYPOSCRIPT);
 		$config = $config['plugin.']['tx_fed.']['page.'];
+		if (is_array($config) === FALSE) {
+			return NULL;
+		}
 		$config = Tx_Extbase_Utility_TypoScript::convertTypoScriptArrayToPlainArray($config);
 		if ($extensionName) {
 			return $config[$extensionName];
@@ -78,6 +84,9 @@ class Tx_Fed_Configuration_ConfigurationManager extends Tx_Extbase_Configuration
 	public function getAvailablePageTemplateFiles($format='html') {
 		$typoScript = $this->getPageConfiguration();
 		$output = array();
+		if (is_array($typoScript) === FALSE) {
+			return $output;
+		}
 		foreach ($typoScript as $extensionName=>$group) {
 			$path = $group['templateRootPath'] . 'Page' . DIRECTORY_SEPARATOR;
 			$path = Tx_Fed_Utility_Path::translatePath($path);
