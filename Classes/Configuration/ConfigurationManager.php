@@ -45,7 +45,7 @@ class Tx_Fed_Configuration_ConfigurationManager extends Tx_Extbase_Configuration
 		$typoscript = $this->getConfiguration(Tx_Extbase_Configuration_ConfigurationManagerInterface::CONFIGURATION_TYPE_FULL_TYPOSCRIPT);
 		$paths = $typoscript['plugin.']['tx_fed.']['fce.'];
 		if (is_array($paths) === FALSE) {
-			return NULL;
+			return array();
 		}
 		$paths = Tx_Extbase_Utility_TypoScript::convertTypoScriptArrayToPlainArray($paths);
 		if ($extensionName) {
@@ -65,7 +65,7 @@ class Tx_Fed_Configuration_ConfigurationManager extends Tx_Extbase_Configuration
 		$config = $this->getConfiguration(Tx_Extbase_Configuration_ConfigurationManagerInterface::CONFIGURATION_TYPE_FULL_TYPOSCRIPT);
 		$config = $config['plugin.']['tx_fed.']['page.'];
 		if (is_array($config) === FALSE) {
-			return NULL;
+			return array();
 		}
 		$config = Tx_Extbase_Utility_TypoScript::convertTypoScriptArrayToPlainArray($config);
 		if ($extensionName) {

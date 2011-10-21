@@ -48,7 +48,7 @@ class Tx_Fed_Backend_TemplaVoilaPreview extends tx_templavoila_preview_default {
 		$content = "";
 		$drawItem = TRUE;
 		$realPreviewer = t3lib_div::makeInstance('Tx_Fed_Backend_Preview');
-		$realPreviewer->preProcessFlexibleContentElement($drawItem, $content, $row);
+		$realPreviewer->preProcessFlexibleContentElement($drawItem, $content, $headerContent, $row);
 		return $content;
 	}
 }
