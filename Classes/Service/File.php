@@ -168,16 +168,16 @@ class Tx_Fed_Service_File implements t3lib_Singleton {
 	/**
 	 * Moves $sourceFilename to $destinationFilename, returns boolean success/failure
 	 *
-	 * @param mixed $sourceFile FileObjectStorage, File Resource or string filename
+	 * @param mixed $sourceFilename FileObjectStorage, File Resource or string filename
 	 * @param string $destinationFilename Destination filename or path
 	 * @throws Exception
 	 * @return boolean
 	 * @api
 	 */
-	public function move($sourceFile, $destinationFilename) {
-		$newFilename = $this->copy($sourceFile, $destinationFilename);
+	public function move($sourceFilename, $destinationFilename) {
+		$newFilename = $this->copy($sourceFilename, $destinationFilename);
 		if ($newFilename) {
-			$this->unlink($sourceFile);
+			$this->unlink($sourceFilename);
 			return $newFilename;
 		} else {
 			throw new Exception('Could not move file ' . $sourceFilename . ' to ' . $destinationFilename, 1311895077);
