@@ -90,7 +90,7 @@ class Tx_Fed_Backend_DynamicFlexForm {
 				$values = $this->flexform->convertFlexFormContentToArray($pageFlexFormSource);
 				$this->flexform->convertFlexFormContentToDataStructure($templateFile, $values, $paths, $dataStructArray, $conf, $row, $table, $fieldName);
 			}
-		} else if ($row['CType'] == 'fed_fce') {
+		} elseif ($row['CType'] == 'fed_fce') {
 			list ($extensionName, $filename) = explode(':', $row['tx_fed_fcefile']);
 			$values = $this->flexform->convertFlexFormContentToArray($row['pi_flexform']);
 			$paths = $this->configurationManager->getContentConfiguration($extensionName);
@@ -101,10 +101,10 @@ class Tx_Fed_Backend_DynamicFlexForm {
 				$filename = $row['tx_fed_fcefile'];
 			}
 			$this->flexform->convertFlexFormContentToDataStructure($filename, $values, $paths, $dataStructArray, $conf, $row, $table, $fieldName);
-		} else if ($row['CType'] == 'fed_template') {
+		} elseif ($row['CType'] == 'fed_template') {
 			$templateFile = t3lib_extMgm::extPath('fed', 'Configuration/FlexForms/Template.xml');
 			$dataStructArray = t3lib_div::xml2array(file_get_contents($templateFile));
-		} else if ($row['CType'] == 'fed_datasource') {
+		} elseif ($row['CType'] == 'fed_datasource') {
 			$templateFile = t3lib_extMgm::extPath('fed', 'Configuration/FlexForms/DataSource.xml');
 			$dataStructArray = t3lib_div::xml2array(file_get_contents($templateFile));
 		} else {

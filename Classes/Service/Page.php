@@ -116,13 +116,12 @@ class Tx_Fed_Service_Page implements t3lib_Singleton {
 	public function getPageTemplateConfiguration($pageUid) {
 		$pageSelect = new t3lib_pageSelect();
 		$rootLine = $pageSelect->getRootLine($pageUid);
-		$rootLine = array_reverse($rootLine);
-		foreach ($rootLine as $row) {
-			if (strpos($row['tx_fed_page_controller_action'], '->')) {
+		$rootLine = array_values($rootLine);
+		foreach ($rootLine as $index=>$row) {
+			if ($index == 0 && strpos($row['tx_fed_page_controller_action'], '->')) {
 				return $row;
-			}
-			if (strpos($row['tx_fed_page_controller_action_sub'], '->')) {
-				$row['tx_fed_page_controller_action'] = $row['tx_fed_controller_action_sub'];
+			} elseif ($index > 0 && strpos($row['tx_fed_page_controller_action_sub'], '->')) {
+				$row['tx_fed_page_controller_action'] = $row['tx_fed_page_controller_action_sub'];
 				return $row;
 			}
 		}
