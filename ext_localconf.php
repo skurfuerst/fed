@@ -61,6 +61,43 @@ Tx_Extbase_Utility_Extension::configurePlugin(
 	)
 );
 
+t3lib_extMgm::addTypoScript($_EXTKEY, 'setup', "
+	[GLOBAL]
+	config.tx_extbase.persistence.classes.Tx_Fed_Persistence_FileObjectStorage.mapping {
+		tableName = 0
+	}
+	FedFrameworkBridge = PAGE
+	FedFrameworkBridge {
+		typeNum = 4815162342
+		config {
+			no_cache = 1
+			disableAllHeaderCode = 1
+		}
+		headerData >
+		4815162342 = USER_INT
+		4815162342 {
+			userFunc = tx_fed_core_bootstrap->run
+			extensionName = Fed
+			pluginName = API
+		}
+	}
+
+	FedPDFBridge = PAGE
+	FedPDFBridge {
+		typeNum = 48151623420
+		config {
+			no_cache = 1
+			disableAllHeaderCode = 1
+		}
+		headerData >
+		4815162342 = USER_INT
+		4815162342 {
+			userFunc = tx_fed_utility_pdf->run
+			extensionName = Fed
+			pluginName = API
+		}
+	}
+");
 
 $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['fed']['setup'] = unserialize($_EXTCONF);
 
@@ -86,17 +123,18 @@ if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['fed']['setup']['enableFluidContentEl
 		tt_content.fed_fce.10 =< lib.stdHeader
 		tt_content.fed_fce.20 < tt_content.list.20.fed_fce
 	', TRUE);
-	t3lib_extMgm::addPageTSConfig('
-		mod.wizards.newContentElement.wizardItems.special.elements.fed_fce {
-			icon = ../typo3conf/ext/fed/Resources/Public/Icons/Plugin.png
-			title = Fluid Content Element
-			description = Flexible Content Element using a Fluid template
-			tt_content_defValues {
-				CType = fed_fce
+	if (TYPO3_MODE == 'BE' && $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['fed']['setup']['enableFluidContentElements']) {
+		t3lib_extMgm::addPageTSConfig('
+			mod.wizards.newContentElement.wizardItems.special.elements.fed_fce {
+				icon = ../typo3conf/ext/fed/Resources/Public/Icons/Plugin.png
+				title = Fluid Content Element
+				description = Flexible Content Element using a Fluid template
+				tt_content_defValues {
+					CType = fed_fce
+				}
 			}
-		}
-		mod.wizards.newContentElement.wizardItems.special.show := addToList(fed_fce)
-	');
+		');
+	}
 }
 
 if (TYPO3_MODE == 'BE') {
@@ -120,14 +158,6 @@ if (TYPO3_MODE == 'BE') {
 	, TRUE);
 
 	t3lib_extMgm::addPageTSConfig('
-		mod.wizards.newContentElement.wizardItems.special.elements.fed_fce {
-			icon = ../typo3conf/ext/fed/Resources/Public/Icons/Plugin.png
-			title = Fluid Content Element
-			description = Flexible Content Element using a Fluid template
-			tt_content_defValues {
-				CType = fed_fce
-			}
-		}
 		mod.wizards.newContentElement.wizardItems.special.elements.fed_template {
 			icon = ../typo3conf/ext/fed/Resources/Public/Icons/Plugin.png
 			title = Fluid Template Display
