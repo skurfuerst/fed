@@ -36,6 +36,18 @@
 class Tx_Fed_Configuration_ConfigurationManager extends Tx_Extbase_Configuration_ConfigurationManager implements Tx_Extbase_Configuration_ConfigurationManagerInterface {
 
 	/**
+	 * @var Tx_Extbase_Service_TypoScriptService
+	 */
+	protected $typoScriptService;
+
+	/**
+	 * @param Tx_Extbase_Service_TypoScriptService $typoScriptService
+	 */
+	public function injectTypoScriptService(Tx_Extbase_Service_TypoScriptService $typoScriptService) {
+		$this->typoScriptService = $typoScriptService;
+	}
+
+	/**
 	 * Get definitions of paths for FCEs defined in TypoScript
 	 *
 	 * @param string $extensionName Optional extension name to get only that extension
@@ -47,7 +59,7 @@ class Tx_Fed_Configuration_ConfigurationManager extends Tx_Extbase_Configuration
 		if (is_array($paths) === FALSE) {
 			return array();
 		}
-		$paths = Tx_Extbase_Utility_TypoScript::convertTypoScriptArrayToPlainArray($paths);
+		$paths = $this->typoScriptService->convertTypoScriptArrayToPlainArray($paths);
 		if ($extensionName) {
 			return $paths[$extensionName];
 		} else {
@@ -67,7 +79,7 @@ class Tx_Fed_Configuration_ConfigurationManager extends Tx_Extbase_Configuration
 		if (is_array($config) === FALSE) {
 			return array();
 		}
-		$config = Tx_Extbase_Utility_TypoScript::convertTypoScriptArrayToPlainArray($config);
+		$config = $this->typoScriptService->convertTypoScriptArrayToPlainArray($config);
 		if ($extensionName) {
 			return $config[$extensionName];
 		} else {

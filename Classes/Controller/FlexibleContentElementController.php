@@ -39,10 +39,11 @@ class Tx_Fed_Controller_FlexibleContentElementController extends Tx_Fed_Core_Abs
 	 * @return string
 	 */
 	public function renderAction() {
-		$cObj = $this->request->getContentObjectData();
-		$this->flexform->setContentObjectData($cObj);
+		$cObj = $this->configurationManager->getContentObject();
+		$cObjData = $cObj->data;
+		$this->flexform->setContentObjectData($cObjData);
 		$configurationManager = $this->objectManager->get('Tx_Fed_Configuration_ConfigurationManager');
-		list ($extensionName, $filename) = explode(':', $cObj['tx_fed_fcefile']);
+		list ($extensionName, $filename) = explode(':', $cObjData['tx_fed_fcefile']);
 		$this->view = $this->objectManager->get('Tx_Fed_MVC_View_ExposedTemplateView');
 		$this->view->setControllerContext($this->controllerContext);
 		if ($extensionName && $filename) {
@@ -52,13 +53,13 @@ class Tx_Fed_Controller_FlexibleContentElementController extends Tx_Fed_Core_Abs
 			$this->view->setPartialRootPath(Tx_Fed_Utility_Path::translatePath($paths['partialRootPath']));
 			$this->view->setTemplatePathAndFilename($absolutePath);
 		} else {
-			$absolutePath = Tx_Fed_Utility_Path::translatePath($paths['templateRootPath']) . DIRECTORY_SEPARATOR . $cObj['tx_fed_fcefile'];
+			$absolutePath = Tx_Fed_Utility_Path::translatePath($paths['templateRootPath']) . DIRECTORY_SEPARATOR . $cObjData['tx_fed_fcefile'];
 			$this->view->setTemplatePathAndFilename($absolutePath);
 		}
 		$config = $this->view->getStoredVariable('Tx_Fed_ViewHelpers_FceViewHelper', 'storage', 'Configuration');
 		$templateVariables = $this->flexform->getAllAndTransform($config['fields']);
 		$templateVariables['page'] = $GLOBALS['TSFE']->page;
-		$templateVariables['record'] = $cObj;
+		$templateVariables['record'] = $cObjData;
 		$templateVariables['config'] = $config;
 		$content = $this->view->renderStandaloneSection('Main', $templateVariables);
 		return $content;
