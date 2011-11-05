@@ -9,48 +9,59 @@
 		<fed:data.var name="columns" type="integer">1</fed:data.var>
 	</f:if>
 	<fed:fce id="content-columns" label="Layout: Columns" enabled="TRUE">
-		<fed:fce.field.select name="columns" label="Number of columns"
-			items="{0: {0: 1}, 1: {0: 2}, 2: {0: 3}, 3: {0: 4}, 4: {0: 5}, 5: {0: 6}, 6: {0: 7}, 7: {0: 8}, 8: {0: 9}}" default="1" maxItems="1" transform="integer" />
-		<fed:fce.field.input name="id" label="Custom ID of element - use for special styles; must be unique on page" />
-		<fed:fce.field.userFunc name="style" label="Style editor" userFunc="Tx_Fed_Configuration_Wizard_FlexFormCodeEditor->renderField" default=""/>
+		<fed:fce.field.select name="columnClass" label="Choose a layout"
+			items="{
+				0: {0: '50-50', 1: '50% - 50%'},
+				1: {0: '33-66', 1: '33% - 66%'},
+				2: {0: '66-33', 1: '66% - 33%'},
+				3: {0: '75-25', 1: '75% - 25%'},
+				4: {0: '25-75', 1: '25% - 75%'},
+				5: {0: '33-33-33', 1: '33% - 33% - 33%'},
+				6: {0: '50-25-25', 1: '50% - 25% - 25%'},
+				7: {0: '25-50-25', 1: '25% - 50% - 25%'},
+				8: {0: '25-25-50', 1: '25% - 25% - 50%'}
+				}" maxItems="1" />
+		<fed:fce.field.input name="cellpadding" label="Cell padding" default="0" />
+
 		<fed:fce.grid>
 			<fed:fce.grid.row>
 				<fed:data.func func="floor" as="gridColumnWidth"><fed:math>100/{columns}</fed:math></fed:data.func>
-				<fed:fce.grid.column width="{gridColumnWidth}%" repeat="{columns}">
-					<fed:fce.content name="column{cycle}" label="Content column #{cycle}" />
-				</fed:fce.grid.column>
+				<f:for each="{fed:data.func(func: 'explode', arguments: {0: '-', 1: columnClass})}" as="className" iteration="iteration">
+					<fed:fce.grid.column width="{columnClass}%">
+						<fed:fce.content name="column{iteration.cycle}" label="Content column #{iteration.cycle}" />
+					</fed:fce.grid.column>
+				</f:for>
 			</fed:fce.grid.row>
 		</fed:fce.grid>
 	</fed:fce>
 </f:section>
 
 <f:section name="Preview">
-	Content columns ({columns})
+	Content columns ({columnClass})
 </f:section>
 
 <f:section name="Main">
 	<fed:style>
 		<fed:raw>
-		.content-columns { width: 100%; }
-		.content-columns .content-column { vertical-align: top; }
-		.w1 { width: 100%; }
-		.w2 { width: 50%; }
-		.w3 { width: 33.3%; }
-		.w4 { width: 25%; }
-		.w5 { width: 20%; }
-		.w6 { width: 16.5%; }
-		.w7 { width: 14.25; }
-		.w8 { width: 12.5%; }
-		.w9 { width: 11.1%; }
+		.content-columns { width: 100%; clear: both; }
+		.content-columns .content-column { float: left; }
+		.content-columns .content-column .content-column-padding { padding: {cellpadding}; clear: both; }
+		.content-column-50 { width: 50%; }
+		.content-column-33 { width: 33.3%; }
+		.content-column-25 { width: 25%; }
+		.content-column-20 { width: 20%; }
+		.content-column-15 { width: 15%; }
+		.content-column-10 { width: 10%; }
 		</fed:raw>
-		{style}
 	</fed:style>
 
-	<table class="content-columns" id="{id}">
-		<tr>
-		<fed:loop count="{columns}" iteration="iteration" minimum="1">
-			<td class="content-column w{columns} column{iteration.cycle}"><fed:fce.renderContent area="column{iteration.cycle}" /></td>
-		</fed:loop>
-		</tr>
-	</table>
+	<div class="content-columns content-columns-{columnClass}">
+		<f:for each="{fed:data.func(func: 'explode', arguments: {0: '-', 1: columnClass})}" as="className" iteration="iteration">
+			<div class="content-column content-column-{className} column{iteration.cycle}">
+				<div class="content-column-padding">
+					<fed:fce.renderContent area="column{iteration.cycle}" />
+				</div>
+			</div>
+		</f:for>
+	</div>
 </f:section>
