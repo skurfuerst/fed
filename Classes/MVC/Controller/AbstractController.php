@@ -156,12 +156,12 @@ abstract class Tx_Fed_MVC_Controller_AbstractController extends Tx_Extbase_MVC_C
 	 */
 	public function getFlexForm($fallback=FALSE) {
 		if (!$fallback) {
-			$cObj = $this->configurationManager->getContentObject();
-			$cObjData = $cObj->data;
-			$this->flexform->setContentObjectData($cObjData);
+			$cObj = $this->request->getContentObjectData();
+			$this->flexform->setContentObjectData($cObj);
 			return $this->flexform->getAll();
 		}
-		$flexform = $cObjData['pi_flexform'];
+		$data = $this->request->getContentObjectData();
+		$flexform = $data['pi_flexform'];
 		$array = array();
 		$dom = new DOMDocument();
 		$dom->loadXML($flexform);
