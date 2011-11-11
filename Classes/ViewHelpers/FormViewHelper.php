@@ -43,10 +43,23 @@ class Tx_Fed_ViewHelpers_FormViewHelper extends Tx_Fluid_ViewHelpers_FormViewHel
 	protected $objectManager;
 
 	/**
+	 * @var Tx_Fluid_Core_ViewHelper_TagBuilder
+	 */
+	protected $tag = NULL;
+
+
+	/**
 	 * @param Tx_Extbase_Object_ObjectManager $objectManager
 	 */
 	public function injectObjectManager(Tx_Extbase_Object_ObjectManager $objectManager) {
 		$this->objectManager = $objectManager;
+	}
+
+	/**
+	 * @param Tx_Fluid_Core_ViewHelper_TagBuilder $tagBuilder Tag builder
+	 */
+	public function injectTagBuilder(Tx_Fluid_Core_ViewHelper_TagBuilder $tagBuilder) {
+		$this->tag = $tagBuilder;
 	}
 
 	public function initializeArguments() {

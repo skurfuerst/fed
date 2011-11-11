@@ -67,6 +67,11 @@ class Tx_Fed_ViewHelpers_Form_MultiUploadViewHelper extends Tx_Fluid_ViewHelpers
 	protected $jsonService;
 
 	/**
+	 * @var Tx_Fluid_Core_ViewHelper_TagBuilder
+	 */
+	protected $tag = NULL;
+
+	/**
 	 * @param Tx_Fed_Utility_DomainObjectInfo $infoService
 	 */
 	public function injectInfoService(Tx_Fed_Utility_DomainObjectInfo $infoService) {
@@ -85,6 +90,13 @@ class Tx_Fed_ViewHelpers_Form_MultiUploadViewHelper extends Tx_Fluid_ViewHelpers
 	 */
 	public function injectJsonService(Tx_Fed_Utility_JSON $jsonService) {
 		$this->jsonService = $jsonService;
+	}
+
+	/**
+	 * @param Tx_Fluid_Core_ViewHelper_TagBuilder $tagBuilder Tag builder
+	 */
+	public function injectTagBuilder(Tx_Fluid_Core_ViewHelper_TagBuilder $tagBuilder) {
+		$this->tag = $tagBuilder;
 	}
 
 	/**
