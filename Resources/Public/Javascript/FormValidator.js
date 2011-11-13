@@ -12,17 +12,17 @@ FED.FormValidator = {
 		var source = jQuery(this);
 		var form = source.parents('form');
 		var json = jQuery.parseJSON(form.attr('rel'));
-		var data = {};
-		data[json.prefix] = {
-			data: FED.FormValidator.getData(form, json)
+		var dataSet = {};
+		var collected = FED.FormValidator.getData(form, json);
+		collected.action = json.action;
+		dataSet[json.prefix] = {
+			"data": collected
 		};
 		var result = jQuery.ajax({
-			type: 'post',
-			dataType: 'json',
-			async: true,
-			url: json.link,
-			data: data,
-			complete: function(response, status) {
+			"type": 'post',
+			"url": json.link,
+			"data": dataSet,
+			"complete": function(response, status) {
 				var result = response.responseText;
 				var data = jQuery.parseJSON(result);
 				FED.FormValidator.cleanFields(form);
@@ -42,12 +42,16 @@ FED.FormValidator = {
 	},
 
 	highlightErrorFields : function(form, config, errors) {
-		for (var error in errors) {
-			var fieldName =	config.prefix + '[' + config.objectName + '][' + errors[error].name + ']';
-			var field = jQuery('[name="' + fieldName + '"]');
-			if (field) {
-				field.addClass('f3-form-error');
-			}
+		for (var objectName in errors) {
+			var propertyErrors = errors[objectName];
+			for (var propertyName in propertyErrors) {
+				var fieldName = config.prefix + '[' + objectName + '][' + propertyName + ']';
+				var field = jQuery('[name="' + fieldName + '"]');
+				if (field) {
+					field.addClass('f3-form-error');
+				};
+
+			};
 		};
 	},
 
@@ -56,13 +60,42 @@ FED.FormValidator = {
 		var hmac = form.find('[name="' + fieldName + '"]').val();
 		var serialized = hmac.substring(-40);
 		var unserialized = unserialize(serialized);
-		var data = {};
-		for (var property in unserialized[config.objectName]) {
-			var fieldNameSelector = config.prefix + '[' + config.objectName + '][' + property + ']';
-			var field = form.find('[name="' + fieldNameSelector + '"]');
-			data[property] = field.val();
-		};
+		var path = [];
+		var data = this.getObjectData(form, unserialized, config.prefix, path);
 		return data;
+	},
+
+	getObjectData : function(form, node, prefix, path, lastProperty) {
+		var dataSet = {};
+		var pathSet = [];
+		for (var property in node) {
+			path.push(property);
+			if (typeof node[property] == 'object' || typeof node[property] == 'array') {
+				dataSet[property] = this.getObjectData(form, node[property], prefix, path, property);
+			} else {
+				var value = this.getFieldValueByPath(prefix, path);
+				if (parseInt(property) > 0 || property == '0') {
+					if (parseInt(value) > 0) {
+						dataSet[lastProperty] = this.getFieldValueByPath(prefix, jQuery(path).slice(0, path.length - 1));
+					};
+				} else {
+					dataSet[property] = this.getFieldValueByPath(prefix, path);
+				};
+			};
+			path.pop();
+		};
+		return dataSet;
+	},
+
+	getFieldValueByPath : function(prefix, path) {
+		var name = prefix;
+		for (var i=0; i<path.length; i++) {
+			var part = path[i];
+			name += '[' + part + ']';
+		};
+		var selector = '[name="' + name + '"]';
+		var field = jQuery(selector);
+		return field.val();
 	},
 
 	cleanFields : function(form) {

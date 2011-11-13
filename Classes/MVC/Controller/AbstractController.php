@@ -184,45 +184,53 @@ abstract class Tx_Fed_MVC_Controller_AbstractController extends Tx_Extbase_MVC_C
 	 * Circumvents request processing to output a JSON response directly.
 	 *
 	 * @param array $data Associative array of data to be validated
-	 * @param string $className Class name to validate $data against
+	 * @param string $action
 	 * @return string
 	 */
-	public function validateAction($data, $className=NULL) {
-		if ($className === NULL) {
-			$className = 'Tx_' . $this->extensionName . '_Domain_Model_' . $this->request->getControllerName();
-		}
-		$data['pid'] = $this->getConfiguredStoragePid();
-		$data['uid'] = NULL;
-		$data['_localizedUid'] = NULL;
-		$propertyNames = $this->reflectionService->getClassPropertyNames($className);
-
-		$instance = $this->objectManager->get($className);
-		$validatorResolver = $this->objectManager->get('Tx_Extbase_Validation_ValidatorResolver');
-		$validator = $validatorResolver->getBaseValidatorConjunction($className);
-
-		$propertyMapper = $this->objectManager->get('Tx_Extbase_Property_Mapper');
-		$propertyMapper->map($propertyNames, $data, $instance);
-
+	public function validateAction($data=array(), $action=NULL) {
 		$errorArray = array();
-		if (method_exists($validator, 'validate')) {
-			$isValid = $validator->validate($instance);
-			$errors = $isValid->getFlattenedErrors();
-		} else {
-			$isValid = $validator->isValid($instance);
-			$errors = $validator->getErrors();
-		}
-		foreach ($errors as $name=>$error) {
-			if (is_array($error)) {
-				$error = array_pop($error);
+		$parameters = $this->reflectionService->getMethodParameters(get_class($this), $data['action'] . 'Action');
+		unset($data['action']);
+		foreach ($parameters as $propertyName=>$objectData) {
+			$className = $objectData['class'];
+			if (!$className || !is_array($data[$propertyName])) {
+				continue;
 			}
-			$errorArray[$name] = array(
-				'name' => $name,
-				'message' => $error->getMessage(),
-				'code' => $error->getCode()
-			);
+			$propertyNames = $this->reflectionService->getClassPropertyNames($className);
+
+			$instance = $this->objectManager->get($className);
+			$validatorResolver = $this->objectManager->get('Tx_Extbase_Validation_ValidatorResolver');
+			$validator = $validatorResolver->getBaseValidatorConjunction($className);
+
+			$propertyMapper = $this->objectManager->get('Tx_Extbase_Property_Mapper');
+			$propertyMapper->map($propertyNames, $data[$propertyName], $instance);
+
+			 if (method_exists($validator, 'validate')) {
+				$isValid = $validator->validate($instance);
+				$errors = $isValid->getFlattenedErrors();
+			} else {
+				$isValid = $validator->isValid($instance);
+				$errors = $validator->getErrors();
+			}
+
+			$errorArray[$propertyName] = array();
+			foreach ($errors as $name=>$error) {
+				if (is_array($error)) {
+					$error = array_pop($error);
+				}
+				$errorArray[$propertyName][$name] = array(
+					'name' => $name,
+					'message' => $error->getMessage(),
+					'code' => $error->getCode()
+				);
+			}
 		}
-		$json = $this->jsonService->encode($errorArray);
-		echo $json;
+		if (count($errorArray) == 0) {
+			echo '1';
+		} else {
+			$json = $this->jsonService->encode($errorArray);
+			echo $json;
+		}
 		exit();
 	}
 

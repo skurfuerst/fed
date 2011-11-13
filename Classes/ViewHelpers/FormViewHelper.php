@@ -102,7 +102,7 @@ class Tx_Fed_ViewHelpers_FormViewHelper extends Tx_Fluid_ViewHelpers_FormViewHel
 			}
 			$link = $this->controllerContext->getUriBuilder()->setTargetPageUid($pageUid)->uriFor('validate');
 			$prefix = $this->getFieldNamePrefix();
-			$relData = json_encode(array('link' => $link, 'prefix' => $prefix, 'objectName' => $objectName, 'autosubmit' => $this->arguments['autosubmit']));
+			$relData = json_encode(array('link' => $link, 'prefix' => $prefix, 'objectName' => $objectName, 'autosubmit' => $this->arguments['autosubmit'], 'action' => $this->arguments['action']));
 			$this->tag->addAttribute('class', 'fed-validator ' . $this->arguments['class'] . ' ' . ($this->arguments['autoSubmit'] === TRUE ? 'fed-autosubmit' : ''));
 			$this->tag->addAttribute('rel', $relData);
 			$scripts = array(
