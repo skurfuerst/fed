@@ -125,12 +125,30 @@ class Tx_Fed_ViewHelpers_Page_MenuViewHelper extends Tx_Fed_Core_ViewHelper_Abst
 			if($i == $length && $classLast) {
 				array_push($page['class'], $classLast);
 			}
-			$pageUid = $page['uid'];
+			$navigationTitle = $this->getNavigationTitle($page['uid']);
 			$class = $page['class'] ? ' class="' . implode(' ', $page['class']) . '"' : '';
-			$html[] = '<' . $tagName . $class .'><a href="' . $page['link'] . '"' . $class . '>' . $page['title'] . '</a></' . $tagName . '>';
+			$html[] = '<' . $tagName . $class .'><a href="' . $page['link'] . '"' . $class . '>' . $navigationTitle . '</a></' . $tagName . '>';
 			$i++;
 		}
 		return implode(LF, $html);
+	}
+
+	/**
+	 * Select the navigation title
+	 *
+	 * @param integer $pageUid
+	 * return string
+	 */
+	protected function getNavigationTitle($pageUid) {
+		$getLL = t3lib_div::_GP('L');
+		if($getLL){
+			$pageOverlay = $this->pageSelect->getPageOverlay($pageUid,$getLL);
+			$title = ($pageOverlay['nav_title']) ? $pageOverlay['nav_title'] : $pageOverlay['title'];
+		}else {
+			$page = $this->pageSelect->getPage($pageUid);
+			$title = ($page['nav_title']) ? $page['nav_title'] : $page['title'];
+		}
+		return $title;
 	}
 
 	/**
