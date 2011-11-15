@@ -8,8 +8,12 @@ FED.FormValidator = {
 
 	fields : null,
 
+	method : 'all',
+
+	triggeredByField : null,
+
 	validate : function() {
-		var source = jQuery(this);
+		var source = FED.FormValidator.triggeredByField = jQuery(this);
 		var form = source.parents('form');
 		var json = jQuery.parseJSON(form.attr('rel'));
 		var dataSet = {};
@@ -18,6 +22,11 @@ FED.FormValidator = {
 		dataSet[json.prefix] = {
 			"data": collected
 		};
+		if (FED.FormValidator.method == 'all') {
+			FED.FormValidator.fields.addClass('loading');
+		} else if (FED.FormValidator.method == 'field') {
+			FED.FormValidator.triggeredByField.addClass('loading');
+		};
 		var result = jQuery.ajax({
 			"type": 'post',
 			"url": json.link,
@@ -25,7 +34,6 @@ FED.FormValidator = {
 			"complete": function(response, status) {
 				var result = response.responseText;
 				var data = jQuery.parseJSON(result);
-				FED.FormValidator.cleanFields(form);
 				if (result == '1') {
 					if (json.autosubmit) {
 						form.submit();
@@ -33,23 +41,32 @@ FED.FormValidator = {
 						return true;
 					};
 				} else if (typeof data == 'object') {
+					FED.FormValidator.triggeredByField.removeClass('f3-form-error').removeClass('loading');
 					FED.FormValidator.highlightErrorFields(form, json, data);
 				} else {
-					console.warn('Unsupported return type: ' + typeof data);
+					//console.warn('Unsupported return type: ' + typeof data);
 				};
 			}
 		});
 	},
 
 	highlightErrorFields : function(form, config, errors) {
+		if (FED.FormValidator.method == 'all') {
+			FED.FormValidator.cleanFields(form);
+		};
 		for (var objectName in errors) {
 			var propertyErrors = errors[objectName];
 			for (var propertyName in propertyErrors) {
-				console.log(propertyErrors[propertyName]);
 				var fieldName = config.prefix + '[' + objectName + '][' + propertyName + ']';
 				var field = jQuery('[name="' + fieldName + '"]');
-				if (field) {
-					field.addClass('f3-form-error');
+				if (FED.FormValidator.method == 'all') {
+					if (field) {
+						field.addClass('f3-form-error');
+					};
+				} else if (FED.FormValidator.method == 'field') {
+					if (field && field.attr('name') == FED.FormValidator.triggeredByField.attr('name')) {
+						field.addClass('f3-form-error').removeClass('loading');
+					};
 				};
 			};
 		};
@@ -99,7 +116,7 @@ FED.FormValidator = {
 	},
 
 	cleanFields : function(form) {
-		form.find(':input, textarea').removeClass('f3-form-error');
+		FED.FormValidator.fields.removeClass('f3-form-error').removeClass('loading');
 	}
 
 };
@@ -107,7 +124,12 @@ FED.FormValidator = {
 jQuery(document).ready(function() {
 	FED.FormValidator.forms = jQuery('.fed-validator');
 	FED.FormValidator.fields = FED.FormValidator.forms.find(':input, textarea');
+	if (jQuery('.fed-validator').hasClass('fed-validate-all')) {
+		FED.FormValidator.method = 'all';
+	} else if (jQuery('.fed-validator').hasClass('fed-validate-field')) {
+		FED.FormValidator.method = 'field';
+	};
 	FED.FormValidator.fields.each(function() {
-		jQuery(this).change(FED.FormValidator.validate);
+		jQuery(this).blur(FED.FormValidator.validate);
 	});
 });

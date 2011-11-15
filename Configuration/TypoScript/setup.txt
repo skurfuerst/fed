@@ -13,6 +13,7 @@ config.tx_extbase.persistence.classes {
 		recordType = Tx_Fed_Domain_Model_BackendLayout
 	}
 }
+
 plugin.tx_fed {
 	fce.fed {
 		templateRootPath = EXT:fed/Resources/Private/Elements/

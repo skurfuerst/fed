@@ -10,11 +10,11 @@ Tx_Extbase_Utility_Extension::configurePlugin(
 	array(
 		'Page' => 'render',
 		'Hash' => 'request',
-		'Tool' => 'clearCache,inspectCookie,removeCookie,setCookie,inspectSession,setSession,removeSession'
+		'Tool' => 'clearCache,inspectCookie,removeCookie,setCookie,inspectSession,setSession,removeSession,validate'
 	),
 	array(
 		'Hash' => 'request',
-		'Tool' => 'clearCache,inspectCookie,removeCookie,setCookie,inspectSession,setSession,removeSession'
+		'Tool' => 'clearCache,inspectCookie,removeCookie,setCookie,inspectSession,setSession,removeSession,validate'
 	)
 );
 

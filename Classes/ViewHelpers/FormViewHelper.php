@@ -65,6 +65,8 @@ class Tx_Fed_ViewHelpers_FormViewHelper extends Tx_Fluid_ViewHelpers_FormViewHel
 	public function initializeArguments() {
 		parent::initializeArguments();
 		$this->registerArgument('validate', 'boolean', 'If TRUE, uses AJAX to validate the form before submission. Requires jQuery', FALSE, FALSE);
+		$this->registerArgument('validateMethod', 'string', 'Method of validation - changes the way the form behaves on AJAX validation. Depends on validate=TRUE', FALSE, 'all');
+		$this->registerArgument('validateTypeNum', integer, 'If specified, makes validation AJAX requests to this page typeNum (you must register this typeNum in TypoScript for it to work)');
 		$this->registerArgument('autosubmit', 'boolean', 'If TRUE and validate TRUE, automatically submits the form when valid', FALSE, FALSE);
 	}
 
@@ -100,10 +102,23 @@ class Tx_Fed_ViewHelpers_FormViewHelper extends Tx_Fluid_ViewHelpers_FormViewHel
 				$id = uniqid('form');
 				$this->tag->addAttribute('id', $id);
 			}
-			$link = $this->controllerContext->getUriBuilder()->setTargetPageUid($pageUid)->uriFor('validate');
+			$link = $this->controllerContext->getUriBuilder()->uriFor('validate');
+			if ($this->arguments['validateTypeNum']) {
+				$link .= '&type=' . $this->arguments['validateTypeNum'];
+			}
 			$prefix = $this->getFieldNamePrefix();
-			$relData = json_encode(array('link' => $link, 'prefix' => $prefix, 'objectName' => $objectName, 'autosubmit' => $this->arguments['autosubmit'], 'action' => $this->arguments['action']));
-			$this->tag->addAttribute('class', 'fed-validator ' . $this->arguments['class'] . ' ' . ($this->arguments['autoSubmit'] === TRUE ? 'fed-autosubmit' : ''));
+			$loadingIcon = t3lib_extMgm::siteRelPath('fed') . 'Resources/Public/Icons/Loading.gif';
+			$relData = json_encode(
+				array(
+					'link' => $link,
+					'prefix' => $prefix,
+					'objectName' => $objectName,
+					'autosubmit' => $this->arguments['autosubmit'],
+					'action' => $this->arguments['action']
+				)
+			);
+			$this->tag->addAttribute('class', 'fed-validator fed-validate-' . $this->arguments['validateMethod'] . ' '
+				. $this->arguments['class'] . ' ' . ($this->arguments['autoSubmit'] === TRUE ? 'fed-autosubmit' : ''));
 			$this->tag->addAttribute('rel', $relData);
 			$scripts = array(
 				t3lib_extMgm::siteRelPath('fed') . 'Resources/Public/Javascript/FormValidator.js',
@@ -114,6 +129,7 @@ class Tx_Fed_ViewHelpers_FormViewHelper extends Tx_Fluid_ViewHelpers_FormViewHel
 			);
 			$documentHead = $this->objectManager->get('Tx_Fed_Utility_DocumentHead');
 			$documentHead->includeFiles($scripts);
+			$documentHead->includeHeader('.fed-validator .loading { background-image: url(' . $loadingIcon . '); background-position: right; background-repeat: no-repeat; }', 'css');
 		}
 		$content = parent::render($action, $arguments, $controller, $extensionName, $pluginName, $pageUid, $object, $pageType, $noCache, $noCacheHash, $section, $format, $additionalParams, $absolute, $addQueryString, $argumentsToBeExcludedFromQueryString, $fieldNamePrefix, $actionUri, $objectName);
 		return $content;
