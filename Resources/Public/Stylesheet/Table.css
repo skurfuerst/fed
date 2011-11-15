@@ -1,4 +1,8 @@
-.fed-sortable { width: 100%; }
+.fed-sortable {
+	width: 100%;
+	border-spacing: 0px;
+	border-collapse: collapse;
+}
 .fed-sortable th {
 	cursor: pointer;
 	background-repeat: no-repeat;

@@ -32,12 +32,17 @@
  * @package Fed
  * @subpackage ViewHelpers
  */
-class Tx_Fed_ViewHelpers_ContainsViewHelper extends Tx_Fluid_Core_ViewHelper_AbstractConditionViewHelper {
+class Tx_Fed_ViewHelpers_ContainsViewHelper extends Tx_Fed_Core_ViewHelper_AbstractConditionViewHelper {
 
 	/**
 	 * @var Tx_Fed_Utility_DomainObjectInfo
 	 */
 	protected $infoService;
+
+	/**
+	 * @var mixed
+	 */
+	protected $evaluation = FALSE;
 
 	/**
 	 * @param Tx_Fed_Utility_DomainObjectInfo $service
@@ -63,76 +68,26 @@ class Tx_Fed_ViewHelpers_ContainsViewHelper extends Tx_Fluid_Core_ViewHelper_Abs
 		$needle = $this->arguments['needle'];
 
 		if (is_array($haystack)) {
-			$evaluation = $this->assertHaystackIsArrayAndHasNeedle($haystack, $needle);
+			$this->evaluation = $this->assertHaystackIsArrayAndHasNeedle($haystack, $needle);
 		} else if (is_string($haystack)) {
-			$evaluation = $this->assertHaystackIsStringAndHasNeedle($haystack, $needle);
+			$this->evaluation = $this->assertHaystackIsStringAndHasNeedle($haystack, $needle);
 		} else if ($haystack instanceof Tx_Extbase_Persistence_QueryResultInterface) {
-			$evaluation = $this->assertHaystackIsQueryResultAndHasNeedle($haystack, $needle);
+			$this->evaluation = $this->assertHaystackIsQueryResultAndHasNeedle($haystack, $needle);
 		} else if ($haystack instanceof Tx_Extbase_Persistence_ObjectStorage) {
-			$evaluation = $this->assertHaystackIsObjectStorageAndHasNeedle($haystack, $needle);
+			$this->evaluation = $this->assertHaystackIsObjectStorageAndHasNeedle($haystack, $needle);
 		} else if ($haystack instanceof Tx_Extbase_Persistence_LazyObjectStorage) {
-			$evaluation = $this->assertHaystackIsObjectStorageAndHasNeedle($haystack, $needle);
+			$this->evaluation = $this->assertHaystackIsObjectStorageAndHasNeedle($haystack, $needle);
+		} else {
+			$this->evaluation = FALSE;
 		}
 
-		if ($evaluation === TRUE) {
+		if ($this->evaluation !== FALSE) {
 			return $this->renderThenChild();
 		} else {
 			return $this->renderElseChild();
 		}
 	}
 
-	/**
-	 * @param mixed $haystack
-	 * @param mixed $needle
-	 * @return boolean
-	 */
-	protected function assertHaystackIsQueryResultAndHasNeedle($haystack, $needle) {
-		if ($needle instanceof Tx_Extbase_DomainObject_DomainObjectInterface) {
-			$needle = $needle->getUid();
-		}
-		foreach ($haystack as $candidate) {
-			if ($candidate->getUid() == $needle) {
-				return TRUE;
-			}
-		}
-		return FALSE;
-	}
-
-	/**
-	 * @param mixed $haystack
-	 * @param mixed $needle
-	 * @return boolean
-	 */
-	protected function assertHaystackIsObjectStorageAndHasNeedle($haystack, $needle) {
-		if ($needle instanceof Tx_Extbase_DomainObject_DomainObjectInterface) {
-			return $haystack->contains($needle);
-		} else {
-			foreach ($haystack as $candidate) {
-				if ($candidate->getUid() === $needle) {
-					return TRUE;
-				}
-			}
-			return FALSE;
-		}
-	}
-
-	/**
-	 * @param mixed $haystack
-	 * @param mixed $needle
-	 * @return boolean
-	 */
-	protected function assertHaystackIsArrayAndHasNeedle($haystack, $needle) {
-		return in_array($needle, $haystack);
-	}
-
-	/**
-	 * @param mixed $haystack
-	 * @param mixed $needle
-	 * @return boolean
-	 */
-	protected function assertHaystackIsStringAndHasNeedle($haystack, $needle) {
-		return (strpos($haystack, $needle) !== FALSE);
-	}
 
 }
 

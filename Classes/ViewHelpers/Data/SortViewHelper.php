@@ -34,6 +34,9 @@
  */
 class Tx_Fed_ViewHelpers_Data_SortViewHelper extends Tx_Fluid_Core_ViewHelper_AbstractTagBasedViewHelper {
 
+	/**
+	 * Initialize arguments
+	 */
 	public function initializeArguments() {
 		$this->registerArgument('as', 'string', 'Which variable to update in the TemplateVariableContainer. If left out, returns sorted data instead of updating the varialbe (i.e. reference or copy)');
 		$this->registerArgument('sortBy', 'string', 'Which property/field to sort by - leave out for numeric sorting based on indexes(keys)');
@@ -46,13 +49,16 @@ class Tx_Fed_ViewHelpers_Data_SortViewHelper extends Tx_Fluid_Core_ViewHelper_Ab
 	 *
 	 * @param array $array Optional; use to sort an array
 	 * @param Tx_Extbase_Persistence_ObjectStorage $objectStorage Optional; use to sort an ObjectStorage
+	 * @param Tx_Extbase_Persistence_QueryResult $queryResult Optional; use to sort a QueryResult
 	 * @return mixed
 	 */
-	public function render($array=NULL, Tx_Extbase_Persistence_ObjectStorage $objectStorage=NULL) {
+	public function render($array=NULL, Tx_Extbase_Persistence_ObjectStorage $objectStorage=NULL, $queryResult=NULL) {
 		if ($objectStorage) {
 			$sorted = $this->sortObjectStorage($objectStorage);
 		} else if ($array) {
 			$sorted = $this->sortArray($array);
+		} elseif ($queryResult) {
+			$sorted = $this->sortArray($queryResult->toArray());
 		} else {
 			throw new Exception('Nothing to sort, SortViewHelper has no purpose in life, performing LATE term self-abortion');
 		}
@@ -67,10 +73,19 @@ class Tx_Fed_ViewHelpers_Data_SortViewHelper extends Tx_Fluid_Core_ViewHelper_Ab
 		}
 	}
 
+	/**
+	 * Sort an array
+	 *
+	 * @param array $array
+	 * @return array
+	 */
 	protected function sortArray($array) {
 		$sorted = array();
 		while ($object = array_shift($array)) {
 			$index = $this->getSortValue($object);
+			while (isset($sorted[$index])) {
+				$index .= '1';
+			}
 			$sorted[$index] = $object;
 		}
 		if ($this->arguments['order'] === 'ASC') {
@@ -81,12 +96,23 @@ class Tx_Fed_ViewHelpers_Data_SortViewHelper extends Tx_Fluid_Core_ViewHelper_Ab
 		return $sorted;
 	}
 
+	/**
+	 * Sort a Tx_Extbase_Persistence_ObjectStorage instance
+	 *
+	 * @param Tx_Extbase_Persistence_ObjectStorage $storage
+	 * @return Tx_Extbase_Persistence_ObjectStorage
+	 */
 	protected function sortObjectStorage($storage) {
 		$temp = $this->objectManager->get('Tx_Extbase_Persistence_ObjectStorage');
-		$temp->attachAll($storage);
+		foreach ($storage as $item) {
+			$temp->attach($item);
+		}
 		$sorted = array();
 		foreach ($storage as $item) {
 			$index = $this->getSortValue($item);
+			while (isset($sorted[$index])) {
+				$index .= '1';
+			}
 			$sorted[$index] = $item;
 		}
 		if ($this->arguments['order'] === 'ASC') {
@@ -94,29 +120,41 @@ class Tx_Fed_ViewHelpers_Data_SortViewHelper extends Tx_Fluid_Core_ViewHelper_Ab
 		} else {
 			krsort($sorted);
 		}
-		$storage->detachAll($storage);
+		$storage = $this->objectManager->get('Tx_Extbase_Persistence_ObjectStorage');
 		foreach ($sorted as $item) {
 			$storage->attach($item);
 		}
 		return $storage;
 	}
 
+	/**
+	 * Gets the value to use as sorting value from $object
+	 *
+	 * @param mixed $object
+	 * @return mixed
+	 */
 	protected function getSortValue($object) {
 		$field = $this->arguments['sortBy'];
 		if ($field) {
-			$getter = 'get' . ucfirst($field);
-		} else {
-			$getter = "getUid";
-		}
-		if (method_exists($object, $getter)) {
-			$value = $object->$getter();
-		} else if (is_object ($object)) {
-			$value = $object->$field;
-		} else if (is_array($object)) {
-			$value = $object[$field];
+			$parts = explode('.', $field);
+			while ($part = array_shift($parts)) {
+				$getter = 'get' . ucfirst($part);
+				if (method_exists($object, $getter)) {
+					$object = $object->$getter();
+				} else if (is_object ($object)) {
+					$object = $object->$field;
+				} else if (is_array($object)) {
+					$object = $object[$field];
+				}
+			}
+			$value = $object;
 		}
 		if ($value instanceof DateTime) {
 			$value = $value->getTimestamp();
+		} elseif ($value instanceof Tx_Extbase_Persistence_ObjectStorage) {
+			$value = $value->count();
+		} elseif (is_array($value)) {
+			$value = count($value);
 		}
 		return $value;
 	}

@@ -191,9 +191,10 @@ abstract class Tx_Fed_MVC_Controller_AbstractController extends Tx_Extbase_MVC_C
 		$errorArray = array();
 		$parameters = $this->reflectionService->getMethodParameters(get_class($this), $data['action'] . 'Action');
 		unset($data['action']);
-		foreach ($parameters as $propertyName=>$objectData) {
+		$hasErrors = FALSE;
+		foreach ($parameters as $argumentName=>$objectData) {
 			$className = $objectData['class'];
-			if (!$className || !is_array($data[$propertyName])) {
+			if (!$className || !is_array($data[$argumentName])) {
 				continue;
 			}
 			$propertyNames = $this->reflectionService->getClassPropertyNames($className);
@@ -203,7 +204,7 @@ abstract class Tx_Fed_MVC_Controller_AbstractController extends Tx_Extbase_MVC_C
 			$validator = $validatorResolver->getBaseValidatorConjunction($className);
 
 			$propertyMapper = $this->objectManager->get('Tx_Extbase_Property_Mapper');
-			$propertyMapper->map($propertyNames, $data[$propertyName], $instance);
+			$propertyMapper->map($propertyNames, $data[$argumentName], $instance);
 
 			 if (method_exists($validator, 'validate')) {
 				$isValid = $validator->validate($instance);
@@ -213,25 +214,44 @@ abstract class Tx_Fed_MVC_Controller_AbstractController extends Tx_Extbase_MVC_C
 				$errors = $validator->getErrors();
 			}
 
-			$errorArray[$propertyName] = array();
-			foreach ($errors as $name=>$error) {
-				if (is_array($error)) {
-					$error = array_pop($error);
-				}
-				$errorArray[$propertyName][$name] = array(
-					'name' => $name,
-					'message' => $error->getMessage(),
-					'code' => $error->getCode()
-				);
+			$errorMessages = $this->getErrorMessages($errors);
+			if (count($errorMessages) > 0) {
+				$hasErrors = TRUE;
 			}
+			$errorArray[$argumentName] = $errorMessages;
 		}
-		if (count($errorArray) == 0) {
+		if ($hasErrors === FALSE) {
 			echo '1';
 		} else {
+			$this->flashMessageContainer->getAllMessagesAndFlush();
 			$json = $this->jsonService->encode($errorArray);
 			echo $json;
 		}
 		exit();
+	}
+
+	/**
+	 * @param mixed $errors
+	 * @return array
+	 */
+	private function getErrorMessages($errors) {
+		$errorArray = array();
+		foreach ($errors as $name=>$error) {
+			if (is_array($error)) {
+				$propertyErrors = $error;
+			} else {
+				$propertyErrors = array($error);
+			}
+			$errorArray[$name] = array();
+			foreach ($propertyErrors as $propertyError) {
+				array_push($errorArray[$name], array(
+					'name' => $name,
+					'message' => $propertyError->getMessage(),
+					'code' => $propertyError->getCode()
+				));
+			}
+		}
+		return $errorArray;
 	}
 
 	/**

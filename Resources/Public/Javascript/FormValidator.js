@@ -45,12 +45,12 @@ FED.FormValidator = {
 		for (var objectName in errors) {
 			var propertyErrors = errors[objectName];
 			for (var propertyName in propertyErrors) {
+				console.log(propertyErrors[propertyName]);
 				var fieldName = config.prefix + '[' + objectName + '][' + propertyName + ']';
 				var field = jQuery('[name="' + fieldName + '"]');
 				if (field) {
 					field.addClass('f3-form-error');
 				};
-
 			};
 		};
 	},
