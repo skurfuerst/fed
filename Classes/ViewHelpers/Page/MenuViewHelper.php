@@ -61,6 +61,7 @@ class Tx_Fed_ViewHelpers_Page_MenuViewHelper extends Tx_Fed_Core_ViewHelper_Abst
 		$this->registerArgument('useShortcutTarget', 'boolean', 'Optional param for using shortcut target instead of shortcut itself for current link', FALSE, FALSE);
 		$this->registerArgument('classFirst', 'string', 'Optional class name for the first menu elment', FALSE, '');
 		$this->registerArgument('classLast', 'string', 'Optional class name for the last menu elment', FALSE, '');
+		$this->registerArgument('substElementUid', 'boolean', 'Optional parameter for wrapping the link with the uid of the page', FALSE, '');
 	}
 
 	/**
@@ -115,6 +116,7 @@ class Tx_Fed_ViewHelpers_Page_MenuViewHelper extends Tx_Fed_Core_ViewHelper_Abst
 		$tagName = $this->arguments['tagNameChildren'];
 		$classFirst = $this->arguments['classFirst'];
 		$classLast = $this->arguments['classLast'];
+		$substElementUid = $this->arguments['substElementUid'];
 		$html = array();
 		$i = 1;
 		$length = count($menu);
@@ -127,7 +129,8 @@ class Tx_Fed_ViewHelpers_Page_MenuViewHelper extends Tx_Fed_Core_ViewHelper_Abst
 			}
 			$navigationTitle = $this->getNavigationTitle($page['uid']);
 			$class = $page['class'] ? ' class="' . implode(' ', $page['class']) . '"' : '';
-			$html[] = '<' . $tagName . $class .'><a href="' . $page['link'] . '"' . $class . '>' . $navigationTitle . '</a></' . $tagName . '>';
+			$elementID = $substElementUid ? ' id="elem_' . $page['uid'] . '"' : '';
+			$html[] = '<' . $tagName . $elementID . $class .'><a href="' . $page['link'] . '"' . $class . '>' . $navigationTitle . '</a></' . $tagName . '>';
 			$i++;
 		}
 		return implode(LF, $html);
