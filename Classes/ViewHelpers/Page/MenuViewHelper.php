@@ -118,13 +118,13 @@ class Tx_Fed_ViewHelpers_Page_MenuViewHelper extends Tx_Fed_Core_ViewHelper_Abst
 		$classLast = $this->arguments['classLast'];
 		$substElementUid = $this->arguments['substElementUid'];
 		$html = array();
-		$i = 1;
-		$length = count($menu);
-		foreach ($menu as $page) {
-			if($i == 0 && $classFirst) {
+
+		foreach ($menu as $key => $page) {
+			if($key == 0 && $classFirst) {
 				array_push($page['class'], $classFirst);
 			}
-			if($i == $length && $classLast) {
+
+			if($key+1 == count($menu) && $classLast) {
 				array_push($page['class'], $classLast);
 			}
 			$navigationTitle = $this->getNavigationTitle($page['uid']);
