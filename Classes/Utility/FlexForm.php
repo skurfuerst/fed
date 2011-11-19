@@ -283,6 +283,17 @@ class Tx_Fed_Utility_FlexForm implements t3lib_Singleton {
 	}
 
 	/**
+	 *
+	 * @param array $dataStructure
+	 * @return string
+	 */
+	public function convertDataStructureToFlexFormContent($dataStructure) {
+		$flexFormTool = new t3lib_flexformtools();
+		$xml = $flexFormTool->flexArray2Xml($dataStructure);
+		return $xml;
+	}
+
+	/**
 	 * Updates $dataStructArray by reference, filling it with a proper data structure
 	 * based on the selected template file.
 	 *
