@@ -275,7 +275,7 @@ jQuery(document).ready(function() {
 	FED.FileListEditor.addFileToSavedList({$filesJson});
 	jQuery('.plupload_scroll').removeClass('plupload_scroll'); // don't make our elements unnecessarily tall in the DOM, please!
 	// add an empty column to trick plupload into proper column alignment on existing file rows
-	jQuery('#{$this->uniqueId} .plupload_filelist_header').append(\"<td class='plupload_cell plupload_file_delete'></td>\");
+	jQuery('#{$this->uniqueId} .plupload_filelist_header').append('<td class='plupload_cell plupload_file_delete'></td>');
 	{$disableHeader}
 	{$setHeaderTitle}
 	{$setHeaderSubtitle}
