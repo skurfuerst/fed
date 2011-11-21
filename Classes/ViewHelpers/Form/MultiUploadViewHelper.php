@@ -49,7 +49,7 @@ class Tx_Fed_ViewHelpers_Form_MultiUploadViewHelper extends Tx_Fluid_ViewHelpers
 	/**
 	 * @var string
 	 */
-	protected $editorId = 'pleditor';
+	protected $editorId;
 
 	/**
 	 * @var Tx_Fed_Utility_DomainObjectInfo
@@ -108,8 +108,10 @@ class Tx_Fed_ViewHelpers_Form_MultiUploadViewHelper extends Tx_Fluid_ViewHelpers
 	 */
 	public function initializeArguments() {
 		parent::initializeArguments();
+		$this->registerArgument('buttons', 'string', 'CSV list of buttons to render (browse,start,stop)', FALSE, 'browse,start,stop');
 		$this->registerArgument('runtimes', 'string', 'CSV list of allowed runtimes - see plupload doc', FALSE, 'html5,flash,gears,silverlight,browserplus,html4');
 		$this->registerArgument('url', 'string', 'If specified, overrides built-in uploader with one you created and placed at this URL');
+		$this->registerArgument('autostart', 'boolean', 'If TRUE, queue automatically starts uploading as soon as a file is added.', FALSE, FALSE);
 		$this->registerArgument('maxFileSize', 'string', 'Maxium allowed file size', FALSE, '10mb');
 		$this->registerArgument('chunkSize', 'string', 'Chunk size when uploading in chunks', FALSE, '1mb');
 		$this->registerArgument('uniqueNames', 'boolean', 'If TRUE, obfuscates and randomizes file names. Default behavior is to use TYPO3 unique filename features', FALSE, FALSE);
@@ -134,12 +136,13 @@ class Tx_Fed_ViewHelpers_Form_MultiUploadViewHelper extends Tx_Fluid_ViewHelpers
 		$name = $this->getName();
 		$value = $this->getValue();
 		$this->uniqueId = $this->arguments['id'] ? $this->arguments['id'] : uniqid('plupload');
-		$this->registerFieldNameForFormTokenGeneration($name);
 		$this->setErrorClassAttribute();
+		$this->registerFieldNameForFormTokenGeneration($name);
 		$html = array(
 			'<input id="' . $this->uniqueId . '-field" type="hidden" name="' . $name . '" value="' . $value . '" />',
 			'<div id="' . $this->uniqueId . '" class="fed-plupload plupload_container"></div>',
 		);
+		$this->tag->addAttribute('id', '');
 		$this->tag->setContent(implode(LF, $html));
 		$this->addScript();
 		return $this->tag->render();
@@ -150,32 +153,6 @@ class Tx_Fed_ViewHelpers_Form_MultiUploadViewHelper extends Tx_Fluid_ViewHelpers
 	 */
 	protected function getPreinitEventsJson() {
 		return $this->getEventsJson($this->arguments['preinit']);
-	}
-
-	/**
-	 * @return string
-	 */
-	protected function getInitEventsJson() {
-		$events = $this->arguments['init'];
-		$events['FileUploaded'] = "FED.FileListEditor.onFileUploaded";
-		return $this->getEventsJson($events);
-	}
-
-	/**
-	 * @param array $eventsDefinition
-	 * @return string
-	 */
-	protected function getEventsJson($eventsDefinition) {
-		$lines = array();
-		foreach ($eventsDefinition as $eventName=>$functionName) {
-			$definition = $eventName . ': ' . $functionName;
-			array_push($lines, $definition);
-		}
-		if (count($lines) == 0) {
-			return '{}';
-		} else {
-			return '{' . implode(', ', $lines) . '}';
-		}
 	}
 
 	/**
@@ -218,70 +195,54 @@ class Tx_Fed_ViewHelpers_Form_MultiUploadViewHelper extends Tx_Fluid_ViewHelpers
 			t3lib_extMgm::siteRelPath('fed') . 'Resources/Public/Stylesheet/MultiUpload.css'
 		));
 
-		// create JSON objects for each existing file
+			// create JSON objects for each existing file
 		foreach ($existingFiles as $k=>$file) {
 			$size = (string) intval(filesize(PATH_site . $uploadFolder . DIRECTORY_SEPARATOR . $file));
-			$existingFiles[$k] = "{id: 'f{$k}', name: '{$file}', size: {$size}, percent: 100, completed: {$size}, status: plupload.QUEUED, existing: true}";
+			$existingFiles[$k] = array(
+				'id' => "f$k",
+				'name' => $file,
+				'size' => $size,
+				'percent' => 100,
+				'completed' => $size,
+				'status' => 1,
+				'existing' => TRUE
+			);
 		}
 
-		if ($this->arguments['resizeWidth'] > 0 || $this->arguments['resizeHeight'] > 0) {
-			if ($this->arguments['resizeWidth'] > 0) {
-				$resizeWidth = "width : {$this->arguments['resizeWidth']},";
-			}
-			if ($this->arguments['resizeHeight'] > 0) {
-				$resizeHeight = "height : {$this->arguments['resizeHeight']},";
-			}
-			$resize = "resize : { width: {$resizeWidth}, height: {$resizeHeight}, quality : {$this->arguments['resizeQuality']}},";
+		$buttons = explode(',', $this->arguments['buttons']);
+		$resize = array();
+		if ($this->arguments['resizeWidth']) {
+			$resize['width'] = $this->arguments['resizeWidth'];
 		}
-		if ($this->arguments['header'] === FALSE) {
-			$disableHeader = "jQuery('.plupload_header').hide();";
+		if ($this->arguments['resizeHeight'] > 0) {
+			$resize['height'] = $this->arguments['resizeHeight'];
 		}
-		if ($this->arguments['headerTitle']) {
-			$setHeaderTitle = "jQuery('#{$this->uniqueId} .plupload_header_title').html('{$this->arguments['headerTitle']}');";
-		}
-		if ($this->arguments['headerSubtitle']) {
-			$setHeaderSubtitle = "jQuery('#{$this->uniqueId} .plupload_header_text').html('{$this->arguments['headerSubtitle']}');";
+		if (count($resize) > 0) {
+			$resize['quality'] = $this->arguments['resizeQuality'];
 		}
 
-		$url = $this->getUrl();
-		$preinit = $this->getPreinitEventsJson();
-		$init = $this->getInitEventsJson();
-		$filesJson = "[" . implode(', ', $existingFiles) . "]";
-		$filterJson = $this->jsonService->encode($this->arguments['filters']);
+		$options = array(
+			'url' => $this->getUrl(),
+			'runtimes' => $this->arguments['runtimes'],
+			'autostart' => $this->arguments['autostart'],
+			'filters' => $this->arguments['filters'],
+			'files' => $existingFiles,
+			'max_file_size' => $this->arguments['maxFileSize'],
+			'chunk_size' => $this->arguments['chunkSize'],
+			'header' => $this->arguments['header'],
+			'header_title' => $this->arguments['headerTitle'],
+			'header_subtitle' => $this->arguments['headerSubtitle'],
+			'resize' => $resize,
+			'buttons' => array(
+				'browse' => in_array('browse', $buttons),
+				'start' => in_array('start', $buttons),
+				'stop' => in_array('stop', $buttons),
+			)
+		);
+		$optionsJson = $this->jsonService->encode($options);
 		$this->documentHead->includeHeader("
-jQuery(document).ready(function() {
-	jQuery('#{$this->uniqueId}').plupload({
-		runtimes : '{$this->arguments['runtimes']}',
-		url : '{$url}',
-		max_file_size : '{$this->arguments['maxFileSize']}',
-		chunk_size : '{$this->arguments['chunkSize']}',
-		unique_names : false,
-		autostart : true,
-		buttons : {
-			browse: true,
-			start: false,
-			stop: false
-		},
-		filters : {$filterJson},
-		flash_swf_url : '{$flashFile}',
-		silverlight_xap_url : '{$silverLightFile}',
-		{$resize}
-		preinit : {$preinit},
-		init : {$init}
-	});
-	// add our existing files but inside the header so plupload doesn't clear them out on each refresh
-	var tableHeader = jQuery('#{$this->uniqueId} .plupload_filelist:first')
-		.attr('id', '{$this->editorId}')
-		.find('.remove').live('click', FED.FileListEditor.removeFileFromSavedList);
-	FED.FileListEditor.addFileToSavedList({$filesJson});
-	jQuery('.plupload_scroll').removeClass('plupload_scroll'); // don't make our elements unnecessarily tall in the DOM, please!
-	// add an empty column to trick plupload into proper column alignment on existing file rows
-	jQuery('#{$this->uniqueId} .plupload_filelist_header').append('<td class=\"plupload_cell plupload_file_delete\"></td>');
-	{$disableHeader}
-	{$setHeaderTitle}
-	{$setHeaderSubtitle}
-});
-", 'js');
+			jQuery(document).ready(function() { jQuery('#{$this->uniqueId}').fileListEditor({$optionsJson}); });", 'js'
+		);
 	}
 
 	/**

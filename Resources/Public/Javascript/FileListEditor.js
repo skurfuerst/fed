@@ -1,73 +1,80 @@
-if (typeof FED == 'undefined') {
-	var FED = {};
-};
+(function(jQuery){
+	jQuery.fn.fileListEditor = function(options) {
+		var defaults = {
+			buttons : {
+				browse: true,
+				start: true,
+				stop: true
+			},
+			unique_names : false
+		};
+		var options = jQuery.extend(defaults, options);
 
-FED.FileListEditor = {
-
-	onFileUploaded: function(up, file, info) {
-		var response = jQuery.parseJSON(info.response).result;
-		file.name = response.name;
-		FED.FileListEditor.addFileToSavedList(file, info);
-		up.removeFile(file);
-		return true;
-	},
-
-	addFileToSavedList: function(file, info) {
-		if (file instanceof Array) {
-			if (file.length == 0) {
-				return false;
+			// main loop - intialize all selected elements
+		return this.each(function() {
+			var addFile = function(up, file, info) {
+				if (file instanceof Array) {
+					if (file.length == 0) {
+						return false;
+					};
+					var index = 0;
+					while (index < file.length) {
+						addFile(up, file[index], info);
+						index++;
+					};
+					return true;
+				};
+				setTimeout(function() {
+					uploader.removeFile(file);
+				}, 0);
+				tableHeader.append("<tr class='plupload_delete ui-state-default plupload_file'>" +
+					"<td class='plupload_cell plupload_file_name'><span>" + file.name + "</span></td>" +
+					"<td class='plupload_cell plupload_file_status'>Uploaded</td>" +
+					"<td class='plupload_cell plupload_file_size'>" + plupload.formatSize(file.size) + "</td>" +
+					"<td class='plupload_cell'><div class='ui-icon ui-icon-circle-minus remove'></div></td>" +
+					"</tr>");
+				if (!file.existing) {
+					options.files.push(file);
+				};
+				updateField();
 			};
-			var index = 0;
-			while (index < file.length) {
-				FED.FileListEditor.addFileToSavedList(file[index], info);
-				index++;
+			var updateField = function() {
+				var i;
+				var files = [];
+				for (i=0; i<options.files.length; i++) {
+					files.push(options.files[i].name);
+				};
+				field.val(files.join(','));
 			};
-			return true;
-		};
-		jQuery('#pleditor').append("<tr class='plupload_delete ui-state-default plupload_file'>" +
-			"<td class='plupload_cell plupload_file_name'><span>" + file.name + "</span></td>" +
-			"<td class='plupload_cell plupload_file_status'>Uploaded</td>" +
-			"<td class='plupload_cell plupload_file_size'>" + plupload.formatSize(file.size) + "</td>" +
-			"<td class='plupload_cell'><div class='ui-icon ui-icon-circle-minus remove'></div></td>" +
-			"</tr>");
-		if (!file.existing) {
-			var files = FED.FileListEditor.getFieldValue();
-			files.push(file.name);
-			FED.FileListEditor.setFieldValue(files);
-		};
-		return true;
-	},
-
-	removeFileFromSavedList: function() {
-		var row = jQuery(this).parents('tr:first');
-		var filename = row.find('.plupload_file_name span').html().trim();
-		if (filename.length < 1) {
-			return false;
-		};
-		var index;
-		var updated = [];
-		var existing = FED.FileListEditor.getFieldValue();
-		for (index in existing) {
-			if (existing[index] != filename) {
-				updated.push(existing[index]);
+			var element = jQuery(this).plupload(options);
+			var field = jQuery('#' + element.attr('id') + '-field');
+			var uploader = element.plupload('getUploader');
+			var tableHeader = element.find('.plupload_filelist:first');
+			for (var i=0; i<options.files.length; i++) {
+				addFile(uploader, options.files[i]);
 			};
-		};
-		FED.FileListEditor.setFieldValue(updated);
-		row.fadeOut(250);
-		return true;
-	},
-
-	getFieldValue: function() {
-		var field = jQuery('#plupload-field');
-		var existing = field.val().split(',');
-		return existing;
-	},
-
-	setFieldValue: function(files) {
-		var field = jQuery('#plupload-field');
-		var value = files.join(',');
-		field.val(value);
-	}
-
-};
-
+			field.val('');
+			tableHeader.attr('id', options.editorId);
+			tableHeader.find('.plupload_filelist_header').append('<td class="plupload_cell plupload_file_delete"></td>');
+			tableHeader.find('.remove').live('click', function() {
+				var row = jQuery(this).parents('tr:first');
+				var filename = row.find('.plupload_file_name span').html().trim();
+				if (filename.length < 1) {
+					return false;
+				};
+				var files = [];
+				for (var i=0; i<options.files.length; i++) {
+					if (options.files[i].name != filename) {
+						files.push(options.files[i]);
+					};
+				};
+				options.files = files;
+				row.fadeOut(250);
+				updateField();
+			});
+			uploader.bind('FileUploaded', function(up, file, info) {
+				addFile(up, file, info);
+			});
+		});
+	};
+})(jQuery);
