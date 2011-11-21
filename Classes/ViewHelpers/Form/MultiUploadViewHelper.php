@@ -133,7 +133,7 @@ class Tx_Fed_ViewHelpers_Form_MultiUploadViewHelper extends Tx_Fluid_ViewHelpers
 	public function render() {
 		$name = $this->getName();
 		$value = $this->getValue();
-		$this->uniqueId = uniqid('plupload');
+		$this->uniqueId = $this->arguments['id'] ? $this->arguments['id'] : uniqid('plupload');
 		$this->registerFieldNameForFormTokenGeneration($name);
 		$this->setErrorClassAttribute();
 		$html = array(
