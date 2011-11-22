@@ -1,0 +1,27 @@
+{namespace fed=Tx_Fed_ViewHelpers}
+<f:layout name="ImageCrop" />
+
+<f:section name="Large">
+	<div class="large portrait">
+		<fed:exists file="{path}{src}">
+			<f:then><img src="{path}{src}" alt="{placeholderText}" /></f:then>
+			<f:else><img src="{placeholderImage}" alt="{placeholderText}" class="placeholder" /></f:else>
+		</fed:exists>
+	</div>
+</f:section>
+
+<f:section name="Preview">
+	<div class="preview thumbnail">
+		<div class="thumbnail-frame" style="width: {previewWidth}px; height: {previewHeight}px; overflow: hidden;">
+			<div class="img-div">
+				<img src="{path}{src}" alt="{placeholderText}" />
+			</div>
+		</div>
+	</div>
+</f:section>
+
+<f:section name="Button">
+	<div class="button">
+		<button type="button">{cropButtonLabel}</button>
+	</div>
+</f:section>
