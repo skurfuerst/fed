@@ -44,6 +44,7 @@ class Tx_Fed_ViewHelpers_Fce_Field_GroupViewHelper extends Tx_Fed_ViewHelpers_Fc
 		parent::initializeArguments();
 		$this->registerArgument('internalType', 'string', 'FlexForm-internalType of this Group Selector', TRUE);
 		$this->registerArgument('allowed', 'string', 'FlexForm-style "allowed" content for a group type field');
+		$this->registerArgument('uploadFolder', 'string', 'Upload folder');
 	}
 	
 	/**
@@ -54,6 +55,7 @@ class Tx_Fed_ViewHelpers_Fce_Field_GroupViewHelper extends Tx_Fed_ViewHelpers_Fc
 		$config['type'] = 'group';
 		$config['internal_type'] = $this->arguments['internalType'];
 		$config['allowed'] = $this->arguments['allowed'];
+		$config['uploadfolder'] = $this->arguments['uploadFolder'];
 		$this->addField($config);
 		$this->renderChildren();
 	}
